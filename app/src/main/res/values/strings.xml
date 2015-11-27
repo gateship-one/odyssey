@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Odyssey</string>
+
+    <!-- nav drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- nav drawer menu -->
+    <string name="nav_menu_my_music">My Music</string>
+    <string name="nav_menu_saved_playlists">Playlists</string>
+    <string name="nav_menu_settings">Settings</string>
+
+    <!-- my music tab titles -->
+    <string name="fragment_title_artists">Artists</string>
+    <string name="fragment_title_albums">Albums</string>
+    <string name="fragment_title_all_tracks">Tracks</string>
+
+    <!-- actions -->
+    <string name="action_settings">Settings</string>
+</resources>

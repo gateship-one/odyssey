@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my_music"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/nav_menu_my_music" />
+        <item
+            android:id="@+id/nav_saved_playlists"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/nav_menu_saved_playlists" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/nav_menu_settings"/>
+    </group>
+
+</menu>
