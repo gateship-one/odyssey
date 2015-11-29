@@ -18,22 +18,22 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_my_music, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.my_music_tab_layout);
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_artists));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_albums));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_all_tracks));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
+        ViewPager myMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
         MyMusicPagerAdapter adapterViewPager = new MyMusicPagerAdapter(getChildFragmentManager());
         myMusicViewPager.setAdapter(adapterViewPager);
         myMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
-        // Inflate the layout for this fragment
-        return view;
+        return rootView;
     }
 
     @Override

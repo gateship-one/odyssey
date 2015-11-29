@@ -3,9 +3,28 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <GridView
+        android:id="@+id/artists_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/artists_item_height"
+        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true"
+        android:horizontalSpacing="4dp"
+        android:numColumns="auto_fit"
+        android:scrollbarStyle="outsideInset"
+        android:scrollingCache="false"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="4dp"
+        android:fastScrollStyle="@color/colorAccent">
+    </GridView>
+
+    <ProgressBar
+        android:id="@+id/artists_progressbar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Artists!" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </LinearLayout>
