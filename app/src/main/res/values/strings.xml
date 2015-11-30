@@ -10,6 +10,11 @@
     <string name="nav_menu_saved_playlists">Playlists</string>
     <string name="nav_menu_settings">Settings</string>
 
+    <!-- fragment titles -->
+    <string name="fragment_title_my_music">My Music</string>
+    <string name="fragment_title_saved_playlists">Playlists</string>
+    <string name="fragment_title_settings">Settings</string>
+
     <!-- my music tab titles -->
     <string name="fragment_title_artists">Artists</string>
     <string name="fragment_title_albums">Albums</string>

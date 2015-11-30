@@ -10,7 +10,7 @@ import org.odyssey.R;
 
 public class ArtistsGridViewItem extends RelativeLayout{
 
-    TextView mTitleView;
+    private TextView mTitleView;
 
     public ArtistsGridViewItem(Context context, String title, ViewGroup.LayoutParams layoutParams) {
         super(context);

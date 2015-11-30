@@ -3,9 +3,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ListView
+        android:id="@+id/all_tracks_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fastScrollAlwaysVisible="false"
+        android:fastScrollEnabled="true"
+        android:scrollbarStyle="outsideInset"
+        android:fastScrollStyle="@color/colorAccent">
+    </ListView>
+
+    <ProgressBar
+        android:id="@+id/all_tracks_progressbar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tracks!" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </LinearLayout>

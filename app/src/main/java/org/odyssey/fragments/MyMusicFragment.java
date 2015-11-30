@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,10 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
+        // set title
+        getActivity().setTitle(R.string.fragment_title_my_music);
+
+        // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_artists));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_albums));
