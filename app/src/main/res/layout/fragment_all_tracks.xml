@@ -10,7 +10,7 @@
         android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"
         android:scrollbarStyle="outsideInset"
-        android:fastScrollStyle="@color/colorAccent">
+        android:fastScrollStyle="?attr/colorAccent">
     </ListView>
 
     <ProgressBar

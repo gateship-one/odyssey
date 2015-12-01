@@ -2,6 +2,7 @@ package org.odyssey.views;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,20 +18,18 @@ public class AllTracksListViewItem extends LinearLayout{
     public AllTracksListViewItem(Context context, String number, String title, String information, String duration) {
         super(context);
 
-        // TODO check this
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.listview_item_all_tracks, this, true);
+        View rootView = LayoutInflater.from(context).inflate(R.layout.listview_item_all_tracks, this, true);
 
-        mNumberView = (TextView) this.findViewById(R.id.item_all_tracks_number);
+        mNumberView = (TextView) rootView.findViewById(R.id.item_all_tracks_number);
         mNumberView.setText(number);
 
-        mTitleView = (TextView) this.findViewById(R.id.item_all_tracks_title);
+        mTitleView = (TextView) rootView.findViewById(R.id.item_all_tracks_title);
         mTitleView.setText(title);
 
-        mInformationView = (TextView) this.findViewById(R.id.item_all_tracks_additional_information);
+        mInformationView = (TextView) rootView.findViewById(R.id.item_all_tracks_additional_information);
         mInformationView.setText(information);
 
-        mDurationView = (TextView) this.findViewById(R.id.item_all_tracks_duration);
+        mDurationView = (TextView) rootView.findViewById(R.id.item_all_tracks_duration);
         mDurationView.setText(duration);
     }
 

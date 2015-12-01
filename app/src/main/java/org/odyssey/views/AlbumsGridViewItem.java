@@ -2,6 +2,7 @@ package org.odyssey.views;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,13 +16,11 @@ public class AlbumsGridViewItem extends RelativeLayout{
     public AlbumsGridViewItem(Context context, String title, ViewGroup.LayoutParams layoutParams) {
         super(context);
 
-        // TODO check this
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.gridview_item_albums, this, true);
+        View rootView = LayoutInflater.from(context).inflate(R.layout.gridview_item_albums, this, true);
 
         setLayoutParams(layoutParams);
 
-        mTitleView = (TextView) this.findViewById(R.id.item_albums_title);
+        mTitleView = (TextView) rootView.findViewById(R.id.item_albums_title);
         mTitleView.setText(title);
 
     }
