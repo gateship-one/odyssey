@@ -4,16 +4,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_my_music"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_my_library_music_24dp"
             android:title="@string/nav_menu_my_music" />
         <item
             android:id="@+id/nav_saved_playlists"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_queue_music_24dp"
             android:title="@string/nav_menu_saved_playlists" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_settings_24dp"
             android:title="@string/nav_menu_settings"/>
+
+        <item
+            android:id="@+id/nav_now_playing_dummy"
+            android:icon="@drawable/ic_queue_music_24dp"
+            android:title="@string/nav_menu_saved_playlists" />
     </group>
 
 </menu>

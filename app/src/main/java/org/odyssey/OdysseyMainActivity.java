@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.odyssey.fragments.MyMusicFragment;
+import org.odyssey.fragments.NowPlayingFragmentDummy;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 
@@ -107,6 +108,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             fragment = new SavedPlaylistsFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
+        } else if (id == R.id.nav_now_playing_dummy) {
+            fragment = new NowPlayingFragmentDummy();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

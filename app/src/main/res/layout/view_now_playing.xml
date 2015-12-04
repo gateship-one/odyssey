@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/now_playing_trackInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        >
+
+        <TextView
+            android:id="@+id/now_playing_trackTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/now_playing_trackArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/now_playing_trackArtistAlbumSeparator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text=" - " />
+
+            <TextView
+                android:id="@+id/now_playing_trackAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/now_playing_coverLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/now_playing_trackInformation"
+        android:layout_above="@+id/now_playing_seekBarLayout">
+        <ImageView
+            android:id="@+id/now_playing_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/coverplaceholder" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/now_playing_seekBarLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/now_playing_buttonLayout"
+        android:background="?attr/colorPrimary"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/now_playing_elapsedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/now_playing_seekBar"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/now_playing_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/now_playing_seekBar"
+            android:gravity="center" />
+
+        <SeekBar
+            android:id="@+id/now_playing_seekBar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/now_playing_buttonLayout"
+        android:background="?attr/colorPrimary"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/now_playing_repeatButton"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tint="@color/colorTextLight"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_repeat_24dp"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/now_playing_previousButton"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tint="@color/colorTextLight"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_skip_previous_24dp"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/now_playing_playPauseButton"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tint="@color/colorTextLight"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_play_circle_fill_24dp"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/now_playing_nextButton"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tint="@color/colorTextLight"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_skip_next_24dp"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/now_playing_randomButton"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tint="@color/colorTextLight"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_shuffle_24dp"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+</RelativeLayout>
