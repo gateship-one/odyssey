@@ -3,67 +3,60 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="5dp" >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp" >
+        android:orientation="horizontal" >
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/item_all_tracks_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:maxLines="1"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/item_all_tracks_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/item_all_tracks_separator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text=" - "
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/item_all_tracks_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/item_all_tracks_separator"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@string/separator"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/item_all_tracks_additional_information"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/item_all_tracks_duration"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="#ff777777"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/item_all_tracks_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="5dp"
-                android:maxLines="1" />
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/item_all_tracks_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="16sp" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_all_tracks_additional_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/item_all_tracks_duration"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="#ff777777"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/item_all_tracks_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:maxLines="1" />
+    </RelativeLayout>
 
 </LinearLayout>

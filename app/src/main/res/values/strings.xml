@@ -22,4 +22,7 @@
 
     <!-- actions -->
     <string name="action_settings">Settings</string>
+
+    <!-- seperator -->
+    <string name="separator">" - "</string>
 </resources>

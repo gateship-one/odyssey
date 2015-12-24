@@ -25,7 +25,7 @@
                 android:layout_height="48dp"
                 android:id="@+id/imageView2"
                 android:src="@drawable/cover_placeholder"
-                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="true" />
@@ -34,9 +34,9 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_toRightOf="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2"
                 android:gravity="center_vertical"
-                android:layout_toLeftOf="@+id/imageButton">
+                android:layout_toStartOf="@+id/imageButton">
 
                 <TextView
                     android:id="@+id/now_playing_trackTitle"
@@ -62,7 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:text=" - " />
+                        android:text="@string/separator" />
 
                     <TextView
                         android:id="@+id/now_playing_trackAlbum"
@@ -126,7 +126,7 @@
                         android:id="@+id/now_playing_elapsedTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/now_playing_seekBar"
                         android:gravity="center" />
 
@@ -134,7 +134,7 @@
                         android:id="@+id/now_playing_length"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/now_playing_seekBar"
                         android:gravity="center" />
 
