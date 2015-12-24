@@ -3,9 +3,6 @@ package org.odyssey;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.odyssey.fragments.MyMusicFragment;
-import org.odyssey.fragments.NowPlayingFragmentDummy;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 
@@ -108,8 +104,6 @@ public class OdysseyMainActivity extends AppCompatActivity
             fragment = new SavedPlaylistsFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
-        } else if (id == R.id.nav_now_playing_dummy) {
-            fragment = new NowPlayingFragmentDummy();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
