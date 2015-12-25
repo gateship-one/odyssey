@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/coverplaceholder" />
+        android:src="@drawable/cover_placeholder_96dp"
+        android:background="@color/colorBackgroundDark" />
 
     <View
         android:layout_width="fill_parent"
