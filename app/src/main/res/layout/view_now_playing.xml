@@ -77,6 +77,17 @@
             <ImageButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:id="@+id/playlistButton"
+                android:src="@drawable/ic_queue_music_24dp"
+                android:background="?android:selectableItemBackground"
+                android:layout_toLeftOf="@+id/imageButton"
+                android:adjustViewBounds="false"
+                android:baselineAlignBottom="false"
+                android:cropToPadding="false"
+                android:tint="@color/colorTextLight" />
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/imageButton"
                 android:src="@drawable/ic_play_arrow_24dp"
                 android:background="?android:selectableItemBackground"
@@ -95,7 +106,7 @@
             android:layout_below="@+id/now_playing_headerLayout"
             android:layout_alignParentBottom="true">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/now_playing_coverLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -106,7 +117,14 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/cover_placeholder"
                     android:background="@color/colorPrimaryDark"/>
-            </LinearLayout>
+                <org.odyssey.views.CurrentPlaylistView
+                    android:id="@+id/now_playing_playlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible">
+
+                </org.odyssey.views.CurrentPlaylistView>
+            </RelativeLayout>
             <LinearLayout
                 android:id="@+id/now_playing_control_layout"
                 android:layout_width="match_parent"

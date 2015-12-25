@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import org.odyssey.R;
@@ -44,6 +46,10 @@ public class NowPlayingLayout extends RelativeLayout {
     private int mDragRange;
 
     private float mInitialMotionY;
+
+    private ImageView mCoverImage;
+
+    private CurrentPlaylistView mPlaylistView;
 
     public NowPlayingLayout(Context context) {
         this(context, null, 0);
@@ -132,44 +138,7 @@ public class NowPlayingLayout extends RelativeLayout {
         }
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        final int action = MotionEventCompat.getActionMasked(ev);
 
-        if (( action != MotionEvent.ACTION_DOWN)) {
-            mDragHelper.cancel();
-            return super.onInterceptTouchEvent(ev);
-        }
-
-        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
-            mDragHelper.cancel();
-            return false;
-        }
-
-        final float x = ev.getX();
-        final float y = ev.getY();
-        boolean interceptTap = false;
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN: {
-                mInitialMotionY = y;
-                interceptTap = mDragHelper.isViewUnder(mHeaderView, (int) x, (int) y);
-                break;
-            }
-
-            case MotionEvent.ACTION_MOVE: {
-                final float ady = Math.abs(y - mInitialMotionY);
-                final int slop = mDragHelper.getTouchSlop();
-                /*useless*/
-                if (ady > slop ) {
-                    mDragHelper.cancel();
-                    return false;
-                }
-            }
-        }
-
-        return mDragHelper.shouldInterceptTouchEvent(ev) || interceptTap;
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -232,6 +201,27 @@ public class NowPlayingLayout extends RelativeLayout {
         Log.v("DRAGLAYOUT","INFLATE FINISHED");
         mHeaderView = findViewById(R.id.now_playing_headerLayout);
         mMainView = findViewById(R.id.now_playing_bodyLayout);
+
+        mCoverImage = (ImageView)findViewById(R.id.now_playing_cover);
+        mPlaylistView = (CurrentPlaylistView)findViewById(R.id.now_playing_playlist);
+
+
+        // Add listeners to playlist button
+        ImageButton playlistBtn = (ImageButton)findViewById(R.id.playlistButton);
+
+        // FIXME: Clean up this code a bit. And a nice transition?
+        playlistBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ( mPlaylistView.getVisibility() == View.INVISIBLE) {
+                    mCoverImage.setVisibility(View.INVISIBLE);
+                    mPlaylistView.setVisibility(View.VISIBLE);
+                } else {
+                    mPlaylistView.setVisibility(View.INVISIBLE);
+                    mCoverImage.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
