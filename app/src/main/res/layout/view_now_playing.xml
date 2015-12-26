@@ -110,7 +110,8 @@
                 android:id="@+id/now_playing_coverLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/now_playing_control_layout">
+                android:layout_above="@+id/now_playing_control_layout"
+                android:animateLayoutChanges="true">
                 <ImageView
                     android:id="@+id/now_playing_cover"
                     android:layout_width="match_parent"
@@ -188,7 +189,7 @@
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
                         android:src="@drawable/ic_skip_previous_24dp"
-                        android:scaleType="fitCenter"/>
+                        android:scaleType="fitCenter"/>view
 
                     <ImageButton
                         android:id="@+id/now_playing_playPauseButton"

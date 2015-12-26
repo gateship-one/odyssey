@@ -214,11 +214,9 @@ public class NowPlayingLayout extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if ( mPlaylistView.getVisibility() == View.INVISIBLE) {
-                    mCoverImage.setVisibility(View.INVISIBLE);
                     mPlaylistView.setVisibility(View.VISIBLE);
                 } else {
                     mPlaylistView.setVisibility(View.INVISIBLE);
-                    mCoverImage.setVisibility(View.VISIBLE);
                 }
             }
         });
