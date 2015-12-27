@@ -21,9 +21,6 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
         super(context);
         mContext = context;
         mArtistID = artist;
-
-        // Starts the loading of backgroundData
-        forceLoad();
     }
 
     /*
@@ -63,5 +60,15 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
         }
         albumCursor.close();
         return albums;
+    }
+
+    @Override
+    protected void onStartLoading() {
+        forceLoad();
+    }
+
+    @Override
+    protected void onStopLoading() {
+        cancelLoad();
     }
 }

@@ -41,32 +41,35 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
         // get gridview
         mRootGrid = (GridView) rootView.findViewById(R.id.albums_gridview);
 
-        // add progressbar
+        // add progressbar to visualize asynchronous load
         mRootGrid.setEmptyView(rootView.findViewById(R.id.albums_progressbar));
 
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
 
-        getLoaderManager().initLoader(0, getArguments(), this);
         return rootView;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Prepare loader ( start new one or reuse old )
+        getLoaderManager().initLoader(0, getArguments(), this);
+    }
+
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
         if (bundle == null) {
 
             // all albums
             return new AlbumLoader(getActivity(), -1);
-
         } else {
-
-            // only albums of artist mArtist
+            // only albums of artist mArtistName
 
             mArtistName = bundle.getString(ARG_ARTISTNAME);
             mArtistID = bundle.getLong(ARG_ARTISTID);
-
-            // Set actionbar title
-            getActivity().getActionBar().setTitle(mArtistName);
 
             return new AlbumLoader(getActivity(), mArtistID);
         }
