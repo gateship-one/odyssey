@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.SectionIndexer;
 
-public class AlbumsGridViewAdapter extends BaseAdapter implements SectionIndexer {
+public class AlbumsGridViewAdapter extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
 
     private final static String TAG = "OdysseyAlbumAdapter";
 

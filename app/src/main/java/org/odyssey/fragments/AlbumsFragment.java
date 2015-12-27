@@ -13,6 +13,7 @@ import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
+import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
+        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter,mRootGrid));
 
         return rootView;
     }
@@ -67,7 +69,6 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
             return new AlbumLoader(getActivity(), -1);
         } else {
             // only albums of artist mArtistName
-
             mArtistName = bundle.getString(ARG_ARTISTNAME);
             mArtistID = bundle.getLong(ARG_ARTISTID);
 

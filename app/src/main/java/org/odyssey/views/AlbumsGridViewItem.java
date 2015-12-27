@@ -15,7 +15,7 @@ import org.odyssey.utils.AsyncLoader;
 
 import java.lang.ref.WeakReference;
 
-public class AlbumsGridViewItem extends RelativeLayout{
+public class AlbumsGridViewItem extends RelativeLayout implements GenericGridItem{
 
     private TextView mTitleView;
     private ImageView mImageView;
