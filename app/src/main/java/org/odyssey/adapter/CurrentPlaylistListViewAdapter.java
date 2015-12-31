@@ -23,16 +23,6 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter{
         mContext = context;
 
         mTracks = new ArrayList<>();
-
-        createDummyData(125);
-    }
-
-    private void createDummyData(int numberOfElements) {
-        for(int i = 0; i < numberOfElements; i++) {
-            TrackModel track = new TrackModel(""+i, ""+i, ""+i, ""+i, i*10000, i);
-
-            mTracks.add(track);
-        }
     }
 
     @Override
@@ -63,7 +53,8 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter{
 
         // tracknumber
         String trackNumber = String.valueOf(track.getTrackNumber());
-        if(trackNumber.length() > 4) {
+
+        if(trackNumber.length() >= 4) {
             trackNumber = trackNumber.substring(2);
         }
         // duration
