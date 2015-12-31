@@ -1,7 +1,6 @@
 package org.odyssey.views;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
@@ -21,12 +20,16 @@ public class NowPlayingLayout extends RelativeLayout {
     /**
      * Upper view part which is dragged up & down
      */
-    protected View mHeaderView;
+    private View mHeaderView;
 
     /**
      * Main view of draggable part
      */
-    protected View mMainView;
+    private View mMainView;
+
+    private ImageButton mTopPlayPauseButton;
+    private ImageButton mTopPlaylistButton;
+    private ImageButton mTopMenuButton;
 
     /**
      * Absolute pixel position of upper layout bound
@@ -34,8 +37,7 @@ public class NowPlayingLayout extends RelativeLayout {
     private int mTopPosition;
 
     /**
-     * FIXME
-     * Offset of drag?
+     * relative dragposition
      */
     private float mDragOffset;
 
@@ -44,8 +46,6 @@ public class NowPlayingLayout extends RelativeLayout {
      * (Layout height - draggable part)
      */
     private int mDragRange;
-
-    private float mInitialMotionY;
 
     private ImageView mCoverImage;
 
@@ -96,12 +96,7 @@ public class NowPlayingLayout extends RelativeLayout {
 
             mDragOffset = (float) top / mDragRange;
 
-            mHeaderView.setPivotX(mHeaderView.getWidth());
-            mHeaderView.setPivotY(mHeaderView.getHeight());
-//            mHeaderView.setScaleX(1 - mDragOffset / 2);
-//            mHeaderView.setScaleY(1 - mDragOffset / 2);
-
-//            mDescView.setAlpha(1 - mDragOffset);
+            Log.v("DRAGGER", "onViewPositionChanged: "+" mDragOffset:" + mDragOffset);
 
             requestLayout();
         }
@@ -124,10 +119,33 @@ public class NowPlayingLayout extends RelativeLayout {
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             final int topBound = getPaddingTop();
-            final int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
+            int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
 
             final int newTop = Math.min(Math.max(top, topBound), bottomBound);
+
+            Log.v("DRAGGER", "CLAMPVIEWPOSITION: "+" newTop:" + newTop + " top:" + top);
+
             return newTop;
+        }
+
+        @Override
+        public void onViewDragStateChanged(int state) {
+
+            super.onViewDragStateChanged(state);
+
+            if(state == ViewDragHelper.STATE_IDLE) {
+                if (mDragOffset == 0.0f) {
+                    // top
+                    mTopPlayPauseButton.setVisibility(INVISIBLE);
+                    mTopPlaylistButton.setVisibility(VISIBLE);
+                    mTopMenuButton.setVisibility(VISIBLE);
+                } else {
+                    // bottom
+                    mTopPlayPauseButton.setVisibility(VISIBLE);
+                    mTopPlaylistButton.setVisibility(INVISIBLE);
+                    mTopMenuButton.setVisibility(INVISIBLE);
+                }
+            }
         }
     }
 
@@ -138,36 +156,14 @@ public class NowPlayingLayout extends RelativeLayout {
         }
     }
 
-
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         mDragHelper.processTouchEvent(ev);
 
-        final int action = ev.getAction();
         final float x = ev.getX();
         final float y = ev.getY();
 
         boolean isHeaderViewUnder = mDragHelper.isViewUnder(mHeaderView, (int) x, (int) y);
-        switch (action & MotionEventCompat.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: {
-                mInitialMotionY = y;
-                break;
-            }
-
-            case MotionEvent.ACTION_UP: {
-                final float dy = y - mInitialMotionY;
-                final int slop = mDragHelper.getTouchSlop();
-                if (dy * dy < slop * slop && isHeaderViewUnder) {
-                    if (mDragOffset == 0) {
-                        maximize();
-                    } else {
-                        minimize();
-                    }
-                }
-                break;
-            }
-        }
 
         return isHeaderViewUnder && isViewHit(mHeaderView, (int) x, (int) y) || isViewHit(mMainView, (int) x, (int) y);
     }
@@ -198,21 +194,29 @@ public class NowPlayingLayout extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        Log.v("DRAGLAYOUT","INFLATE FINISHED");
+
         mHeaderView = findViewById(R.id.now_playing_headerLayout);
         mMainView = findViewById(R.id.now_playing_bodyLayout);
+
+        mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
+        mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
+        mTopMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
 
         mCoverImage = (ImageView)findViewById(R.id.now_playing_cover);
         mPlaylistView = (CurrentPlaylistView)findViewById(R.id.now_playing_playlist);
 
+        // set dragging part default to bottom
+        mDragOffset = 1.0f;
+        mTopPlayPauseButton.setVisibility(VISIBLE);
+        mTopPlaylistButton.setVisibility(INVISIBLE);
+        mTopMenuButton.setVisibility(INVISIBLE);
 
         // Add listeners to playlist button
-        ImageButton playlistBtn = (ImageButton)findViewById(R.id.playlistButton);
-
         // FIXME: Clean up this code a bit. And a nice transition?
-        playlistBtn.setOnClickListener(new OnClickListener() {
+        mTopPlaylistButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if ( mPlaylistView.getVisibility() == View.INVISIBLE) {
                     mPlaylistView.setVisibility(View.VISIBLE);
                 } else {
@@ -224,18 +228,26 @@ public class NowPlayingLayout extends RelativeLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mDragRange = getHeight() - mHeaderView.getHeight();
+        mDragRange = (getHeight() - mHeaderView.getHeight());
+
+        int newTop = mTopPosition;
+
+        // fix height at top or bottom if state idle
+        if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
+            Log.v("DRAGGER","ONLAYOUT:" + "DRAGOFFSET:" + mDragOffset);
+            newTop = (int) (mDragRange * mDragOffset);
+        }
 
         mHeaderView.layout(
                 0,
-                mTopPosition,
+                newTop,
                 r,
-                mTopPosition + mHeaderView.getMeasuredHeight());
+                newTop + mHeaderView.getMeasuredHeight());
 
         mMainView.layout(
                 0,
-                mTopPosition + mHeaderView.getMeasuredHeight(),
+                newTop + mHeaderView.getMeasuredHeight(),
                 r,
-                mTopPosition  + b);
+                newTop  + b);
     }
 }

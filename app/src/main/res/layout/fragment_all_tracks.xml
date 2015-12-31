@@ -15,7 +15,6 @@
 
     <ProgressBar
         android:id="@+id/all_tracks_progressbar"
-        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

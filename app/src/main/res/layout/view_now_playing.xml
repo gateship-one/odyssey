@@ -23,7 +23,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/imageView2"
+                android:id="@+id/now_playing_topCover"
                 android:src="@drawable/cover_placeholder"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
@@ -34,9 +34,9 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_toEndOf="@+id/imageView2"
+                android:layout_toEndOf="@+id/now_playing_topCover"
                 android:gravity="center_vertical"
-                android:layout_toStartOf="@+id/imageButton">
+                android:layout_toStartOf="@+id/now_playing_topPlayPauseButton">
 
                 <TextView
                     android:id="@+id/now_playing_trackTitle"
@@ -77,10 +77,10 @@
             <ImageButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/playlistButton"
+                android:id="@+id/now_playing_topPlaylistButton"
                 android:src="@drawable/ic_queue_music_24dp"
                 android:background="?android:selectableItemBackground"
-                android:layout_toLeftOf="@+id/imageButton"
+                android:layout_toStartOf="@+id/now_playing_topMenuButton"
                 android:adjustViewBounds="false"
                 android:baselineAlignBottom="false"
                 android:cropToPadding="false"
@@ -88,7 +88,18 @@
             <ImageButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/imageButton"
+                android:id="@+id/now_playing_topMenuButton"
+                android:src="@drawable/ic_more_vert_24dp"
+                android:background="?android:selectableItemBackground"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="false"
+                android:baselineAlignBottom="false"
+                android:cropToPadding="false"
+                android:tint="@color/colorTextLight" />
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/now_playing_topPlayPauseButton"
                 android:src="@drawable/ic_play_arrow_24dp"
                 android:background="?android:selectableItemBackground"
                 android:layout_alignParentEnd="true"

@@ -13,7 +13,6 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
 
     private long mLastTime = 0;
     private int mLastFirstVisibleItem = 0;
-    private boolean mFloating = false;
     private int mScrollSpeed = 0;
 
     private ScrollSpeedAdapter mAdapter;
@@ -33,11 +32,6 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
                 GenericGridItem gridItem = (GenericGridItem) mRootGrid.getChildAt(i);
                 gridItem.startCoverImageTask();
             }
-            mFloating = false;
-        } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-            mFloating = true;
-        } else {
-            mFloating = false;
         }
     }
 
@@ -53,7 +47,6 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
 
             mLastFirstVisibleItem = firstVisibleItem;
             mLastTime = currentTime;
-            ;
 
             if (mScrollSpeed < visibleItemCount) {
                 for (int i = 0; i < visibleItemCount; i++) {

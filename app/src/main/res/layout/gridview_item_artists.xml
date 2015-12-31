@@ -3,13 +3,28 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <ImageView
-        android:id="@+id/item_artists_coverPlaceHolder"
+    <ViewSwitcher
+        android:id="@+id/item_artists_view_switcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/cover_placeholder_96dp"
-        android:background="@color/colorBackgroundDark" />
+        android:layout_alignParentBottom="true"
+        android:outAnimation="@animator/fadeout"
+        android:inAnimation="@animator/fadein"
+        android:animateFirstView="true">
+        <ImageView
+            android:id="@+id/item_artists_cover_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_placeholder_96dp"
+            android:background="@color/colorBackgroundDark"/>
+
+        <ImageView
+            android:id="@+id/item_artists_cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+    </ViewSwitcher>
 
     <View
         android:layout_width="fill_parent"
