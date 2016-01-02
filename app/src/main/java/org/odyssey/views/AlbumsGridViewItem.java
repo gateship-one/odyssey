@@ -8,7 +8,6 @@ import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
 
-
 public class AlbumsGridViewItem extends GenericGridItem{
 
     private TextView mTitleView;

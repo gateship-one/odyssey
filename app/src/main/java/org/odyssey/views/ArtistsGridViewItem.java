@@ -7,24 +7,16 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
-import org.odyssey.utils.AsyncLoader;
-
 
 public class ArtistsGridViewItem extends GenericGridItem{
 
     private TextView mTitleView;
-    private ImageView mImageView;
-    private ViewSwitcher mSwitcher;
-
-    private AsyncLoader.CoverViewHolder mHolder;
-    private boolean mCoverDone = false;
 
     public ArtistsGridViewItem(Context context, String title, String imageURL, ViewGroup.LayoutParams layoutParams) {
         super(context,imageURL,layoutParams);
 
         mTitleView = ((TextView) this.findViewById(R.id.item_artists_title));
         mTitleView.setText(title);
-
     }
 
     public void setTitle(String text) {
