@@ -74,39 +74,50 @@
 
             </LinearLayout>
 
-            <ImageButton
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:id="@+id/now_playing_layout_dragged_up"
+                android:layout_alignParentEnd="true">
+                <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/now_playing_topPlaylistButton"
+                    android:src="@drawable/ic_queue_music_24dp"
+                    android:background="?android:selectableItemBackground"
+                    android:adjustViewBounds="false"
+                    android:baselineAlignBottom="false"
+                    android:cropToPadding="false"
+                    android:tint="@color/colorTextLight" />
+                <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/now_playing_topMenuButton"
+                    android:src="@drawable/ic_more_vert_24dp"
+                    android:background="?android:selectableItemBackground"
+                    android:adjustViewBounds="false"
+                    android:baselineAlignBottom="false"
+                    android:cropToPadding="false"
+                    android:tint="@color/colorTextLight" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/now_playing_topPlaylistButton"
-                android:src="@drawable/ic_queue_music_24dp"
-                android:background="?android:selectableItemBackground"
-                android:layout_toStartOf="@+id/now_playing_topMenuButton"
-                android:adjustViewBounds="false"
-                android:baselineAlignBottom="false"
-                android:cropToPadding="false"
-                android:tint="@color/colorTextLight" />
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:id="@+id/now_playing_topMenuButton"
-                android:src="@drawable/ic_more_vert_24dp"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignParentEnd="true"
-                android:adjustViewBounds="false"
-                android:baselineAlignBottom="false"
-                android:cropToPadding="false"
-                android:tint="@color/colorTextLight" />
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:id="@+id/now_playing_topPlayPauseButton"
-                android:src="@drawable/ic_play_arrow_24dp"
-                android:background="?android:selectableItemBackground"
-                android:layout_alignParentEnd="true"
-                android:adjustViewBounds="false"
-                android:baselineAlignBottom="false"
-                android:cropToPadding="false"
-                android:tint="@color/colorTextLight" />
+                android:id="@+id/now_playing_layout_dragged_down"
+                android:layout_alignParentEnd="true">
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/now_playing_topPlayPauseButton"
+                    android:src="@drawable/ic_play_arrow_24dp"
+                    android:background="?android:selectableItemBackground"
+                    android:adjustViewBounds="false"
+                    android:baselineAlignBottom="false"
+                    android:cropToPadding="false"
+                    android:tint="@color/colorTextLight" />
+            </LinearLayout>
+
 
         </RelativeLayout>
 

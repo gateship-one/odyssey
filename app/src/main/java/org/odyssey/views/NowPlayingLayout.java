@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import org.odyssey.R;
@@ -30,6 +31,9 @@ public class NowPlayingLayout extends RelativeLayout {
     private ImageButton mTopPlayPauseButton;
     private ImageButton mTopPlaylistButton;
     private ImageButton mTopMenuButton;
+
+    private LinearLayout mDraggedUpButtons;
+    private LinearLayout mDraggedDownButtons;
 
     /**
      * Absolute pixel position of upper layout bound
@@ -96,9 +100,12 @@ public class NowPlayingLayout extends RelativeLayout {
 
             mDragOffset = (float) top / mDragRange;
 
-            Log.v("DRAGGER", "onViewPositionChanged: "+" mDragOffset:" + mDragOffset);
+            Log.v("DRAGGER", "onViewPositionChanged: " + " mDragOffset:" + mDragOffset);
 
             requestLayout();
+
+            mDraggedDownButtons.setAlpha(mDragOffset);
+            mDraggedUpButtons.setAlpha(1.0f-mDragOffset);
         }
 
         @Override
@@ -136,15 +143,16 @@ public class NowPlayingLayout extends RelativeLayout {
             if(state == ViewDragHelper.STATE_IDLE) {
                 if (mDragOffset == 0.0f) {
                     // top
-                    mTopPlayPauseButton.setVisibility(INVISIBLE);
-                    mTopPlaylistButton.setVisibility(VISIBLE);
-                    mTopMenuButton.setVisibility(VISIBLE);
+                    mDraggedDownButtons.setVisibility(INVISIBLE);
+                    mDraggedUpButtons.setVisibility(VISIBLE);
                 } else {
                     // bottom
-                    mTopPlayPauseButton.setVisibility(VISIBLE);
-                    mTopPlaylistButton.setVisibility(INVISIBLE);
-                    mTopMenuButton.setVisibility(INVISIBLE);
+                    mDraggedDownButtons.setVisibility(VISIBLE);
+                    mDraggedUpButtons.setVisibility(INVISIBLE);
                 }
+            } else {
+                mDraggedDownButtons.setVisibility(VISIBLE);
+                mDraggedUpButtons.setVisibility(VISIBLE);
             }
         }
     }
@@ -205,11 +213,14 @@ public class NowPlayingLayout extends RelativeLayout {
         mCoverImage = (ImageView)findViewById(R.id.now_playing_cover);
         mPlaylistView = (CurrentPlaylistView)findViewById(R.id.now_playing_playlist);
 
+        mDraggedUpButtons = (LinearLayout)findViewById(R.id.now_playing_layout_dragged_up);
+        mDraggedDownButtons = (LinearLayout)findViewById(R.id.now_playing_layout_dragged_down);
+
         // set dragging part default to bottom
         mDragOffset = 1.0f;
-        mTopPlayPauseButton.setVisibility(VISIBLE);
-        mTopPlaylistButton.setVisibility(INVISIBLE);
-        mTopMenuButton.setVisibility(INVISIBLE);
+        mDraggedUpButtons.setVisibility(INVISIBLE);
+        mDraggedDownButtons.setVisibility(VISIBLE);
+        mDraggedUpButtons.setAlpha(0.0f);
 
         // Add listeners to playlist button
         // FIXME: Clean up this code a bit. And a nice transition?
