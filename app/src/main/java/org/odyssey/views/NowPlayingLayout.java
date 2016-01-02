@@ -129,7 +129,7 @@ public class NowPlayingLayout extends RelativeLayout {
             int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
 
             final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-            
+
             return newTop;
         }
 
