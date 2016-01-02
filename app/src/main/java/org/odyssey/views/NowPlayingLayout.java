@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -100,10 +99,11 @@ public class NowPlayingLayout extends RelativeLayout {
 
             mDragOffset = (float) top / mDragRange;
 
-            Log.v("DRAGGER", "onViewPositionChanged: " + " mDragOffset:" + mDragOffset);
-
             requestLayout();
 
+            // Set inverse alpha values for smooth layout transition.
+            // Visibility still needs to be set otherwise parts of the buttons
+            // are not clickable.
             mDraggedDownButtons.setAlpha(mDragOffset);
             mDraggedUpButtons.setAlpha(1.0f-mDragOffset);
         }
@@ -129,9 +129,7 @@ public class NowPlayingLayout extends RelativeLayout {
             int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
 
             final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-
-            Log.v("DRAGGER", "CLAMPVIEWPOSITION: "+" newTop:" + newTop + " top:" + top);
-
+            
             return newTop;
         }
 
@@ -151,6 +149,9 @@ public class NowPlayingLayout extends RelativeLayout {
                     mDraggedUpButtons.setVisibility(INVISIBLE);
                 }
             } else {
+                /* Show both layouts to enable a smooth transition via
+                alpha values of the layouts.
+                 */
                 mDraggedDownButtons.setVisibility(VISIBLE);
                 mDraggedUpButtons.setVisibility(VISIBLE);
             }
@@ -245,7 +246,6 @@ public class NowPlayingLayout extends RelativeLayout {
 
         // fix height at top or bottom if state idle
         if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
-            Log.v("DRAGGER","ONLAYOUT:" + "DRAGOFFSET:" + mDragOffset);
             newTop = (int) (mDragRange * mDragOffset);
         }
 
