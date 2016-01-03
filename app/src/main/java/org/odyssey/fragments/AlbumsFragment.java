@@ -12,12 +12,12 @@ import android.widget.GridView;
 import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.loaders.AlbumLoader;
-import org.odyssey.models.AlbumModel;
+import org.odyssey.models.GenericModel;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
-public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>> {
+public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GenericModel>> {
 
     private AlbumsGridViewAdapter mAlbumsGridViewAdapter;
 
@@ -62,7 +62,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<GenericModel>> onCreateLoader(int arg0, Bundle bundle) {
         if (bundle == null) {
 
             // all albums
@@ -77,7 +77,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
-    public void onLoadFinished(Loader<List<AlbumModel>> arg0, List<AlbumModel> model) {
+    public void onLoadFinished(Loader<List<GenericModel>> arg0, List<GenericModel> model) {
         mAlbumsGridViewAdapter.swapModel(model);
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -87,7 +87,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
-    public void onLoaderReset(Loader<List<AlbumModel>> arg0) {
+    public void onLoaderReset(Loader<List<GenericModel>> arg0) {
         mAlbumsGridViewAdapter.swapModel(null);
     }
 }

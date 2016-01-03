@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import org.odyssey.models.GenericModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.utils.MusicLibraryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
+public class TrackLoader extends AsyncTaskLoader<List<GenericModel>> {
 
     private Context mContext;
 
@@ -27,11 +28,11 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
      * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
      */
     @Override
-    public List<TrackModel> loadInBackground() {
+    public List<GenericModel> loadInBackground() {
         // Create cursor for content retrieval
         Cursor trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
 
-        ArrayList<TrackModel> tracks = new ArrayList<TrackModel>();
+        ArrayList<GenericModel> tracks = new ArrayList<GenericModel>();
 
         int trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
         int trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);

@@ -1,6 +1,6 @@
 package org.odyssey.models;
 
-public class ArtistModel {
+public class ArtistModel implements GenericModel {
 
     private String mArtistName;
     private String mArtURL;
@@ -33,5 +33,10 @@ public class ArtistModel {
     @Override
     public String toString() {
         return "Artist: " + getArtistName();
+    }
+
+    @Override
+    public String getSectionTitle() {
+        return mArtistName;
     }
 }

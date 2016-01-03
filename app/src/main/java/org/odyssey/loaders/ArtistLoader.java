@@ -3,6 +3,7 @@ package org.odyssey.loaders;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.odyssey.models.GenericModel;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.models.ArtistModel;
 
@@ -15,9 +16,7 @@ import android.support.v4.content.AsyncTaskLoader;
 /*
  * Custom Loader for ARTIST with ALBUM_ART
  */
-public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
-
-    private static final String TAG = "OdysseyArtistLoader";
+public class ArtistLoader extends AsyncTaskLoader<List<GenericModel>> {
 
     Context mContext;
 
@@ -33,7 +32,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
      * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
      */
     @Override
-    public List<ArtistModel> loadInBackground() {
+    public List<GenericModel> loadInBackground() {
 
         // get all album covers
         Cursor cursorAlbumArt = mContext.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM }, "", null,
@@ -42,7 +41,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
         // get all artists
         Cursor cursorArtists = mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null, MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE");
 
-        ArrayList<ArtistModel> artists = new ArrayList<ArtistModel>();
+        ArrayList<GenericModel> artists = new ArrayList<GenericModel>();
 
         // join both cursor if match is found
         String artist, artistKey, coverPath, albumArtist, albumCoverPath;

@@ -3,6 +3,7 @@ package org.odyssey.loaders;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.odyssey.models.GenericModel;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.models.AlbumModel;
 
@@ -11,7 +12,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
 
-public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
+public class AlbumLoader extends AsyncTaskLoader<List<GenericModel>> {
 
     private final static String TAG = "OdysseyAlbumLoader";
     private long mArtistID;
@@ -30,7 +31,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
      * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
      */
     @Override
-    public List<AlbumModel> loadInBackground() {
+    public List<GenericModel> loadInBackground() {
         // Create cursor for content retrieval
         Cursor albumCursor;
         if (mArtistID == -1) {
@@ -38,7 +39,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
         } else {
             albumCursor = mContext.getContentResolver().query(MediaStore.Audio.Artists.Albums.getContentUri("external", mArtistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
         }
-        ArrayList<AlbumModel> albums = new ArrayList<AlbumModel>();
+        ArrayList<GenericModel> albums = new ArrayList<GenericModel>();
 
         int albumKeyColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
         int albumTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);

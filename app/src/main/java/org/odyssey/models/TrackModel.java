@@ -1,6 +1,6 @@
 package org.odyssey.models;
 
-public class TrackModel {
+public class TrackModel implements GenericModel {
 
     private String mTrackName;
     private String mTrackArtistName;
@@ -45,4 +45,9 @@ public class TrackModel {
     }
 
     public String getTrackURL() { return mTrackURL; }
+
+    @Override
+    public String getSectionTitle() {
+        return mTrackName;
+    }
 }

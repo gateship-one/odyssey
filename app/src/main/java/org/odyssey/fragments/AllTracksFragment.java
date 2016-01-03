@@ -12,11 +12,11 @@ import android.widget.ListView;
 import org.odyssey.R;
 import org.odyssey.adapter.AllTracksListViewAdapter;
 import org.odyssey.loaders.TrackLoader;
-import org.odyssey.models.TrackModel;
+import org.odyssey.models.GenericModel;
 
 import java.util.List;
 
-public class AllTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>> {
+public class AllTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GenericModel>> {
 
     private AllTracksListViewAdapter mAllTracksListViewAdapter;
 
@@ -53,12 +53,12 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public Loader<List<TrackModel>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<GenericModel>> onCreateLoader(int arg0, Bundle bundle) {
         return new TrackLoader(getActivity());
     }
 
     @Override
-    public void onLoadFinished(Loader<List<TrackModel>> arg0, List<TrackModel> model) {
+    public void onLoadFinished(Loader<List<GenericModel>> arg0, List<GenericModel> model) {
         mAllTracksListViewAdapter.swapModel(model);
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -68,7 +68,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoaderReset(Loader<List<TrackModel>> arg0) {
+    public void onLoaderReset(Loader<List<GenericModel>> arg0) {
         mAllTracksListViewAdapter.swapModel(null);
     }
 

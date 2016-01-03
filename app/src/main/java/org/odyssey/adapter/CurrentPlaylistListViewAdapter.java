@@ -6,12 +6,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.odyssey.models.TrackModel;
-import org.odyssey.views.AllTracksListViewItem;
 import org.odyssey.views.CurrentPlaylistViewItem;
 
 import java.util.ArrayList;
 
-public class CurrentPlaylistListViewAdapter extends BaseAdapter{
+public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
     private Context mContext;
 
