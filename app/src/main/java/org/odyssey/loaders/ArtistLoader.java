@@ -16,7 +16,7 @@ import android.support.v4.content.AsyncTaskLoader;
 /*
  * Custom Loader for ARTIST with ALBUM_ART
  */
-public class ArtistLoader extends AsyncTaskLoader<List<GenericModel>> {
+public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
     Context mContext;
 
@@ -32,7 +32,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<GenericModel>> {
      * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
      */
     @Override
-    public List<GenericModel> loadInBackground() {
+    public List<ArtistModel> loadInBackground() {
 
         // get all album covers
         Cursor cursorAlbumArt = mContext.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM }, "", null,
@@ -41,7 +41,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<GenericModel>> {
         // get all artists
         Cursor cursorArtists = mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null, MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE");
 
-        ArrayList<GenericModel> artists = new ArrayList<GenericModel>();
+        ArrayList<ArtistModel> artists = new ArrayList<ArtistModel>();
 
         // join both cursor if match is found
         String artist, artistKey, coverPath, albumArtist, albumCoverPath;

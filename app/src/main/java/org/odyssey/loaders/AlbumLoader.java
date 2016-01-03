@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
 
-public class AlbumLoader extends AsyncTaskLoader<List<GenericModel>> {
+public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
 
     private final static String TAG = "OdysseyAlbumLoader";
     private long mArtistID;
@@ -31,7 +31,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<GenericModel>> {
      * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
      */
     @Override
-    public List<GenericModel> loadInBackground() {
+    public List<AlbumModel> loadInBackground() {
         // Create cursor for content retrieval
         Cursor albumCursor;
         if (mArtistID == -1) {
@@ -39,7 +39,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<GenericModel>> {
         } else {
             albumCursor = mContext.getContentResolver().query(MediaStore.Audio.Artists.Albums.getContentUri("external", mArtistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
         }
-        ArrayList<GenericModel> albums = new ArrayList<GenericModel>();
+        ArrayList<AlbumModel> albums = new ArrayList<AlbumModel>();
 
         int albumKeyColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
         int albumTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
