@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class GenericViewAdapter extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
+public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
 
     ArrayList<String> mSectionList;
     ArrayList<Integer> mSectionPositions;
     HashMap<Character, Integer> mPositionSectionMap;
 
-    protected List<GenericModel> mModelData;
+    protected List<T> mModelData;
     protected int mScrollSpeed;
 
     public GenericViewAdapter() {
@@ -25,7 +25,7 @@ public abstract class GenericViewAdapter extends BaseAdapter implements SectionI
         mSectionPositions = new ArrayList<Integer>();
         mPositionSectionMap = new HashMap<Character, Integer>();
 
-        mModelData = new ArrayList<GenericModel>();
+        mModelData = new ArrayList<T>();
     }
 
     /**
@@ -37,7 +37,7 @@ public abstract class GenericViewAdapter extends BaseAdapter implements SectionI
      * @param data
      *            Actual model data
      */
-    public void swapModel(List<GenericModel> data) {
+    public void swapModel(List<T> data) {
         if (data == null) {
             mModelData.clear();
         } else {

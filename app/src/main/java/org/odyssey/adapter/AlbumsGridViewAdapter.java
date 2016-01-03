@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-public class AlbumsGridViewAdapter extends GenericViewAdapter {
+public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
 
     private Context mContext;
 
@@ -24,7 +24,7 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AlbumModel album = (AlbumModel) mModelData.get(position);
+        AlbumModel album = mModelData.get(position);
         String label = album.getAlbumName();
         String imageURL = album.getAlbumArtURL();
 

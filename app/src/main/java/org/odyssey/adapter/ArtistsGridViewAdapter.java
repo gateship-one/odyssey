@@ -8,7 +8,7 @@ import android.widget.GridView;
 import org.odyssey.models.ArtistModel;
 import org.odyssey.views.ArtistsGridViewItem;
 
-public class ArtistsGridViewAdapter extends GenericViewAdapter {
+public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
     private GridView mRootGrid;
 
@@ -24,7 +24,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ArtistModel artist = (ArtistModel) mModelData.get(position);
+        ArtistModel artist = mModelData.get(position);
         String label = artist.getArtistName();
         String imageURL = artist.getArtURL();
 
