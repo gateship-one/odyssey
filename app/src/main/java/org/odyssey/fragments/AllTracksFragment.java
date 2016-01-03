@@ -35,7 +35,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         mRootList = (ListView) rootView.findViewById(R.id.all_tracks_listview);
 
         // add progressbar
-        mRootList.setEmptyView(rootView.findViewById(R.id.albums_progressbar));
+        mRootList.setEmptyView(rootView.findViewById(R.id.all_tracks_progressbar));
 
         mAllTracksListViewAdapter = new AllTracksListViewAdapter(getActivity());
 
