@@ -13,7 +13,6 @@ import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
-import org.odyssey.models.GenericModel;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;

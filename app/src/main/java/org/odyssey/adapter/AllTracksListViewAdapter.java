@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import org.odyssey.models.TrackModel;
 import org.odyssey.views.AllTracksListViewItem;
 
-public class AllTracksListViewAdapter extends GenericViewAdapter {
+public class AllTracksListViewAdapter extends GenericViewAdapter<TrackModel> {
 
     private Context mContext;
 
@@ -20,7 +20,7 @@ public class AllTracksListViewAdapter extends GenericViewAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = (TrackModel) mModelData.get(position);
+        TrackModel track = mModelData.get(position);
 
         // title
         String trackTitle = track.getTrackName();
