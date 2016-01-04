@@ -1,6 +1,7 @@
 package org.odyssey;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.odyssey.fragments.ArtistAlbumsFragment;
 import org.odyssey.fragments.MyMusicFragment;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
+import org.odyssey.listener.OnArtistSelectedListener;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +28,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_odyssey_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -96,6 +90,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // clear backstack
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         Fragment fragment = null;
 
         if (id == R.id.nav_my_music) {
@@ -109,10 +108,33 @@ public class OdysseyMainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
 
         return true;
+    }
+
+    @Override
+    public void onArtistSelected(String artist, long artistID) {
+        // Create fragment and give it an argument for the selected article
+        ArtistAlbumsFragment newFragment = new ArtistAlbumsFragment();
+        Bundle args = new Bundle();
+        args.putString(ArtistAlbumsFragment.ARG_ARTISTNAME, artist);
+        args.putLong(ArtistAlbumsFragment.ARG_ARTISTID, artistID);
+
+        newFragment.setArguments(args);
+
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        // Replace whatever is in the fragment_container view with this
+        // fragment,
+        // and add the transaction to the back stack so the user can navigate
+        // back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack("ArtistFragment");
+
+        // Commit the transaction
+        transaction.commit();
     }
 }

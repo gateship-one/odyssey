@@ -3,19 +3,19 @@ package org.odyssey.models;
 public class ArtistModel implements GenericModel {
 
     private String mArtistName;
-    private String mArtURL;
+    private String mArtistURL;
     private String mArtistKey;
-    private long mID;
+    private long mArtistID;
 
     public ArtistModel(String name, String artURL, String artistKey, long artistID) {
         mArtistName = name;
-        mArtURL = artURL;
+        mArtistURL = artURL;
         mArtistKey = artistKey;
-        mID = artistID;
+        mArtistID = artistID;
     }
 
-    public String getArtURL() {
-        return mArtURL;
+    public String getArtistURL() {
+        return mArtistURL;
     }
 
     public String getArtistName() {
@@ -26,8 +26,8 @@ public class ArtistModel implements GenericModel {
         return mArtistKey;
     }
 
-    public long getID() {
-        return mID;
+    public long getArtistID() {
+        return mArtistID;
     }
 
     @Override

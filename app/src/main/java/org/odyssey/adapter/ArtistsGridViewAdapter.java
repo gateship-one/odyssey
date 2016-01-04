@@ -26,7 +26,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
         ArtistModel artist = mModelData.get(position);
         String label = artist.getArtistName();
-        String imageURL = artist.getArtURL();
+        String imageURL = artist.getArtistURL();
 
         if (convertView != null) {
             ArtistsGridViewItem gridItem = (ArtistsGridViewItem) convertView;

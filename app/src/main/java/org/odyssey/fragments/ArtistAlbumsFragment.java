@@ -17,14 +17,18 @@ import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
-public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>> {
+public class ArtistAlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>> {
 
     private AlbumsGridViewAdapter mAlbumsGridViewAdapter;
 
-    private GridView mRootGrid;
+    private String mArtistName = "";
+    private long mArtistID = -1;
 
-    // Save the last scroll position to resume there
-    private int mLastPosition;
+    // FIXME move to separate class to get unified constants?
+    public final static String ARG_ARTISTNAME = "artistname";
+    public final static String ARG_ARTISTID = "artistid";
+
+    private GridView mRootGrid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,28 +54,31 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     public void onResume() {
         super.onResume();
 
+        getActivity().setTitle(mArtistName);
+
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
     }
 
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
-        // all albums
-        return new AlbumLoader(getActivity(), -1);
+        // only albums of artist mArtistName
+        mArtistName = bundle.getString(ARG_ARTISTNAME);
+        mArtistID = bundle.getLong(ARG_ARTISTID);
+
+        getActivity().setTitle(mArtistName);
+
+        return new AlbumLoader(getActivity(), mArtistID);
     }
 
     @Override
     public void onLoadFinished(Loader<List<AlbumModel>> arg0, List<AlbumModel> model) {
         mAlbumsGridViewAdapter.swapModel(model);
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mRootGrid.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
     }
 
     @Override
     public void onLoaderReset(Loader<List<AlbumModel>> arg0) {
         mAlbumsGridViewAdapter.swapModel(null);
     }
+
 }
