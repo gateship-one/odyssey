@@ -1,51 +1,43 @@
 package org.odyssey.views;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.odyssey.R;
 
-public class CurrentPlaylistViewItem extends LinearLayout{
-
-    private TextView mNumberView;
-    private TextView mTitleView;
-    private TextView mInformationView;
-    private TextView mDurationView;
+public class CurrentPlaylistViewItem extends GenericListItem{
 
     public CurrentPlaylistViewItem(Context context, String number, String title, String information, String duration) {
         super(context);
 
-        View rootView = LayoutInflater.from(context).inflate(R.layout.listview_item_current_playlist, this, true);
-
-        mNumberView = (TextView) rootView.findViewById(R.id.item_current_playlist_number);
-        mNumberView.setText(number);
-
-        mTitleView = (TextView) rootView.findViewById(R.id.item_current_playlist_title);
         mTitleView.setText(title);
-
-        mInformationView = (TextView) rootView.findViewById(R.id.item_current_playlist_additional_information);
+        mNumberView.setText(number);
         mInformationView.setText(information);
-
-        mDurationView = (TextView) rootView.findViewById(R.id.item_current_playlist_duration);
         mDurationView.setText(duration);
     }
 
-    public void setNumber(String number) {
-        mNumberView.setText(number);
+    @Override
+    TextView provideTitleView() {
+        return (TextView) this.findViewById(R.id.item_current_playlist_title);
     }
 
-    public void setTitle(String title) {
-        mTitleView.setText(title);
+    @Override
+    TextView provideNumberView() {
+        return (TextView) this.findViewById(R.id.item_current_playlist_number);
     }
 
-    public void setAdditionalInformation(String information) {
-        mInformationView.setText(information);
+    @Override
+    TextView provideInformationView() {
+        return (TextView) this.findViewById(R.id.item_current_playlist_additional_information);
     }
 
-    public void setDuration(String duration) {
-        mDurationView.setText(duration);
+    @Override
+    TextView provideDurationView() {
+        return (TextView) this.findViewById(R.id.item_current_playlist_duration);
+    }
+
+    @Override
+    int provideLayout() {
+        return R.layout.listview_item_current_playlist;
     }
 }

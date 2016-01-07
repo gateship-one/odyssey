@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import org.odyssey.R;
 import org.odyssey.utils.AsyncLoader;
 
 import java.lang.ref.WeakReference;

@@ -23,14 +23,12 @@ public class AlbumsGridViewItem extends GenericGridItem{
 
     @Override
     ImageView provideImageView() {
-        ImageView imageView = (ImageView) this.findViewById(R.id.item_albums_cover_image);
-        return imageView;
+        return (ImageView) this.findViewById(R.id.item_albums_cover_image);
     }
 
     @Override
     ViewSwitcher provideViewSwitcher() {
-        ViewSwitcher viewSwitcher = (ViewSwitcher) this.findViewById(R.id.item_albums_view_switcher);
-        return viewSwitcher;
+        return (ViewSwitcher) this.findViewById(R.id.item_albums_view_switcher);
     }
 
     @Override
