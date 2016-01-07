@@ -31,7 +31,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_tracks, container, false);
 
-        // get gridview
+        // get listview
         mRootList = (ListView) rootView.findViewById(R.id.all_tracks_listview);
 
         // add progressbar
@@ -54,7 +54,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new TrackLoader(getActivity());
+        return new TrackLoader(getActivity(), "");
     }
 
     @Override

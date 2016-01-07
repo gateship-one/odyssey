@@ -1,5 +1,6 @@
 package org.odyssey.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -7,19 +8,23 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
+import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
-public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>> {
+public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>>, AdapterView.OnItemClickListener {
 
     private AlbumsGridViewAdapter mAlbumsGridViewAdapter;
+
+    private OnAlbumSelectedListener mAlbumSelectedCallback;
 
     private GridView mRootGrid;
 
@@ -42,8 +47,22 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
 
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
         mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter,mRootGrid));
+        mRootGrid.setOnItemClickListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
+        }
     }
 
     @Override
@@ -73,5 +92,22 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(Loader<List<AlbumModel>> arg0) {
         mAlbumsGridViewAdapter.swapModel(null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // save last scroll position
+        mLastPosition = position;
+
+        // identify current album
+        AlbumModel currentAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
+
+        String albumKey = currentAlbum.getAlbumKey();
+        String albumTitle = currentAlbum.getAlbumName();
+        String albumArtURL = currentAlbum.getAlbumArtURL();
+        String artistName = currentAlbum.getArtistName();
+
+        // send the event to the host activity
+        mAlbumSelectedCallback.onAlbumSelected(albumKey, albumTitle, albumArtURL, artistName);
     }
 }

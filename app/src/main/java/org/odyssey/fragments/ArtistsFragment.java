@@ -105,7 +105,7 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
 
-        // Send the event to the host activity
+        // send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(artist, artistID);
     }
 }
