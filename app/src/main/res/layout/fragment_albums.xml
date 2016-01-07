@@ -16,7 +16,8 @@
         android:scrollingCache="false"
         android:stretchMode="columnWidth"
         android:verticalSpacing="4dp"
-        android:fastScrollStyle="?attr/colorAccent">
+        android:fastScrollStyle="?attr/colorAccent"
+        android:nestedScrollingEnabled="true">
     </GridView>
 
     <ProgressBar
