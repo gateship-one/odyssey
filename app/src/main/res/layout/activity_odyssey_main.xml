@@ -11,8 +11,7 @@
     <include
         layout="@layout/app_bar_odyssey_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="48dp"/>
+        android:layout_height="match_parent" />
 
     <include
         layout="@layout/view_now_playing"

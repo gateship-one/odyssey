@@ -66,7 +66,11 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
     private void setUpHeaderView() {
         if (mAlbumArtURL != null) {
-            mCoverView.setImageDrawable(Drawable.createFromPath(mAlbumArtURL));
+            if(mAlbumArtURL.equals("")) {
+                mCoverView.setImageResource(R.drawable.coverplaceholder);
+            } else {
+                mCoverView.setImageDrawable(Drawable.createFromPath(mAlbumArtURL));
+            }
         } else {
             mCoverView.setImageResource(R.drawable.coverplaceholder);
         }

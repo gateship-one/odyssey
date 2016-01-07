@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="org.odyssey.OdysseyMainActivity"
-    tools:showIn="@layout/app_bar_odyssey_main">
+    tools:showIn="@layout/app_bar_odyssey_main"
+    android:layout_marginBottom="48dp">
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"
