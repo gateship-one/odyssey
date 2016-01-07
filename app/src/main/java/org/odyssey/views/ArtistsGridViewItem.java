@@ -10,29 +10,25 @@ import org.odyssey.R;
 
 public class ArtistsGridViewItem extends GenericGridItem{
 
-    private TextView mTitleView;
-
     public ArtistsGridViewItem(Context context, String title, String imageURL, ViewGroup.LayoutParams layoutParams) {
-        super(context,imageURL,layoutParams);
+        super(context, imageURL, layoutParams);
 
-        mTitleView = ((TextView) this.findViewById(R.id.item_artists_title));
         mTitleView.setText(title);
     }
 
-    public void setTitle(String text) {
-        mTitleView.setText(text);
+    @Override
+    TextView provideTitleView() {
+        return (TextView) this.findViewById(R.id.item_artists_title);
     }
 
     @Override
     ImageView provideImageView() {
-        ImageView imageView = (ImageView) this.findViewById(R.id.item_artists_cover_image);
-        return imageView;
+        return (ImageView) this.findViewById(R.id.item_artists_cover_image);
     }
 
     @Override
     ViewSwitcher provideViewSwitcher() {
-        ViewSwitcher viewSwitcher = (ViewSwitcher) this.findViewById(R.id.item_artists_view_switcher);
-        return viewSwitcher;
+        return (ViewSwitcher) this.findViewById(R.id.item_artists_view_switcher);
     }
 
     @Override

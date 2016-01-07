@@ -20,6 +20,7 @@ public abstract class GenericGridItem extends RelativeLayout {
     protected boolean mCoverDone = false;
 
     protected ImageView mImageView;
+    protected TextView mTitleView;
     protected ViewSwitcher mSwitcher;
 
     public GenericGridItem(Context context, String imageURL, ViewGroup.LayoutParams layoutParams) {
@@ -36,17 +37,28 @@ public abstract class GenericGridItem extends RelativeLayout {
         mHolder.imagePath = imageURL;
 
         mImageView = provideImageView();
+        mTitleView = provideTitleView();
+
         mSwitcher = provideViewSwitcher();
     }
 
-    /* Methods needed to provide generic imageview and
+    /* Methods needed to provide generic imageview, generic and textview
     viewswitcher and layout to inflate.
      */
     abstract ImageView provideImageView();
 
+    abstract TextView provideTitleView();
+
     abstract ViewSwitcher provideViewSwitcher();
 
     abstract int provideLayout();
+
+    /*
+    * Sets the title for the GridItem
+     */
+    public void setTitle(String text) {
+        mTitleView.setText(text);
+    }
 
     /*
     * Starts the image retrieval task
