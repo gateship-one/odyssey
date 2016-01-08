@@ -55,7 +55,8 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // get listview
         ListView albumTracksListView = (ListView) rootView.findViewById(R.id.album_tracks_listview);
 
-        albumTracksListView.addHeaderView(headerView);
+        // FIXME currently disabled, causes crash when backbutton is pressed
+        //albumTracksListView.addHeaderView(headerView);
 
         mAlbumTracksListViewAdapter = new AlbumTracksListViewAdapter(getActivity());
 
