@@ -1,5 +1,6 @@
 package org.odyssey;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -163,5 +164,18 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // Commit the transaction
         transaction.commit();
+    }
+
+    public void changeToolbarBehaviour(boolean scrollingEnabled) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);  // or however you need to do it for your code
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+        if (scrollingEnabled) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        } else {
+            AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
+            layout.setExpanded(true, false);
+            params.setScrollFlags(0);
+        }
     }
 }

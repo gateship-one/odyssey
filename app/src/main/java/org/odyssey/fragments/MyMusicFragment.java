@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
@@ -21,8 +22,10 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
-        // set title
-        getActivity().setTitle(R.string.fragment_title_my_music);
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.changeToolbarBehaviour(true);
+        activity.setTitle(R.string.fragment_title_my_music);
 
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);

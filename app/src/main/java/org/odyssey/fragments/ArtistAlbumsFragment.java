@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.listener.OnAlbumSelectedListener;
@@ -76,7 +77,10 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
     public void onResume() {
         super.onResume();
 
-        getActivity().setTitle(mArtistName);
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.changeToolbarBehaviour(false);
+        activity.setTitle(mArtistName);
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);

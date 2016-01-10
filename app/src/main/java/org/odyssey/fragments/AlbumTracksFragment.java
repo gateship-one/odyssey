@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.adapter.AlbumTracksListViewAdapter;
 import org.odyssey.loaders.TrackLoader;
@@ -85,7 +86,10 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
     public void onResume() {
         super.onResume();
 
-        getActivity().setTitle(mAlbumTitle);
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.changeToolbarBehaviour(false);
+        activity.setTitle(mAlbumTitle);
 
         setUpHeaderView();
 
