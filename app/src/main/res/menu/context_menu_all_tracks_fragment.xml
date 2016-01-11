@@ -18,4 +18,10 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/context_menu_action_playsong"/>
+
+    <item
+        android:id="@+id/fragment_all_tracks_showartist"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_showartist"/>
 </menu>

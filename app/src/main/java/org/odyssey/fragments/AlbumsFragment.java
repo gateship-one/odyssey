@@ -1,7 +1,9 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -18,8 +20,10 @@ import android.widget.GridView;
 import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.listener.OnAlbumSelectedListener;
+import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
+import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
@@ -29,6 +33,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
     private AlbumsGridViewAdapter mAlbumsGridViewAdapter;
 
     private OnAlbumSelectedListener mAlbumSelectedCallback;
+    private OnArtistSelectedListener mArtistSelectedCallback;
 
     private GridView mRootGrid;
 
@@ -67,6 +72,12 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
         // the callback interface. If not, it throws an exception
         try {
             mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
+        }
+
+        try {
+            mArtistSelectedCallback = (OnArtistSelectedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
@@ -118,6 +129,29 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
         mAlbumSelectedCallback.onAlbumSelected(albumKey, albumTitle, albumArtURL, artistName);
     }
 
+    public void showArtist(int position) {
+        // identify current artist
+
+        AlbumModel clickedAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
+        String artistTitle = clickedAlbum.getArtistName();
+
+        // get artist id
+        String whereVal[] = { artistTitle };
+
+        String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
+
+        String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
+
+        Cursor artistCursor = getActivity().getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
+
+        artistCursor.moveToFirst();
+
+        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+
+        // Send the event to the host activity
+        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -141,7 +175,7 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
                 Snackbar.make(getActivity().getCurrentFocus(), "play album: " + info.position, Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.fragment_albums_action_showartist:
-                Snackbar.make(getActivity().getCurrentFocus(), "show artist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                showArtist(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
