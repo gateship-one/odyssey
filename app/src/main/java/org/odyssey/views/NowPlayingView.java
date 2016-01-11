@@ -1,6 +1,8 @@
 package org.odyssey.views;
 
 import android.content.Context;
+import android.media.Image;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
@@ -13,7 +15,7 @@ import android.widget.RelativeLayout;
 
 import org.odyssey.R;
 
-public class NowPlayingLayout extends RelativeLayout {
+public class NowPlayingView extends RelativeLayout {
 
     private final ViewDragHelper mDragHelper;
 
@@ -26,10 +28,6 @@ public class NowPlayingLayout extends RelativeLayout {
      * Main view of draggable part
      */
     private View mMainView;
-
-    private ImageButton mTopPlayPauseButton;
-    private ImageButton mTopPlaylistButton;
-    private ImageButton mTopMenuButton;
 
     private LinearLayout mDraggedUpButtons;
     private LinearLayout mDraggedDownButtons;
@@ -54,15 +52,15 @@ public class NowPlayingLayout extends RelativeLayout {
 
     private CurrentPlaylistView mPlaylistView;
 
-    public NowPlayingLayout(Context context) {
+    public NowPlayingView(Context context) {
         this(context, null, 0);
     }
 
-    public NowPlayingLayout(Context context, AttributeSet attrs) {
+    public NowPlayingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NowPlayingLayout(Context context, AttributeSet attrs, int defStyle) {
+    public NowPlayingView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDragHelper = ViewDragHelper.create(this, 1f, new BottomDragCallbackHelper());
     }
@@ -207,9 +205,17 @@ public class NowPlayingLayout extends RelativeLayout {
         mHeaderView = findViewById(R.id.now_playing_headerLayout);
         mMainView = findViewById(R.id.now_playing_bodyLayout);
 
-        mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
-        mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
-        mTopMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
+        // top buttons
+        ImageButton topPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
+        ImageButton topPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
+        ImageButton topMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
+
+        // bottom buttons
+        ImageButton bottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
+        ImageButton bottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
+        ImageButton bottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
+        ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
+        ImageButton bottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
 
         mCoverImage = (ImageView)findViewById(R.id.now_playing_cover);
         mPlaylistView = (CurrentPlaylistView)findViewById(R.id.now_playing_playlist);
@@ -223,17 +229,72 @@ public class NowPlayingLayout extends RelativeLayout {
         mDraggedDownButtons.setVisibility(VISIBLE);
         mDraggedUpButtons.setAlpha(0.0f);
 
-        // Add listeners to playlist button
-        // FIXME: Clean up this code a bit. And a nice transition?
-        mTopPlaylistButton.setOnClickListener(new OnClickListener() {
+        // add listener to top playpause button
+        topPlayPauseButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Snackbar.make(v, "topPlayPauseButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
-                if ( mPlaylistView.getVisibility() == View.INVISIBLE) {
+        // Add listeners to top playlist button
+        // FIXME: Clean up this code a bit. And a nice transition?
+        topPlaylistButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlaylistView.getVisibility() == View.INVISIBLE) {
                     mPlaylistView.setVisibility(View.VISIBLE);
                 } else {
                     mPlaylistView.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+
+        // Add listener to top menu button
+        topMenuButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "topMenuButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add listener to bottom repeat button
+        bottomRepeatButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "bottomRepeatButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add listener to bottom previous button
+        bottomPreviousButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "bottomPreviousButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add listener to bottom playpause button
+        bottomPlayPauseButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "bottomPlayPauseButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add listener to bottom next button
+        bottomNextButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "bottomNextButton clicked", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add listener to bottom random button
+        bottomRandomButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "bottomRandomButton clicked", Snackbar.LENGTH_SHORT).show();
             }
         });
     }

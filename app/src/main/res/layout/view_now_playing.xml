@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.odyssey.views.NowPlayingLayout
+    <org.odyssey.views.NowPlayingView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -35,8 +35,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_toEndOf="@+id/now_playing_topCover"
-                android:gravity="center_vertical"
-                android:layout_toStartOf="@+id/now_playing_topPlayPauseButton">
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/now_playing_trackTitle"
@@ -194,7 +193,7 @@
                     android:background="?attr/colorPrimary">
 
                     <ImageButton
-                        android:id="@+id/now_playing_repeatButton"
+                        android:id="@+id/now_playing_bottomRepeatButton"
                         android:layout_width="0px"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -204,17 +203,17 @@
                         android:scaleType="fitCenter"/>
 
                     <ImageButton
-                        android:id="@+id/now_playing_previousButton"
+                        android:id="@+id/now_playing_bottomPreviousButton"
                         android:layout_width="0px"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
                         android:src="@drawable/ic_skip_previous_24dp"
-                        android:scaleType="fitCenter"/>view
+                        android:scaleType="fitCenter"/>
 
                     <ImageButton
-                        android:id="@+id/now_playing_playPauseButton"
+                        android:id="@+id/now_playing_bottomPlayPauseButton"
                         android:layout_width="0px"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -224,7 +223,7 @@
                         android:scaleType="fitCenter"/>
 
                     <ImageButton
-                        android:id="@+id/now_playing_nextButton"
+                        android:id="@+id/now_playing_bottomNextButton"
                         android:layout_width="0px"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -234,7 +233,7 @@
                         android:scaleType="fitCenter"/>
 
                     <ImageButton
-                        android:id="@+id/now_playing_randomButton"
+                        android:id="@+id/now_playing_bottomRandomButton"
                         android:layout_width="0px"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -247,5 +246,5 @@
             </LinearLayout>
         </RelativeLayout>
 
-    </org.odyssey.views.NowPlayingLayout>
+    </org.odyssey.views.NowPlayingView>
 </FrameLayout>
