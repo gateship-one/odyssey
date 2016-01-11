@@ -2,12 +2,17 @@ package org.odyssey.fragments;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -62,6 +67,8 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         mAlbumTracksListViewAdapter = new AlbumTracksListViewAdapter(getActivity());
 
         albumTracksListView.setAdapter(mAlbumTracksListViewAdapter);
+
+        registerForContextMenu(albumTracksListView);
 
         return rootView;
     }
@@ -119,5 +126,38 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoaderReset(Loader<List<TrackModel>> arg0) {
         mAlbumTracksListViewAdapter.swapModel(null);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu_album_tracks_fragment, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        if (info == null) {
+            return super.onContextItemSelected(item);
+        }
+
+        switch (item.getItemId()) {
+            case R.id.fragment_album_tracks_action_enqueue:
+                Snackbar.make(getActivity().getCurrentFocus(), "add song to playlist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            case R.id.fragment_album_tracks_action_enqueueasnext:
+                Snackbar.make(getActivity().getCurrentFocus(), "play after current song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            case R.id.fragment_album_tracks_action_play:
+                Snackbar.make(getActivity().getCurrentFocus(), "play song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            case R.id.fragment_album_tracks_action_showartist:
+                Snackbar.make(getActivity().getCurrentFocus(), "show artist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 }

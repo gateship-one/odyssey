@@ -23,6 +23,14 @@
     <!-- actions -->
     <string name="action_settings">Settings</string>
 
+    <!-- context menu titles -->
+    <string name="context_menu_action_enqueue">add to playlist</string>
+    <string name="context_menu_action_enqueueasnext">play after current song</string>
+    <string name="context_menu_action_playsong">play song</string>
+    <string name="context_menu_action_playalbum">play album</string>
+    <string name="context_menu_action_playalbums">play albums</string>
+    <string name="context_menu_action_showartist">show artist</string>
+
     <!-- seperator -->
     <string name="separator">" - "</string>
 </resources>

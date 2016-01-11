@@ -2,10 +2,14 @@ package org.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -56,6 +60,9 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
         mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter,mRootGrid));
         mRootGrid.setOnItemClickListener(this);
+
+        // register for context menu
+        registerForContextMenu(mRootGrid);
 
         return rootView;
     }
@@ -127,5 +134,32 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // send the event to the host activity
         mAlbumSelectedCallback.onAlbumSelected(albumKey, albumTitle, albumArtURL, artistName);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu_artist_albums_fragment, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        if (info == null) {
+            return super.onContextItemSelected(item);
+        }
+
+        switch (item.getItemId()) {
+            case R.id.fragment_artist_albums_action_enqueue:
+                Snackbar.make(getActivity().getCurrentFocus(), "add album to playlist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            case R.id.fragment_artist_albums_action_play:
+                Snackbar.make(getActivity().getCurrentFocus(), "play album: " + info.position, Snackbar.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fragment_albums_action_enqueue"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_enqueue"/>
+
+    <item
+        android:id="@+id/fragment_albums_action_play"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_playalbum"/>
+
+    <item
+        android:id="@+id/fragment_albums_action_showartist"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_showartist"/>
+</menu>
