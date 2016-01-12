@@ -71,7 +71,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false);
+        activity.setUpToolbar(mArtistName, false, false);
 
         return rootView;
     }
@@ -95,7 +95,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false);
+        activity.setUpToolbar(mArtistName, false, false);
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);

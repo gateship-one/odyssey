@@ -87,7 +87,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mAlbumTitle, false);
+        activity.setUpToolbar(mAlbumTitle, false, false);
 
         setUpHeaderView();
 
@@ -129,7 +129,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mAlbumTitle, false);
+        activity.setUpToolbar(mAlbumTitle, false, false);
 
         setUpHeaderView();
 

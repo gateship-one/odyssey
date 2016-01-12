@@ -25,18 +25,22 @@ import org.odyssey.listener.OnArtistSelectedListener;
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener {
 
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // enable back navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        drawer.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -58,11 +62,19 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+
+            // enable navigation bar when backstack empty
+            if (fragmentManager.getBackStackEntryCount() == 0) {
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+            }
         }
     }
 
@@ -78,11 +90,24 @@ public class OdysseyMainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(fragmentManager.getBackStackEntryCount() > 0) {
+                    onBackPressed();
+                } else {
+                    // back stack empty so enable navigation drawer
+
+                    mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+                    if(mDrawerToggle.onOptionsItemSelected(item)) {
+                        return true;
+                    }
+                }
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -166,13 +191,16 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    public void setUpToolbar(String title, boolean scrollingEnabled) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    public void setUpToolbar(String title, boolean scrollingEnabled, boolean drawerIndicatorEnabled) {
+
+        // set drawer state
+        mDrawerToggle.setDrawerIndicatorEnabled(drawerIndicatorEnabled);
 
         // set title
         setTitle(title);
 
         // set scrolling behaviour
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         if (scrollingEnabled) {

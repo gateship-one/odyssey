@@ -24,7 +24,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true);
 
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);

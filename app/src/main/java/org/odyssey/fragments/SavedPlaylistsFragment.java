@@ -19,7 +19,7 @@ public class SavedPlaylistsFragment extends Fragment{
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true);
 
         return rootView;
     }
