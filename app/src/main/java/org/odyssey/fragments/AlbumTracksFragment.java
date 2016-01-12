@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -90,6 +91,15 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         activity.setUpToolbar(mAlbumTitle, false, false);
 
         setUpHeaderView();
+
+        // play button placeholder
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.album_tracks_play_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Play album", Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         return rootView;
     }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/artist_albums_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/colorTextLight"
+        android:src="@drawable/ic_play_arrow_24dp" />
+
+    <GridView
+        android:id="@+id/artist_albums_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/albums_item_height"
+        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true"
+        android:horizontalSpacing="4dp"
+        android:numColumns="auto_fit"
+        android:scrollbarStyle="outsideInset"
+        android:scrollingCache="false"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="4dp"
+        android:fastScrollStyle="?attr/colorAccent"
+        android:nestedScrollingEnabled="true">
+    </GridView>
+
+    <ProgressBar
+        android:id="@+id/artist_albums_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</android.support.design.widget.CoordinatorLayout>

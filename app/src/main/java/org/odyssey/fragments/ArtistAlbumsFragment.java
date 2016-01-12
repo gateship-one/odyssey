@@ -2,6 +2,7 @@ package org.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -47,13 +48,13 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_albums, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_artist_albums, container, false);
 
         // get gridview
-        mRootGrid = (GridView) rootView.findViewById(R.id.albums_gridview);
+        mRootGrid = (GridView) rootView.findViewById(R.id.artist_albums_gridview);
 
         // add progressbar to visualize asynchronous load
-        mRootGrid.setEmptyView(rootView.findViewById(R.id.albums_progressbar));
+        mRootGrid.setEmptyView(rootView.findViewById(R.id.artist_albums_progressbar));
 
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
@@ -72,6 +73,15 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mArtistName, false, false);
+
+        // play button placeholder
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.artist_albums_play_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Play album", Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         return rootView;
     }
