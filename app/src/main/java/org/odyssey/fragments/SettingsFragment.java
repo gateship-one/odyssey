@@ -19,8 +19,7 @@ public class SettingsFragment extends Fragment{
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.changeToolbarBehaviour(false);
-        activity.setTitle(R.string.fragment_title_settings);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false);
 
         return rootView;
     }

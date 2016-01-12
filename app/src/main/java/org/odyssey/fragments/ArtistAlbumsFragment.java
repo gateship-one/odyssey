@@ -58,11 +58,20 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter,mRootGrid));
+        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter, mRootGrid));
         mRootGrid.setOnItemClickListener(this);
 
         // register for context menu
         registerForContextMenu(mRootGrid);
+
+        // set up toolbar
+        Bundle args = getArguments();
+        mArtistName = args.getString(ARG_ARTISTNAME);
+        mArtistID = args.getLong(ARG_ARTISTID);
+
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpToolbar(mArtistName, false);
 
         return rootView;
     }
@@ -86,8 +95,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.changeToolbarBehaviour(false);
-        activity.setTitle(mArtistName);
+        activity.setUpToolbar(mArtistName, false);
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
@@ -95,12 +103,6 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
-        // only albums of artist mArtistName
-        mArtistName = bundle.getString(ARG_ARTISTNAME);
-        mArtistID = bundle.getLong(ARG_ARTISTID);
-
-        getActivity().setTitle(mArtistName);
-
         return new AlbumLoader(getActivity(), mArtistID);
     }
 

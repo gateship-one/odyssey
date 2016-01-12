@@ -77,6 +77,20 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         registerForContextMenu(albumTracksListView);
 
+        // set up toolbar
+        Bundle args = getArguments();
+
+        mAlbumTitle = args.getString(ARG_ALBUMTITLE);
+        mArtistName = args.getString(ARG_ALBUMARTIST);
+        mAlbumArtURL = args.getString(ARG_ALBUMART);
+        mAlbumKey = args.getString(ARG_ALBUMKEY);
+
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpToolbar(mAlbumTitle, false);
+
+        setUpHeaderView();
+
         return rootView;
     }
 
@@ -115,8 +129,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.changeToolbarBehaviour(false);
-        activity.setTitle(mAlbumTitle);
+        activity.setUpToolbar(mAlbumTitle, false);
 
         setUpHeaderView();
 
@@ -126,15 +139,6 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int arg0, Bundle bundle) {
-        mAlbumTitle = bundle.getString(ARG_ALBUMTITLE);
-        mArtistName = bundle.getString(ARG_ALBUMARTIST);
-        mAlbumArtURL = bundle.getString(ARG_ALBUMART);
-        mAlbumKey = bundle.getString(ARG_ALBUMKEY);
-
-        getActivity().setTitle(mAlbumTitle);
-
-        setUpHeaderView();
-
         return new TrackLoader(getActivity(), mAlbumKey);
     }
 

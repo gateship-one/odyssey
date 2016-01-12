@@ -166,8 +166,13 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    public void changeToolbarBehaviour(boolean scrollingEnabled) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);  // or however you need to do it for your code
+    public void setUpToolbar(String title, boolean scrollingEnabled) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // set title
+        setTitle(title);
+
+        // set scrolling behaviour
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
         if (scrollingEnabled) {
