@@ -2,11 +2,10 @@ package org.odyssey.fragments;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -17,9 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
@@ -27,11 +24,12 @@ import org.odyssey.adapter.AlbumTracksListViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>> {
+public class AlbumTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
 
     private AlbumTracksListViewAdapter mAlbumTracksListViewAdapter;
 
@@ -48,33 +46,21 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
     private String mArtistName = "";
     private String mAlbumKey = "";
 
-    private ImageView mCoverView;
-    private TextView mAlbumTitleView;
-    private TextView mAlbumArtistView;
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_album_tracks, container, false);
 
-        // get listview header
-        View headerView = inflater.inflate(R.layout.listview_header_album_tracks, null);
-
-        mCoverView = (ImageView) headerView.findViewById(R.id.header_album_tracks_cover_image);
-
-        mAlbumTitleView = (TextView) headerView.findViewById(R.id.header_album_tracks_album_title);
-
-        mAlbumArtistView = (TextView) headerView.findViewById(R.id.header_album_tracks_artist_name);
-
         // get listview
         ListView albumTracksListView = (ListView) rootView.findViewById(R.id.album_tracks_listview);
-
-        // FIXME currently disabled, causes crash when backbutton is pressed
-        //albumTracksListView.addHeaderView(headerView);
 
         mAlbumTracksListViewAdapter = new AlbumTracksListViewAdapter(getActivity());
 
         albumTracksListView.setAdapter(mAlbumTracksListViewAdapter);
+
+        albumTracksListView.setOnItemClickListener(this);
 
         registerForContextMenu(albumTracksListView);
 
@@ -90,14 +76,12 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mAlbumTitle, false, false);
 
-        setUpHeaderView();
-
         // play button placeholder
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.album_tracks_play_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Play album", Snackbar.LENGTH_LONG).show();
+                playAlbum(0);
             }
         });
 
@@ -117,22 +101,6 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         }
     }
 
-    private void setUpHeaderView() {
-        if (mAlbumArtURL != null) {
-            if(mAlbumArtURL.equals("")) {
-                mCoverView.setImageResource(R.drawable.coverplaceholder);
-            } else {
-                mCoverView.setImageDrawable(Drawable.createFromPath(mAlbumArtURL));
-            }
-        } else {
-            mCoverView.setImageResource(R.drawable.coverplaceholder);
-        }
-
-        mAlbumTitleView.setText(mAlbumTitle);
-
-        mAlbumArtistView.setText(mArtistName);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -141,7 +109,9 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mAlbumTitle, false, false);
 
-        setUpHeaderView();
+        // set up pbs connection
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
@@ -181,6 +151,8 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
+        artistCursor.close();
+
         // Send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
     }
@@ -202,13 +174,13 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         switch (item.getItemId()) {
             case R.id.fragment_album_tracks_action_enqueue:
-                Snackbar.make(getActivity().getCurrentFocus(), "add song to playlist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                enqueueTrack(info.position);
                 return true;
             case R.id.fragment_album_tracks_action_enqueueasnext:
-                Snackbar.make(getActivity().getCurrentFocus(), "play after current song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                enqueueTrackAsNext(info.position);
                 return true;
             case R.id.fragment_album_tracks_action_play:
-                Snackbar.make(getActivity().getCurrentFocus(), "play song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                playAlbum(info.position);
                 return true;
             case R.id.fragment_album_tracks_action_showartist:
                 showArtist(info.position);
@@ -216,5 +188,59 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void enqueueTrack(int position) {
+        // Enqueue single track
+
+        try {
+            mServiceConnection.getPBS().enqueueTrack((TrackModel) mAlbumTracksListViewAdapter.getItem(position));
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void enqueueTrackAsNext(int position) {
+        // Enqueue single track
+
+        try {
+            mServiceConnection.getPBS().enqueueTrackAsNext((TrackModel) mAlbumTracksListViewAdapter.getItem(position));
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void playAlbum(int position) {
+        // clear playlist and play current album
+
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            enqueueAlbum();
+            mServiceConnection.getPBS().jumpTo(position);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    private void enqueueAlbum() {
+        // Enqueue complete album
+
+        // enqueue albumtracks
+        for (int i = 0; i < mAlbumTracksListViewAdapter.getCount(); i++) {
+            try {
+                mServiceConnection.getPBS().enqueueTrack((TrackModel) mAlbumTracksListViewAdapter.getItem(i));
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        playAlbum(position);
     }
 }
