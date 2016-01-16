@@ -576,6 +576,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public void clearPlaylist() {
+        Log.v(TAG,"Clearing Playlist");
         // Clear the list
         mCurrentList.clear();
         // Stop the playback
@@ -664,11 +665,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void enqueueTracks(ArrayList<TrackModel> tracklist) {
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
+        Log.v(TAG,"Enqueing " + tracklist.size() + "tracks");
+
         mCurrentList.addAll(tracklist);
     }
 
     public void enqueueTrack(TrackModel track) {
-
+        Log.v(TAG,"Enqueing track: " + track.getTrackName());
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();

@@ -30,6 +30,7 @@
     <string name="context_menu_action_playalbum">play album</string>
     <string name="context_menu_action_playalbums">play albums</string>
     <string name="context_menu_action_showartist">show artist</string>
+    <string name="context_menu_action_removetrack">remove track</string>
 
     <!-- seperator -->
     <string name="separator">" - "</string>

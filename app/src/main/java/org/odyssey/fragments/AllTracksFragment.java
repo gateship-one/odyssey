@@ -118,6 +118,8 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
         long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
+        artistCursor.close();
+
         // Send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
     }

@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:id="@+id/dragLayout">
+        android:id="@+id/now_playing_layout">
 
         <RelativeLayout
             android:id="@+id/now_playing_headerLayout"
@@ -32,13 +32,14 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_toEndOf="@+id/now_playing_topCover"
+                android:layout_toStartOf="@+id/now_playing_topButtonLayout"
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/now_playing_trackTitle"
+                    android:id="@+id/now_playing_trackName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wild Ones"
@@ -73,50 +74,57 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:id="@+id/now_playing_layout_dragged_up"
+                android:id="@+id/now_playing_topButtonLayout"
                 android:layout_alignParentEnd="true">
-                <ImageButton
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:id="@+id/now_playing_layout_dragged_up"
+                    >
+                    <ImageButton
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:id="@+id/now_playing_topPlaylistButton"
+                        android:src="@drawable/ic_queue_music_24dp"
+                        android:background="?android:selectableItemBackground"
+                        android:adjustViewBounds="false"
+                        android:baselineAlignBottom="false"
+                        android:cropToPadding="false"
+                        android:tint="@color/colorTextLight" />
+                    <ImageButton
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:id="@+id/now_playing_topMenuButton"
+                        android:src="@drawable/ic_more_vert_24dp"
+                        android:background="?android:selectableItemBackground"
+                        android:adjustViewBounds="false"
+                        android:baselineAlignBottom="false"
+                        android:cropToPadding="false"
+                        android:tint="@color/colorTextLight" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:id="@+id/now_playing_topPlaylistButton"
-                    android:src="@drawable/ic_queue_music_24dp"
-                    android:background="?android:selectableItemBackground"
-                    android:adjustViewBounds="false"
-                    android:baselineAlignBottom="false"
-                    android:cropToPadding="false"
-                    android:tint="@color/colorTextLight" />
-                <ImageButton
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:id="@+id/now_playing_topMenuButton"
-                    android:src="@drawable/ic_more_vert_24dp"
-                    android:background="?android:selectableItemBackground"
-                    android:adjustViewBounds="false"
-                    android:baselineAlignBottom="false"
-                    android:cropToPadding="false"
-                    android:tint="@color/colorTextLight" />
-            </LinearLayout>
+                    android:id="@+id/now_playing_layout_dragged_down"
+                    android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/now_playing_topPlayPauseButton"
+                        android:src="@drawable/ic_play_arrow_24dp"
+                        android:background="?android:selectableItemBackground"
+                        android:adjustViewBounds="false"
+                        android:baselineAlignBottom="false"
+                        android:cropToPadding="false"
+                        android:tint="@color/colorTextLight" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:id="@+id/now_playing_layout_dragged_down"
-                android:layout_alignParentEnd="true">
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/now_playing_topPlayPauseButton"
-                    android:src="@drawable/ic_play_arrow_24dp"
-                    android:background="?android:selectableItemBackground"
-                    android:adjustViewBounds="false"
-                    android:baselineAlignBottom="false"
-                    android:cropToPadding="false"
-                    android:tint="@color/colorTextLight" />
-            </LinearLayout>
-
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -133,12 +141,14 @@
                 android:layout_height="match_parent"
                 android:layout_above="@+id/now_playing_control_layout"
                 android:animateLayoutChanges="true">
+
                 <ImageView
                     android:id="@+id/now_playing_cover"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/cover_placeholder"
                     android:background="@color/colorPrimaryDark"/>
+
                 <org.odyssey.views.CurrentPlaylistView
                     android:id="@+id/now_playing_playlist"
                     android:layout_width="match_parent"
@@ -171,7 +181,7 @@
                         android:gravity="center" />
 
                     <TextView
-                        android:id="@+id/now_playing_length"
+                        android:id="@+id/now_playing_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"

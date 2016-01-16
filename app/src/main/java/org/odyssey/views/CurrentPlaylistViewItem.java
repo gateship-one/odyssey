@@ -5,7 +5,9 @@ import android.widget.TextView;
 
 import org.odyssey.R;
 
-public class CurrentPlaylistViewItem extends GenericListItem{
+public class CurrentPlaylistViewItem extends GenericListItem {
+
+    TextView mSeparatorView;
 
     public CurrentPlaylistViewItem(Context context, String number, String title, String information, String duration) {
         super(context);
@@ -14,6 +16,8 @@ public class CurrentPlaylistViewItem extends GenericListItem{
         mNumberView.setText(number);
         mInformationView.setText(information);
         mDurationView.setText(duration);
+
+        mSeparatorView = (TextView) findViewById(R.id.item_current_playlist_separator);
     }
 
     @Override
@@ -39,5 +43,18 @@ public class CurrentPlaylistViewItem extends GenericListItem{
     @Override
     int provideLayout() {
         return R.layout.listview_item_current_playlist;
+    }
+
+    public void setPlaying(boolean state) {
+        if(state) {
+            mTitleView.setTextColor(getResources().getColor(R.color.colorAccent));
+            mNumberView.setTextColor(getResources().getColor(R.color.colorAccent));
+            mSeparatorView.setTextColor(getResources().getColor(R.color.colorAccent));
+        } else {
+            mTitleView.setTextColor(getResources().getColor(R.color.colorTextLight));
+            mNumberView.setTextColor(getResources().getColor(R.color.colorTextLight));
+            mSeparatorView.setTextColor(getResources().getColor(R.color.colorTextLight));
+        }
+
     }
 }

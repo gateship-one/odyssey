@@ -1,37 +1,56 @@
 package org.odyssey.adapter;
 
 import android.content.Context;
+import android.os.RemoteException;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.NowPlayingInformation;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.views.CurrentPlaylistViewItem;
-
-import java.util.ArrayList;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private ArrayList<TrackModel> mTracks;
+    private PlaybackServiceConnection mPlayBackServiceConnection;
 
-    public CurrentPlaylistListViewAdapter(Context context) {
+    private int mCurrentPlayingIndex = -1;
+
+    public CurrentPlaylistListViewAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();
 
         mContext = context;
 
-        mTracks = new ArrayList<>();
+        mPlayBackServiceConnection = playbackServiceConnection;
     }
 
     @Override
     public int getCount() {
-        return mTracks.size();
+        try {
+            if (mPlayBackServiceConnection != null) {
+                return mPlayBackServiceConnection.getPBS().getPlaylistSize();
+            } else {
+                return 0;
+            }
+        } catch (RemoteException e) {
+            return 0;
+        }
     }
 
     @Override
     public Object getItem(int position) {
-        return mTracks.get(position);
+        try {
+            if (mPlayBackServiceConnection != null) {
+                return mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+            } else {
+                return null;
+            }
+        } catch (RemoteException e) {
+            return null;
+        }
     }
 
     @Override
@@ -42,7 +61,16 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = mTracks.get(position);
+        TrackModel track;
+        try {
+            if (mPlayBackServiceConnection != null) {
+                track = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+            } else {
+                track = new TrackModel();
+            }
+        } catch (RemoteException e) {
+            track = new TrackModel();
+        }
 
         // title
         String trackTitle = track.getTrackName();
@@ -76,6 +104,17 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
             convertView = new CurrentPlaylistViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
         }
 
+        if(position == mCurrentPlayingIndex) {
+            ((CurrentPlaylistViewItem)convertView).setPlaying(true);
+        } else {
+            ((CurrentPlaylistViewItem)convertView).setPlaying(false);
+        }
+
         return convertView;
+    }
+
+    public void updateState(NowPlayingInformation info) {
+        mCurrentPlayingIndex = info.getPlayingIndex();
+        notifyDataSetChanged();
     }
 }

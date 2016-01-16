@@ -1,7 +1,14 @@
 package org.odyssey.views;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -12,10 +19,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import org.odyssey.R;
+import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.NowPlayingInformation;
+import org.odyssey.playbackservice.PlaybackService;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.MusicLibraryHelper;
 
-public class NowPlayingView extends RelativeLayout {
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -49,8 +68,38 @@ public class NowPlayingView extends RelativeLayout {
     private int mDragRange;
 
     private ImageView mCoverImage;
+    private ImageView mTopCoverImage;
 
     private CurrentPlaylistView mPlaylistView;
+
+    private PlaybackServiceConnection mServiceConnection = null;
+    private NowPlayingReceiver mNowPlayingReceiver = null;
+    private CoverBitmapGenerator mCoverGenerator = null;
+    private Timer mRefreshTimer = null;
+
+    // buttons
+    ImageButton mTopPlayPauseButton;
+    ImageButton mTopPlaylistButton;
+    ImageButton mTopMenuButton;
+
+    // bottom buttons
+    ImageButton mBottomRepeatButton;
+    ImageButton mBottomPreviousButton;
+    ImageButton mBottomPlayPauseButton;
+    ImageButton mBottomNextButton;
+    ImageButton mBottomRandomButton;
+
+    // seekbar
+    SeekBar mPositionSeekbar;
+
+    // textviews
+    TextView mTrackName;
+    TextView mTrackArtistName;
+    TextView mTrackAlbumName;
+    TextView mElapsedTime;
+    TextView mDuration;
+
+    private String mLastAlbumName;
 
     public NowPlayingView(Context context) {
         this(context, null, 0);
@@ -82,6 +131,28 @@ public class NowPlayingView extends RelativeLayout {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            try {
+                mServiceConnection.getPBS().seekTo(progress);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
     }
 
     private class BottomDragCallbackHelper extends ViewDragHelper.Callback {
@@ -206,22 +277,35 @@ public class NowPlayingView extends RelativeLayout {
         mMainView = findViewById(R.id.now_playing_bodyLayout);
 
         // top buttons
-        ImageButton topPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
-        ImageButton topPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
-        ImageButton topMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
+        mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
+        mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
+        mTopMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
 
         // bottom buttons
-        ImageButton bottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
-        ImageButton bottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
-        ImageButton bottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
-        ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
-        ImageButton bottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
+        mBottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
+        mBottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
+        mBottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
+        mBottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
+        mBottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
 
-        mCoverImage = (ImageView)findViewById(R.id.now_playing_cover);
-        mPlaylistView = (CurrentPlaylistView)findViewById(R.id.now_playing_playlist);
+        mCoverImage = (ImageView) findViewById(R.id.now_playing_cover);
+        mTopCoverImage = (ImageView) findViewById(R.id.now_playing_topCover);
+        mPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
-        mDraggedUpButtons = (LinearLayout)findViewById(R.id.now_playing_layout_dragged_up);
-        mDraggedDownButtons = (LinearLayout)findViewById(R.id.now_playing_layout_dragged_down);
+        mDraggedUpButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_up);
+        mDraggedDownButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_down);
+
+        // textviews
+        mTrackName = (TextView) findViewById(R.id.now_playing_trackName);
+        mTrackAlbumName = (TextView) findViewById(R.id.now_playing_trackAlbum);
+        mTrackArtistName = (TextView) findViewById(R.id.now_playing_trackArtist);
+
+        mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
+        mDuration = (TextView) findViewById(R.id.now_playing_duration);
+
+        // seekbar
+        mPositionSeekbar = (SeekBar) findViewById(R.id.now_playing_seekBar);
+        mPositionSeekbar.setOnSeekBarChangeListener(this);
 
         // set dragging part default to bottom
         mDragOffset = 1.0f;
@@ -230,16 +314,21 @@ public class NowPlayingView extends RelativeLayout {
         mDraggedUpButtons.setAlpha(0.0f);
 
         // add listener to top playpause button
-        topPlayPauseButton.setOnClickListener(new OnClickListener() {
+        mTopPlayPauseButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "topPlayPauseButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    mServiceConnection.getPBS().togglePause();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         // Add listeners to top playlist button
         // FIXME: Clean up this code a bit. And a nice transition?
-        topPlaylistButton.setOnClickListener(new OnClickListener() {
+        mTopPlaylistButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mPlaylistView.getVisibility() == View.INVISIBLE) {
@@ -251,7 +340,7 @@ public class NowPlayingView extends RelativeLayout {
         });
 
         // Add listener to top menu button
-        topMenuButton.setOnClickListener(new OnClickListener() {
+        mTopMenuButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "topMenuButton clicked", Snackbar.LENGTH_SHORT).show();
@@ -259,44 +348,75 @@ public class NowPlayingView extends RelativeLayout {
         });
 
         // Add listener to bottom repeat button
-        bottomRepeatButton.setOnClickListener(new OnClickListener() {
+        mBottomRepeatButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "bottomRepeatButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    int repeat = (mServiceConnection.getPBS().getRepeat() == PlaybackService.REPEATSTATE.REPEAT_ALL.ordinal()) ? PlaybackService.REPEATSTATE.REPEAT_OFF.ordinal() : PlaybackService.REPEATSTATE.REPEAT_ALL.ordinal();
+
+                    mServiceConnection.getPBS().setRepeat(repeat);
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         // Add listener to bottom previous button
-        bottomPreviousButton.setOnClickListener(new OnClickListener() {
+        mBottomPreviousButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "bottomPreviousButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    mServiceConnection.getPBS().previous();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         // Add listener to bottom playpause button
-        bottomPlayPauseButton.setOnClickListener(new OnClickListener() {
+        mBottomPlayPauseButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "bottomPlayPauseButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    mServiceConnection.getPBS().togglePause();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         // Add listener to bottom next button
-        bottomNextButton.setOnClickListener(new OnClickListener() {
+        mBottomNextButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "bottomNextButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    mServiceConnection.getPBS().next();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
 
         // Add listener to bottom random button
-        bottomRandomButton.setOnClickListener(new OnClickListener() {
+        mBottomRandomButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "bottomRandomButton clicked", Snackbar.LENGTH_SHORT).show();
+            public void onClick(View arg0) {
+                try {
+                    int random = (mServiceConnection.getPBS().getRandom() == PlaybackService.RANDOMSTATE.RANDOM_ON.ordinal()) ? PlaybackService.RANDOMSTATE.RANDOM_OFF.ordinal() : PlaybackService.RANDOMSTATE.RANDOM_ON.ordinal();
+
+                    mServiceConnection.getPBS().setRandom(random);
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
+
+        mCoverGenerator = new CoverBitmapGenerator(getContext(), new CoverReceiverClass());
     }
 
     @Override
@@ -321,5 +441,232 @@ public class NowPlayingView extends RelativeLayout {
                 newTop + mHeaderView.getMeasuredHeight(),
                 r,
                 newTop  + b);
+    }
+
+    public void onPause() {
+        if (mRefreshTimer != null) {
+            mRefreshTimer.cancel();
+            mRefreshTimer.purge();
+            mRefreshTimer = null;
+        }
+        if (mNowPlayingReceiver != null) {
+            getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
+            mNowPlayingReceiver = null;
+        }
+    }
+
+    public void onResume() {
+        if (mNowPlayingReceiver != null) {
+            getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
+            mNowPlayingReceiver = null;
+        }
+        mNowPlayingReceiver = new NowPlayingReceiver();
+        getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackService.MESSAGE_NEWTRACKINFORMATION));
+        // get the playbackservice
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
+        mServiceConnection.setNotifier(new ServiceConnectionListener());
+        mServiceConnection.openConnection();
+    }
+
+    private void updateStatus() {
+
+        // get current track
+        TrackModel currentTrack = null;
+        try {
+            currentTrack = mServiceConnection.getPBS().getCurrentSong();
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (currentTrack == null) {
+            currentTrack = new TrackModel();
+        }
+        // set tracktitle, album, artist and albumcover
+        mTrackName.setText(currentTrack.getTrackName());
+
+        mTrackAlbumName.setText(currentTrack.getTrackAlbumName());
+        if (!currentTrack.getTrackAlbumName().equals(mLastAlbumName)) {
+            mCoverImage.setImageResource(R.drawable.cover_placeholder);
+            mTopCoverImage.setImageResource(R.drawable.cover_placeholder_96dp);
+            mCoverGenerator.getImage(currentTrack);
+        }
+        mLastAlbumName = currentTrack.getTrackAlbumName();
+        mTrackArtistName.setText(currentTrack.getTrackArtistName());
+
+        // calculate duration in minutes and seconds
+        String seconds = String.valueOf((currentTrack.getTrackDuration() % 60000) / 1000);
+
+        String minutes = String.valueOf(currentTrack.getTrackDuration() / 60000);
+
+        if (seconds.length() == 1) {
+            mDuration.setText(minutes + ":0" + seconds);
+        } else {
+            mDuration.setText(minutes + ":" + seconds);
+        }
+
+        // set up seekbar
+        mPositionSeekbar.setMax((int) currentTrack.getTrackDuration());
+
+        updateSeekBar();
+
+        updateDurationView();
+
+        try {
+            final boolean isRandom = mServiceConnection.getPBS().getRandom() == 1;
+            final boolean songPlaying = mServiceConnection.getPBS().getPlaying() == 1;
+            final boolean isRepeat = mServiceConnection.getPBS().getRepeat() == 1;
+
+            Activity activity = (Activity) getContext();
+            if (activity != null) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // update imagebuttons
+                        if (songPlaying) {
+                            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_24dp);
+                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_24dp);
+                        } else {
+                            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_24dp);
+                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_24dp);
+                        }
+                        if (isRepeat) {
+                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                        } else {
+                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
+                        }
+                        if (isRandom) {
+                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                        } else {
+                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
+                        }
+
+                    }
+                });
+            }
+
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void updateSeekBar() {
+        try {
+            mPositionSeekbar.setProgress(mServiceConnection.getPBS().getTrackPosition());
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void updateDurationView() {
+        // calculate duration in minutes and seconds
+        String seconds = "";
+        String minutes = "";
+        try {
+            if (mServiceConnection != null) {
+                seconds = String.valueOf((mServiceConnection.getPBS().getTrackPosition() % 60000) / 1000);
+                minutes = String.valueOf(mServiceConnection.getPBS().getTrackPosition() / 60000);
+            }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (seconds.length() == 1) {
+            mElapsedTime.setText(minutes + ":0" + seconds);
+        } else {
+            mElapsedTime.setText(minutes + ":" + seconds);
+        }
+    }
+
+    private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
+
+        @Override
+        public void onConnect() {
+            updateStatus();
+            if (mRefreshTimer != null) {
+                mRefreshTimer.cancel();
+                mRefreshTimer.purge();
+                mRefreshTimer = null;
+            }
+            mRefreshTimer = new Timer();
+            mRefreshTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
+            mPlaylistView.registerPBServiceConnection(mServiceConnection);
+        }
+
+        @Override
+        public void onDisconnect() {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
+    private class NowPlayingReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(PlaybackService.MESSAGE_NEWTRACKINFORMATION)) {
+                // Extract nowplaying info
+                ArrayList<NowPlayingInformation> infoArray = intent.getExtras().getParcelableArrayList(PlaybackService.INTENT_NOWPLAYINGNAME);
+                if (infoArray.size() != 0) {
+
+                    Activity activity = (Activity) getContext();
+                    if (activity != null) {
+                        // notify playlist has changed
+                        mPlaylistView.playlistChanged(infoArray.get(0));
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // update views
+                                updateStatus();
+                            }
+                        });
+                    }
+
+                }
+            }
+        }
+    }
+
+    private class CoverReceiverClass implements CoverBitmapGenerator.CoverBitmapListener {
+
+        @Override
+        public void receiveBitmap(final BitmapDrawable bm) {
+            if (bm != null) {
+                Activity activity = (Activity) getContext();
+                if (activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            mCoverImage.setImageDrawable(bm);
+                            mTopCoverImage.setImageDrawable(bm);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private class RefreshTask extends TimerTask {
+
+        @Override
+        public void run() {
+            Activity activity = (Activity) getContext();
+            if (activity != null) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateDurationView();
+                        updateSeekBar();
+                    }
+                });
+            }
+
+        }
     }
 }

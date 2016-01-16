@@ -21,6 +21,7 @@ import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
+import org.odyssey.views.NowPlayingView;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener {
@@ -58,6 +59,24 @@ public class OdysseyMainActivity extends AppCompatActivity
             transaction.add(R.id.fragment_container, myMusicFragment);
             transaction.commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+
+        nowPlayingView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+
+        nowPlayingView.onPause();
     }
 
     @Override
