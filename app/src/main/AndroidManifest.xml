@@ -3,6 +3,9 @@
     package="org.odyssey">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +22,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="org.odyssey.playbackservice.PlaybackService"
+            android:label="OdysseyPlaybackService"
+            android:exported="false"
+            android:process=":serviceProcess" >
+            <intent-filter>
+                <action android:name="org.odyssey.playbackservice.IOdysseyPlaybackService" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+                <action android:name="org.odyssey.newtrackinfo"/>
+                <action android:name="org.odyssey.togglepause"/>
+                <action android:name="org.odyssey.stop"/>
+                <action android:name="org.odyssey.previous"/>
+                <action android:name="org.odyssey.next"/>
+            </intent-filter>
+        </service>
+
+        <receiver android:name="org.odyssey.playbackservice.RemoteControlReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
