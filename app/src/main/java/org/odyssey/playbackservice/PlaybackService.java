@@ -177,8 +177,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPlayingIndex = -1;
         mNextPlayingIndex = -1;
 
-        // FIXME create vector drawable
-        mNotificationBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Odyssey").setContentText("");
+        mNotificationBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.odyssey_notification).setContentTitle("Odyssey").setContentText("");
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (mNoisyReceiver == null) {
@@ -947,8 +946,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG, "SetNotification: " + track + " state: " + playbackState.toString());
         if (track != null && playbackState != PLAYSTATE.STOPPED) {
 
-            // FIXME create vector
-            mNotificationBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Odyssey").setContentText("");
+            mNotificationBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.odyssey_notification).setContentTitle("Odyssey").setContentText("");
             RemoteViews remoteViewBig = new RemoteViews(getPackageName(), R.layout.notification_big);
             RemoteViews remoteViewSmall = new RemoteViews(getPackageName(), R.layout.notification_small);
             remoteViewBig.setTextViewText(R.id.notification_big_track, track.getTrackName());
@@ -971,14 +969,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 PendingIntent pausePendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, pausePendingIntent);
                 // Set right drawable
-                remoteViewBig.setImageViewResource(R.id.notification_big_play, android.R.drawable.ic_media_pause);
+                remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_pause_24dp);
 
             } else {
                 Intent playIntent = new Intent(ACTION_PLAY);
                 PendingIntent playPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, playPendingIntent);
                 // Set right drawable
-                remoteViewBig.setImageViewResource(R.id.notification_big_play, android.R.drawable.ic_media_play);
+                remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_play_arrow_24dp);
             }
 
             // Next song action
