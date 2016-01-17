@@ -39,6 +39,9 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         myMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
+        // set start page to albums
+        myMusicViewPager.setCurrentItem(1);
+
         return rootView;
     }
 
