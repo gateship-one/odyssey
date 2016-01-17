@@ -21,8 +21,10 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
-import android.media.RemoteControlClient;
+import android.media.MediaMetadata;
+import android.media.session.MediaSession;
+import android.media.session.MediaSessionManager;
+import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -112,8 +114,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mRandom = 0;
     private int mRepeat = 0;
 
-    // Remote control
-    private RemoteControlClient mRemoteControlClient = null;
+    // MediaSession objects
+    private MediaSessionManager mMediaSessionManager;
+    private MediaSession mMediaSession;
+    private MediaSession.Token mMediaSessionToken;
+
+    // Callback for MediaSession
+    private MediaSession.Callback mMediaSessionCallback;
 
     // Timer for service stop after certain amount of time
     private WakeLock mTempWakelock = null;
@@ -196,18 +203,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             registerReceiver(mNoisyReceiver, intentFilter);
         }
 
-        // Remote control client
-        ComponentName remoteReceiver = new ComponentName(getPackageName(), RemoteControlReceiver.class.getName());
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.registerMediaButtonEventReceiver(remoteReceiver);
+        // Get MediaSession objects
+        mMediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
+        mMediaSession = new MediaSession(this, "OdysseyPBS");
 
-        Intent buttonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-        buttonIntent.setComponent(remoteReceiver);
-        PendingIntent buttonPendingIntent = PendingIntent.getBroadcast(this, 0, buttonIntent, 0);
+        // Register the callback for the mediasession
+        mMediaSessionCallback = new OdysseyMediaSessionCallback();
+        mMediaSession.setCallback(mMediaSessionCallback);
 
-        // Create remotecontrol instance
-        mRemoteControlClient = new RemoteControlClient(buttonPendingIntent);
-        audioManager.registerRemoteControlClient(mRemoteControlClient);
+        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(this,0, new Intent(this,RemoteControlReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT);
+        mMediaSession.setMediaButtonReceiver(mediaButtonPendingIntent);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mTempWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -370,6 +375,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 // Abort command
                 return;
             }
+            // Start media session
+            mMediaSessionToken = mMediaSession.getSessionToken();
+            mMediaSession.setActive(true);
+
             mPlayer.resume();
 
             // Broadcast simple.last.fm.scrobble broadcast
@@ -623,6 +632,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 // Abort command
                 return;
             }
+
+            // Start media session
+            mMediaSessionToken = mMediaSession.getSessionToken();
+            mMediaSession.setActive(true);
 
             mIsPaused = false;
 
@@ -905,35 +918,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * Starts an thread for Cover generation.
      *
-     * TODO: Android >=4.4 remote control seek support.
      */
     private void setLockscreenPicture(TrackModel track, PLAYSTATE playbackState) {
         // Clear if track == null
         if (track != null && playbackState != PLAYSTATE.STOPPED) {
-            Log.v(TAG, "Setting lockscreen picture/remote controls");
-            RemoteControlClient.MetadataEditor editor = mRemoteControlClient.editMetadata(false);
-
-            editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, null);
-
-            editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, track.getTrackAlbumName());
-            editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, track.getTrackArtistName());
-            editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, track.getTrackArtistName());
-            editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, track.getTrackName());
-            editor.apply();
-
-            // Check playstate for buttons
-            if (playbackState == PLAYSTATE.PLAYING) {
-                mRemoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PLAYING);
-            } else if (playbackState == PLAYSTATE.PAUSE) {
-                mRemoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_PAUSED);
+            Log.v(TAG, "Setting lockscreen remote controls");
+            if ( playbackState == PLAYSTATE.PLAYING ) {
+                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING,0,1.0f).build());
+            } else {
+                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PAUSED,0,1.0f).build());
             }
-            // Apply some flags, ex. which buttons to show
-            mRemoteControlClient.setTransportControlFlags(RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_NEXT | RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS);
+            MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
+            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
+            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
+            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
+            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
+            mMediaSession.setMetadata(metaDataBuilder.build());
+
             mLockscreenCoverGenerator.getImage(track);
         } else {
             // Clear lockscreen
-            mRemoteControlClient.setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
-            Log.v(TAG, "Setting lockscreen picture/remote controls to stopped");
+            // FIXME check if working
+            mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED,0,0.0f).build());
+            mMediaSession.setActive(false);
         }
     }
 
@@ -1664,22 +1671,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void receiveBitmap(BitmapDrawable bm) {
 
             if (bm != null) {
-                // Gets the system MetaData editor for lockscreen control
-                RemoteControlClient.MetadataEditor editor = mRemoteControlClient.editMetadata(false);
+                Log.v(TAG,"Received new lockscreen bitmap");
+                // FIXME new MediaSession api
                 TrackModel track = getCurrentTrack();
-                if (track == null) {
-                    return;
-                }
-
-                // Set all the different things
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, track.getTrackAlbumName());
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, track.getTrackArtistName());
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, track.getTrackArtistName());
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, track.getTrackName());
-                editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bm.getBitmap());
-
-                // Apply values here
-                editor.apply();
+                MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
+                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
+                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
+                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
+                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
+                metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART,bm.getBitmap());
+                mMediaSession.setMetadata(metaDataBuilder.build());
             }
         }
 
@@ -1742,6 +1743,39 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                     }
                 }
             }
+        }
+    }
+
+    private class OdysseyMediaSessionCallback extends MediaSession.Callback {
+
+        @Override
+        public void onPlay() {
+            super.onPlay();
+            resume();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            pause();
+        }
+
+        @Override
+        public void onSkipToNext() {
+            super.onSkipToNext();
+            setNextTrack();
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            super.onSkipToPrevious();
+            setPreviousTrack();
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            stop();
         }
     }
 }
