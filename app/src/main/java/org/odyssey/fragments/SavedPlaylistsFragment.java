@@ -176,6 +176,7 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         String[] whereVal = { ""+clickedPlaylist.getPlaylistID() };
 
         getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     @Override
