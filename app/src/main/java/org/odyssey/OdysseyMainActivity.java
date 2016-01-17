@@ -183,10 +183,13 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
     }
 
-        @Override
+    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+        nowPlayingView.minimize();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
