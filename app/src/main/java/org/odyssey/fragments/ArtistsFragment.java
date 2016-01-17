@@ -1,6 +1,9 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
@@ -20,6 +23,9 @@ import org.odyssey.adapter.ArtistsGridViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.ArtistLoader;
 import org.odyssey.models.ArtistModel;
+import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
@@ -34,6 +40,8 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
     // Save the last scroll position to resume there
     private int mLastPosition;
+
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +86,9 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
+
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
     }
 
     @Override
@@ -132,13 +143,85 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
         switch (item.getItemId()) {
             case R.id.fragment_artist_action_enqueue:
-                Snackbar.make(getActivity().getCurrentFocus(), "add albums to playlist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                enqueueAllAlbums(info.position);
                 return true;
             case R.id.fragment_artist_action_play:
-                Snackbar.make(getActivity().getCurrentFocus(), "play albums: " + info.position, Snackbar.LENGTH_SHORT).show();
+                playAllAlbums(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    private void enqueueAllAlbums(int position) {
+
+        // identify current artist
+        ArtistModel currentArtist = (ArtistModel) mArtistsGridViewAdapter.getItem(position);
+
+        long artistID = currentArtist.getArtistID();
+
+        // get all albums of the current artist
+        Cursor cursorAlbums = getActivity().getContentResolver().query(MediaStore.Audio.Artists.Albums.getContentUri("external", artistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
+
+        String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
+
+        String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
+
+        // get all albums of the current artist
+        if (cursorAlbums.moveToFirst()) {
+            do {
+                String[] whereVal = { cursorAlbums.getString(cursorAlbums.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY)) };
+
+                Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
+
+                // get all tracks of the current album
+                if (cursorTracks.moveToFirst()) {
+                    do {
+                        String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                        long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                        int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                        String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                        String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DATA));
+                        String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+
+                        TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+
+                        // enqueue current track
+                        try {
+                            mServiceConnection.getPBS().enqueueTrack(item);
+                        } catch (RemoteException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    } while (cursorTracks.moveToNext());
+                }
+
+            } while (cursorAlbums.moveToNext());
+        }
+
+    }
+
+    private void playAllAlbums(int position) {
+
+        // Remove old tracks
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        // get and enqueue all albums of the current artist
+        enqueueAllAlbums(position);
+
+        // play album
+        try {
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

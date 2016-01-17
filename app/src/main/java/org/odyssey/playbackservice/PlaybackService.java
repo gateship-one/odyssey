@@ -685,6 +685,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mNextPlayingIndex = mCurrentPlayingIndex + 1;
             setNextTrackForMP();
         }
+        // Send new NowPlaying because playlist changed
+        updateStatus();
     }
 
     public void dequeueTrack(int index) {
@@ -710,7 +712,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
         // Send new NowPlaying because playlist changed
-        // sendUpdateBroadcast();
         updateStatus();
     }
 

@@ -613,14 +613,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 ArrayList<NowPlayingInformation> infoArray = intent.getExtras().getParcelableArrayList(PlaybackService.INTENT_NOWPLAYINGNAME);
                 if (infoArray.size() != 0) {
 
+                    final NowPlayingInformation info = infoArray.get(0);
+
                     Activity activity = (Activity) getContext();
                     if (activity != null) {
-                        // notify playlist has changed
-                        mPlaylistView.playlistChanged(infoArray.get(0));
 
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                // notify playlist has changed
+                                mPlaylistView.playlistChanged(info);
                                 // update views
                                 updateStatus();
                             }
