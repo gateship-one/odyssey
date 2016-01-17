@@ -55,7 +55,9 @@ public class OdysseyMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        // register context menu for currenPlaylistListView
+        ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
+        registerForContextMenu(currentPlaylistListView);
 
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null) {
@@ -100,6 +102,9 @@ public class OdysseyMainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
+            NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+            nowPlayingView.minimize();
         } else {
             super.onBackPressed();
 
@@ -148,7 +153,8 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if ( mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP ) {
+
+        if (v.getId() == R.id.current_playlist_listview) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu_current_playlist, menu);
         }
@@ -162,14 +168,14 @@ public class OdysseyMainActivity extends AppCompatActivity
             return super.onContextItemSelected(item);
         }
 
-        CurrentPlaylistView nowPlayingView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
+        CurrentPlaylistView currentPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
         switch (item.getItemId()) {
             case R.id.view_current_playlist_action_playnext:
-                nowPlayingView.enqueueTrackAsNext(info.position);
+                currentPlaylistView.enqueueTrackAsNext(info.position);
                 return true;
             case R.id.view_current_playlist_action_remove:
-                nowPlayingView.removeTrack(info.position);
+                currentPlaylistView.removeTrack(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -278,16 +284,5 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
-        if ( status == DRAG_STATUS.DRAGGED_DOWN) {
-            // Disable context menus
-            // unregister context menu for currenPlaylistListView
-            ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
-            unregisterForContextMenu(currentPlaylistListView);
-        } else {
-            // Enable context menus
-            // register context menu for currenPlaylistListView
-            ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
-            registerForContextMenu(currentPlaylistListView);
-        }
     }
 }
