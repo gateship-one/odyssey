@@ -1,6 +1,7 @@
 package org.odyssey.views;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 import org.odyssey.R;
@@ -47,9 +48,11 @@ public class CurrentPlaylistViewItem extends GenericListItem {
 
     public void setPlaying(boolean state) {
         if(state) {
-            mTitleView.setTextColor(getResources().getColor(R.color.colorAccent));
-            mNumberView.setTextColor(getResources().getColor(R.color.colorAccent));
-            mSeparatorView.setTextColor(getResources().getColor(R.color.colorAccent));
+            TypedValue typedValue = new TypedValue();
+            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
+            mTitleView.setTextColor(typedValue.data);
+            mNumberView.setTextColor(typedValue.data);
+            mSeparatorView.setTextColor(typedValue.data);
         } else {
             mTitleView.setTextColor(getResources().getColor(R.color.colorTextLight));
             mNumberView.setTextColor(getResources().getColor(R.color.colorTextLight));

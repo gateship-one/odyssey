@@ -1,19 +1,53 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Color themes -->
+    <style name="AppTheme.indigo" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_indigo</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_indigo</item>
+        <item name="odyssey_color_accent">@color/colorAccent_indigo</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="AppTheme.orange" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_orange</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_orange</item>
+        <item name="odyssey_color_accent">@color/colorAccent_orange</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="AppTheme.darkGrey" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_darkGrey</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_darkGrey</item>
+        <item name="odyssey_color_accent">@color/colorAccent_darkGrey</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="AppTheme.brown" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_brown</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_brown</item>
+        <item name="odyssey_color_accent">@color/colorAccent_brown</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorBackground</item>
-        <item name="android:alertDialogTheme">@style/ContextMenuTheme</item>
+        <item name="android:alertDialogTheme">@android:style/Theme.Material.Dialog.Alert</item>
         <item name="android:textColorPrimary">@color/colorTextLight</item>
         <item name="android:textColorPrimaryInverse">@color/colorTextLight</item>
         <item name="android:textColor">@color/colorTextLight</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -24,11 +58,13 @@
         <item name="android:textColor">@color/colorTextDark</item>
     </style>
 
-    <style name="ContextMenuTheme" parent="android:Theme.Material.Dialog.Alert">
+    <style name="AppTheme.NavDrawer" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
 
-    <style name="AppTheme.NavDrawer" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="colorPrimary">@color/colorAccent</item>
+    <style name="AppTheme.NavDrawerHeader" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
     </style>
 
 </resources>

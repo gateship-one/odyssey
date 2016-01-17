@@ -11,6 +11,7 @@ import android.os.RemoteException;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -365,7 +366,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             public void onClick(View v) {
                 if (mPlaylistView.getVisibility() == View.INVISIBLE) {
                     mPlaylistView.setVisibility(View.VISIBLE);
-                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                    TypedValue typedValue = new TypedValue();
+                    getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
+                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
                 } else {
                     mPlaylistView.setVisibility(View.INVISIBLE);
                     mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
@@ -573,12 +576,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                             mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_24dp);
                         }
                         if (isRepeat) {
-                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                            TypedValue typedValue = new TypedValue();
+                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
+                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
                         } else {
                             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
                         }
                         if (isRandom) {
-                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                            TypedValue typedValue = new TypedValue();
+                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
+                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
                         } else {
                             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
                         }
