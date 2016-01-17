@@ -27,6 +27,13 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
         mContext = context;
 
         mPlayBackServiceConnection = playbackServiceConnection;
+
+        try {
+            mPlaylistSize = mPlayBackServiceConnection.getPBS().getPlaylistSize();
+            mCurrentPlayingIndex = mPlayBackServiceConnection.getPBS().getCurrentIndex();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
