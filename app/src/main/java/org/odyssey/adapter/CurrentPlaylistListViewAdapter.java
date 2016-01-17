@@ -19,6 +19,8 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
     private int mCurrentPlayingIndex = -1;
 
+    private int mPlaylistSize = 0;
+
     public CurrentPlaylistListViewAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();
 
@@ -29,15 +31,7 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        try {
-            if (mPlayBackServiceConnection != null) {
-                return mPlayBackServiceConnection.getPBS().getPlaylistSize();
-            } else {
-                return 0;
-            }
-        } catch (RemoteException e) {
-            return 0;
-        }
+        return mPlaylistSize;
     }
 
     @Override
@@ -115,6 +109,7 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
     public void updateState(NowPlayingInformation info) {
         mCurrentPlayingIndex = info.getPlayingIndex();
+        mPlaylistSize = info.getPlaylistLength();
         notifyDataSetChanged();
     }
 }
