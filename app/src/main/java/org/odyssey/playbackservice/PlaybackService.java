@@ -924,15 +924,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (track != null && playbackState != PLAYSTATE.STOPPED) {
             Log.v(TAG, "Setting lockscreen remote controls");
             if ( playbackState == PLAYSTATE.PLAYING ) {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING,0,1.0f).build());
+                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING, 0, 1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
             } else {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PAUSED,0,1.0f).build());
+                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PAUSED,0,1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
             }
             MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
+            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
+            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
+            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION,track.getTrackDuration());
             mMediaSession.setMetadata(metaDataBuilder.build());
 
             mLockscreenCoverGenerator.getImage(track);
@@ -1676,10 +1679,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 TrackModel track = getCurrentTrack();
                 MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
                 metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
+                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
                 metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
                 metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
                 metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
-                metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART,bm.getBitmap());
+                metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bm.getBitmap());
+                metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
+                metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION, track.getTrackDuration());
                 mMediaSession.setMetadata(metaDataBuilder.build());
             }
         }
@@ -1776,6 +1782,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void onStop() {
             super.onStop();
             stop();
+        }
+
+        @Override
+        public void onSeekTo(long pos) {
+            super.onSeekTo(pos);
+            seekTo((int)pos);
         }
     }
 }
