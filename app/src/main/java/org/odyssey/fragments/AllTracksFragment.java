@@ -3,6 +3,7 @@ package org.odyssey.fragments;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -22,11 +23,12 @@ import org.odyssey.adapter.AllTracksListViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
 
-public class AllTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>> {
+public class AllTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
 
     private AllTracksListViewAdapter mAllTracksListViewAdapter;
 
@@ -36,6 +38,8 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
     // Save the last scroll position to resume there
     private int mLastPosition;
+
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +56,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         mAllTracksListViewAdapter = new AllTracksListViewAdapter(getActivity());
 
         mRootList.setAdapter(mAllTracksListViewAdapter);
+        mRootList.setOnItemClickListener(this);
 
         registerForContextMenu(mRootList);
 
@@ -77,6 +82,9 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
+
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
     }
 
     @Override
@@ -141,13 +149,13 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
         switch (item.getItemId()) {
             case R.id.fragment_all_tracks_action_enqueue:
-                Snackbar.make(getActivity().getCurrentFocus(), "add song to playlist: " + info.position, Snackbar.LENGTH_SHORT).show();
+                enqueueTrack(info.position);
                 return true;
             case R.id.fragment_all_tracks_action_enqueueasnext:
-                Snackbar.make(getActivity().getCurrentFocus(), "play after current song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                enqueueTrackAsNext(info.position);
                 return true;
             case R.id.fragment_all_tracks_action_play:
-                Snackbar.make(getActivity().getCurrentFocus(), "play song: " + info.position, Snackbar.LENGTH_SHORT).show();
+                playTrack(info.position);
                 return true;
             case R.id.fragment_all_tracks_showartist:
                 showArtist(info.position);
@@ -155,5 +163,47 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void playTrack(int position) {
+        // clear playlist and play current track
+
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            enqueueTrack(position);
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    private void enqueueTrack(int position) {
+        // Enqueue single track
+
+        try {
+            TrackModel track = (TrackModel) mAllTracksListViewAdapter.getItem(position);
+            mServiceConnection.getPBS().enqueueTrack(track);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void enqueueTrackAsNext(int position) {
+        // Enqueue single track
+
+        try {
+            TrackModel track = (TrackModel) mAllTracksListViewAdapter.getItem(position);
+            mServiceConnection.getPBS().enqueueTrackAsNext(track);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        playTrack(position);
     }
 }

@@ -520,6 +520,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Start playback which is probably intended
             jumpToIndex(0, true);
         }
+
+        // Send new NowPlaying because playlist changed
+        updateStatus(false, false, true);
     }
 
     /**
@@ -686,7 +689,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             setNextTrackForMP();
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false,false,true);
+        updateStatus(false, false, true);
     }
 
     public void dequeueTrack(int index) {
@@ -712,7 +715,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false,false,true);
+        updateStatus(false, false, true);
     }
 
     /**
