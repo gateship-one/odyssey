@@ -54,6 +54,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_my_music);
 
         // register context menu for currenPlaylistListView
         ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
