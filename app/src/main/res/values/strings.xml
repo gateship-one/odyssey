@@ -32,6 +32,10 @@
     <string name="context_menu_action_showartist">show artist</string>
     <string name="context_menu_action_removetrack">remove track</string>
 
+    <!-- popup menu titles -->
+    <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
+    <string name="popup_menu_action_clearplaylist">clear playlist</string>
+
     <!-- seperator -->
     <string name="separator">" - "</string>
 </resources>

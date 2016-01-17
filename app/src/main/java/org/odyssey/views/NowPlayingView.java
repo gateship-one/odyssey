@@ -8,15 +8,16 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.RemoteException;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener {
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -154,6 +155,30 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.view_nowplaying_action_shuffleplaylist:
+                try {
+                    mServiceConnection.getPBS().shufflePlaylist();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return true;
+            case R.id.view_nowplaying_action_clearplaylist:
+                try {
+                    mServiceConnection.getPBS().clearPlaylist();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return true;
+            default:
+                return false;
+        }
     }
 
     private class BottomDragCallbackHelper extends ViewDragHelper.Callback {
@@ -352,7 +377,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mTopMenuButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "topMenuButton clicked", Snackbar.LENGTH_SHORT).show();
+                showAdditionalOptionsMenu(v);
             }
         });
 
@@ -426,6 +451,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         mCoverGenerator = new CoverBitmapGenerator(getContext(), new CoverReceiverClass());
+    }
+
+    private void showAdditionalOptionsMenu(View v) {
+        PopupMenu menu = new PopupMenu(getContext(), v);
+
+        menu.inflate(R.menu.popup_menu_nowplaying_view);
+        menu.setOnMenuItemClickListener(this);
+        menu.show();
     }
 
     @Override
