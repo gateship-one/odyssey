@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
@@ -28,7 +27,6 @@ import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.CoverBitmapGenerator;
-import org.odyssey.utils.MusicLibraryHelper;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -333,8 +331,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             public void onClick(View v) {
                 if (mPlaylistView.getVisibility() == View.INVISIBLE) {
                     mPlaylistView.setVisibility(View.VISIBLE);
+                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
                 } else {
                     mPlaylistView.setVisibility(View.INVISIBLE);
+                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorTextLight)));
                 }
             }
         });

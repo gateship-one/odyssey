@@ -6,6 +6,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <!-- padding values -->
+    <dimen name="standard_padding_small">4dp</dimen>
     <!-- margins for fragment content -->
     <dimen name="fragment_content_horizontal_margin">0dp</dimen>
     <dimen name="fragment_content_vertical_margin">0dp</dimen>

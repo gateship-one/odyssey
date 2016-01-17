@@ -36,6 +36,8 @@
                 android:layout_height="fill_parent"
                 android:layout_toEndOf="@+id/now_playing_topCover"
                 android:layout_toStartOf="@+id/now_playing_topButtonLayout"
+                android:paddingStart="@dimen/standard_padding_small"
+                android:paddingEnd="@dimen/standard_padding_small"
                 android:gravity="center_vertical">
 
                 <TextView
