@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,9 +31,11 @@ import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
 
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private DRAG_STATUS mNowPlayingDragStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +55,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // register context menu for currenPlaylistListView
-        ListView currenPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
-        registerForContextMenu(currenPlaylistListView);
+
 
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null) {
@@ -76,6 +77,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onResume();
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+        nowPlayingView.registerDragStatusReceiver(this);
 
         nowPlayingView.onResume();
     }
@@ -85,6 +87,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onPause();
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+        nowPlayingView.registerDragStatusReceiver(null);
 
         nowPlayingView.onPause();
     }
@@ -145,8 +148,10 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.context_menu_current_playlist, menu);
+        if ( mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP ) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.context_menu_current_playlist, menu);
+        }
     }
 
     @Override
@@ -267,6 +272,22 @@ public class OdysseyMainActivity extends AppCompatActivity
             AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
             layout.setExpanded(true, false);
             params.setScrollFlags(0);
+        }
+    }
+
+    @Override
+    public void onStatusChanged(DRAG_STATUS status) {
+        mNowPlayingDragStatus = status;
+        if ( status == DRAG_STATUS.DRAGGED_DOWN) {
+            // Disable context menus
+            // unregister context menu for currenPlaylistListView
+            ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
+            unregisterForContextMenu(currentPlaylistListView);
+        } else {
+            // Enable context menus
+            // register context menu for currenPlaylistListView
+            ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
+            registerForContextMenu(currentPlaylistListView);
         }
     }
 }

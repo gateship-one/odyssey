@@ -75,6 +75,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private CoverBitmapGenerator mCoverGenerator = null;
     private Timer mRefreshTimer = null;
 
+    // Dragstatus receiver (usually the hosting activity)
+    private NowPlayingDragStatusReceiver mDragStatusReceiver = null;
+
     // buttons
     ImageButton mTopPlayPauseButton;
     ImageButton mTopPlaylistButton;
@@ -210,10 +213,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     // top
                     mDraggedDownButtons.setVisibility(INVISIBLE);
                     mDraggedUpButtons.setVisibility(VISIBLE);
+                    if ( mDragStatusReceiver != null ) {
+                        mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
+                    }
                 } else {
                     // bottom
                     mDraggedDownButtons.setVisibility(VISIBLE);
                     mDraggedUpButtons.setVisibility(INVISIBLE);
+                    if ( mDragStatusReceiver != null ) {
+                        mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
+                    }
                 }
             } else {
                 /* Show both layouts to enable a smooth transition via
@@ -581,6 +590,22 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    public void registerDragStatusReceiver(NowPlayingDragStatusReceiver receiver) {
+        mDragStatusReceiver = receiver;
+        if (mDragOffset == 0.0f) {
+            // top
+            if ( mDragStatusReceiver != null ) {
+                mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
+            }
+        } else {
+            // bottom
+            if ( mDragStatusReceiver != null ) {
+                mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
+            }
+        }
+
+    }
+
     private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
 
         @Override
@@ -670,5 +695,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
 
         }
+    }
+
+    public interface NowPlayingDragStatusReceiver {
+        enum DRAG_STATUS {DRAGGED_UP,DRAGGED_DOWN}
+        void onStatusChanged(DRAG_STATUS status);
     }
 }
