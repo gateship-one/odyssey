@@ -30,6 +30,10 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
 
         if (convertView != null) {
             AlbumsGridViewItem gridItem = (AlbumsGridViewItem) convertView;
+            ViewGroup.LayoutParams layoutParams = gridItem.getLayoutParams();
+            layoutParams.height = mRootGrid.getColumnWidth();
+            layoutParams.width = mRootGrid.getColumnWidth();
+            gridItem.setLayoutParams(layoutParams);
             gridItem.setTitle(label);
             gridItem.setImageURL(imageURL);
         } else {

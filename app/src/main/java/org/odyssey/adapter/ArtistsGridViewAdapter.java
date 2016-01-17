@@ -23,13 +23,16 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ArtistModel artist = mModelData.get(position);
         String label = artist.getArtistName();
         String imageURL = artist.getArtistURL();
 
         if (convertView != null) {
             ArtistsGridViewItem gridItem = (ArtistsGridViewItem) convertView;
+            ViewGroup.LayoutParams layoutParams = gridItem.getLayoutParams();
+            layoutParams.height = mRootGrid.getColumnWidth();
+            layoutParams.width = mRootGrid.getColumnWidth();
+            gridItem.setLayoutParams(layoutParams);
             gridItem.setTitle(label);
             gridItem.setImageURL(imageURL);
         } else {
