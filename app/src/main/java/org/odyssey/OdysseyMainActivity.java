@@ -11,8 +11,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
@@ -21,6 +26,7 @@ import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
+import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
 public class OdysseyMainActivity extends AppCompatActivity
@@ -45,6 +51,10 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // register context menu for currenPlaylistListView
+        ListView currenPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
+        registerForContextMenu(currenPlaylistListView);
 
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null) {
@@ -133,6 +143,35 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu_current_playlist, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        if (info == null) {
+            return super.onContextItemSelected(item);
+        }
+
+        CurrentPlaylistView nowPlayingView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
+
+        switch (item.getItemId()) {
+            case R.id.view_current_playlist_action_playnext:
+                nowPlayingView.enqueueTrackAsNext(info.position);
+                return true;
+            case R.id.view_current_playlist_action_remove:
+                nowPlayingView.removeTrack(info.position);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+        @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();

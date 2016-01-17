@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import org.odyssey.R;
 import org.odyssey.adapter.CurrentPlaylistListViewAdapter;
+import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 
@@ -63,6 +64,31 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
             mPlaybackServiceConnection.getPBS().jumpTo(position);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void removeTrack(int position) {
+        try {
+            mPlaybackServiceConnection.getPBS().dequeueTrackIndex(position);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void enqueueTrackAsNext(int position) {
+        // save track
+        TrackModel track = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+
+        // remove track from playlist
+        removeTrack(position);
+
+        try {
+            // enqueue removed track as next
+            mPlaybackServiceConnection.getPBS().enqueueTrackAsNext(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
