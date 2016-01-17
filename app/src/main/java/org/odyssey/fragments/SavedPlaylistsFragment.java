@@ -49,6 +49,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
         mSavedPlaylistListViewAdapter = new SavedPlaylistListViewAdapter(getActivity());
 
+        mListView.setAdapter(mSavedPlaylistListViewAdapter);
+
         mListView.setOnItemClickListener(this);
 
         registerForContextMenu(mListView);
