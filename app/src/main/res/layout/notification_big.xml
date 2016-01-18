@@ -38,7 +38,7 @@
                 android:fontFamily="sans-serif-light"
                 android:maxLines="1"
                 android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/notification_font_size_big" />
+                android:textSize="@dimen/notification_font_size_medium" />
 
             <TextView
                 android:id="@+id/notification_big_artist"
