@@ -20,6 +20,11 @@
     <string name="fragment_title_albums">Albums</string>
     <string name="fragment_title_all_tracks">Tracks</string>
 
+    <!-- dialog titles -->
+    <string name="dialog_save_playlist">Save Playlist</string>
+    <string name="dialog_action_cancel">Cancel</string>
+    <string name="dialog_action_save">Save</string>
+
     <!-- actions -->
     <string name="action_settings">Settings</string>
 
@@ -37,7 +42,11 @@
     <!-- popup menu titles -->
     <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
     <string name="popup_menu_action_clearplaylist">clear playlist</string>
+    <string name="popup_menu_action_saveplaylist">save playlist</string>
 
     <!-- seperator -->
     <string name="separator">" - "</string>
+
+    <!-- default playlist title -->
+    <string name="default_playlist_title">New Playlist</string>
 </resources>

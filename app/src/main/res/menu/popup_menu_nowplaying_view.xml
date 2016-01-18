@@ -8,6 +8,12 @@
         android:title="@string/popup_menu_action_shuffleplaylist"/>
 
     <item
+        android:id="@+id/view_nowplaying_action_saveplaylist"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/popup_menu_action_saveplaylist"/>
+
+    <item
         android:id="@+id/view_nowplaying_action_clearplaylist"
         android:orderInCategory="100"
         app:showAsAction="never"
