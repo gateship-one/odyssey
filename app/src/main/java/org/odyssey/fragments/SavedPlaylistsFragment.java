@@ -1,5 +1,6 @@
 package org.odyssey.fragments;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.adapter.SavedPlaylistListViewAdapter;
+import org.odyssey.listener.OnPlaylistSelectedListener;
 import org.odyssey.loaders.PlaylistLoader;
 import org.odyssey.models.PlaylistModel;
 import org.odyssey.models.TrackModel;
@@ -28,6 +30,8 @@ import org.odyssey.utils.MusicLibraryHelper;
 import java.util.List;
 
 public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<PlaylistModel>> {
+
+    private OnPlaylistSelectedListener mPlaylistSelectedCallback;
 
     private SavedPlaylistListViewAdapter mSavedPlaylistListViewAdapter;
 
@@ -62,6 +66,19 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mPlaylistSelectedCallback = (OnPlaylistSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnPlaylistSelectedListener");
+        }
+    }
+
     public void onResume() {
         super.onResume();
 
@@ -89,7 +106,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         String playlistName = clickedPlaylist.getPlaylistName();
         long playlistID = clickedPlaylist.getPlaylistID();
 
-        // TODO open playlistfragment
+        // open playlistfragment
+        mPlaylistSelectedCallback.onPlaylistSelected(playlistName, playlistID);
     }
 
     @Override
@@ -176,6 +194,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         String[] whereVal = { ""+clickedPlaylist.getPlaylistID() };
 
         getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
+
+        // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);
     }
 

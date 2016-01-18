@@ -23,15 +23,17 @@ import android.widget.ListView;
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
 import org.odyssey.fragments.MyMusicFragment;
+import org.odyssey.fragments.PlaylistTracksFragment;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
+import org.odyssey.listener.OnPlaylistSelectedListener;
 import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -288,5 +290,28 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
+    }
+
+    @Override
+    public void onPlaylistSelected(String playlistTitle, long playlistID) {
+        // Create fragment and give it an argument for the selected playlist
+        PlaylistTracksFragment newFragment = new PlaylistTracksFragment();
+        Bundle args = new Bundle();
+        args.putString(PlaylistTracksFragment.ARG_PLAYLISTTITLE, playlistTitle);
+        args.putLong(PlaylistTracksFragment.ARG_PLAYLISTID, playlistID);
+
+        newFragment.setArguments(args);
+
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        // Replace whatever is in the fragment_container view with this
+        // fragment,
+        // and add the transaction to the back stack so the user can navigate
+        // back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack("PlaylistTracksFragment");
+
+        // Commit the transaction
+        transaction.commit();
     }
 }

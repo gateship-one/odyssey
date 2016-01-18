@@ -89,7 +89,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new TrackLoader(getActivity(), "");
+        return new TrackLoader(getActivity(), "", -1);
     }
 
     @Override

@@ -12,14 +12,14 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/item_current_playlist_number"
+            android:id="@+id/item_playlist_tracks_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/item_current_playlist_separator"
+            android:id="@+id/item_playlist_tracks_separator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -27,7 +27,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/item_current_playlist_title"
+            android:id="@+id/item_playlist_tracks_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -39,11 +39,11 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/item_current_playlist_additional_information"
+            android:id="@+id/item_playlist_tracks_additional_information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/item_current_playlist_duration"
+            android:layout_toStartOf="@+id/item_playlist_tracks_duration"
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
@@ -51,7 +51,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/item_current_playlist_duration"
+            android:id="@+id/item_playlist_tracks_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

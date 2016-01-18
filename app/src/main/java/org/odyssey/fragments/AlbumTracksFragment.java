@@ -119,7 +119,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new TrackLoader(getActivity(), mAlbumKey);
+        return new TrackLoader(getActivity(), mAlbumKey, -1);
     }
 
     @Override

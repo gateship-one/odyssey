@@ -15,11 +15,13 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
     private Context mContext;
     private String mAlbumKey;
+    private long mPlaylistID;
 
-    public TrackLoader(Context context, String albumKey) {
+    public TrackLoader(Context context, String albumKey, long playlistID) {
         super(context);
         mContext = context;
         mAlbumKey = albumKey;
+        mPlaylistID = playlistID;
     }
 
     /*
@@ -32,25 +34,45 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
     public List<TrackModel> loadInBackground() {
         // Create cursor for content retrieval
         Cursor trackCursor;
-        if(mAlbumKey.equals("")) {
-            trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
+
+        int trackTitleColumnIndex, trackDurationColumnIndex, trackNumberColumnIndex, trackArtistColumnIndex, trackAlbumColumnIndex, trackURLColumnIndex, trackAlbumKeyColumnIndex;
+
+        if(mPlaylistID != -1) {
+            // load playlist tracks
+            trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+
+            trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE);
+            trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION);
+            trackNumberColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK);
+            trackArtistColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST);
+            trackAlbumColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM);
+            trackURLColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA);
+            trackAlbumKeyColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY);
         } else {
-            String whereVal[] = { mAlbumKey };
 
-            String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
+            if (mAlbumKey.equals("")) {
+                // load all tracks
+                trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
+            } else {
+                // load album tracks
 
-            trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+                String whereVal[] = {mAlbumKey};
+
+                String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
+
+                trackCursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+            }
+
+            trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            trackNumberColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
+            trackArtistColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+            trackAlbumColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            trackURLColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            trackAlbumKeyColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
         }
 
         ArrayList<TrackModel> tracks = new ArrayList<TrackModel>();
-
-        int trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-        int trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        int trackNumberColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
-        int trackArtistColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-        int trackAlbumColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-        int trackURLColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        int trackAlbumKeyColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
 
         for (int i = 0; i < trackCursor.getCount(); i++) {
             trackCursor.moveToPosition(i);
