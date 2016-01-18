@@ -978,27 +978,31 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 Intent pauseIntent = new Intent(ACTION_PAUSE);
                 PendingIntent pausePendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, pausePendingIntent);
+                remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_play, pausePendingIntent);
                 // Set right drawable
                 remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_pause_24dp);
+                remoteViewSmall.setImageViewResource(R.id.notification_small_play, R.drawable.ic_pause_24dp);
 
             } else {
                 Intent playIntent = new Intent(ACTION_PLAY);
                 PendingIntent playPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, playPendingIntent);
+                remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_play, playPendingIntent);
                 // Set right drawable
                 remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_play_arrow_24dp);
+                remoteViewSmall.setImageViewResource(R.id.notification_small_play, R.drawable.ic_play_arrow_24dp);
             }
 
             // Next song action
             Intent nextIntent = new Intent(ACTION_NEXT);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViewBig.setOnClickPendingIntent(R.id.notification_big_next, nextPendingIntent);
+            remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_next, nextPendingIntent);
 
             // Quit action
             Intent quitIntent = new Intent(ACTION_QUIT);
             PendingIntent quitPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViewBig.setOnClickPendingIntent(R.id.notification_big_close, quitPendingIntent);
-            remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_close, quitPendingIntent);
 
             // Cover
             remoteViewBig.setImageViewResource(R.id.notification_big_image, R.drawable.cover_placeholder_96dp);
@@ -1017,8 +1021,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mNotification = mNotificationBuilder.build();
             mNotification.bigContentView = remoteViewBig;
             mNotification.contentView = remoteViewSmall;
+            if ( playbackState == PLAYSTATE.PLAYING) {
+                startForeground(NOTIFICATION_ID, mNotification);
+            } else {
+                stopForeground(false);
+            }
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-            startForeground(NOTIFICATION_ID, mNotification);
 
         } else {
             clearNotification();

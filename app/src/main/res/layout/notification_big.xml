@@ -6,12 +6,12 @@
 
     <ImageView
         android:id="@+id/notification_big_image"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="@dimen/notification_big_height"
+        android:layout_height="@dimen/notification_big_height"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:src="@drawable/cover_placeholder_96dp" />
 
@@ -20,15 +20,13 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/notification_big_buttons"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@+id/notification_big_image"
+        android:layout_toEndOf="@+id/notification_big_image"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/standard_padding_medium"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/notification_big_close"
             android:orientation="vertical" >
@@ -39,8 +37,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:maxLines="1"
-                android:textColor="#ffffff"
-                android:textSize="18sp" />
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/notification_font_size_big" />
 
             <TextView
                 android:id="@+id/notification_big_artist"
@@ -57,8 +55,8 @@
 
         <ImageButton
             android:id="@+id/notification_big_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_clear_24dp"

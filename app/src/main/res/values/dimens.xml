@@ -8,6 +8,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <!-- padding values -->
     <dimen name="standard_padding_small">4dp</dimen>
+    <dimen name="standard_padding_medium">8dp</dimen>
     <!-- margins for fragment content -->
     <dimen name="fragment_content_horizontal_margin">0dp</dimen>
     <dimen name="fragment_content_vertical_margin">0dp</dimen>
@@ -19,4 +20,12 @@
     <dimen name="albums_item_height">136dp</dimen>
     <dimen name="albums_text_height">48dp</dimen>
     <dimen name="albums_cover_height">128dp</dimen>
+
+    <!-- big notification dimensions -->
+    <dimen name="notification_big_height">128dp</dimen>
+
+    <!-- font sizes for notifications -->
+    <dimen name="notification_font_size_small">14sp</dimen>
+    <dimen name="notification_font_size_medium">16sp</dimen>
+    <dimen name="notification_font_size_big">20sp</dimen>
 </resources>
