@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.odyssey.R;
-import org.odyssey.adapter.AllTracksListViewAdapter;
+import org.odyssey.adapter.TracksListViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
@@ -30,7 +29,7 @@ import java.util.List;
 
 public class AllTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
 
-    private AllTracksListViewAdapter mAllTracksListViewAdapter;
+    private TracksListViewAdapter mTracksListViewAdapter;
 
     private OnArtistSelectedListener mArtistSelectedCallback;
 
@@ -53,9 +52,9 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         // add progressbar
         mRootList.setEmptyView(rootView.findViewById(R.id.all_tracks_progressbar));
 
-        mAllTracksListViewAdapter = new AllTracksListViewAdapter(getActivity());
+        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
 
-        mRootList.setAdapter(mAllTracksListViewAdapter);
+        mRootList.setAdapter(mTracksListViewAdapter);
         mRootList.setOnItemClickListener(this);
 
         registerForContextMenu(mRootList);
@@ -94,7 +93,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> arg0, List<TrackModel> model) {
-        mAllTracksListViewAdapter.swapModel(model);
+        mTracksListViewAdapter.swapModel(model);
         // Reset old scroll position
         if (mLastPosition >= 0) {
             mRootList.setSelection(mLastPosition);
@@ -104,13 +103,13 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<List<TrackModel>> arg0) {
-        mAllTracksListViewAdapter.swapModel(null);
+        mTracksListViewAdapter.swapModel(null);
     }
 
     public void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAllTracksListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mTracksListViewAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         // get artist id
@@ -182,7 +181,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         // Enqueue single track
 
         try {
-            TrackModel track = (TrackModel) mAllTracksListViewAdapter.getItem(position);
+            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
             mServiceConnection.getPBS().enqueueTrack(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -194,7 +193,7 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         // Enqueue single track
 
         try {
-            TrackModel track = (TrackModel) mAllTracksListViewAdapter.getItem(position);
+            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
             mServiceConnection.getPBS().enqueueTrackAsNext(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block

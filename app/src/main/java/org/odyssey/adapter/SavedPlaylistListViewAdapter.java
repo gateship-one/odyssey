@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.odyssey.models.PlaylistModel;
-import org.odyssey.views.SavedPlaylistsListViewItem;
+import org.odyssey.views.PlaylistsListViewItem;
 
 public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistModel> {
 
@@ -26,10 +26,10 @@ public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistMod
         String playlistTitle = playlist.getPlaylistName();
 
         if(convertView != null) {
-            SavedPlaylistsListViewItem savedPlaylistsListViewItem = (SavedPlaylistsListViewItem) convertView;
-            savedPlaylistsListViewItem.setTitle(playlistTitle);
+            PlaylistsListViewItem playlistsListViewItem = (PlaylistsListViewItem) convertView;
+            playlistsListViewItem.setTitle(playlistTitle);
         } else {
-            convertView = new SavedPlaylistsListViewItem(mContext, playlistTitle);
+            convertView = new PlaylistsListViewItem(mContext, playlistTitle);
         }
 
         return convertView;

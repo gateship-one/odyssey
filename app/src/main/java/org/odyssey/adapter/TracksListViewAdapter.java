@@ -5,18 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.odyssey.models.TrackModel;
-import org.odyssey.views.PlaylistTracksListViewItem;
+import org.odyssey.views.TracksListViewItem;
 
-public class PlaylistTracksListViewAdapter extends GenericViewAdapter<TrackModel>{
+public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
 
     private Context mContext;
 
-    public PlaylistTracksListViewAdapter(Context context) {
+    public TracksListViewAdapter(Context context) {
         super();
 
         mContext = context;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -45,13 +44,13 @@ public class PlaylistTracksListViewAdapter extends GenericViewAdapter<TrackModel
         String trackDuration = minutes + ":" + seconds;
 
         if(convertView != null) {
-            PlaylistTracksListViewItem playlistTracksListViewItem = (PlaylistTracksListViewItem) convertView;
-            playlistTracksListViewItem.setNumber(trackNumber);
-            playlistTracksListViewItem.setTitle(trackTitle);
-            playlistTracksListViewItem.setAdditionalInformation(trackInformation);
-            playlistTracksListViewItem.setDuration(trackDuration);
+            TracksListViewItem tracksListViewItem = (TracksListViewItem) convertView;
+            tracksListViewItem.setNumber(trackNumber);
+            tracksListViewItem.setTitle(trackTitle);
+            tracksListViewItem.setAdditionalInformation(trackInformation);
+            tracksListViewItem.setDuration(trackDuration);
         } else {
-            convertView = new PlaylistTracksListViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
+            convertView = new TracksListViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
         }
 
         return convertView;

@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
-import org.odyssey.adapter.PlaylistTracksListViewAdapter;
+import org.odyssey.adapter.TracksListViewAdapter;
 import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class PlaylistTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener{
 
-    private PlaylistTracksListViewAdapter mPlaylistTracksListViewAdapter;
+    private TracksListViewAdapter mTracksListViewAdapter;
 
     private PlaybackServiceConnection mServiceConnection;
 
@@ -48,9 +48,9 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         // get listview
         ListView playlistTracksListView = (ListView) rootView.findViewById(R.id.playlist_tracks_listview);
 
-        mPlaylistTracksListViewAdapter = new PlaylistTracksListViewAdapter(getActivity());
+        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
 
-        playlistTracksListView.setAdapter(mPlaylistTracksListViewAdapter);
+        playlistTracksListView.setAdapter(mTracksListViewAdapter);
 
         playlistTracksListView.setOnItemClickListener(this);
 
@@ -99,12 +99,12 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> arg0, List<TrackModel> model) {
-        mPlaylistTracksListViewAdapter.swapModel(model);
+        mTracksListViewAdapter.swapModel(model);
     }
 
     @Override
     public void onLoaderReset(Loader<List<TrackModel>> arg0) {
-        mPlaylistTracksListViewAdapter.swapModel(null);
+        mTracksListViewAdapter.swapModel(null);
     }
 
     @Override
@@ -158,9 +158,9 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
     void enqueuePlaylist() {
         // enqueue complete playlist
 
-        for (int i = 0; i < mPlaylistTracksListViewAdapter.getCount(); i++) {
+        for (int i = 0; i < mTracksListViewAdapter.getCount(); i++) {
             try {
-                TrackModel track = (TrackModel) mPlaylistTracksListViewAdapter.getItem(i);
+                TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(i);
                 mServiceConnection.getPBS().enqueueTrack(track);
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
@@ -173,7 +173,7 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         // Enqueue single track
 
         try {
-            TrackModel track = (TrackModel) mPlaylistTracksListViewAdapter.getItem(position);
+            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
             mServiceConnection.getPBS().enqueueTrack(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -185,7 +185,7 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         // Enqueue single track as next
 
         try {
-            TrackModel track = (TrackModel) mPlaylistTracksListViewAdapter.getItem(position);
+            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
             mServiceConnection.getPBS().enqueueTrackAsNext(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block

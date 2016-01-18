@@ -5,14 +5,14 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public abstract class GenericListItem extends LinearLayout {
+public abstract class GenericTracksListItem extends LinearLayout {
 
     protected TextView mNumberView;
     protected TextView mTitleView;
     protected TextView mInformationView;
     protected TextView mDurationView;
 
-    public GenericListItem(Context context) {
+    public GenericTracksListItem(Context context) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

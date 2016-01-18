@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import org.odyssey.R;
 
-public class CurrentPlaylistViewItem extends GenericListItem {
+public class CurrentPlaylistViewItem extends GenericTracksListItem {
 
     TextView mSeparatorView;
 
@@ -18,32 +18,32 @@ public class CurrentPlaylistViewItem extends GenericListItem {
         mInformationView.setText(information);
         mDurationView.setText(duration);
 
-        mSeparatorView = (TextView) findViewById(R.id.item_current_playlist_separator);
+        mSeparatorView = (TextView) findViewById(R.id.item_tracks_separator);
     }
 
     @Override
     TextView provideTitleView() {
-        return (TextView) this.findViewById(R.id.item_current_playlist_title);
+        return (TextView) this.findViewById(R.id.item_tracks_title);
     }
 
     @Override
     TextView provideNumberView() {
-        return (TextView) this.findViewById(R.id.item_current_playlist_number);
+        return (TextView) this.findViewById(R.id.item_tracks_number);
     }
 
     @Override
     TextView provideInformationView() {
-        return (TextView) this.findViewById(R.id.item_current_playlist_additional_information);
+        return (TextView) this.findViewById(R.id.item_tracks_additional_information);
     }
 
     @Override
     TextView provideDurationView() {
-        return (TextView) this.findViewById(R.id.item_current_playlist_duration);
+        return (TextView) this.findViewById(R.id.item_tracks_duration);
     }
 
     @Override
     int provideLayout() {
-        return R.layout.listview_item_current_playlist;
+        return R.layout.listview_item_tracks;
     }
 
     public void setPlaying(boolean state) {

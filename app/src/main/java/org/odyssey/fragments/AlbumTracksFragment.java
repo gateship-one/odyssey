@@ -20,7 +20,7 @@ import android.widget.ListView;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
-import org.odyssey.adapter.AlbumTracksListViewAdapter;
+import org.odyssey.adapter.TracksListViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class AlbumTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
 
-    private AlbumTracksListViewAdapter mAlbumTracksListViewAdapter;
+    private TracksListViewAdapter mTracksListViewAdapter;
 
     private OnArtistSelectedListener mArtistSelectedCallback;
 
@@ -56,9 +56,9 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // get listview
         ListView albumTracksListView = (ListView) rootView.findViewById(R.id.album_tracks_listview);
 
-        mAlbumTracksListViewAdapter = new AlbumTracksListViewAdapter(getActivity());
+        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
 
-        albumTracksListView.setAdapter(mAlbumTracksListViewAdapter);
+        albumTracksListView.setAdapter(mTracksListViewAdapter);
 
         albumTracksListView.setOnItemClickListener(this);
 
@@ -124,18 +124,18 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> arg0, List<TrackModel> model) {
-        mAlbumTracksListViewAdapter.swapModel(model);
+        mTracksListViewAdapter.swapModel(model);
     }
 
     @Override
     public void onLoaderReset(Loader<List<TrackModel>> arg0) {
-        mAlbumTracksListViewAdapter.swapModel(null);
+        mTracksListViewAdapter.swapModel(null);
     }
 
     public void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAlbumTracksListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mTracksListViewAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         // get artist id
@@ -194,7 +194,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // Enqueue single track
 
         try {
-            mServiceConnection.getPBS().enqueueTrack((TrackModel) mAlbumTracksListViewAdapter.getItem(position));
+            mServiceConnection.getPBS().enqueueTrack((TrackModel) mTracksListViewAdapter.getItem(position));
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -205,7 +205,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // Enqueue single track
 
         try {
-            mServiceConnection.getPBS().enqueueTrackAsNext((TrackModel) mAlbumTracksListViewAdapter.getItem(position));
+            mServiceConnection.getPBS().enqueueTrackAsNext((TrackModel) mTracksListViewAdapter.getItem(position));
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -229,9 +229,9 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // Enqueue complete album
 
         // enqueue albumtracks
-        for (int i = 0; i < mAlbumTracksListViewAdapter.getCount(); i++) {
+        for (int i = 0; i < mTracksListViewAdapter.getCount(); i++) {
             try {
-                mServiceConnection.getPBS().enqueueTrack((TrackModel) mAlbumTracksListViewAdapter.getItem(i));
+                mServiceConnection.getPBS().enqueueTrack((TrackModel) mTracksListViewAdapter.getItem(i));
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

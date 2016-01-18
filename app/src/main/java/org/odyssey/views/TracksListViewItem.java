@@ -5,9 +5,9 @@ import android.widget.TextView;
 
 import org.odyssey.R;
 
-public class PlaylistTracksListViewItem extends GenericListItem {
+public class TracksListViewItem extends GenericTracksListItem {
 
-    public PlaylistTracksListViewItem(Context context, String number, String title, String information, String duration) {
+    public TracksListViewItem(Context context, String number, String title, String information, String duration) {
         super(context);
 
         mTitleView.setText(title);
@@ -18,26 +18,26 @@ public class PlaylistTracksListViewItem extends GenericListItem {
 
     @Override
     TextView provideTitleView() {
-        return (TextView) this.findViewById(R.id.item_playlist_tracks_title);
+        return (TextView) this.findViewById(R.id.item_tracks_title);
     }
 
     @Override
     TextView provideNumberView() {
-        return (TextView) this.findViewById(R.id.item_playlist_tracks_number);
+        return (TextView) this.findViewById(R.id.item_tracks_number);
     }
 
     @Override
     TextView provideInformationView() {
-        return (TextView) this.findViewById(R.id.item_playlist_tracks_additional_information);
+        return (TextView) this.findViewById(R.id.item_tracks_additional_information);
     }
 
     @Override
     TextView provideDurationView() {
-        return (TextView) this.findViewById(R.id.item_playlist_tracks_duration);
+        return (TextView) this.findViewById(R.id.item_tracks_duration);
     }
 
     @Override
     int provideLayout() {
-        return R.layout.listview_item_playlist_tracks;
+        return R.layout.listview_item_tracks;
     }
 }

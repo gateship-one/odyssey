@@ -7,7 +7,7 @@
     android:padding="5dp" >
 
     <TextView
-        android:id="@+id/item_saved_playlists_title"
+        android:id="@+id/item_playlists_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
