@@ -280,11 +280,12 @@ public class StateManager {
         String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
         String[] selectionArgs = { StateTable.TRACKPOSITION_ROW };
         Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
+        long value = 0;
         if (resultCursor.moveToFirst()) {
-            long value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-            return value;
+            value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
         }
-        return 0;
+        resultCursor.close();
+        return value;
     }
 
     public long getLastTrackNumber() {
@@ -292,11 +293,12 @@ public class StateManager {
         String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
         String[] selectionArgs = { StateTable.TRACKNUMBER_ROW };
         Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
+        long value = 0;
         if (resultCursor.moveToFirst()) {
-            long value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-            return value;
+            value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
         }
-        return 0;
+        resultCursor.close();
+        return value;
     }
 
     public int getLastRandomState() {
@@ -304,11 +306,12 @@ public class StateManager {
         String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
         String[] selectionArgs = { StateTable.RANDOM_STATE_ROW };
         Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
+        int value = 0;
         if (resultCursor.moveToFirst()) {
-            int value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-            return value;
+            value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
         }
-        return 0;
+        resultCursor.close();
+        return value;
     }
 
     public int getLastRepeatState() {
@@ -316,10 +319,11 @@ public class StateManager {
         String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
         String[] selectionArgs = { StateTable.REPEAT_STATE_ROW };
         Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
+        int value = 0;
         if (resultCursor.moveToFirst()) {
-            int value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-            return value;
+            value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
         }
-        return 0;
+        resultCursor.close();
+        return value;
     }
 }

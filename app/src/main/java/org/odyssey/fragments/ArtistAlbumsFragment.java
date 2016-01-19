@@ -223,6 +223,8 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
     }
 
     private void playAlbum(int position) {

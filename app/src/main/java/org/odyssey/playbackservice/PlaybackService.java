@@ -1778,6 +1778,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
                         mContext.getContentResolver().insert(currentRow, mInserts);
                     }
+
+                    c.close();
                 }
             }
         }

@@ -151,7 +151,6 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
         Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", clickedPlaylist.getPlaylistID()), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
-
         // get all tracks of the playlist
         if (cursorTracks.moveToFirst()) {
             do {
@@ -175,6 +174,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
             } while (cursorTracks.moveToNext());
         }
+
+        cursorTracks.close();
 
         // play playlist
         try {

@@ -203,9 +203,12 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
                     } while (cursorTracks.moveToNext());
                 }
 
+                cursorTracks.close();
+
             } while (cursorAlbums.moveToNext());
         }
 
+        cursorAlbums.close();
     }
 
     private void playAllAlbums(int position) {

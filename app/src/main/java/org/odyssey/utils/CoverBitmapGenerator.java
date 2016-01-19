@@ -45,6 +45,8 @@ public class CoverBitmapGenerator {
                 BitmapDrawable cover = (BitmapDrawable) BitmapDrawable.createFromPath(coverPath);
                 mListener.receiveBitmap(cover);
             }
+
+            cursor.close();
         }
     }
 

@@ -205,5 +205,7 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
             // reload data
             getLoaderManager().restartLoader(0, getArguments(), this);
         }
+
+        trackCursor.close();
     }
 }

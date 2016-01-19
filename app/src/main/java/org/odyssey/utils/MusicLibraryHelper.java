@@ -67,6 +67,9 @@ public class MusicLibraryHelper {
         artistCursor.moveToFirst();
 
         long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+
+        artistCursor.close();
+
         return artistID;
     }
 }

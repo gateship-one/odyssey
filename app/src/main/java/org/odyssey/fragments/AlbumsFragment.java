@@ -216,6 +216,8 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
 
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
     }
 
     private void playAlbum(int position) {
