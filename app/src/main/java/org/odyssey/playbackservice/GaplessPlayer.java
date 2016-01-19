@@ -34,6 +34,8 @@ public class GaplessPlayer {
 
     private Semaphore mSecondPreparingStart;
 
+    private int mAudioSessionID;
+
     public GaplessPlayer(PlaybackService service) {
         this.mTrackFinishedListeners = new ArrayList<GaplessPlayer.OnTrackFinishedListener>();
         this.mTrackStartListeners = new ArrayList<GaplessPlayer.OnTrackStartedListener>();
@@ -81,14 +83,7 @@ public class GaplessPlayer {
         } catch (IOException e) {
             throw new PlaybackException(REASON.IOError);
         }
-        /*
-         * Signal audio effect desire to android
-         */
-        Intent audioEffectIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-        audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
-        audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-        mPlaybackService.sendBroadcast(audioEffectIntent);
-        mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
+
         mPrimarySource = uri;
         mCurrentMediaPlayer.setOnCompletionListener(new TrackCompletionListener());
         mCurrentMediaPlayer.setOnPreparedListener(mPrimaryPreparedListener);
@@ -144,9 +139,13 @@ public class GaplessPlayer {
             }
 
             if (mCurrentPrepared) {
-                                /*
-                * Signal audio effect desire to android
-                */
+            /*
+             * Signal android desire to close audio effect session
+             */
+                Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
+                audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                mPlaybackService.sendBroadcast(audioEffectIntent);
                 mCurrentMediaPlayer.reset();
                 mCurrentMediaPlayer.release();
             }
@@ -256,13 +255,14 @@ public class GaplessPlayer {
 
             // only start playing if its desired
 
-            // Check if an immedieate jump is requested
+            // Check if an immediate jump is requested
             if (mPrepareTime > 0) {
                 Log.v(TAG, "Jumping to requested time before playing");
                 mp.seekTo(mPrepareTime);
                 mPrepareTime = 0;
             }
             mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+            mp.start();
 
             /*
              * Signal audio effect desire to android
@@ -270,8 +270,10 @@ public class GaplessPlayer {
             Intent audioEffectIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
             audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
             audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+            mPlaybackService.sendBroadcast(audioEffectIntent);
+            mp.setAuxEffectSendLevel(1.0f);
+            Log.v(TAG, "Opened audio effects for first player");
 
-            mp.start();
             // Notify connected listeners
             for (OnTrackStartedListener listener : mTrackStartListeners) {
                 listener.onTrackStarted(mPrimarySource);
@@ -303,13 +305,8 @@ public class GaplessPlayer {
             // If it is nextMediaPlayer it should be set for currentMP
             mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             mSecondPrepared = true;
-            /*
-             * Signal audio effect desire to android
-             */
-            Intent audioEffectIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
             mCurrentMediaPlayer.setNextMediaPlayer(mp);
+
             Log.v(TAG, "Set Next MP");
         }
     };
@@ -378,13 +375,16 @@ public class GaplessPlayer {
 
             // Cleanup old MP
             int audioSessionID = mp.getAudioSessionId();
+
+            mCurrentMediaPlayer = null;
             /*
              * Signal android desire to close audio effect session
              */
             Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
             audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
             audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-            mCurrentMediaPlayer = null;
+            mPlaybackService.sendBroadcast(audioEffectIntent);
+            Log.v(TAG,"Close audio effects for previous player");
 
             for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
                 listener.onTrackFinished();
@@ -399,6 +399,16 @@ public class GaplessPlayer {
                 mPrimarySource = mSecondarySource;
                 mSecondarySource = "";
                 mNextMediaPlayer = null;
+
+                /*
+                 * Signal audio effect desire to android
+                */
+                Intent audioEffectOpenIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+                audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+                audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                mPlaybackService.sendBroadcast(audioEffectOpenIntent);
+                mp.setAuxEffectSendLevel(1.0f);
+                Log.v(TAG, "Opened audio effects for new player");
 
                 // Notify connected listeners
                 for (OnTrackStartedListener listener : mTrackStartListeners) {
