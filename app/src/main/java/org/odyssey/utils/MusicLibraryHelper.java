@@ -53,4 +53,20 @@ public class MusicLibraryHelper {
 //
 //        return new TrackItem(title, artist, album, url, trackno, duration, albumKey);
 //    }
+
+    public static long getArtistIDFromName(String name, ContentResolver resolver) {
+        // get artist id
+        String whereVal[] = { name };
+
+        String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
+
+        String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
+
+        Cursor artistCursor = resolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
+
+        artistCursor.moveToFirst();
+
+        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+        return artistID;
+    }
 }

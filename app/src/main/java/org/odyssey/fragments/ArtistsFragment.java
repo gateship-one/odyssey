@@ -122,6 +122,11 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
 
+        if (artistID == -1 ) {
+            // Try to get the artistID manually because it seems to be missing
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity().getContentResolver());
+        }
+
         // send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(artist, artistID);
     }

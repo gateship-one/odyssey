@@ -141,20 +141,9 @@ public class AlbumsFragment extends Fragment implements LoaderManager.LoaderCall
         // identify current artist
 
         AlbumModel clickedAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
+
         String artistTitle = clickedAlbum.getArtistName();
-
-        // get artist id
-        String whereVal[] = { artistTitle };
-
-        String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
-
-        String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
-
-        Cursor artistCursor = getActivity().getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
-
-        artistCursor.moveToFirst();
-
-        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity().getContentResolver());
 
         // Send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
