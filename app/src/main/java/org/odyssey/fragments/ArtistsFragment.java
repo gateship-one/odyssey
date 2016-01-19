@@ -163,7 +163,13 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
         // identify current artist
         ArtistModel currentArtist = (ArtistModel) mArtistsGridViewAdapter.getItem(position);
 
+        String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
+
+        if (artistID == -1 ) {
+            // Try to get the artistID manually because it seems to be missing
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity().getContentResolver());
+        }
 
         // get all albums of the current artist
         Cursor cursorAlbums = getActivity().getContentResolver().query(MediaStore.Audio.Artists.Albums.getContentUri("external", artistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
