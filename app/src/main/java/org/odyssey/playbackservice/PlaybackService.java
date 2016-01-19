@@ -233,20 +233,28 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG, "PBS onStartCommand");
         if (intent.getExtras() != null) {
             String action = intent.getExtras().getString("action");
+
             if (action != null) {
                 Log.v(TAG, "Action requested: " + action);
-                if (action.equals(ACTION_TOGGLEPAUSE)) {
-                    togglePause();
-                } else if (action.equals(ACTION_NEXT)) {
-                    setNextTrack();
-                } else if (action.equals(ACTION_PREVIOUS)) {
-                    setPreviousTrack();
-                } else if (action.equals(ACTION_STOP)) {
-                    stop();
-                } else if (action.equals(ACTION_PLAY)) {
-                    resume();
-                } else if (action.equals(ACTION_QUIT)) {
-                    stopService();
+                switch (action) {
+                    case ACTION_TOGGLEPAUSE:
+                        togglePause();
+                        break;
+                    case ACTION_NEXT:
+                        setNextTrack();
+                        break;
+                    case ACTION_PREVIOUS:
+                        setPreviousTrack();
+                        break;
+                    case ACTION_STOP:
+                        stop();
+                        break;
+                    case ACTION_PLAY:
+                        resume();
+                        break;
+                    case ACTION_QUIT:
+                        stopService();
+                        break;
                 }
             }
         }
