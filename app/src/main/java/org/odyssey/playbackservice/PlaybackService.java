@@ -1442,7 +1442,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // if next index equal to current index create a new random
             // index but just trying 20 times
             int counter = 0;
-            while (mNextPlayingIndex == mCurrentPlayingIndex && counter > 20) {
+            while (mNextPlayingIndex == mCurrentPlayingIndex && counter < 20) {
                 mCurrentPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
                 counter++;
             }
