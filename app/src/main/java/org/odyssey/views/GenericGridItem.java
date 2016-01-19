@@ -31,16 +31,16 @@ public abstract class GenericGridItem extends RelativeLayout {
         inflater.inflate(provideLayout(), this, true);
         setLayoutParams(layoutParams);
 
+        mImageView = provideImageView();
+        mTitleView = provideTitleView();
+
+        mSwitcher = provideViewSwitcher();
+
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverViewReference = new WeakReference<ImageView>((ImageView) provideImageView());
         mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>((ViewSwitcher) provideViewSwitcher());
         mHolder.imagePath = imageURL;
         mHolder.imageDimension = new Pair<Integer,Integer>(mImageView.getWidth(),mImageView.getHeight());
-
-        mImageView = provideImageView();
-        mTitleView = provideTitleView();
-
-        mSwitcher = provideViewSwitcher();
     }
 
     /* Methods needed to provide generic imageview, generic and textview
