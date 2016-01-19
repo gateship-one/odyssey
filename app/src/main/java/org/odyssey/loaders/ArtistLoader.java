@@ -3,16 +3,13 @@ package org.odyssey.loaders;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.odyssey.models.GenericModel;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.models.ArtistModel;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorJoiner;
 import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
 /*
  * Custom Loader for ARTIST with ALBUM_ART
@@ -37,7 +34,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
     @Override
     public List<ArtistModel> loadInBackground() {
         ArrayList<ArtistModel> artists = new ArrayList<ArtistModel>();
-        String artist, artistKey, coverPath, albumArtist, albumCoverPath;
+        String artist, artistKey, coverPath;
         if ( !SHOW_ONLY_ALBUM_ARTISTS ) {
             // get all album covers
             Cursor cursorAlbumArt = mContext.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM}, MediaStore.Audio.Albums.ALBUM_ART + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null,
@@ -48,16 +45,11 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
 
             // join both cursor if match is found
-            int numberOfTracks, numberOfAlbums;
             long artistID;
-            boolean foundCover = false;
-            int pos = 0;
 
             int artistTitleColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
             int artistKeyColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY);
-            int artistNoTColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
             int artistIDColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists._ID);
-            int artistNoAColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
 
             int albumArtistTitleColumnIndex = cursorAlbumArt.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
             int albumCoverPathColumnIndex = cursorAlbumArt.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
@@ -102,10 +94,6 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
                 artist = cursorAlbumArt.getString(albumArtistTitleColumnIndex);
                 coverPath = cursorAlbumArt.getString(albumCoverPathColumnIndex);
-
-                if ( coverPath == null) {
-                    Log.v("ARTISTLOADER", "null coverart :)");
-                }
 
                 artists.add(new ArtistModel(artist, coverPath, "", -1));
             }
