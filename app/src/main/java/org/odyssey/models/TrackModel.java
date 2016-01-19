@@ -80,6 +80,30 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeString(mTrackAlbumKey);
     }
 
+    @Override
+    public boolean equals(Object model) {
+        if (model == null) {
+            return false;
+        }
+        if (model == this) {
+            return true;
+        }
+        if (!(model instanceof TrackModel)) {
+            return false;
+        }
+        TrackModel track = (TrackModel)model;
+        if ( !this.mTrackName.equals(track.mTrackArtistName)) {
+            return false;
+        }
+        if ( !this.mTrackAlbumName.equals(track.mTrackAlbumName)) {
+            return false;
+        }
+        if ( !this.mTrackArtistName.equals(track.mTrackArtistName)) {
+            return false;
+        }
+        return true;
+    }
+
     public static Parcelable.Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
 
         @Override
