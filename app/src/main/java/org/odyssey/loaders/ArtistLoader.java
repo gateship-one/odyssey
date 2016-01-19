@@ -19,8 +19,7 @@ import android.util.Log;
  */
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
-    public static boolean SHOW_ONLY_ALBUM_ARTISTS = true;
-
+    public static final boolean SHOW_ONLY_ALBUM_ARTISTS = true;
 
     Context mContext;
 
@@ -109,8 +108,8 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                 }
 
                 artists.add(new ArtistModel(artist, coverPath, "", -1));
-
             }
+            cursorAlbumArt.close();
         }
         return artists;
     }
