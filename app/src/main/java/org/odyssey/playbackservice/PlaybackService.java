@@ -13,7 +13,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -130,6 +129,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     // Playlistmanager for saving and reading playlist
     private StateManager mPlaylistManager = null;
+
+    // Save last track
+    private TrackModel mLastTrack = null;
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -648,7 +651,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Check if another song follows current one for gapless
             // playback
             mNextPlayingIndex = index;
-
         } else if (index == -1) {
             stop();
         }
@@ -867,21 +869,25 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // check if notification is set, and set if not.
             if (mPlayer.isRunning() && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Get the actual TrackModel and distribute the information
-                TrackModel TrackModel = mCurrentList.get(mCurrentPlayingIndex);
+                TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
-                    setLockscreenPicture(TrackModel, PLAYSTATE.PLAYING);
+                    setLockscreenPicture(newTrack, PLAYSTATE.PLAYING);
                 if (updateNotification)
-                    setNotification(TrackModel, PLAYSTATE.PLAYING);
+                    setNotification(newTrack, PLAYSTATE.PLAYING);
                 if (broadcastNewInfo)
-                    broadcastPlaybackInformation(TrackModel, PLAYSTATE.PLAYING);
+                    broadcastPlaybackInformation(newTrack, PLAYSTATE.PLAYING);
+
+                mLastTrack = newTrack;
             } else if (mPlayer.isPaused() && (mCurrentPlayingIndex >= 0)) {
-                TrackModel TrackModel = mCurrentList.get(mCurrentPlayingIndex);
+                TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
-                    setLockscreenPicture(TrackModel, PLAYSTATE.PAUSE);
+                    setLockscreenPicture(newTrack, PLAYSTATE.PAUSE);
                 if (updateNotification)
-                    setNotification(TrackModel, PLAYSTATE.PAUSE);
+                    setNotification(newTrack, PLAYSTATE.PAUSE);
                 if (broadcastNewInfo)
-                    broadcastPlaybackInformation(TrackModel, PLAYSTATE.PAUSE);
+                    broadcastPlaybackInformation(newTrack, PLAYSTATE.PAUSE);
+
+                mLastTrack = newTrack;
             } else {
                 // Remove notification if shown
                 if (updateNotification)
@@ -890,6 +896,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                     setLockscreenPicture(null, PLAYSTATE.STOPPED);
                 if (broadcastNewInfo)
                     broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
+
+                mLastTrack = null;
             }
         } else {
             // No playback, check if notification is set and remove it then
@@ -898,10 +906,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (updateLockScreen)
                 setLockscreenPicture(null, PLAYSTATE.STOPPED);
             // Notify all listeners with broadcast about playing situation
-            if (broadcastNewInfo)
+            if (broadcastNewInfo) {
                 broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
-        }
+            }
 
+            mLastTrack = null;
+        }
     }
 
     /* Removes the Foreground notification */
@@ -928,7 +938,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             } else {
                 mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PAUSED,0,1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
             }
-            MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
+            // Try to get old metadata to save image retrieval.
+            MediaMetadata oldData = mMediaSession.getController().getMetadata();
+            MediaMetadata.Builder metaDataBuilder;
+            if (oldData == null ) {
+                metaDataBuilder = new MediaMetadata.Builder();
+            } else {
+                metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
+            }
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
             metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
@@ -938,11 +955,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION,track.getTrackDuration());
             mMediaSession.setMetadata(metaDataBuilder.build());
 
-            mLockscreenCoverGenerator.getImage(track);
+            // Only update notification image if album changed to preserve energy
+            if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                mLockscreenCoverGenerator.getImage(track);
+            }
         } else {
             // Clear lockscreen
-            // FIXME check if working
-            mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED,0,0.0f).build());
+            mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED, 0, 0.0f).build());
             mMediaSession.setActive(false);
         }
     }
@@ -1004,16 +1023,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             PendingIntent quitPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViewBig.setOnClickPendingIntent(R.id.notification_big_close, quitPendingIntent);
 
-            // Cover
-            remoteViewBig.setImageViewResource(R.id.notification_big_image, R.drawable.cover_placeholder_96dp);
-            remoteViewSmall.setImageViewResource(R.id.notification_small_image, R.drawable.cover_placeholder_96dp);
+            // Cover but only if changed
+            if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                remoteViewBig.setImageViewResource(R.id.notification_big_image, R.drawable.cover_placeholder_96dp);
+                remoteViewSmall.setImageViewResource(R.id.notification_small_image, R.drawable.cover_placeholder_96dp);
 
-            mNotificationCoverGenerator.getImage(track);
+                mNotificationCoverGenerator.getImage(track);
+            }
 
             // Open application intent
             Intent resultIntent = new Intent(this, OdysseyMainActivity.class);
             resultIntent.putExtra("Fragment", "currentsong");
             resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+            // Swipe away intent
+            mNotificationBuilder.setDeleteIntent(quitPendingIntent);
 
             PendingIntent resultPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_INTENT_OPENGUI, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mNotificationBuilder.setContentIntent(resultPendingIntent);
@@ -1483,7 +1507,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
             // Notify all the things
             updateStatus();
-
             if (mRandom == RANDOMSTATE.RANDOM_OFF.ordinal()) {
                 // Random off
                 if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
@@ -1798,4 +1821,5 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             seekTo((int)pos);
         }
     }
+
 }
