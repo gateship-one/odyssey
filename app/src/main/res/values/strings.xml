@@ -45,7 +45,7 @@
     <string name="popup_menu_action_saveplaylist">save playlist</string>
 
     <!-- seperator -->
-    <string name="separator">" - "</string>
+    <string name="separator" translatable="false">" - "</string>
 
     <!-- default playlist title -->
     <string name="default_playlist_title">New Playlist</string>

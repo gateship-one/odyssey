@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Odyssey</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="context_menu_action_deleteplaylist">Playlist löschen</string>
+    <string name="context_menu_action_enqueue">Zur Playlist hinzufügen</string>
+    <string name="context_menu_action_enqueueasnext">Nach aktuellem Song spielen</string>
+    <string name="context_menu_action_playalbum">Album abspielen</string>
+    <string name="context_menu_action_playalbums">Alben abspielen</string>
+    <string name="context_menu_action_playplaylist">Playlist abspielen</string>
+    <string name="context_menu_action_playsong">Song abspielen</string>
+    <string name="context_menu_action_removetrack">Song löschen</string>
+    <string name="context_menu_action_showartist">Interpret anzeigen</string>
+    <string name="default_playlist_title">Neue Playlist</string>
+    <string name="dialog_action_cancel">Abbrechen</string>
+    <string name="dialog_action_save">Speichern</string>
+    <string name="dialog_save_playlist">Playlist speichern</string>
+    <string name="fragment_title_albums">Alben</string>
+    <string name="fragment_title_all_tracks">Songs</string>
+    <string name="fragment_title_artists">Interpreten</string>
+    <string name="fragment_title_my_music">Meine Musik</string>
+    <string name="fragment_title_saved_playlists">Playlisten</string>
+    <string name="fragment_title_settings">Einstellungen</string>
+    <string name="nav_menu_my_music">Meine Musik</string>
+    <string name="nav_menu_saved_playlists">Playlisten</string>
+    <string name="nav_menu_settings">Einstellungen</string>
+    <string name="navigation_drawer_close">Navigationsschieber schließen</string>
+    <string name="navigation_drawer_open">Navigationsschieber öffnen</string>
+    <string name="popup_menu_action_clearplaylist">Playlist löschen</string>
+    <string name="popup_menu_action_saveplaylist">Playlist speichern</string>
+    <string name="popup_menu_action_shuffleplaylist">Playlist durchmischen</string>
+</resources>
