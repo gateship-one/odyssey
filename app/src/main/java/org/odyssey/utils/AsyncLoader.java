@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
@@ -27,14 +28,14 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         public WeakReference<ViewSwitcher> coverViewSwitcher;
         public AsyncLoader task;
         //public WeakReference<LruCache<String, Bitmap>> cache;
+        public Pair<Integer,Integer> imageDimension;
     }
 
     @Override
     protected Bitmap doInBackground(CoverViewHolder... params) {
         cover = params[0];
         if (cover.imagePath != null) {
-            // FIXME check thread warning
-            return decodeSampledBitmapFromResource(cover.imagePath, cover.coverViewReference.get().getWidth(), cover.coverViewReference.get().getHeight());
+            return decodeSampledBitmapFromResource(cover.imagePath, cover.imageDimension.first, cover.imageDimension.second);
         }
 
         return null;

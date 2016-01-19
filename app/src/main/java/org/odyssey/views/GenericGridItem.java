@@ -1,6 +1,7 @@
 package org.odyssey.views;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -34,6 +35,7 @@ public abstract class GenericGridItem extends RelativeLayout {
         mHolder.coverViewReference = new WeakReference<ImageView>((ImageView) provideImageView());
         mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>((ViewSwitcher) provideViewSwitcher());
         mHolder.imagePath = imageURL;
+        mHolder.imageDimension = new Pair<Integer,Integer>(mImageView.getWidth(),mImageView.getHeight());
 
         mImageView = provideImageView();
         mTitleView = provideTitleView();
