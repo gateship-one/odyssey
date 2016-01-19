@@ -43,6 +43,18 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+        <receiver android:name="org.odyssey.widget.OdysseyWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="org.odyssey.newtrackinfo"/>
+                <action android:name="org.odyssey.togglepause"/>
+                <action android:name="org.odyssey.stop"/>
+                <action android:name="org.odyssey.previous"/>
+                <action android:name="org.odyssey.next"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_big_info" />
+        </receiver>
     </application>
 
 </manifest>
