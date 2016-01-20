@@ -7,8 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Parcelable;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.odyssey.OdysseyMainActivity;
@@ -18,12 +16,7 @@ import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.utils.CoverBitmapGenerator;
 
-import java.util.ArrayList;
-
-
 public class OdysseyWidgetProvider  extends AppWidgetProvider {
-    private static final String TAG = "OdysseyWidget";
-
     private RemoteViews mViews;
     private AppWidgetManager mAppWidgetManager;
     private Context mContext;
@@ -37,54 +30,27 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        Log.v(TAG, "onUpdate");
         mContext = context;
 
         // Perform this loop procedure for each App Widget that belongs to this
         // provider
         for (int appWidgetId : appWidgetIds) {
-            // get remoteviews
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
-
-            // Main action
-            Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
-            mainIntent.putExtra("Fragment", "currentsong");
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NO_HISTORY);
-            PendingIntent mainPendingIntent = PendingIntent.getActivity(context, INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_ONE_SHOT);
-            views.setOnClickPendingIntent(R.id.widget_big_cover, mainPendingIntent);
-
-            // Play/Pause action
-            Intent playPauseIntent = new Intent(context, PlaybackService.class);
-            playPauseIntent.putExtra("action", PlaybackService.ACTION_TOGGLEPAUSE);
-            PendingIntent playPausePendingIntent = PendingIntent.getService(context, INTENT_PLAYPAUSE, playPauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_big_play, playPausePendingIntent);
-
-            // Previous song action
-            Intent prevIntent = new Intent(context, PlaybackService.class);
-            prevIntent.putExtra("action", PlaybackService.ACTION_PREVIOUS);
-            PendingIntent prevPendingIntent = PendingIntent.getService(context, INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_big_previous, prevPendingIntent);
-
-            // Next song action
-            Intent nextIntent = new Intent(context, PlaybackService.class);
-            nextIntent.putExtra("action", PlaybackService.ACTION_NEXT);
-            PendingIntent nextPendingIntent = PendingIntent.getService(context, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
-
             // Tell the AppWidgetManager to perform an update on the current app widget
             mAppWidgetManager = appWidgetManager;
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-            mViews = views;
+            appWidgetManager.updateAppWidget(appWidgetId, mViews);
         }
+    }
+
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
+
+        mLastTrack = null;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         super.onReceive(context, intent);
-        Log.v(TAG, "Onreceive");
         mContext = context;
         // get remoteviews
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
@@ -118,8 +84,7 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
             }
         }
 
-        // TODO is there a better way?
-        // reset button actions
+        // set button actions
         // Main action
         Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION| Intent.FLAG_ACTIVITY_NO_HISTORY);
