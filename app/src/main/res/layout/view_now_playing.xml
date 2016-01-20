@@ -149,7 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/cover_placeholder"
-                    android:background="?attr/odyssey_color_primary_dark"/>
+                    android:background="@color/colorBackgroundDark"/>
 
                 <org.odyssey.views.CurrentPlaylistView
                     android:id="@+id/now_playing_playlist"
