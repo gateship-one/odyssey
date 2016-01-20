@@ -49,16 +49,16 @@ import org.odyssey.utils.MusicLibraryHelper;
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
     // enums for random, repeat state
-    public static enum RANDOMSTATE {
-        RANDOM_OFF, RANDOM_ON;
+    public enum RANDOMSTATE {
+        RANDOM_OFF, RANDOM_ON
     }
 
-    public static enum REPEATSTATE {
-        REPEAT_OFF, REPEAT_ALL, REPEAT_TRACK;
+    public enum REPEATSTATE {
+        REPEAT_OFF, REPEAT_ALL, REPEAT_TRACK
     }
 
-    public static enum PLAYSTATE {
-        PLAYING, PAUSE, STOPPED;
+    public enum PLAYSTATE {
+        PLAYING, PAUSE, STOPPED
     }
 
     public static final String TAG = "OdysseyPlaybackService";
@@ -1661,7 +1661,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
 
-    };
+    }
 
     /*
      * Stops the service after a specific amount of time

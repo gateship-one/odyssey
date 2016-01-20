@@ -354,10 +354,7 @@ public class GaplessPlayer {
     }
 
     boolean isPrepared() {
-        if (mCurrentMediaPlayer != null && mCurrentPrepared) {
-            return true;
-        }
-        return false;
+        return mCurrentMediaPlayer != null && mCurrentPrepared;
     }
 
     public void setVolume(float leftChannel, float rightChannel) {

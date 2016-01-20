@@ -37,8 +37,8 @@ public abstract class GenericGridItem extends RelativeLayout {
         mSwitcher = provideViewSwitcher();
 
         mHolder = new AsyncLoader.CoverViewHolder();
-        mHolder.coverViewReference = new WeakReference<ImageView>((ImageView) provideImageView());
-        mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>((ViewSwitcher) provideViewSwitcher());
+        mHolder.coverViewReference = new WeakReference<ImageView>(provideImageView());
+        mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>(provideViewSwitcher());
         mHolder.imagePath = imageURL;
         mHolder.imageDimension = new Pair<Integer,Integer>(mImageView.getWidth(),mImageView.getHeight());
     }

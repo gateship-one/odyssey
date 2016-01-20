@@ -68,8 +68,8 @@ public class PlaybackServiceConnection implements ServiceConnection {
     }
 
     public interface ConnectionNotifier {
-        public void onConnect();
+        void onConnect();
 
-        public void onDisconnect();
+        void onDisconnect();
     }
 }

@@ -98,10 +98,7 @@ public class TrackModel implements GenericModel, Parcelable {
         if ( !this.mTrackAlbumName.equals(track.mTrackAlbumName)) {
             return false;
         }
-        if ( !this.mTrackArtistName.equals(track.mTrackArtistName)) {
-            return false;
-        }
-        return true;
+        return this.mTrackArtistName.equals(track.mTrackArtistName);
     }
 
     public static Parcelable.Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
