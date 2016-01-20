@@ -3,6 +3,8 @@ package org.odyssey.playbackservice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.odyssey.models.TrackModel;
+
 /*
  * This class is the parcelable which got send from the PlaybackService to notify
  * receivers like the main-GUI or possible later home screen widgets
@@ -20,6 +22,7 @@ public final class NowPlayingInformation implements Parcelable {
     private int mRepeat;
     private int mRandom;
     private int mPlaylistLength;
+    private TrackModel mCurrentTrack;
 
     public static Parcelable.Creator<NowPlayingInformation> CREATOR = new Parcelable.Creator<NowPlayingInformation>() {
 
@@ -31,8 +34,8 @@ public final class NowPlayingInformation implements Parcelable {
             int repeat = source.readInt();
             int random = source.readInt();
             int playlistlength = source.readInt();
-
-            return new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength);
+            TrackModel currentTrack = source.readParcelable(TrackModel.class.getClassLoader());
+            return new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength,currentTrack);
         }
 
         @Override
@@ -47,13 +50,14 @@ public final class NowPlayingInformation implements Parcelable {
         return 0;
     }
 
-    public NowPlayingInformation(int playing, String playingURL, int playingIndex, int repeat, int random, int playlistlength) {
+    public NowPlayingInformation(int playing, String playingURL, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
         mPlaying = playing;
         mPlayingURL = playingURL;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
         mRandom = random;
         mPlaylistLength = playlistlength;
+        mCurrentTrack = currentTrack;
     }
 
     @Override
@@ -64,6 +68,7 @@ public final class NowPlayingInformation implements Parcelable {
         dest.writeInt(mRepeat);
         dest.writeInt(mRandom);
         dest.writeInt(mPlaylistLength);
+        dest.writeParcelable(mCurrentTrack,flags);
     }
 
     public int getPlaying() {
@@ -92,6 +97,10 @@ public final class NowPlayingInformation implements Parcelable {
 
     public int getPlaylistLength() {
         return mPlaylistLength;
+    }
+
+    public TrackModel getCurrentTrack() {
+        return mCurrentTrack;
     }
 
 }

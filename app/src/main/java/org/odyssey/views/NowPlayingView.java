@@ -536,15 +536,17 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mServiceConnection.openConnection();
     }
 
-    private void updateStatus() {
+    private void updateStatus(TrackModel newTrack) {
 
         // get current track
-        TrackModel currentTrack = null;
-        try {
-            currentTrack = mServiceConnection.getPBS().getCurrentSong();
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        TrackModel currentTrack = newTrack;
+        if ( newTrack == null ) {
+            try {
+                currentTrack = mServiceConnection.getPBS().getCurrentSong();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         if (currentTrack == null) {
@@ -673,7 +675,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         @Override
         public void onConnect() {
-            updateStatus();
+            updateStatus(null);
             if (mRefreshTimer != null) {
                 mRefreshTimer.cancel();
                 mRefreshTimer.purge();
@@ -698,25 +700,20 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(PlaybackService.MESSAGE_NEWTRACKINFORMATION)) {
                 // Extract nowplaying info
-                ArrayList<NowPlayingInformation> infoArray = intent.getExtras().getParcelableArrayList(PlaybackService.INTENT_NOWPLAYINGNAME);
-                if (infoArray.size() != 0) {
+                final NowPlayingInformation info = intent.getParcelableExtra(PlaybackService.INTENT_NOWPLAYINGNAME);
 
-                    final NowPlayingInformation info = infoArray.get(0);
+                Activity activity = (Activity) getContext();
+                if (activity != null) {
 
-                    Activity activity = (Activity) getContext();
-                    if (activity != null) {
-
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // notify playlist has changed
-                                mPlaylistView.playlistChanged(info);
-                                // update views
-                                updateStatus();
-                            }
-                        });
-                    }
-
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // notify playlist has changed
+                            mPlaylistView.playlistChanged(info);
+                            // update views
+                            updateStatus(info.getCurrentTrack());
+                        }
+                    });
                 }
             }
         }

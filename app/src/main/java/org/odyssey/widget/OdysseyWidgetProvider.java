@@ -106,23 +106,17 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
 
             intent.setExtrasClassLoader(context.getClassLoader());
 
-            ArrayList<Parcelable> trackItemList = intent.getParcelableArrayListExtra(PlaybackService.INTENT_TrackModelNAME);
+            NowPlayingInformation info = intent.getParcelableExtra(PlaybackService.INTENT_NOWPLAYINGNAME);
+            if ( info != null ) {
+                TrackModel item = info.getCurrentTrack();
+                if ( item != null ) {
+                    views.setTextViewText(R.id.widget_big_trackName, item.getTrackName());
+                    views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
 
-            if (trackItemList.size() == 1) {
-                TrackModel item = (TrackModel) trackItemList.get(0);
-
-                views.setTextViewText(R.id.widget_big_trackName, item.getTrackName());
-                views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
-
-                views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
-                mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver(views));
-                mCoverGenerator.getImage(item);
-            }
-
-            ArrayList<Parcelable> infoList = intent.getParcelableArrayListExtra(PlaybackService.INTENT_NOWPLAYINGNAME);
-
-            if (infoList.size() == 1) {
-                NowPlayingInformation info = (NowPlayingInformation) infoList.get(0);
+                    views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                    mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver(views));
+                    mCoverGenerator.getImage(item);
+                }
 
                 if (info.getPlaying() == 0) {
                     // Show play icon

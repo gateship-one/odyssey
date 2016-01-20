@@ -121,7 +121,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     // Callback for MediaSession
     private MediaSession.Callback mMediaSessionCallback;
 
-    // Timer for service stop after certain amount of time
+    /* Temporary wakelock for transition to next song.
+     * Without it, some android devices go to sleep and don't start
+     * the next song.
+     */
     private WakeLock mTempWakelock = null;
 
     private CoverBitmapGenerator mNotificationCoverGenerator;
@@ -130,7 +133,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     // Playlistmanager for saving and reading playlist
     private StateManager mPlaylistManager = null;
 
-    // Save last track
+    // Save last track to check if track changed during status update
     private TrackModel mLastTrack = null;
 
 
@@ -1074,11 +1077,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Create the broadcast intent
             Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
 
-            // TODO check if extra list is neccessary
-            // Add currentTrack to parcel
-            ArrayList<Parcelable> extraTrackModelList = new ArrayList<Parcelable>();
-            extraTrackModelList.add(mCurrentList.get(mCurrentPlayingIndex));
-
             // Create NowPlayingInfo for parcel
             int playing = (state == PLAYSTATE.PLAYING ? 1 : 0);
             String playingURL = track.getTrackURL();
@@ -1086,35 +1084,22 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             int repeat = mRepeat;
             int random = mRandom;
             int playlistlength = mCurrentList.size();
-            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength);
+            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength,track);
 
             // Add nowplayingInfo to parcel
-            ArrayList<Parcelable> extraNPList = new ArrayList<Parcelable>();
-            extraNPList.add(info);
 
             // Add this stuff to the parcel
-            broadcastIntent.putParcelableArrayListExtra(INTENT_TrackModelNAME, extraTrackModelList);
-            broadcastIntent.putParcelableArrayListExtra(INTENT_NOWPLAYINGNAME, extraNPList);
+            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
 
             // We're good to go, send it away
             sendBroadcast(broadcastIntent);
         } else {
-            // TODO fix Widget and stuff for tolerance without this information
             // Send empty broadcast with stopped information
             Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
 
-            // Add empty TrackModel to parcel
-            ArrayList<Parcelable> extraTrackModelList = new ArrayList<Parcelable>();
-            extraTrackModelList.add(new TrackModel());
-
-            NowPlayingInformation info = new NowPlayingInformation(0, "", -1, mRepeat, mRandom, mCurrentList.size());
+            NowPlayingInformation info = new NowPlayingInformation(0, "", -1, mRepeat, mRandom, mCurrentList.size(), new TrackModel());
             // Add nowplayingInfo to parcel
-            ArrayList<Parcelable> extraNPList = new ArrayList<Parcelable>();
-            extraNPList.add(info);
-
-            // Add this stuff to the parcel
-            broadcastIntent.putParcelableArrayListExtra(INTENT_TrackModelNAME, extraTrackModelList);
-            broadcastIntent.putParcelableArrayListExtra(INTENT_NOWPLAYINGNAME, extraNPList);
+            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
 
             // We're good to go, send it away
             sendBroadcast(broadcastIntent);
@@ -1475,7 +1460,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 try {
                     /*
                      * No tracks remains. So set it to null. GaplessPlayer knows
-                     * who to handle this :)
+                     * how to handle this :)
                      */
 
                     mPlayer.setNextTrack(null);
@@ -1714,7 +1699,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             if (bm != null) {
                 Log.v(TAG,"Received new lockscreen bitmap");
-                // FIXME new MediaSession api
                 TrackModel track = getCurrentTrack();
                 MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
                 metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
