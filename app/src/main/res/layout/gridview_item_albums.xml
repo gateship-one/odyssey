@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:outAnimation="@animator/fadeout"
-        android:inAnimation="@animator/fadein"
+        android:outAnimation="@anim/fadeout"
+        android:inAnimation="@anim/fadein"
         android:animateFirstView="true">
         <ImageView
             android:id="@+id/item_albums_cover_placeholder"
