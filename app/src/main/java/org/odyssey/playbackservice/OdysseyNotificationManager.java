@@ -31,7 +31,7 @@ public class OdysseyNotificationManager {
 
     // Just a constant
     private static final int NOTIFICATION_ID = 42;
-    
+
     // Notification objects
     android.app.NotificationManager mNotificationManager;
     NotificationCompat.Builder mNotificationBuilder;

@@ -8,8 +8,6 @@ import java.util.Random;
 import java.util.TimerTask;
 
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -28,19 +26,14 @@ import android.net.Uri;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Parcelable;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import org.odyssey.OdysseyMainActivity;
-import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.statemanager.StateManager;
 import org.odyssey.utils.CoverBitmapGenerator;
