@@ -24,17 +24,16 @@ import java.util.ArrayList;
 public class OdysseyWidgetProvider  extends AppWidgetProvider {
     private static final String TAG = "OdysseyWidget";
 
-    private CoverBitmapGenerator mCoverGenerator;
     private RemoteViews mViews;
     private AppWidgetManager mAppWidgetManager;
-    private int[] mAppWidgets = null;
     private Context mContext;
+
+    private static TrackModel mLastTrack = null;
 
     private final static int INTENT_OPENGUI = 0;
     private final static int INTENT_PREVIOUS = 1;
     private final static int INTENT_PLAYPAUSE = 2;
     private final static int INTENT_NEXT = 3;
-    private final static int INTENT_STOP = 4;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -43,21 +42,16 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
         Log.v(TAG, "onUpdate");
         mContext = context;
 
-        final int N = appWidgetIds.length;
-        mAppWidgets = appWidgetIds;
-
         // Perform this loop procedure for each App Widget that belongs to this
         // provider
-        for (int i = 0; i < N; i++) {
-            int appWidgetId = appWidgetIds[i];
-
+        for (int appWidgetId : appWidgetIds) {
             // get remoteviews
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
 
             // Main action
             Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
             mainIntent.putExtra("Fragment", "currentsong");
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION| Intent.FLAG_ACTIVITY_NO_HISTORY);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NO_HISTORY);
             PendingIntent mainPendingIntent = PendingIntent.getActivity(context, INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_ONE_SHOT);
             views.setOnClickPendingIntent(R.id.widget_big_cover, mainPendingIntent);
 
@@ -79,14 +73,7 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
             PendingIntent nextPendingIntent = PendingIntent.getService(context, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             views.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
 
-            // Stop action
-//            Intent stopIntent = new Intent(context, PlaybackService.class);
-//            stopIntent.putExtra("action", PlaybackService.ACTION_STOP);
-//            PendingIntent stopPendingIntent = PendingIntent.getService(context, INTENT_STOP, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//            views.setOnClickPendingIntent(R.id.odysseyWidgetStopButton, stopPendingIntent);
-
-            // Tell the AppWidgetManager to perform an update on the current app
-            // widget
+            // Tell the AppWidgetManager to perform an update on the current app widget
             mAppWidgetManager = appWidgetManager;
             appWidgetManager.updateAppWidget(appWidgetId, views);
             mViews = views;
@@ -113,11 +100,12 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
                     views.setTextViewText(R.id.widget_big_trackName, item.getTrackName());
                     views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
 
-                    views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
-                    mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver(views));
-                    mCoverGenerator.getImage(item);
+                    if (mLastTrack == null || !mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
+                        views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                        CoverBitmapGenerator mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver());
+                        mCoverGenerator.getImage(item);
+                    }
                 }
-
                 if (info.getPlaying() == 0) {
                     // Show play icon
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_24dp);
@@ -125,6 +113,8 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
                     // Show pause icon
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_24dp);
                 }
+
+                mLastTrack = item;
             }
         }
 
@@ -155,11 +145,6 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
         PendingIntent nextPendingIntent = PendingIntent.getService(context, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
 
-        // Quit action
-//        Intent stopIntent = new Intent(context, PlaybackService.class);
-//        stopIntent.putExtra("action", PlaybackService.ACTION_STOP);
-//        PendingIntent stopPendingIntent = PendingIntent.getService(context, INTENT_STOP, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//        views.setOnClickPendingIntent(R.id.odysseyWidgetStopButton, stopPendingIntent);
         mViews = views;
         mAppWidgetManager = AppWidgetManager.getInstance(context);
         mAppWidgetManager.updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views);
@@ -167,12 +152,11 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
 
     private class CoverReceiver implements CoverBitmapGenerator.CoverBitmapListener {
 
-        public CoverReceiver(RemoteViews views) {
+        public CoverReceiver() {
         }
 
         @Override
         public void receiveBitmap(BitmapDrawable bm) {
-
             if (mViews != null && bm != null) {
                 mViews.setImageViewBitmap(R.id.widget_big_cover, bm.getBitmap());
 
