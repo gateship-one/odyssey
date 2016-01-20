@@ -16,12 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadata;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
-import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -36,7 +31,6 @@ import android.widget.Toast;
 
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.statemanager.StateManager;
-import org.odyssey.utils.CoverBitmapGenerator;
 import org.odyssey.utils.MusicLibraryHelper;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
@@ -91,16 +85,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mRandom = 0;
     private int mRepeat = 0;
 
-    // MediaSession objects
-    private MediaSessionManager mMediaSessionManager;
-    private MediaSession mMediaSession;
-    private MediaSession.Token mMediaSessionToken;
 
-    // Callback for MediaSession
-    private MediaSession.Callback mMediaSessionCallback;
 
     // Notification manager
     private OdysseyNotificationManager mNotificationManager;
+
+    // MediaControls manager
+    private OdysseyMediaControls mMediaControlManager;
 
 
     /* Temporary wakelock for transition to next song.
@@ -109,7 +100,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private WakeLock mTempWakelock = null;
 
-    private CoverBitmapGenerator mLockscreenCoverGenerator;
 
     // Playlistmanager for saving and reading playlist
     private StateManager mPlaylistManager = null;
@@ -188,16 +178,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             registerReceiver(mNoisyReceiver, intentFilter);
         }
 
-        // Get MediaSession objects
-        mMediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
-        mMediaSession = new MediaSession(this, "OdysseyPBS");
 
-        // Register the callback for the mediasession
-        mMediaSessionCallback = new OdysseyMediaSessionCallback();
-        mMediaSession.setCallback(mMediaSessionCallback);
 
-        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(this,0, new Intent(this,RemoteControlReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT);
-        mMediaSession.setMediaButtonReceiver(mediaButtonPendingIntent);
+
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mTempWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -208,7 +191,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Initialize the notification manager
         mNotificationManager = new OdysseyNotificationManager(this);
 
-        mLockscreenCoverGenerator = new CoverBitmapGenerator(this, new LockscreenCoverListener());
+        // Initialize the mediacontrol manager for lockscreen pictures and remote control
+        mMediaControlManager = new OdysseyMediaControls(this);
     }
 
     @Override
@@ -370,9 +354,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 // Abort command
                 return;
             }
-            // Start media session
-            mMediaSessionToken = mMediaSession.getSessionToken();
-            mMediaSession.setActive(true);
+
+            mMediaControlManager.startMediaSession();
 
             mPlayer.resume();
 
@@ -629,8 +612,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
 
             // Start media session
-            mMediaSessionToken = mMediaSession.getSessionToken();
-            mMediaSession.setActive(true);
+            mMediaControlManager.startMediaSession();
 
             mIsPaused = false;
 
@@ -749,10 +731,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Get the actual TrackModel and distribute the information
         if ((mCurrentList != null) && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            TrackModel TrackModel = mCurrentList.get(mCurrentPlayingIndex);
-            setLockscreenPicture(TrackModel, PLAYSTATE.STOPPED);
+            TrackModel track = mCurrentList.get(mCurrentPlayingIndex);
+            mMediaControlManager.updateMetadata(track, PLAYSTATE.STOPPED);
             mNotificationManager.clearNotification();
-            broadcastPlaybackInformation(TrackModel, PLAYSTATE.STOPPED);
+            broadcastPlaybackInformation(track, PLAYSTATE.STOPPED);
         } else {
             updateStatus();
         }
@@ -860,7 +842,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 // Get the actual TrackModel and distribute the information
                 TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
-                    setLockscreenPicture(newTrack, PLAYSTATE.PLAYING);
+                    mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PLAYING);
                 if (updateNotification)
                     mNotificationManager.updateNotification(newTrack,PLAYSTATE.PLAYING);
                 if (broadcastNewInfo)
@@ -870,7 +852,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             } else if (mPlayer.isPaused() && (mCurrentPlayingIndex >= 0)) {
                 TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
-                    setLockscreenPicture(newTrack, PLAYSTATE.PAUSE);
+                    mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PAUSE);
                 if (updateNotification)
                     mNotificationManager.updateNotification(newTrack,PLAYSTATE.PAUSE);
                 if (broadcastNewInfo)
@@ -882,7 +864,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 if (updateNotification)
                     mNotificationManager.clearNotification();
                 if (updateLockScreen)
-                    setLockscreenPicture(null, PLAYSTATE.STOPPED);
+                    mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
                 if (broadcastNewInfo)
                     broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
 
@@ -893,59 +875,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (updateNotification)
                 mNotificationManager.clearNotification();
             if (updateLockScreen)
-                setLockscreenPicture(null, PLAYSTATE.STOPPED);
+                mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
             // Notify all listeners with broadcast about playing situation
             if (broadcastNewInfo) {
                 broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
             }
 
             mLastTrack = null;
-        }
-    }
-
-
-    /*
-     * Gets an MetadataEditor from android system. Sets all the attributes
-     * (playing/paused), title/artist/album and applys it. Also sets which
-     * buttons android should show.
-     *
-     * Starts an thread for Cover generation.
-     *
-     */
-    private void setLockscreenPicture(TrackModel track, PLAYSTATE playbackState) {
-        // Clear if track == null
-        if (track != null && playbackState != PLAYSTATE.STOPPED) {
-            Log.v(TAG, "Setting lockscreen remote controls");
-            if ( playbackState == PLAYSTATE.PLAYING ) {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING, 0, 1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
-            } else {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PAUSED,0,1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
-            }
-            // Try to get old metadata to save image retrieval.
-            MediaMetadata oldData = mMediaSession.getController().getMetadata();
-            MediaMetadata.Builder metaDataBuilder;
-            if (oldData == null ) {
-                metaDataBuilder = new MediaMetadata.Builder();
-            } else {
-                metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
-            }
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
-            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
-            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION,track.getTrackDuration());
-            mMediaSession.setMetadata(metaDataBuilder.build());
-
-            // Only update notification image if album changed to preserve energy
-            if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                mLockscreenCoverGenerator.getImage(track);
-            }
-        } else {
-            // Clear lockscreen
-            mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED, 0, 0.0f).build());
-            mMediaSession.setActive(false);
         }
     }
 
@@ -1094,9 +1030,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         @Override
         public void getCurrentList(List<TrackModel> list) throws RemoteException {
-            for (TrackModel TrackModel : mService.get().getCurrentList()) {
-                Log.v(TAG, "Returning: " + TrackModel);
-                list.add(TrackModel);
+            for (TrackModel track : mService.get().getCurrentList()) {
+                Log.v(TAG, "Returning: " + track);
+                list.add(track);
             }
         }
 
@@ -1356,7 +1292,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Listener class for playback begin of the GaplessPlayer. Handles the
      * different scenarios: If no random playback is active, check if new track
      * is ready and set index and GaplessPlayer to it. If no track remains in
-     * queue check if repeat is activated and if reset queue to track 0. momIf
+     * queue check if repeat is activated and if reset queue to track 0. If
      * not generate a random index and set GaplessPlayer to that random track.
      */
     private class PlaybackStartListener implements GaplessPlayer.OnTrackStartedListener {
@@ -1543,33 +1479,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
 
-    /*
-     * Receives the generated album picture from a separate thread for the
-     * lockscreen controls. Also sets the title/artist/album again otherwise
-     * android would sometimes set it to the track before
-     */
-    private class LockscreenCoverListener implements CoverBitmapGenerator.CoverBitmapListener {
-
-        @Override
-        public void receiveBitmap(BitmapDrawable bm) {
-
-            if (bm != null) {
-                Log.v(TAG,"Received new lockscreen bitmap");
-                TrackModel track = getCurrentTrack();
-                MediaMetadata.Builder metaDataBuilder = new MediaMetadata.Builder();
-                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
-                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
-                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
-                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
-                metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
-                metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bm.getBitmap());
-                metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
-                metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION, track.getTrackDuration());
-                mMediaSession.setMetadata(metaDataBuilder.build());
-            }
-        }
-
-    }
 
     /*
      * Save playlist async
@@ -1633,43 +1542,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    private class OdysseyMediaSessionCallback extends MediaSession.Callback {
 
-        @Override
-        public void onPlay() {
-            super.onPlay();
-            resume();
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            pause();
-        }
-
-        @Override
-        public void onSkipToNext() {
-            super.onSkipToNext();
-            setNextTrack();
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-            setPreviousTrack();
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            stop();
-        }
-
-        @Override
-        public void onSeekTo(long pos) {
-            super.onSeekTo(pos);
-            seekTo((int)pos);
-        }
-    }
 
 }
