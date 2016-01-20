@@ -159,6 +159,7 @@ public class OdysseyNotificationManager {
                 mNotificationManager.cancel(NOTIFICATION_ID);
             }
             mNotification = null;
+            mLastTrack = null;
         }
     }
 
