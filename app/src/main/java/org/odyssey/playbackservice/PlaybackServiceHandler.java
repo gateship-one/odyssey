@@ -9,31 +9,24 @@ import android.os.Message;
 import android.util.Log;
 
 public class PlaybackServiceHandler extends Handler {
-    private static final String TAG = "OdysseyPlaybackServiceHandler";
-
     private final WeakReference<PlaybackService> mService;
 
     private Semaphore mLock;
 
     public PlaybackServiceHandler(Looper looper, PlaybackService service) {
         super(looper);
-        Log.v(TAG, "Handler created");
         mService = new WeakReference<PlaybackService>(service);
-        Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
         mLock = new Semaphore(1);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        Log.v(TAG, "handleMessage:" + msg);
-        Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
         super.handleMessage(msg);
 
         ControlObject msgObj = (ControlObject) msg.obj;
 
         // Check if object is received
         if (msgObj != null && mLock.tryAcquire()) {
-            Log.v(TAG, "Start control command");
             // Parse message
             switch(msgObj.getAction()) {
                 case ODYSSEY_PLAY:
@@ -104,7 +97,6 @@ public class PlaybackServiceHandler extends Handler {
             }
 
             mLock.release();
-            Log.v(TAG, "End control command");
         }
     }
 }
