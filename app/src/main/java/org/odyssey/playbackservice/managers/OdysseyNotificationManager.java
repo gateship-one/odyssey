@@ -1,4 +1,4 @@
-package org.odyssey.playbackservice;
+package org.odyssey.playbackservice.managers;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 /*
@@ -59,7 +60,7 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state) {
+    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state) {
         if (track != null && state != PlaybackService.PLAYSTATE.STOPPED) {
 
             RemoteViews remoteViewBig = new RemoteViews(mContext.getPackageName(), R.layout.notification_big);

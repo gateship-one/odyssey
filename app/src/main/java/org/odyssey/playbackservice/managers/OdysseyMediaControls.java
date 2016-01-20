@@ -1,4 +1,4 @@
-package org.odyssey.playbackservice;
+package org.odyssey.playbackservice.managers;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.PlaybackService;
+import org.odyssey.playbackservice.RemoteControlReceiver;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 public class OdysseyMediaControls {

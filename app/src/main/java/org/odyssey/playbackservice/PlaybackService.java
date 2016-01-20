@@ -1,6 +1,5 @@
 package org.odyssey.playbackservice;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,16 +19,16 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
-import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.managers.OdysseyMediaControls;
+import org.odyssey.playbackservice.managers.OdysseyNotificationManager;
 import org.odyssey.playbackservice.statemanager.StateManager;
 import org.odyssey.utils.MusicLibraryHelper;
 
