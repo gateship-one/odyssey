@@ -8,9 +8,9 @@
         android:id="@+id/notification_small_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:src="@drawable/cover_placeholder_96dp" />
 
@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/standard_padding_medium"
+        android:layout_marginStart="@dimen/standard_padding_medium"
         android:layout_marginTop="@dimen/standard_padding_medium"
         android:layout_marginBottom="@dimen/standard_padding_medium"
         android:layout_toEndOf="@+id/notification_small_image"
