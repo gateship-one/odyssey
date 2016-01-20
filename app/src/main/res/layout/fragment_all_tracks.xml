@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/all_tracks_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/colorTextLight"
+        android:src="@drawable/ic_play_arrow_24dp" />
 
     <ListView
         android:id="@+id/all_tracks_listview"
@@ -21,4 +30,4 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

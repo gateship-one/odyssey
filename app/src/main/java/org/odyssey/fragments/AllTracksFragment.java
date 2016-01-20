@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -58,6 +59,21 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
         mRootList.setOnItemClickListener(this);
 
         registerForContextMenu(mRootList);
+
+        // play button placeholder
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.all_tracks_play_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // play all tracks shuffled on device
+                try {
+                    mServiceConnection.getPBS().playAllTracks();
+                } catch (RemoteException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return rootView;
     }
