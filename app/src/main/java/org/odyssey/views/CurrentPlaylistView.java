@@ -48,17 +48,24 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mContext = context;
     }
 
-    public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection) {
+    public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection){
         mPlaybackServiceConnection = playbackServiceConnection;
 
         mCurrentPlaylistListViewAdapter = new CurrentPlaylistListViewAdapter(mContext, mPlaybackServiceConnection);
 
         mListView.setAdapter(mCurrentPlaylistListViewAdapter);
+        try {
+            mListView.setSelection(mPlaybackServiceConnection.getPBS().getCurrentIndex());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void playlistChanged(NowPlayingInformation info) {
         mCurrentPlaylistListViewAdapter.updateState(info);
+        mListView.setSelection(info.getPlayingIndex());
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
