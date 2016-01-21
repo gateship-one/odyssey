@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -60,21 +59,6 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
         registerForContextMenu(mRootList);
 
-        // play button placeholder
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.all_tracks_play_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // play all tracks shuffled on device
-                try {
-                    mServiceConnection.getPBS().playAllTracks();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-
         return rootView;
     }
 
@@ -94,7 +78,6 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onResume() {
         super.onResume();
-
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
 
@@ -137,14 +120,16 @@ public class AllTracksFragment extends Fragment implements LoaderManager.LoaderC
 
         Cursor artistCursor = getActivity().getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
 
-        artistCursor.moveToFirst();
+        if (artistCursor != null) {
+            artistCursor.moveToFirst();
 
-        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+            long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
-        artistCursor.close();
+            artistCursor.close();
 
-        // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+            // Send the event to the host activity
+            mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+        }
     }
 
     @Override

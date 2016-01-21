@@ -6,6 +6,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin_bottom">64dp</dimen>
     <!-- padding values -->
     <dimen name="standard_padding_small">4dp</dimen>
     <dimen name="standard_padding_medium">8dp</dimen>

@@ -1,6 +1,7 @@
 package org.odyssey;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +46,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // enable back navigation
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
+        if(actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -285,6 +289,18 @@ public class OdysseyMainActivity extends AppCompatActivity
             layout.setExpanded(true, false);
             params.setScrollFlags(0);
         }
+    }
+
+    public void setUpPlayButton(View.OnClickListener listener) {
+        FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.odyssey_play_button);
+
+        if(listener == null) {
+            playButton.hide();
+        } else {
+            playButton.show();
+        }
+
+        playButton.setOnClickListener(listener);
     }
 
     @Override

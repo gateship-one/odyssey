@@ -1,6 +1,7 @@
 package org.odyssey.fragments;
 
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,8 +13,11 @@ import android.view.ViewGroup;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
+import org.odyssey.playbackservice.PlaybackServiceConnection;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +46,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         // set start page to albums
         myMusicViewPager.setCurrentItem(1);
 
+        // set up play button
+        activity.setUpPlayButton(null);
+
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
+
         return rootView;
     }
 
@@ -51,8 +61,34 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         View view = this.getView();
 
         if(view != null) {
-            ViewPager myMusicViewPager = (ViewPager) this.getView().findViewById(R.id.my_music_viewpager);
+            ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
             myMusicViewPager.setCurrentItem(tab.getPosition());
+
+            View.OnClickListener listener = null;
+
+            switch(tab.getPosition()) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    listener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // play all tracks on device
+                            try {
+                                mServiceConnection.getPBS().playAllTracksShuffled();
+                            } catch (RemoteException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    break;
+            }
+
+            OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+            activity.setUpPlayButton(listener);
         }
     }
 

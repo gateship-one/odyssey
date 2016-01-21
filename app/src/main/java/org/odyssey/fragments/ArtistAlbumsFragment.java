@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -82,11 +80,10 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mArtistName, false, false);
 
-        // play button placeholder
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.artist_albums_play_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 playAllAlbums();
             }
         });
@@ -114,6 +111,14 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mArtistName, false, false);
+
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playAllAlbums();
+            }
+        });
 
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
@@ -201,30 +206,32 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
 
-        // get all tracks on the current album
-        if (cursor.moveToFirst()) {
-            do {
-                String trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                int number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+        if (cursor != null) {
+            // get all tracks on the current album
+            if (cursor.moveToFirst()) {
+                do {
+                    String trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                    int number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                    String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 
-                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
 
-                // enqueue current track
-                try {
-                    mServiceConnection.getPBS().enqueueTrack(item);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                    // enqueue current track
+                    try {
+                        mServiceConnection.getPBS().enqueueTrack(item);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-            } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
         }
-
-        cursor.close();
     }
 
     private void playAlbum(int position) {

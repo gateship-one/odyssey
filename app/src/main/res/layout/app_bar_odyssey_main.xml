@@ -23,4 +23,14 @@
 
     <include layout="@layout/content_odyssey_main" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/odyssey_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        android:tint="@color/colorTextLight"
+        android:src="@drawable/ic_play_arrow_24dp" />
+
 </android.support.design.widget.CoordinatorLayout>

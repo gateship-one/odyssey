@@ -21,6 +21,8 @@ public class SettingsFragment extends Fragment{
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true);
 
+        activity.setUpPlayButton(null);
+
         return rootView;
     }
 

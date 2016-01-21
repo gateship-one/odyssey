@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -64,11 +63,10 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mPlaylistTitle, false, false);
 
-        // play button placeholder
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.playlist_tracks_play_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 playPlaylist(0);
             }
         });
@@ -83,6 +81,14 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mPlaylistTitle, false, false);
+
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playPlaylist(0);
+            }
+        });
 
         // set up pbs connection
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
@@ -196,16 +202,18 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
     void removeTrackFromPlaylist(int position) {
         Cursor trackCursor = getActivity().getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
-        if (trackCursor.moveToPosition(position)) {
-            String where = MediaStore.Audio.Playlists.Members._ID + "=?";
-            String[] whereVal = { trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID)) };
+        if (trackCursor != null) {
+            if (trackCursor.moveToPosition(position)) {
+                String where = MediaStore.Audio.Playlists.Members._ID + "=?";
+                String[] whereVal = {trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID))};
 
-            getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), where, whereVal);
+                getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), where, whereVal);
 
-            // reload data
-            getLoaderManager().restartLoader(0, getArguments(), this);
+                // reload data
+                getLoaderManager().restartLoader(0, getArguments(), this);
+            }
+
+            trackCursor.close();
         }
-
-        trackCursor.close();
     }
 }

@@ -63,6 +63,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true);
 
+        activity.setUpPlayButton(null);
+
         return rootView;
     }
 
@@ -85,6 +87,8 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true);
+
+        activity.setUpPlayButton(null);
 
         // set up pbs connection
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
@@ -151,31 +155,33 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
         Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", clickedPlaylist.getPlaylistID()), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
-        // get all tracks of the playlist
-        if (cursorTracks.moveToFirst()) {
-            do {
-                String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));
-                long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION));
-                int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK));
-                String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
-                String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
-                String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-                String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
+        if (cursorTracks != null) {
+            // get all tracks of the playlist
+            if (cursorTracks.moveToFirst()) {
+                do {
+                    String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));
+                    long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION));
+                    int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK));
+                    String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
+                    String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
+                    String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+                    String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
 
-                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
 
-                // enqueue current track
-                try {
-                    mServiceConnection.getPBS().enqueueTrack(item);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                    // enqueue current track
+                    try {
+                        mServiceConnection.getPBS().enqueueTrack(item);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-            } while (cursorTracks.moveToNext());
+                } while (cursorTracks.moveToNext());
+            }
+
+            cursorTracks.close();
         }
-
-        cursorTracks.close();
 
         // play playlist
         try {

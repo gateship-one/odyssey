@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -83,7 +82,6 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onResume() {
         super.onResume();
-
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
 
@@ -178,43 +176,47 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
         String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
 
-        // get all albums of the current artist
-        if (cursorAlbums.moveToFirst()) {
-            do {
-                String[] whereVal = { cursorAlbums.getString(cursorAlbums.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY)) };
+        if(cursorAlbums != null) {
+            // get all albums of the current artist
+            if (cursorAlbums.moveToFirst()) {
+                do {
+                    String[] whereVal = {cursorAlbums.getString(cursorAlbums.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY))};
 
-                Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
+                    Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
 
-                // get all tracks of the current album
-                if (cursorTracks.moveToFirst()) {
-                    do {
-                        String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                        long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                        int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                        String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                        String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                        String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DATA));
-                        String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    if (cursorTracks != null) {
+                        // get all tracks of the current album
+                        if (cursorTracks.moveToFirst()) {
+                            do {
+                                String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                                long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                                int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                                String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                                String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                                String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DATA));
+                                String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
 
-                        TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
 
-                        // enqueue current track
-                        try {
-                            mServiceConnection.getPBS().enqueueTrack(item);
-                        } catch (RemoteException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                                // enqueue current track
+                                try {
+                                    mServiceConnection.getPBS().enqueueTrack(item);
+                                } catch (RemoteException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+                            } while (cursorTracks.moveToNext());
                         }
 
-                    } while (cursorTracks.moveToNext());
-                }
+                        cursorTracks.close();
+                    }
 
-                cursorTracks.close();
+                } while (cursorAlbums.moveToNext());
+            }
 
-            } while (cursorAlbums.moveToNext());
+            cursorAlbums.close();
         }
-
-        cursorAlbums.close();
     }
 
     private void playAllAlbums(int position) {

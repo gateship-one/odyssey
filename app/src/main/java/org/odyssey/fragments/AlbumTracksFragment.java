@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -76,11 +75,10 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mAlbumTitle, false, false);
 
-        // play button placeholder
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.album_tracks_play_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 playAlbum(0);
             }
         });
@@ -108,6 +106,14 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mAlbumTitle, false, false);
+
+        // set up play button
+        activity.setUpPlayButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playAlbum(0);
+            }
+        });
 
         // set up pbs connection
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
@@ -147,14 +153,16 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         Cursor artistCursor = getActivity().getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
 
-        artistCursor.moveToFirst();
+        if (artistCursor != null) {
+            artistCursor.moveToFirst();
 
-        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+            long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
-        artistCursor.close();
+            artistCursor.close();
 
-        // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+            // Send the event to the host activity
+            mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+        }
     }
 
     @Override
