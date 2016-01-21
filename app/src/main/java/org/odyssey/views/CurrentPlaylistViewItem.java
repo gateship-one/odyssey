@@ -1,6 +1,7 @@
 package org.odyssey.views;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.widget.TextView;
 
@@ -54,9 +55,9 @@ public class CurrentPlaylistViewItem extends GenericTracksListItem {
             mNumberView.setTextColor(typedValue.data);
             mSeparatorView.setTextColor(typedValue.data);
         } else {
-            mTitleView.setTextColor(getResources().getColor(R.color.colorTextLight));
-            mNumberView.setTextColor(getResources().getColor(R.color.colorTextLight));
-            mSeparatorView.setTextColor(getResources().getColor(R.color.colorTextLight));
+            mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
+            mNumberView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
+            mSeparatorView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
         }
 
     }
