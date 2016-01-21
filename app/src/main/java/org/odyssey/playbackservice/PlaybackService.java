@@ -563,6 +563,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG,"Clearing Playlist");
         // Clear the list
         mCurrentList.clear();
+        // reset random and repeat state
+        mRandom = 0;
+        mRepeat = 0;
         // Stop the playback
         stop();
     }
