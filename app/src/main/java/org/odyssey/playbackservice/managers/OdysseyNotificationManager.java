@@ -40,9 +40,6 @@ public class OdysseyNotificationManager {
     // Notification itself
     Notification mNotification;
 
-    // Asynchronous image fetcher
-    private CoverBitmapGenerator mNotificationCoverGenerator;
-
     // Save last track and last image
     private TrackModel mLastTrack = null;
     private Bitmap mLastBitmap = null;
@@ -52,9 +49,6 @@ public class OdysseyNotificationManager {
 
         mNotificationBuilder = new Notification.Builder(mContext);
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationCoverGenerator = new CoverBitmapGenerator(mContext, new NotificationCoverListener());
-
     }
 
     /*
@@ -63,7 +57,7 @@ public class OdysseyNotificationManager {
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
     public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSession.Token mediaSessionToken) {
-        if (track != null && state != PlaybackService.PLAYSTATE.STOPPED) {
+        if (track != null) {
             mNotificationBuilder = new Notification.Builder(mContext);
 
             // Open application intent
@@ -120,7 +114,6 @@ public class OdysseyNotificationManager {
 
             // Cover but only if changed
             if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                mNotificationCoverGenerator.getImage(track);
                 mLastTrack = track;
                 mLastBitmap = null;
             }
@@ -133,7 +126,8 @@ public class OdysseyNotificationManager {
             // Build the notification
             mNotification = mNotificationBuilder.build();
 
-            // Check if run from service
+            // Check if run from service and check if playing or pause.
+            // Pause notification should be dismissible.
             if ( mContext instanceof Service ) {
                 if ( state == PlaybackService.PLAYSTATE.PLAYING) {
                     ((Service)mContext).startForeground(NOTIFICATION_ID, mNotification);
@@ -144,8 +138,6 @@ public class OdysseyNotificationManager {
 
             // Send the notification away
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-        } else {
-            clearNotification();
         }
     }
 
@@ -163,20 +155,15 @@ public class OdysseyNotificationManager {
     }
 
     /*
-     * Receives the generated album picture from a separate thread for the
+     * Receives the generated album picture from the main status helper for the
      * notification controls. Sets it and notifies the system that the
      * notification has changed
      */
-    private class NotificationCoverListener implements CoverBitmapGenerator.CoverBitmapListener {
-
-        @Override
-        public void receiveBitmap(BitmapDrawable bm) {
-            // Check if notification exists and set picture
-            mNotificationBuilder.setLargeIcon(bm.getBitmap());
-            mLastBitmap = bm.getBitmap();
-            mNotification = mNotificationBuilder.build();
-            mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-        }
-
+    public void setNotificationImage(BitmapDrawable bm) {
+        // Check if notification exists and set picture
+        mNotificationBuilder.setLargeIcon(bm.getBitmap());
+        mLastBitmap = bm.getBitmap();
+        mNotification = mNotificationBuilder.build();
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 }

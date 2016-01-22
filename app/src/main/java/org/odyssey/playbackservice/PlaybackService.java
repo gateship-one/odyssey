@@ -57,9 +57,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public static final String ACTION_STOP = "org.odyssey.stop";
     public static final String ACTION_QUIT = "org.odyssey.quit";
     public static final String ACTION_TOGGLEPAUSE = "org.odyssey.togglepause";
-    public static final String MESSAGE_NEWTRACKINFORMATION = "org.odyssey.newtrackinfo";
 
-    public static final String INTENT_NOWPLAYINGNAME = "OdysseyNowPlaying";
+
 
     private static final int TIMEOUT_INTENT_QUIT = 5;
 
@@ -97,9 +96,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     // Playlistmanager for saving and reading playlist
     private StateManager mPlaylistManager = null;
-
-    // Save last track to check if track changed during status update
-    private TrackModel mLastTrack = null;
 
 
     @Override
@@ -251,18 +247,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     // Stops all playback
     public void stop() {
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-            // Broadcast simple.last.fm.scrobble broadcast
-            TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-            Log.v(TAG, "Send to SLS: " + item);
-            Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
-            bCast.putExtra("state", 3);
-            bCast.putExtra("app-name", "Odyssey");
-            bCast.putExtra("app-package", "org.odyssey");
-            bCast.putExtra("artist", item.getTrackArtistName());
-            bCast.putExtra("album", item.getTrackAlbumName());
-            bCast.putExtra("track", item.getTrackName());
-            bCast.putExtra("duration", item.getTrackDuration() / 1000);
-            sendBroadcast(bCast);
+            // Notify simple last.fm scrobbler
+            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), OdysseyMediaControls.SLS_STATES.SLS_COMPLETE);
         }
 
         mPlayer.stop();
@@ -271,7 +257,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
 
-        updateStatus();
+        mMediaControlManager.updateStatus();
         stopService();
     }
 
@@ -291,21 +277,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
                 TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
                 Log.v(TAG, "Send to SLS: " + item);
-                Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
-                bCast.putExtra("state", 2);
-                bCast.putExtra("app-name", "Odyssey");
-                bCast.putExtra("app-package", "org.odyssey");
-                bCast.putExtra("artist", item.getTrackArtistName());
-                bCast.putExtra("album", item.getTrackAlbumName());
-                bCast.putExtra("track", item.getTrackName());
-                bCast.putExtra("duration", item.getTrackDuration() / 1000);
-                sendBroadcast(bCast);
+
             }
 
             mIsPaused = true;
         }
 
-        updateStatus();
+        mMediaControlManager.updateStatus();
 
     }
 
@@ -324,7 +302,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Songs existing so start playback of playlist begin
             jumpToIndex(0, true);
         } else if (mCurrentPlayingIndex < 0 && mCurrentList.size() == 0) {
-            updateStatus();
+            mMediaControlManager.updateStatus();
         } else if (mCurrentPlayingIndex < mCurrentList.size()) {
 
             /*
@@ -347,23 +325,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             mPlayer.resume();
 
-            // Broadcast simple.last.fm.scrobble broadcast
-            TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-            Log.v(TAG, "Send to SLS: " + item);
-            Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
-            bCast.putExtra("state", 1);
-            bCast.putExtra("app-name", "Odyssey");
-            bCast.putExtra("app-package", "org.odyssey");
-            bCast.putExtra("artist", item.getTrackArtistName());
-            bCast.putExtra("album", item.getTrackAlbumName());
-            bCast.putExtra("track", item.getTrackName());
-            bCast.putExtra("duration", item.getTrackDuration() / 1000);
-            sendBroadcast(bCast);
+            // Notify simple last.fm scrobbler
+            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), OdysseyMediaControls.SLS_STATES.SLS_RESUME);
 
             mIsPaused = false;
             mLastPosition = 0;
 
-            updateStatus();
+            mMediaControlManager.updateStatus();
         }
     }
 
@@ -450,7 +418,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // reset index
             mCurrentPlayingIndex = 0;
 
-            updateStatus();
+            mMediaControlManager.updateStatus();
 
             // set next track for gapless
 
@@ -464,7 +432,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             Collections.shuffle(mCurrentList);
 
             // sent broadcast
-            updateStatus();
+            mMediaControlManager.updateStatus();
         }
     }
 
@@ -496,7 +464,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         // Send new NowPlaying because playlist changed
-        updateStatus(false, true);
+        mMediaControlManager.updateStatus();
     }
 
     /**
@@ -668,7 +636,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             setNextTrackForMP();
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false, true);
+        mMediaControlManager.updateStatus();
     }
 
     public void dequeueTrack(int index) {
@@ -694,7 +662,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false, true);
+        mMediaControlManager.updateStatus();
     }
 
     /**
@@ -721,13 +689,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaylistManager.saveCurrentPlayState(mLastPosition, mCurrentPlayingIndex, mRandom, mRepeat);
 
         // Get the actual TrackModel and distribute the information
-        if ((mCurrentList != null) && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            TrackModel track = mCurrentList.get(mCurrentPlayingIndex);
-            mMediaControlManager.updateMetadata(track, PLAYSTATE.STOPPED);
-            broadcastPlaybackInformation(track, PLAYSTATE.STOPPED);
-        } else {
-            updateStatus();
-        }
+//        if ((mCurrentList != null) && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
+//            TrackModel track = mCurrentList.get(mCurrentPlayingIndex);
+//            mMediaControlManager.updateMetadata(track, PLAYSTATE.STOPPED);
+//            broadcastPlaybackInformation(track, PLAYSTATE.STOPPED);
+//        } else {
+//            mMediaControlManager.updateStatus();
+//        }
+        // FIXME check if this works correctly
+        mMediaControlManager.updateStatus();
 
         // Stops the service itself.
         stopSelf();
@@ -749,7 +719,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void setRepeat(int repeat) {
         mRepeat = repeat;
-        updateStatus(false, true);
+        mMediaControlManager.updateStatus();
         if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
             // If playing last track, next must be first in playlist
             if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
@@ -771,7 +741,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void setRandom(int random) {
         mRandom = random;
-        updateStatus(false, true);
+        mMediaControlManager.updateStatus();
         if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
             randomizeNextTrack();
         } else {
@@ -810,103 +780,37 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         savePlaylistThread.start();
     }
 
-    /*
-     * This method should be safe to call at any time. So it should check the
-     * current state of gaplessplayer, playbackservice and so on.
-     */
-    private synchronized void updateStatus() {
-        updateStatus(true, true);
-    }
 
-    private synchronized void updateStatus(boolean updateLockScreen, boolean broadcastNewInfo) {
-        Log.v(TAG, "updatestatus:" + mCurrentPlayingIndex);
-        // Check if playlist contains any tracks otherwise playback should not
-        // be possible
-        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0) {
-            // Check current playback state. If playing inform all listeners and
-            // check if notification is set, and set if not.
-            if (mPlayer.isRunning() && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
-                // Get the actual TrackModel and distribute the information
-                TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
-                if (updateLockScreen)
-                    mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PLAYING);
-                if (broadcastNewInfo)
-                    broadcastPlaybackInformation(newTrack, PLAYSTATE.PLAYING);
 
-                mLastTrack = newTrack;
-            } else if (mPlayer.isPaused() && (mCurrentPlayingIndex >= 0)) {
-                TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
-                if (updateLockScreen)
-                    mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PAUSE);
-                if (broadcastNewInfo)
-                    broadcastPlaybackInformation(newTrack, PLAYSTATE.PAUSE);
-
-                mLastTrack = newTrack;
-            } else {
-                // Remove notification if shown
-                if (updateLockScreen)
-                    mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
-                if (broadcastNewInfo)
-                    broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
-
-                mLastTrack = null;
-            }
-        } else {
-            // No playback, check if notification is set and remove it then
-            if (updateLockScreen)
-                mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
-            // Notify all listeners with broadcast about playing situation
-            if (broadcastNewInfo) {
-                broadcastPlaybackInformation(null, PLAYSTATE.STOPPED);
-            }
-
-            mLastTrack = null;
-        }
-    }
-
-    /*
-     * Sends an broadcast which contains different kind of information about the
-     * current state of the PlaybackService.
-     */
-    private void broadcastPlaybackInformation(TrackModel track, PLAYSTATE state) {
-        if (track != null) {
-            // Create the broadcast intent
-            Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
-
-            // Create NowPlayingInfo for parcel
-            int playing = (state == PLAYSTATE.PLAYING ? 1 : 0);
-            String playingURL = track.getTrackURL();
-            int playingIndex = mCurrentPlayingIndex;
-            int repeat = mRepeat;
-            int random = mRandom;
-            int playlistlength = mCurrentList.size();
-            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength,track);
-
-            // Add nowplayingInfo to parcel
-
-            // Add this stuff to the parcel
-            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
-
-            // We're good to go, send it away
-            sendBroadcast(broadcastIntent);
-        } else {
-            // Send empty broadcast with stopped information
-            Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
-
-            NowPlayingInformation info = new NowPlayingInformation(0, "", -1, mRepeat, mRandom, mCurrentList.size(), new TrackModel());
-            // Add nowplayingInfo to parcel
-            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
-
-            // We're good to go, send it away
-            sendBroadcast(broadcastIntent);
-        }
-    }
 
     /*
      * True if the GaplessPlayer is actually playing a song.
      */
     public boolean isPlaying() {
         return mPlayer.isRunning();
+    }
+
+    /*
+     * Returns the playback state of the service
+     */
+    public PLAYSTATE getPlaybackState() {
+        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0) {
+            // Check current playback state. If playing inform all listeners and
+            // check if notification is set, and set if not.
+            TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
+            if (mPlayer.isRunning() && (mCurrentPlayingIndex < mCurrentList.size())) {
+                // Player is running and current index seems to be valid
+                return PLAYSTATE.PLAYING;
+            } else if (mPlayer.isPaused()) {
+                return PLAYSTATE.PAUSE;
+            } else {
+                // Only case left is that the player is stopped
+                return PLAYSTATE.STOPPED;
+            }
+        } else {
+            // No playback because list is empty
+            return PLAYSTATE.STOPPED;
+        }
     }
 
     /*
@@ -960,7 +864,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                      * No tracks remains. So set it to null. GaplessPlayer knows
                      * how to handle this :)
                      */
-
                     mPlayer.setNextTrack(null);
                 } catch (GaplessPlayer.PlaybackException e) {
                     handlePlaybackException(e);
@@ -985,19 +888,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mCurrentPlayingIndex >= 0 && mCurrentPlayingIndex < mCurrentList.size()) {
                 // Broadcast simple.last.fm.scrobble broadcast
                 TrackModel newTrackModel = mCurrentList.get(mCurrentPlayingIndex);
-                Log.v(TAG, "Send to SLS: " + newTrackModel);
-                Intent newbCast = new Intent("com.adam.aslfms.notify.playstatechanged");
-                newbCast.putExtra("state", 0);
-                newbCast.putExtra("app-name", "Odyssey");
-                newbCast.putExtra("app-package", "org.odyssey");
-                newbCast.putExtra("artist", newTrackModel.getTrackArtistName());
-                newbCast.putExtra("album", newTrackModel.getTrackAlbumName());
-                newbCast.putExtra("track", newTrackModel.getTrackName());
-                newbCast.putExtra("duration", newTrackModel.getTrackDuration() / 1000);
-                sendBroadcast(newbCast);
+                mMediaControlManager.notifyLastFM(newTrackModel, OdysseyMediaControls.SLS_STATES.SLS_START);
             }
             // Notify all the things
-            updateStatus();
+            mMediaControlManager.updateStatus();
             if (mRandom == RANDOMSTATE.RANDOM_OFF.ordinal()) {
                 // Random off
                 if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
@@ -1045,22 +939,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Broadcast simple.last.fm.scrobble broadcast
                 TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-                Log.v(TAG, "Send to SLS: " + item);
-                Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
-                bCast.putExtra("state", 3);
-                bCast.putExtra("app-name", "Odyssey");
-                bCast.putExtra("app-package", "org.odyssey");
-                bCast.putExtra("artist", item.getTrackArtistName());
-                bCast.putExtra("album", item.getTrackAlbumName());
-                bCast.putExtra("track", item.getTrackName());
-                bCast.putExtra("duration", item.getTrackDuration() / 1000);
-                sendBroadcast(bCast);
+                mMediaControlManager.notifyLastFM(item, OdysseyMediaControls.SLS_STATES.SLS_COMPLETE);
             }
 
             // No more tracks
             if (mNextPlayingIndex == -1) {
                 stop();
-                updateStatus();
+                mMediaControlManager.updateStatus();
             }
         }
     }
