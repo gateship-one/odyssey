@@ -27,7 +27,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.odyssey.models.TrackModel;
-import org.odyssey.playbackservice.managers.OdysseyMediaControls;
+import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.playbackservice.statemanager.StateManager;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
@@ -84,7 +84,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mRepeat = 0;
 
     // MediaControls manager
-    private OdysseyMediaControls mMediaControlManager;
+    private PlaybackStatusHelper mMediaControlManager;
 
 
     /* Temporary wakelock for transition to next song.
@@ -176,7 +176,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
-        mMediaControlManager = new OdysseyMediaControls(this);
+        mMediaControlManager = new PlaybackStatusHelper(this);
     }
 
     @Override
@@ -248,7 +248,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void stop() {
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // Notify simple last.fm scrobbler
-            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), OdysseyMediaControls.SLS_STATES.SLS_COMPLETE);
+            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackStatusHelper.SLS_STATES.SLS_COMPLETE);
         }
 
         mPlayer.stop();
@@ -326,7 +326,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlayer.resume();
 
             // Notify simple last.fm scrobbler
-            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), OdysseyMediaControls.SLS_STATES.SLS_RESUME);
+            mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackStatusHelper.SLS_STATES.SLS_RESUME);
 
             mIsPaused = false;
             mLastPosition = 0;
@@ -888,7 +888,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mCurrentPlayingIndex >= 0 && mCurrentPlayingIndex < mCurrentList.size()) {
                 // Broadcast simple.last.fm.scrobble broadcast
                 TrackModel newTrackModel = mCurrentList.get(mCurrentPlayingIndex);
-                mMediaControlManager.notifyLastFM(newTrackModel, OdysseyMediaControls.SLS_STATES.SLS_START);
+                mMediaControlManager.notifyLastFM(newTrackModel, PlaybackStatusHelper.SLS_STATES.SLS_START);
             }
             // Notify all the things
             mMediaControlManager.updateStatus();
@@ -939,7 +939,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Broadcast simple.last.fm.scrobble broadcast
                 TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-                mMediaControlManager.notifyLastFM(item, OdysseyMediaControls.SLS_STATES.SLS_COMPLETE);
+                mMediaControlManager.notifyLastFM(item, PlaybackStatusHelper.SLS_STATES.SLS_COMPLETE);
             }
 
             // No more tracks

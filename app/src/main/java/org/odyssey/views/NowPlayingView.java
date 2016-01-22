@@ -36,7 +36,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
-import org.odyssey.playbackservice.managers.OdysseyMediaControls;
+import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 import java.util.Timer;
@@ -530,7 +530,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mNowPlayingReceiver = null;
         }
         mNowPlayingReceiver = new NowPlayingReceiver();
-        getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(OdysseyMediaControls.MESSAGE_NEWTRACKINFORMATION));
+        getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackStatusHelper.MESSAGE_NEWTRACKINFORMATION));
         // get the playbackservice
         mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
@@ -699,9 +699,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(OdysseyMediaControls.MESSAGE_NEWTRACKINFORMATION)) {
+            if (intent.getAction().equals(PlaybackStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
                 // Extract nowplaying info
-                final NowPlayingInformation info = intent.getParcelableExtra(OdysseyMediaControls.INTENT_NOWPLAYINGNAME);
+                final NowPlayingInformation info = intent.getParcelableExtra(PlaybackStatusHelper.INTENT_NOWPLAYINGNAME);
 
                 Activity activity = (Activity) getContext();
                 if (activity != null) {

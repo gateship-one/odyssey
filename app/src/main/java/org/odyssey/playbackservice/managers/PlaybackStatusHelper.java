@@ -13,7 +13,7 @@ import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.RemoteControlReceiver;
 import org.odyssey.utils.CoverBitmapGenerator;
 
-public class OdysseyMediaControls {
+public class PlaybackStatusHelper {
     public enum SLS_STATES { SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE }
 
     /**
@@ -41,7 +41,7 @@ public class OdysseyMediaControls {
     // Notification manager
     OdysseyNotificationManager mNotificationManager;
 
-    public OdysseyMediaControls(PlaybackService playbackService) {
+    public PlaybackStatusHelper(PlaybackService playbackService) {
         mPlaybackService = playbackService;
 
         // Get MediaSession objects
