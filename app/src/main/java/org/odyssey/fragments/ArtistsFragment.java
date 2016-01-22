@@ -25,6 +25,7 @@ import org.odyssey.models.ArtistModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
@@ -122,7 +123,7 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (artistID == -1 ) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity().getContentResolver());
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         // send the event to the host activity
@@ -166,11 +167,11 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (artistID == -1 ) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity().getContentResolver());
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         // get all albums of the current artist
-        Cursor cursorAlbums = getActivity().getContentResolver().query(MediaStore.Audio.Artists.Albums.getContentUri("external", artistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
+        Cursor cursorAlbums = PermissionHelper.query(getActivity(), MediaStore.Audio.Artists.Albums.getContentUri("external", artistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
 
         String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
 
@@ -182,7 +183,7 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
                 do {
                     String[] whereVal = {cursorAlbums.getString(cursorAlbums.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY))};
 
-                    Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
+                    Cursor cursorTracks = PermissionHelper.query(getActivity(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
 
                     if (cursorTracks != null) {
                         // get all tracks of the current album

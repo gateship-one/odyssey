@@ -25,6 +25,7 @@ import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
@@ -151,7 +152,7 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
 
-        Cursor artistCursor = getActivity().getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
+        Cursor artistCursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
 
         if (artistCursor != null) {
             artistCursor.moveToFirst();

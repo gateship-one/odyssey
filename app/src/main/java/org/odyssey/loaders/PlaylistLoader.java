@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 
 import org.odyssey.models.PlaylistModel;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,24 +30,26 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
      */
     @Override
     public List<PlaylistModel> loadInBackground() {
-        Cursor playlistCursor =  mContext.getContentResolver().query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
+        Cursor playlistCursor =  PermissionHelper.query(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
 
         ArrayList<PlaylistModel> playlists = new ArrayList<PlaylistModel>();
 
-        int playlistTitleColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);
-        int playlistIDColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists._ID);
+        if (playlistCursor != null) {
+            int playlistTitleColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);
+            int playlistIDColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists._ID);
 
-        for (int i = 0; i < playlistCursor.getCount(); i++) {
-            playlistCursor.moveToPosition(i);
+            for (int i = 0; i < playlistCursor.getCount(); i++) {
+                playlistCursor.moveToPosition(i);
 
-            String playlistTitle = playlistCursor.getString(playlistTitleColumnIndex);
-            long playlistID = playlistCursor.getLong(playlistIDColumnIndex);
+                String playlistTitle = playlistCursor.getString(playlistTitleColumnIndex);
+                long playlistID = playlistCursor.getLong(playlistIDColumnIndex);
 
-            PlaylistModel playlist = new PlaylistModel(playlistTitle, playlistID);
-            playlists.add(playlist);
+                PlaylistModel playlist = new PlaylistModel(playlistTitle, playlistID);
+                playlists.add(playlist);
+            }
+
+            playlistCursor.close();
         }
-
-        playlistCursor.close();
         return playlists;
     }
 

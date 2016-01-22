@@ -26,6 +26,7 @@ import org.odyssey.models.AlbumModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
@@ -204,7 +205,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
 
-        Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
+        Cursor cursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
 
         if (cursor != null) {
             // get all tracks on the current album

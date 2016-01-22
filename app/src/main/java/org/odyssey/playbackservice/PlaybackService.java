@@ -28,9 +28,9 @@ import android.widget.Toast;
 
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.managers.OdysseyMediaControls;
-import org.odyssey.playbackservice.managers.OdysseyNotificationManager;
 import org.odyssey.playbackservice.statemanager.StateManager;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
@@ -386,7 +386,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stop();
 
         // get all tracks
-        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
+        Cursor cursor = PermissionHelper.query(getApplicationContext(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
 
         // add all tracks to playlist
         if (cursor.moveToFirst()) {
@@ -1178,7 +1178,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void run() {
 
             // remove playlist if exists
-            mContext.getContentResolver().delete(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[] { mPlaylistName });
+            PermissionHelper.delete(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[]{mPlaylistName});
 
             // create new playlist and save row
             ContentValues mInserts = new ContentValues();
@@ -1186,38 +1186,42 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mInserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
             mInserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
 
-            Uri currentRow = mContext.getContentResolver().insert(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
+            Uri currentRow = PermissionHelper.insert(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
 
             // insert current tracks
 
-            // TODO optimize
-            String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA };
-            String where = MediaStore.Audio.Media.DATA + "=?";
+            if (currentRow != null) {
+                // TODO optimize
+                String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
+                String where = MediaStore.Audio.Media.DATA + "=?";
 
-            TrackModel item = null;
+                TrackModel item = null;
 
-            for (int i = 0; i < mCurrentList.size(); i++) {
+                for (int i = 0; i < mCurrentList.size(); i++) {
 
-                item = mCurrentList.get(i);
+                    item = mCurrentList.get(i);
 
-                if (item != null) {
-                    String[] whereVal = { item.getTrackURL() };
+                    if (item != null) {
+                        String[] whereVal = {item.getTrackURL()};
 
-                    // get ID of current track
-                    Cursor c = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
+                        // get ID of current track
+                        Cursor c = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
 
-                    if (c.moveToFirst()) {
-                        // insert track into playlist
-                        String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
+                        if (c != null) {
+                            if (c.moveToFirst()) {
+                                // insert track into playlist
+                                String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                        mInserts.clear();
-                        mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
-                        mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
+                                mInserts.clear();
+                                mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
+                                mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
 
-                        mContext.getContentResolver().insert(currentRow, mInserts);
+                                PermissionHelper.insert(mContext, currentRow, mInserts);
+                            }
+
+                            c.close();
+                        }
                     }
-
-                    c.close();
                 }
             }
         }

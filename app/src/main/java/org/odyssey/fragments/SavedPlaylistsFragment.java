@@ -26,6 +26,7 @@ import org.odyssey.models.PlaylistModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
@@ -153,7 +154,7 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         // identify current playlist
         PlaylistModel clickedPlaylist = (PlaylistModel) mSavedPlaylistListViewAdapter.getItem(position);
 
-        Cursor cursorTracks = getActivity().getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", clickedPlaylist.getPlaylistID()), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+        Cursor cursorTracks = PermissionHelper.query(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", clickedPlaylist.getPlaylistID()), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
         if (cursorTracks != null) {
             // get all tracks of the playlist
@@ -200,7 +201,7 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
         String where = MediaStore.Audio.Playlists._ID + "=?";
         String[] whereVal = { ""+clickedPlaylist.getPlaylistID() };
 
-        getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
+        PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
 
         // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);

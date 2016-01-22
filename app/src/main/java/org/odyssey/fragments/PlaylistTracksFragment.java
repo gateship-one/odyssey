@@ -23,6 +23,7 @@ import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
@@ -200,14 +201,14 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
     }
 
     void removeTrackFromPlaylist(int position) {
-        Cursor trackCursor = getActivity().getContentResolver().query(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+        Cursor trackCursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
         if (trackCursor != null) {
             if (trackCursor.moveToPosition(position)) {
                 String where = MediaStore.Audio.Playlists.Members._ID + "=?";
                 String[] whereVal = {trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID))};
 
-                getActivity().getContentResolver().delete(MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), where, whereVal);
+                PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), where, whereVal);
 
                 // reload data
                 getLoaderManager().restartLoader(0, getArguments(), this);

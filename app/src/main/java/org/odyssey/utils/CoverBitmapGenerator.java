@@ -35,18 +35,20 @@ public class CoverBitmapGenerator {
 
             String whereVal[] = { mTrack.getTrackAlbumKey() };
 
-            Cursor cursor = mContext.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Albums.ALBUM_ART }, where, whereVal, "");
+            Cursor cursor = PermissionHelper.query(mContext, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, where, whereVal, "");
 
-            String coverPath = null;
-            if (cursor.moveToFirst()) {
-                coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-            }
-            if (coverPath != null) {
-                BitmapDrawable cover = (BitmapDrawable) BitmapDrawable.createFromPath(coverPath);
-                mListener.receiveBitmap(cover);
-            }
+            if(cursor != null) {
+                String coverPath = null;
+                if (cursor.moveToFirst()) {
+                    coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                }
+                if (coverPath != null) {
+                    BitmapDrawable cover = (BitmapDrawable) BitmapDrawable.createFromPath(coverPath);
+                    mListener.receiveBitmap(cover);
+                }
 
-            cursor.close();
+                cursor.close();
+            }
         }
     }
 

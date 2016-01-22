@@ -19,56 +19,25 @@ public class MusicLibraryHelper {
 
     public static final String[] projectionPlaylists = { MediaStore.Audio.Playlists.NAME, MediaStore.Audio.Playlists._ID };
 
-//    /**
-//     * Resolves the url into an comfortably trackitem which contains artist and
-//     * title
-//     *
-//     * @param url
-//     * @param resolver
-//     * @return
-//     */
-//    public static TrackItem getTrackItemFromURL(String url, ContentResolver resolver) {
-//        String selection = MediaStore.Audio.Media.DATA + "= ?";
-//        String[] selectionArgs = { url };
-//        Cursor trackCursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, selection, selectionArgs, MediaStore.Audio.Media.TITLE);
-//
-//        String title = "";
-//        String artist = "";
-//        String album = "";
-//        int trackno = 0;
-//        long duration = 0;
-//        String albumKey = "";
-//
-//        if (trackCursor != null && trackCursor.getCount() > 0) {
-//            trackCursor.moveToFirst();
-//            title = trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-//            artist = trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-//            album = trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-//            trackno = trackCursor.getInt(trackCursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-//            duration = trackCursor.getLong(trackCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-//            albumKey = trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-//        }
-//
-//        trackCursor.close();
-//
-//        return new TrackItem(title, artist, album, url, trackno, duration, albumKey);
-//    }
-
-    public static long getArtistIDFromName(String name, ContentResolver resolver) {
+    public static long getArtistIDFromName(String name, Context context) {
         // get artist id
+        long artistID = -1;
+
         String whereVal[] = { name };
 
         String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
 
         String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
 
-        Cursor artistCursor = resolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
+        Cursor artistCursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
 
-        artistCursor.moveToFirst();
+        if (artistCursor != null) {
+            artistCursor.moveToFirst();
 
-        long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+            artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
 
-        artistCursor.close();
+            artistCursor.close();
+        }
 
         return artistID;
     }
