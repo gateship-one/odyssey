@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 
 public class PermissionHelper {
 
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
+
     public static Cursor query(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
 
