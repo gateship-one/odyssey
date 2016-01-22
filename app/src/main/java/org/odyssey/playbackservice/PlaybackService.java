@@ -84,11 +84,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mRandom = 0;
     private int mRepeat = 0;
 
-
-
-    // Notification manager
-    private OdysseyNotificationManager mNotificationManager;
-
     // MediaControls manager
     private OdysseyMediaControls mMediaControlManager;
 
@@ -183,8 +178,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // set up random generator
         mRandomGenerator = new Random();
 
-        // Initialize the notification manager
-        mNotificationManager = new OdysseyNotificationManager(this);
 
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mMediaControlManager = new OdysseyMediaControls(this);
@@ -503,7 +496,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         // Send new NowPlaying because playlist changed
-        updateStatus(false, false, true);
+        updateStatus(false, true);
     }
 
     /**
@@ -675,7 +668,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             setNextTrackForMP();
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false, false, true);
+        updateStatus(false, true);
     }
 
     public void dequeueTrack(int index) {
@@ -701,7 +694,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
         // Send new NowPlaying because playlist changed
-        updateStatus(false, false, true);
+        updateStatus(false, true);
     }
 
     /**
@@ -731,14 +724,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if ((mCurrentList != null) && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
             TrackModel track = mCurrentList.get(mCurrentPlayingIndex);
             mMediaControlManager.updateMetadata(track, PLAYSTATE.STOPPED);
-            mNotificationManager.clearNotification();
             broadcastPlaybackInformation(track, PLAYSTATE.STOPPED);
         } else {
             updateStatus();
         }
-
-        // Remove notification
-        mNotificationManager.clearNotification();
 
         // Stops the service itself.
         stopSelf();
@@ -760,7 +749,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void setRepeat(int repeat) {
         mRepeat = repeat;
-        updateStatus(false, false, true);
+        updateStatus(false, true);
         if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
             // If playing last track, next must be first in playlist
             if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
@@ -782,7 +771,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void setRandom(int random) {
         mRandom = random;
-        updateStatus(false, false, true);
+        updateStatus(false, true);
         if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
             randomizeNextTrack();
         } else {
@@ -826,10 +815,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * current state of gaplessplayer, playbackservice and so on.
      */
     private synchronized void updateStatus() {
-        updateStatus(true, true, true);
+        updateStatus(true, true);
     }
 
-    private synchronized void updateStatus(boolean updateNotification, boolean updateLockScreen, boolean broadcastNewInfo) {
+    private synchronized void updateStatus(boolean updateLockScreen, boolean broadcastNewInfo) {
         Log.v(TAG, "updatestatus:" + mCurrentPlayingIndex);
         // Check if playlist contains any tracks otherwise playback should not
         // be possible
@@ -841,8 +830,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
                     mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PLAYING);
-                if (updateNotification)
-                    mNotificationManager.updateNotification(newTrack,PLAYSTATE.PLAYING);
                 if (broadcastNewInfo)
                     broadcastPlaybackInformation(newTrack, PLAYSTATE.PLAYING);
 
@@ -851,16 +838,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
                 if (updateLockScreen)
                     mMediaControlManager.updateMetadata(newTrack, PLAYSTATE.PAUSE);
-                if (updateNotification)
-                    mNotificationManager.updateNotification(newTrack,PLAYSTATE.PAUSE);
                 if (broadcastNewInfo)
                     broadcastPlaybackInformation(newTrack, PLAYSTATE.PAUSE);
 
                 mLastTrack = newTrack;
             } else {
                 // Remove notification if shown
-                if (updateNotification)
-                    mNotificationManager.clearNotification();
                 if (updateLockScreen)
                     mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
                 if (broadcastNewInfo)
@@ -870,8 +853,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         } else {
             // No playback, check if notification is set and remove it then
-            if (updateNotification)
-                mNotificationManager.clearNotification();
             if (updateLockScreen)
                 mMediaControlManager.updateMetadata(null, PLAYSTATE.STOPPED);
             // Notify all listeners with broadcast about playing situation

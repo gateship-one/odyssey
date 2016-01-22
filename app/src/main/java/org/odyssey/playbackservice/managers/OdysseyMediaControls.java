@@ -25,6 +25,8 @@ public class OdysseyMediaControls {
     // Save last track to update cover art only if needed
     private TrackModel mLastTrack = null;
 
+    // Notification manager
+    OdysseyNotificationManager mNotificationManager;
 
     public OdysseyMediaControls(PlaybackService playbackService) {
         mPlaybackService = playbackService;
@@ -39,6 +41,9 @@ public class OdysseyMediaControls {
 
         PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService,0, new Intent(mPlaybackService,RemoteControlReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT);
         mMediaSession.setMediaButtonReceiver(mediaButtonPendingIntent);
+
+        // Initialize the notification manager
+        mNotificationManager = new OdysseyNotificationManager(mPlaybackService);
     }
 
 
@@ -121,10 +126,13 @@ public class OdysseyMediaControls {
                 mLastTrack = track;
             }
             mMediaSession.setMetadata(metaDataBuilder.build());
+
+            mNotificationManager.updateNotification(track,playbackState,mMediaSession.getSessionToken());
         } else {
             // Clear lockscreen
             mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED, 0, 0.0f).build());
             mMediaSession.setActive(false);
+            mNotificationManager.clearNotification();
         }
     }
 

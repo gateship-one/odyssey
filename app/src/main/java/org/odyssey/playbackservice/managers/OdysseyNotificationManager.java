@@ -6,9 +6,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v4.app.NotificationCompat;
-import android.widget.RemoteViews;
+import android.media.session.MediaSession;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
@@ -35,7 +35,7 @@ public class OdysseyNotificationManager {
 
     // Notification objects
     android.app.NotificationManager mNotificationManager;
-    NotificationCompat.Builder mNotificationBuilder;
+    Notification.Builder mNotificationBuilder;
 
     // Notification itself
     Notification mNotification;
@@ -43,12 +43,14 @@ public class OdysseyNotificationManager {
     // Asynchronous image fetcher
     private CoverBitmapGenerator mNotificationCoverGenerator;
 
+    // Save last track and last image
     private TrackModel mLastTrack = null;
+    private Bitmap mLastBitmap = null;
 
     public OdysseyNotificationManager(Context context) {
         mContext = context;
 
-        mNotificationBuilder = new NotificationCompat.Builder(mContext).setSmallIcon(R.drawable.odyssey_notification).setContentTitle("Odyssey").setContentText("");
+        mNotificationBuilder = new Notification.Builder(mContext);
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationCoverGenerator = new CoverBitmapGenerator(mContext, new NotificationCoverListener());
@@ -60,82 +62,78 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state) {
+    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSession.Token mediaSessionToken) {
         if (track != null && state != PlaybackService.PLAYSTATE.STOPPED) {
+            mNotificationBuilder = new Notification.Builder(mContext);
 
-            RemoteViews remoteViewBig = new RemoteViews(mContext.getPackageName(), R.layout.notification_big);
-            RemoteViews remoteViewSmall = new RemoteViews(mContext.getPackageName(), R.layout.notification_small);
-            remoteViewBig.setTextViewText(R.id.notification_big_track, track.getTrackName());
-            remoteViewBig.setTextViewText(R.id.notification_big_artist, track.getTrackArtistName());
-            remoteViewBig.setTextViewText(R.id.notification_big_album, track.getTrackAlbumName());
-
-            remoteViewSmall.setTextViewText(R.id.notification_small_track, track.getTrackName());
-            remoteViewSmall.setTextViewText(R.id.notification_small_artist, track.getTrackArtistName());
-            remoteViewSmall.setTextViewText(R.id.notification_small_album, track.getTrackAlbumName());
+            // Open application intent
+            Intent contentIntent = new Intent(mContext, OdysseyMainActivity.class);
+            contentIntent.putExtra("Fragment", "currentsong");
+            contentIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            PendingIntent contentPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mNotificationBuilder.setContentIntent(contentPendingIntent);
 
             // Set pendingintents
             // Previous song action
             Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
             PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViewBig.setOnClickPendingIntent(R.id.notification_big_previous, prevPendingIntent);
+            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_24dp,"Previous",prevPendingIntent).build();
 
             // Pause/Play action
+            PendingIntent playPauseIntent;
+            int playPauseIcon;
             if (state == PlaybackService.PLAYSTATE.PLAYING) {
                 Intent pauseIntent = new Intent(PlaybackService.ACTION_PAUSE);
-                PendingIntent pausePendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, pausePendingIntent);
-                remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_play, pausePendingIntent);
-                // Set right drawable
-                remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_pause_24dp);
-                remoteViewSmall.setImageViewResource(R.id.notification_small_play, R.drawable.ic_pause_24dp);
-
+                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                playPauseIcon = R.drawable.ic_pause_24dp;
             } else {
                 Intent playIntent = new Intent(PlaybackService.ACTION_PLAY);
-                PendingIntent playPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteViewBig.setOnClickPendingIntent(R.id.notification_big_play, playPendingIntent);
-                remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_play, playPendingIntent);
-                // Set right drawable
-                remoteViewBig.setImageViewResource(R.id.notification_big_play, R.drawable.ic_play_arrow_24dp);
-                remoteViewSmall.setImageViewResource(R.id.notification_small_play, R.drawable.ic_play_arrow_24dp);
+                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                playPauseIcon = R.drawable.ic_play_arrow_24dp;;
             }
+            Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon,"PlayPause",playPauseIntent).build();
 
             // Next song action
             Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViewBig.setOnClickPendingIntent(R.id.notification_big_next, nextPendingIntent);
-            remoteViewSmall.setOnClickPendingIntent(R.id.notification_small_next, nextPendingIntent);
+            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_24dp,"Next",nextPendingIntent).build();
 
             // Quit action
             Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);
             PendingIntent quitPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViewBig.setOnClickPendingIntent(R.id.notification_big_close, quitPendingIntent);
+            mNotificationBuilder.setDeleteIntent(quitPendingIntent);
+
+            mNotificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            mNotificationBuilder.setSmallIcon(R.drawable.odyssey_notification);
+            mNotificationBuilder.addAction(prevAction);
+            mNotificationBuilder.addAction(playPauseAction);
+            mNotificationBuilder.addAction(nextAction);
+            Notification.MediaStyle notificationStyle = new Notification.MediaStyle();
+            notificationStyle.setShowActionsInCompactView(1, 2);
+            notificationStyle.setMediaSession(mediaSessionToken);
+            mNotificationBuilder.setStyle(notificationStyle);
+            mNotificationBuilder.setContentTitle(track.getTrackName());
+            mNotificationBuilder.setContentText(track.getTrackArtistName());
+
+            // Remove unnecessary time info
+            mNotificationBuilder.setWhen(0);
 
             // Cover but only if changed
             if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                remoteViewBig.setImageViewResource(R.id.notification_big_image, R.drawable.cover_placeholder_96dp);
-                remoteViewSmall.setImageViewResource(R.id.notification_small_image, R.drawable.cover_placeholder_96dp);
-
                 mNotificationCoverGenerator.getImage(track);
                 mLastTrack = track;
+                mLastBitmap = null;
             }
 
-            // Open application intent
-            Intent resultIntent = new Intent(mContext, OdysseyMainActivity.class);
-            resultIntent.putExtra("Fragment", "currentsong");
-            resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            // Only set image if an saved one is available
+            if ( mLastBitmap != null ) {
+                mNotificationBuilder.setLargeIcon(mLastBitmap);
+            }
 
-            // Swipe away intent
-            mNotificationBuilder.setDeleteIntent(quitPendingIntent);
-
-            PendingIntent resultPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mNotificationBuilder.setContentIntent(resultPendingIntent);
-
+            // Build the notification
             mNotification = mNotificationBuilder.build();
-            mNotification.bigContentView = remoteViewBig;
-            mNotification.contentView = remoteViewSmall;
 
             // Check if run from service
-
             if ( mContext instanceof Service ) {
                 if ( state == PlaybackService.PLAYSTATE.PLAYING) {
                     ((Service)mContext).startForeground(NOTIFICATION_ID, mNotification);
@@ -144,8 +142,8 @@ public class OdysseyNotificationManager {
                 }
             }
 
+            // Send the notification away
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-
         } else {
             clearNotification();
         }
@@ -174,18 +172,10 @@ public class OdysseyNotificationManager {
         @Override
         public void receiveBitmap(BitmapDrawable bm) {
             // Check if notification exists and set picture
-            if (mNotification != null && mNotification.bigContentView != null && bm != null) {
-                // Set the image in the remoteView
-                mNotification.bigContentView.setImageViewBitmap(R.id.notification_big_image, bm.getBitmap());
-                // Notify android about the change
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-            }
-            if (mNotification != null && mNotification.contentView != null && bm != null) {
-                // Set the image in the remoteView
-                mNotification.contentView.setImageViewBitmap(R.id.notification_small_image, bm.getBitmap());
-                // Notify android about the change
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-            }
+            mNotificationBuilder.setLargeIcon(bm.getBitmap());
+            mLastBitmap = bm.getBitmap();
+            mNotification = mNotificationBuilder.build();
+            mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }
 
     }
