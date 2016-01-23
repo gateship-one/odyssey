@@ -3,7 +3,7 @@
     <!--android:centerColor="#4CAF50"-->
     <gradient
         android:angle="135"
-        android:endColor="?attr/colorPrimary"
-        android:startColor="?attr/colorPrimaryDark"
+        android:endColor="?attr/odyssey_color_primary"
+        android:startColor="?attr/odyssey_color_primary_dark"
         android:type="linear" />
 </shape>
