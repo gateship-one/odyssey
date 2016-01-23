@@ -169,7 +169,17 @@ public class OdysseyMainActivity extends AppCompatActivity
         } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
             nowPlayingView.minimize();
-        } else {
+        } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment) {
+            // If current fragment is the settings fragment, jump back to myMusicFragment.
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_container, new MyMusicFragment());
+            transaction.commit();
+
+            // Reset the navigation view
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(R.id.nav_my_music);
+        }
+        else {
             super.onBackPressed();
 
             // enable navigation bar when backstack empty
