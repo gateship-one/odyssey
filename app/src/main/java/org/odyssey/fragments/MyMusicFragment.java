@@ -1,11 +1,14 @@
 package org.odyssey.fragments;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +35,19 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_artists));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_albums));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.fragment_title_all_tracks));
+
+        // Icons
+        final ColorStateList tabColors = tabLayout.getTabTextColors();
+        Drawable icon = getResources().getDrawable(R.drawable.ic_recent_actors_24dp);
+        icon = DrawableCompat.wrap(icon);
+        DrawableCompat.setTintList(icon,tabColors);
+        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        icon = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_album_24dp));
+        DrawableCompat.setTintList(icon, tabColors);
+        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        icon = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_my_library_music_24dp));
+        DrawableCompat.setTintList(icon, tabColors);
+        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         ViewPager myMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
