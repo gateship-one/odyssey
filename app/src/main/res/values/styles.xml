@@ -2,7 +2,6 @@
 
     <!-- Color themes -->
     <style name="AppTheme.indigo" parent="AppTheme">
-        <!-- Customize your theme here. -->
         <item name="odyssey_color_primary">@color/colorPrimary_indigo</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_indigo</item>
         <item name="odyssey_color_accent">@color/colorAccent_indigo</item>
@@ -12,10 +11,27 @@
     </style>
 
     <style name="AppTheme.orange" parent="AppTheme">
-        <!-- Customize your theme here. -->
         <item name="odyssey_color_primary">@color/colorPrimary_orange</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_orange</item>
         <item name="odyssey_color_accent">@color/colorAccent_orange</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="AppTheme.deepOrange" parent="AppTheme">
+        <item name="odyssey_color_primary">@color/colorPrimary_deepOrange</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_deepOrange</item>
+        <item name="odyssey_color_accent">@color/colorAccent_deepOrange</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="AppTheme.blue" parent="AppTheme">
+        <item name="odyssey_color_primary">@color/colorPrimary_blue</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_blue</item>
+        <item name="odyssey_color_accent">@color/colorAccent_blue</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
@@ -50,6 +66,7 @@
         <item name="android:textColor">@color/colorTextLight</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="preferenceTheme">@style/AppTheme.Preference</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -61,6 +78,14 @@
     <style name="AppTheme.NavDrawer" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
+
+    <style name="AppTheme.Preference" parent ="PreferenceThemeOverlay.v14.Material">
+        <item name="android:colorAccent">?attr/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorTextLight</item>
+        <item name="android:textColorSecondary">@color/colorTextLightSecondary</item>
+        <item name="android:dialogTheme">@android:style/Theme.Material.Dialog</item>
+    </style>
+
 
     <style name="AppTheme.NavDrawerHeader" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>

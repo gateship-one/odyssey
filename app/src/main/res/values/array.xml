@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preference_style_values">
+        <item>indigo</item>
+        <item>orange</item>
+        <item>deeporange</item>
+        <item>blue</item>
+        <item>darkgrey</item>
+        <item>brown</item>
+    </string-array>
+</resources>

@@ -49,4 +49,23 @@
 
     <!-- default playlist title -->
     <string name="default_playlist_title">New Playlist</string>
+
+    <!-- preferences -->
+    <string name="preference_show_album_artists_only_title">Only show album artists</string>
+    <string name="preference_show_album_artists_only_summary">Only show album artists instead of all artists from database.</string>
+
+    <string name="preference_launch_about">About</string>
+
+    <string name="preference_theme_title">Theme</string>
+    <string name="preference_theme_summary">Select a different design for the application.</string>
+    <string name="preference_theme_message">Select a theme</string>
+
+    <string-array name="preference_odyssey_styles">
+        <item>Indigo</item>
+        <item>Orange</item>
+        <item>Deep Orange</item>
+        <item>Blue</item>
+        <item>Dark Grey</item>
+        <item>Brown</item>
+    </string-array>
 </resources>

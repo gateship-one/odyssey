@@ -6,9 +6,17 @@
 
     <color name="colorPrimary_orange">#ff9800</color>
     <color name="colorPrimaryDark_orange">#f57c00</color>
-    <color name="colorAccent_orange">#d50000</color>
+    <color name="colorAccent_orange">#2979ff</color>
 
-    <color name="colorPrimary_darkGrey">#424242</color>
+    <color name="colorPrimary_deepOrange">#ff5722</color>
+    <color name="colorPrimaryDark_deepOrange">#e64a19</color>
+    <color name="colorAccent_deepOrange">#2979ff</color>
+
+    <color name="colorPrimary_blue">#2196f3</color>
+    <color name="colorPrimaryDark_blue">#1976d2</color>
+    <color name="colorAccent_blue">#f50057</color>
+
+    <color name="colorPrimary_darkGrey">#323232</color>
     <color name="colorPrimaryDark_darkGrey">#212121</color>
     <color name="colorAccent_darkGrey">#2962ff</color>
 
@@ -19,5 +27,6 @@
     <color name="colorBackground">#424242</color>
     <color name="colorBackgroundDark">#212121</color>
     <color name="colorTextLight">#FFFFFF</color>
+    <color name="colorTextLightSecondary">#666666</color>
     <color name="colorTextDark">#000000</color>
 </resources>

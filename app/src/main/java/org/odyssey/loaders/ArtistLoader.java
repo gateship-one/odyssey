@@ -8,22 +8,27 @@ import org.odyssey.models.ArtistModel;
 import org.odyssey.utils.PermissionHelper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v7.preference.PreferenceManager;
 
 /*
  * Custom Loader for ARTIST with ALBUM_ART
  */
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
-    public static final boolean SHOW_ONLY_ALBUM_ARTISTS = true;
+    private boolean mShowAlbumArtistsOnly;
 
     Context mContext;
 
     public ArtistLoader(Context context) {
         super(context);
         this.mContext = context;
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mShowAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only",true);
     }
 
     /*
@@ -36,7 +41,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
     public List<ArtistModel> loadInBackground() {
         ArrayList<ArtistModel> artists = new ArrayList<ArtistModel>();
         String artist, artistKey, coverPath;
-        if ( !SHOW_ONLY_ALBUM_ARTISTS ) {
+        if ( !mShowAlbumArtistsOnly ) {
             // get all album covers
             Cursor cursorAlbumArt = PermissionHelper.query(mContext, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM}, MediaStore.Audio.Albums.ALBUM_ART + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null,
                     MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");

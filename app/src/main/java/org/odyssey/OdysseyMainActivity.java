@@ -2,7 +2,9 @@ package org.odyssey;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -40,7 +42,7 @@ import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver{
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -48,6 +50,31 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Read theme preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String themePref = sharedPref.getString("pref_theme","indigo");
+
+        switch (themePref) {
+            case "indigo":
+                setTheme(R.style.AppTheme_indigo);
+                break;
+            case "orange":
+                setTheme(R.style.AppTheme_orange);
+                break;
+            case "deeporange":
+                setTheme(R.style.AppTheme_deepOrange);
+                break;
+            case "blue":
+                setTheme(R.style.AppTheme_blue);
+                break;
+            case "darkgrey":
+                setTheme(R.style.AppTheme_darkGrey);
+                break;
+            case "brown":
+                setTheme(R.style.AppTheme_brown);
+                break;
+        }
+
         super.onCreate(savedInstanceState);
 
         // ask for permissions
@@ -113,6 +140,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         nowPlayingView.registerDragStatusReceiver(this);
