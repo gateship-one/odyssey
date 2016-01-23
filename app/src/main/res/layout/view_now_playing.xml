@@ -172,6 +172,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
                     android:paddingLeft="8dp"
+                    android:paddingTop="@dimen/standard_padding_medium"
                     android:paddingRight="8dp">
 
                     <TextView
@@ -179,7 +180,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_below="@+id/now_playing_seekBar"
                         android:gravity="center" />
 
                     <TextView
@@ -187,22 +187,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/now_playing_seekBar"
                         android:gravity="center" />
 
-                    <SeekBar
-                        android:id="@+id/now_playing_seekBar"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:id="@+id/now_playing_buttonLayout"
-                    android:background="?attr/colorPrimary">
+                    android:background="?attr/colorPrimary"
+                    android:paddingBottom="@dimen/standard_padding_medium">
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomRepeatButton"
@@ -256,6 +252,25 @@
 
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- Layout is overlapping the cover_layout and the control_Layout, therefore
+            the negative value -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignTop="@+id/now_playing_control_layout"
+                android:layout_marginTop="-24dp">
+                <!-- To remove the left and right margin of the seekbar a negative margin is added.
+                .5 because there was a small pixel left on the device. perhaps fixable otherwise -->
+                <SeekBar
+                    android:id="@+id/now_playing_seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="-16.5dp"
+                    android:layout_marginRight="-16.5dp" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
     </org.odyssey.views.NowPlayingView>
