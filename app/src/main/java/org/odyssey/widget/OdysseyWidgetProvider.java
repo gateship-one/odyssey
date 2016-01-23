@@ -75,10 +75,10 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
                 }
                 if (info.getPlaying() == 0) {
                     // Show play icon
-                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_24dp);
+                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
                 } else if (info.getPlaying() == 1) {
                     // Show pause icon
-                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_24dp);
+                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_48dp);
                 }
 
                 mLastTrack = item;

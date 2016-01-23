@@ -56,7 +56,7 @@
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:tint="@color/colorTextLight"
-                android:src="@drawable/ic_skip_previous_24dp" />
+                android:src="@drawable/ic_skip_previous_48dp" />
 
             <ImageButton
                 android:id="@+id/widget_big_play"
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:tint="@color/colorTextLight"
-                android:src="@drawable/ic_play_arrow_24dp" />
+                android:src="@drawable/ic_play_arrow_48dp" />
 
             <ImageButton
                 android:id="@+id/widget_big_next"
@@ -74,7 +74,7 @@
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:tint="@color/colorTextLight"
-                android:src="@drawable/ic_skip_next_24dp"/>
+                android:src="@drawable/ic_skip_next_48dp"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

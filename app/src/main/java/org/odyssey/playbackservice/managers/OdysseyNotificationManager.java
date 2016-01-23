@@ -14,7 +14,6 @@ import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackService;
-import org.odyssey.utils.CoverBitmapGenerator;
 
 /*
  * This class manages all the notifications from the main playback service.
@@ -71,7 +70,7 @@ public class OdysseyNotificationManager {
             // Previous song action
             Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
             PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_24dp,"Previous",prevPendingIntent).build();
+            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_48dp,"Previous",prevPendingIntent).build();
 
             // Pause/Play action
             PendingIntent playPauseIntent;
@@ -79,18 +78,18 @@ public class OdysseyNotificationManager {
             if (state == PlaybackService.PLAYSTATE.PLAYING) {
                 Intent pauseIntent = new Intent(PlaybackService.ACTION_PAUSE);
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                playPauseIcon = R.drawable.ic_pause_24dp;
+                playPauseIcon = R.drawable.ic_pause_48dp;
             } else {
                 Intent playIntent = new Intent(PlaybackService.ACTION_PLAY);
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                playPauseIcon = R.drawable.ic_play_arrow_24dp;;
+                playPauseIcon = R.drawable.ic_play_arrow_48dp;;
             }
             Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon,"PlayPause",playPauseIntent).build();
 
             // Next song action
             Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_24dp,"Next",nextPendingIntent).build();
+            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_48dp,"Next",nextPendingIntent).build();
 
             // Quit action
             Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);

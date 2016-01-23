@@ -595,11 +595,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     public void run() {
                         // update imagebuttons
                         if (songPlaying) {
-                            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_24dp);
+                            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
                             mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_24dp);
                         } else {
-                            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_24dp);
-                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_24dp);
+                            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
+                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
                         }
                         if (isRepeat) {
                             TypedValue typedValue = new TypedValue();
