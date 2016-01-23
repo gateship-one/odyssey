@@ -266,7 +266,7 @@
                     android:id="@+id/now_playing_seekBar"
                     android:layout_width="match_parent"
                     android:layout_centerVertical="true"
-                    android:layout_height="24dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="-16.5dp"
                     android:layout_marginRight="-16.5dp" />
             </RelativeLayout>
