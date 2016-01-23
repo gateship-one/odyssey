@@ -108,6 +108,7 @@ public class PlaybackStatusHelper {
                 break;
             case STOPPED:
                 stopMediaSession();
+                broadcastPlaybackInformation(null, PlaybackService.PLAYSTATE.STOPPED);
                 mNotificationManager.clearNotification();
                 break;
         }
