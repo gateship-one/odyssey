@@ -203,17 +203,17 @@
                     <ImageButton
                         android:id="@+id/now_playing_bottomRepeatButton"
                         android:layout_width="0px"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
-                        android:src="@drawable/ic_repeat_48dp"
-                        android:scaleType="fitCenter"/>
+                        android:src="@drawable/ic_repeat_24dp"
+                        android:scaleType="center"/>
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomPreviousButton"
                         android:layout_width="0px"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
@@ -223,7 +223,7 @@
                     <ImageButton
                         android:id="@+id/now_playing_bottomPlayPauseButton"
                         android:layout_width="0px"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
@@ -233,7 +233,7 @@
                     <ImageButton
                         android:id="@+id/now_playing_bottomNextButton"
                         android:layout_width="0px"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
@@ -243,12 +243,12 @@
                     <ImageButton
                         android:id="@+id/now_playing_bottomRandomButton"
                         android:layout_width="0px"
-                        android:layout_height="match_parent"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:tint="@color/colorTextLight"
                         android:background="?android:selectableItemBackground"
-                        android:src="@drawable/ic_shuffle_48dp"
-                        android:scaleType="fitCenter" />
+                        android:src="@drawable/ic_shuffle_24dp"
+                        android:scaleType="center" />
 
                 </LinearLayout>
             </LinearLayout>
