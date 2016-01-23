@@ -16,6 +16,7 @@
         android:defaultValue="true"/>
     <Preference android:title="@string/preference_launch_about" >
         <intent android:action="android.intent.action.VIEW"
-            android:data="http://www.google.com" />
+            android:targetPackage="org.odyssey"
+            android:targetClass="org.odyssey.OdysseyAboutActivity"/>
     </Preference>
 </PreferenceScreen>
