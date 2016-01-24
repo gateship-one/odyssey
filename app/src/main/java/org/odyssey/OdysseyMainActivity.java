@@ -169,8 +169,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
             nowPlayingView.minimize();
-        } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment) {
-            // If current fragment is the settings fragment, jump back to myMusicFragment.
+        } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
+            // If current fragment is the settings or savedplaylists fragment, jump back to myMusicFragment.
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.fragment_container, new MyMusicFragment());
             transaction.commit();
