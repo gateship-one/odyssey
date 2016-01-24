@@ -130,12 +130,13 @@ public class GaplessPlayer {
      */
     public void stop() {
         if (mCurrentMediaPlayer != null) {
-            if (mNextMediaPlayer != null && mSecondPrepared) {
+            if (mNextMediaPlayer != null) {
                 mCurrentMediaPlayer.setNextMediaPlayer(null);
                 mNextMediaPlayer.reset();
                 mNextMediaPlayer.release();
                 mNextMediaPlayer = null;
                 mSecondPrepared = false;
+                mSecondPreparing = false;
             }
 
             if (mCurrentPrepared) {
@@ -146,9 +147,9 @@ public class GaplessPlayer {
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
-                mCurrentMediaPlayer.reset();
-                mCurrentMediaPlayer.release();
             }
+            mCurrentMediaPlayer.reset();
+            mCurrentMediaPlayer.release();
             mCurrentMediaPlayer = null;
             mCurrentPrepared = false;
             Log.v(TAG, "Player stopped");
@@ -210,6 +211,8 @@ public class GaplessPlayer {
             mNextMediaPlayer.reset();
             mNextMediaPlayer.release();
             mNextMediaPlayer = null;
+            mSecondPrepared = false;
+            mSecondPreparing = false;
             Log.v(TAG, "Clear next Player");
         }
         if (uri != null) {

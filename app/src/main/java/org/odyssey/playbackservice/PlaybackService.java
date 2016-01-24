@@ -246,6 +246,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     // Stops all playback
     public void stop() {
+        Log.v(TAG,"PBS stop()");
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // Notify simple last.fm scrobbler
             mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackStatusHelper.SLS_STATES.SLS_COMPLETE);
@@ -257,7 +258,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
 
-        mMediaControlManager.updateStatus();
         stopService();
     }
 
@@ -678,9 +678,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPosition = getTrackPosition();
 
         // If it is still running stop playback.
-        if (mPlayer.isRunning() || mPlayer.isPrepared()) {
-            mPlayer.stop();
-        }
+
         Log.v(TAG, "Stopping service and saving playlist with size: " + mCurrentList.size() + " and currentplaying: " + mCurrentPlayingIndex + " at position: " + mLastPosition);
         // save currentlist to database
         mPlaylistManager.savePlaylist(mCurrentList);
