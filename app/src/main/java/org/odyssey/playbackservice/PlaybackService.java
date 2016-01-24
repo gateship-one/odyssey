@@ -678,6 +678,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPosition = getTrackPosition();
 
         // If it is still running stop playback.
+        if (mPlayer.isRunning() || mPlayer.isPrepared()) {
+            mPlayer.stop();
+        }
+
 
         Log.v(TAG, "Stopping service and saving playlist with size: " + mCurrentList.size() + " and currentplaying: " + mCurrentPlayingIndex + " at position: " + mLastPosition);
         // save currentlist to database
