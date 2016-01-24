@@ -169,7 +169,17 @@ public class OdysseyMainActivity extends AppCompatActivity
         } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
             nowPlayingView.minimize();
-        } else {
+        } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
+            // If current fragment is the settings or savedplaylists fragment, jump back to myMusicFragment.
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_container, new MyMusicFragment());
+            transaction.commit();
+
+            // Reset the navigation view
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(R.id.nav_my_music);
+        }
+        else {
             super.onBackPressed();
 
             // enable navigation bar when backstack empty
@@ -259,23 +269,20 @@ public class OdysseyMainActivity extends AppCompatActivity
         // clear backstack
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
         Fragment fragment = null;
 
         if (id == R.id.nav_my_music) {
             fragment = new MyMusicFragment();
         } else if (id == R.id.nav_saved_playlists) {
             fragment = new SavedPlaylistsFragment();
-            transaction.addToBackStack("SavedPlaylistsFragment");
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
-            transaction.addToBackStack("SettingsFragment");
         }
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
 
