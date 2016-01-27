@@ -14,4 +14,16 @@
         app:showAsAction="never"
         android:title="@string/context_menu_action_enqueueasnext"/>
 
+    <item
+        android:id="@+id/view_current_playlist_action_showalbum"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_showalbum"/>
+
+    <item
+        android:id="@+id/view_current_playlist_action_showartist"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_showartist"/>
+
 </menu>

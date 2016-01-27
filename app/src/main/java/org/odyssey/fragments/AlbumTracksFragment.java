@@ -158,25 +158,10 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
         TrackModel clickedTrack = (TrackModel) mTracksListViewAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
-        // get artist id
-        String whereVal[] = { artistTitle };
+        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
-        String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
-
-        String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
-
-        Cursor artistCursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, where, whereVal, orderBy);
-
-        if (artistCursor != null) {
-            artistCursor.moveToFirst();
-
-            long artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
-
-            artistCursor.close();
-
-            // Send the event to the host activity
-            mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
-        }
+        // Send the event to the host activity
+        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
     }
 
     @Override

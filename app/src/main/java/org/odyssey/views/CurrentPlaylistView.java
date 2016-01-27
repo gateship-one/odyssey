@@ -1,14 +1,11 @@
 package org.odyssey.views;
 
-import android.app.Activity;
-import android.app.Notification;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -16,9 +13,12 @@ import android.widget.ListView;
 
 import org.odyssey.R;
 import org.odyssey.adapter.CurrentPlaylistListViewAdapter;
+import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.MusicLibraryHelper;
+import org.odyssey.utils.PermissionHelper;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener{
 
@@ -29,6 +29,8 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private Context mContext;
 
     private PlaybackServiceConnection mPlaybackServiceConnection;
+
+    private OnArtistSelectedListener mArtistSelectedCallback;
 
     public CurrentPlaylistView(Context context) {
         this(context,null);
@@ -100,5 +102,20 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public String getAlbumKey(int position) {
+        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+
+        String albumKey = clickedTrack.getTrackAlbumKey();
+
+        return albumKey;
+    }
+
+    public String getArtistTitle(int position) {
+        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+        String artistTitle = clickedTrack.getTrackArtistName();
+
+        return artistTitle;
     }
 }

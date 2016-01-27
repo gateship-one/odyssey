@@ -41,9 +41,12 @@ import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.listener.OnPlaylistSelectedListener;
+import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
+
+import java.util.ArrayList;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver{
@@ -254,6 +257,22 @@ public class OdysseyMainActivity extends AppCompatActivity
                 return true;
             case R.id.view_current_playlist_action_remove:
                 currentPlaylistView.removeTrack(info.position);
+                return true;
+            case R.id.view_current_playlist_action_showalbum:
+                String albumKey = currentPlaylistView.getAlbumKey(info.position);
+                ArrayList<String> albumInformations = MusicLibraryHelper.getAlbumInformationFromKey(albumKey, this);
+                if (albumInformations.size() == 3) {
+                    NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+                    nowPlayingView.minimize();
+                    onAlbumSelected(albumKey, albumInformations.get(0), albumInformations.get(1), albumInformations.get(2));
+                }
+                return true;
+            case R.id.view_current_playlist_action_showartist:
+                String artistTitle = currentPlaylistView.getArtistTitle(info.position);
+                long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+                NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+                nowPlayingView.minimize();
+                onArtistSelected(artistTitle, artistID);
                 return true;
             default:
                 return super.onContextItemSelected(item);

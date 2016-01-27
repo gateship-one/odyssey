@@ -1,11 +1,10 @@
 package org.odyssey.utils;
 
-
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
+
+import java.util.ArrayList;
 
 public class MusicLibraryHelper {
     private static final String TAG = "MusicLibraryHelper";
@@ -40,5 +39,29 @@ public class MusicLibraryHelper {
         }
 
         return artistID;
+    }
+
+    public static ArrayList<String> getAlbumInformationFromKey(String key, Context context) {
+        String whereVal[] = { key };
+
+        String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
+
+        Cursor albumCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, where, whereVal, null);
+
+        ArrayList<String> albumInformations = new ArrayList<>();
+
+        if (albumCursor != null) {
+            albumCursor.moveToFirst();
+
+            String albumTitle = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+            String albumArt = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+            String artistTitle = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+
+            albumInformations.add(albumTitle);
+            albumInformations.add(albumArt);
+            albumInformations.add(artistTitle);
+        }
+
+        return albumInformations;
     }
 }
