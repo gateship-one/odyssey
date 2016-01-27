@@ -60,6 +60,8 @@ public class MusicLibraryHelper {
             albumInformations.add(albumTitle);
             albumInformations.add(albumArt);
             albumInformations.add(artistTitle);
+
+            albumCursor.close();
         }
 
         return albumInformations;
