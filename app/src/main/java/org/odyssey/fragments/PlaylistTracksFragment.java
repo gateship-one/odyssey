@@ -62,7 +62,7 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
         mPlaylistID = args.getLong(ARG_PLAYLISTID);
 
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mPlaylistTitle, false, false);
+        activity.setUpToolbar(mPlaylistTitle, false, false,false);
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
@@ -81,7 +81,7 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mPlaylistTitle, false, false);
+        activity.setUpToolbar(mPlaylistTitle, false, false,false);
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {

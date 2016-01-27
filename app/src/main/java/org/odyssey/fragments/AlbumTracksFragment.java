@@ -2,6 +2,7 @@ package org.odyssey.fragments;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -74,7 +75,14 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mAlbumTitle, false, false);
+
+
+        if ( mAlbumArtURL != null ) {
+            activity.setUpToolbar(mAlbumTitle, false, false,true);
+            activity.setToolbarImage(Drawable.createFromPath(mAlbumArtURL));
+        } else {
+            activity.setUpToolbar(mAlbumTitle, false, false,false);
+        }
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
@@ -106,7 +114,12 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mAlbumTitle, false, false);
+        if ( mAlbumArtURL != null ) {
+            activity.setUpToolbar(mAlbumTitle, false, false,true);
+            activity.setToolbarImage(Drawable.createFromPath(mAlbumArtURL));
+        } else {
+            activity.setUpToolbar(mAlbumTitle, false, false,false);
+        }
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {

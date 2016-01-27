@@ -41,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true,false);
         activity.setUpPlayButton(null);
     }
 

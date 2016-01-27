@@ -62,7 +62,7 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true,false);
 
         activity.setUpPlayButton(null);
 
@@ -87,7 +87,7 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true,false);
 
         activity.setUpPlayButton(null);
 

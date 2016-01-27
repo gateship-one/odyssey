@@ -4,9 +4,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -26,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import org.odyssey.fragments.AlbumTracksFragment;
@@ -337,25 +341,55 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    public void setUpToolbar(String title, boolean scrollingEnabled, boolean drawerIndicatorEnabled) {
+    public void setUpToolbar(String title, boolean scrollingEnabled, boolean drawerIndicatorEnabled, boolean showImage) {
 
         // set drawer state
         mDrawerToggle.setDrawerIndicatorEnabled(drawerIndicatorEnabled);
 
-        // set title
+
+        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        if ( showImage ) {
+            collapsingImage.setVisibility(View.VISIBLE);
+        } else {
+            collapsingImage.setVisibility(View.GONE);
+        }
+        // set scrolling behaviour
+        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        // set title for both the activity and the collapsingToolbarlayout for both cases
+        // where and image is shown and not.
+        toolbar.setTitle(title);
         setTitle(title);
 
-        // set scrolling behaviour
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+//
+        AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
+        layout.setExpanded(true, false);
         if (scrollingEnabled) {
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         } else {
-            AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
-            layout.setExpanded(true, false);
             params.setScrollFlags(0);
         }
+
+        if ( showImage ) {
+            // Enable title of collapsingToolbarlayout for smooth transition
+            toolbar.setTitleEnabled(true);
+            params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED );
+        } else {
+            // Disable title for collapsingToolbarLayout and show normal title
+            toolbar.setTitleEnabled(false);
+        }
+    }
+
+    public void setToolbarImage(Bitmap bm ) {
+        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        collapsingImage.setImageBitmap(bm);
+    }
+
+    public void setToolbarImage(Drawable drawable ) {
+        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        collapsingImage.setImageDrawable(drawable);
     }
 
     public void setUpPlayButton(View.OnClickListener listener) {
