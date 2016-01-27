@@ -1,9 +1,7 @@
 package org.odyssey.views;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.RemoteException;
-import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +11,9 @@ import android.widget.ListView;
 
 import org.odyssey.R;
 import org.odyssey.adapter.CurrentPlaylistListViewAdapter;
-import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
-import org.odyssey.utils.MusicLibraryHelper;
-import org.odyssey.utils.PermissionHelper;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener{
 
@@ -29,8 +24,6 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private Context mContext;
 
     private PlaybackServiceConnection mPlaybackServiceConnection;
-
-    private OnArtistSelectedListener mArtistSelectedCallback;
 
     public CurrentPlaylistView(Context context) {
         this(context,null);
