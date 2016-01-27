@@ -375,6 +375,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         if ( showImage ) {
             // Enable title of collapsingToolbarlayout for smooth transition
             toolbar.setTitleEnabled(true);
+            setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder));
             params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED );
         } else {
             // Disable title for collapsingToolbarLayout and show normal title
