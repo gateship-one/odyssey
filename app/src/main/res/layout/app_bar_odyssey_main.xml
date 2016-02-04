@@ -21,17 +21,8 @@
             app:titleEnabled="false"
             android:fitsSystemWindows="true">
 
-            <ImageView
-                android:id="@+id/collapsing_image"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:src="@drawable/cover_placeholder"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:visibility="gone"
-                android:background="@android:color/black"
+            <include layout="@layout/imageview_appbar"
                 app:layout_collapseMode="parallax"/>
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
