@@ -84,14 +84,18 @@ public abstract class GenericGridItem extends RelativeLayout {
             mHolder.task.cancel(true);
             mHolder.task = null;
         }
-        mCoverDone = false;
-        mHolder.imagePath = url;
-        mSwitcher.setOutAnimation(null);
-        mSwitcher.setInAnimation(null);
-        mImageView.setImageDrawable(null);
-        mSwitcher.setDisplayedChild(0);
-        mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-        mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+
+        // Check if image url has actually changed, otherwise there is no need to redo the image.
+        if ( (mHolder.imagePath != null) &&  !mHolder.imagePath.equals(url)) {
+            mCoverDone = false;
+            mHolder.imagePath = url;
+            mSwitcher.setOutAnimation(null);
+            mSwitcher.setInAnimation(null);
+            mImageView.setImageDrawable(null);
+            mSwitcher.setDisplayedChild(0);
+            mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+            mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+        }
     }
 
     /*
