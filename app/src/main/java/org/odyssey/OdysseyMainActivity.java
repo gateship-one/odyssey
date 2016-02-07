@@ -23,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +55,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
+
+    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.odyssey.requestedview";
+    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,10 +152,19 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         nowPlayingView.registerDragStatusReceiver(this);
 
+        /*
+         * Check if the activity got an extra in its intend to show the nowplayingview directly.
+         * If yes then pre set the dragoffset of the draggable helper.
+         */
+        Intent resumeIntent = getIntent();
+        if (resumeIntent != null && resumeIntent.getExtras() != null &&
+                resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW) != null &&
+                resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
+            nowPlayingView.setDragOffset(0.0f);
+        }
         nowPlayingView.onResume();
     }
 

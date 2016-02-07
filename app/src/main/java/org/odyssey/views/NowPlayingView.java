@@ -166,6 +166,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // TODO Auto-generated method stub
     }
 
+    public void setDragOffset ( float offset ) {
+        if ( offset > 1.0f || offset < 0.0f ) {
+            mDragOffset = 1.0f;
+        }
+        mDragOffset = offset;
+        requestLayout();
+    }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch(item.getItemId()) {
