@@ -172,6 +172,28 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
         mDragOffset = offset;
         requestLayout();
+
+        // Set inverse alpha values for smooth layout transition.
+        // Visibility still needs to be set otherwise parts of the buttons
+        // are not clickable.
+        mDraggedDownButtons.setAlpha(mDragOffset);
+        mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
+        
+        if (mDragOffset == 0.0f) {
+            // top
+            mDraggedDownButtons.setVisibility(INVISIBLE);
+            mDraggedUpButtons.setVisibility(VISIBLE);
+            if ( mDragStatusReceiver != null ) {
+                mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
+            }
+        } else {
+            // bottom
+            mDraggedDownButtons.setVisibility(VISIBLE);
+            mDraggedUpButtons.setVisibility(INVISIBLE);
+            if ( mDragStatusReceiver != null ) {
+                mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
+            }
+        }
     }
 
     @Override
