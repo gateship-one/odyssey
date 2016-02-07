@@ -86,7 +86,7 @@ public abstract class GenericGridItem extends RelativeLayout {
         }
 
         // Check if image url has actually changed, otherwise there is no need to redo the image.
-        if ( (mHolder.imagePath != null) &&  !mHolder.imagePath.equals(url)) {
+        if ( (mHolder.imagePath == null) ||  !mHolder.imagePath.equals(url)) {
             mCoverDone = false;
             mHolder.imagePath = url;
             mSwitcher.setOutAnimation(null);
