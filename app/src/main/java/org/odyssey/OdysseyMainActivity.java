@@ -164,6 +164,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                 resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW) != null &&
                 resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
             nowPlayingView.setDragOffset(0.0f);
+            getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
         }
         nowPlayingView.onResume();
     }
