@@ -39,8 +39,16 @@ public abstract class GenericGridItem extends RelativeLayout {
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverViewReference = new WeakReference<ImageView>(provideImageView());
         mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>(provideViewSwitcher());
-        mHolder.imagePath = imageURL;
         mHolder.imageDimension = new Pair<Integer,Integer>(mImageView.getWidth(),mImageView.getHeight());
+
+        mCoverDone = false;
+        mHolder.imagePath = imageURL;
+        mSwitcher.setOutAnimation(null);
+        mSwitcher.setInAnimation(null);
+        mImageView.setImageDrawable(null);
+        mSwitcher.setDisplayedChild(0);
+        mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+        mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
     }
 
     /* Methods needed to provide generic imageview, generic and textview
@@ -79,14 +87,14 @@ public abstract class GenericGridItem extends RelativeLayout {
 * dummy picture.
 */
     public void setImageURL(String url) {
-        // Cancel old task
-        if (mHolder.task != null) {
-            mHolder.task.cancel(true);
-            mHolder.task = null;
-        }
-
         // Check if image url has actually changed, otherwise there is no need to redo the image.
-        if ( (mHolder.imagePath == null) ||  !mHolder.imagePath.equals(url)) {
+        if ( (mHolder.imagePath == null) ||  (!mHolder.imagePath.equals(url) ) ) {
+            // Cancel old task
+            if (mHolder.task != null) {
+                mHolder.task.cancel(true);
+                mHolder.task = null;
+            }
+            
             mCoverDone = false;
             mHolder.imagePath = url;
             mSwitcher.setOutAnimation(null);
