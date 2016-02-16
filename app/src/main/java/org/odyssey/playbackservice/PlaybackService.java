@@ -1012,6 +1012,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void onReceive(Context context, Intent intent) {
             Log.v(TAG, "Broadcast received: " + intent.getAction());
             if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                /* Check if audio focus is currently lost. For example an incoming call
+                and now the user disconnects it headphone. The music should not resume when the call
+                is finished and the audio focus is regained.
+                 */
+                if ( mLostAudioFocus ) {
+                    mLostAudioFocus = false;
+                }
                 Log.v(TAG, "NOISY AUDIO! CANCEL MUSIC");
                 pause();
             } else if (intent.getAction().equals(ACTION_PLAY)) {
