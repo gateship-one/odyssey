@@ -79,7 +79,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false, false,true);
+        activity.setUpToolbar(mArtistName, false, false, false);
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
@@ -111,7 +111,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false, false,true);
+        activity.setUpToolbar(mArtistName, false, false, false);
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
