@@ -8,4 +8,9 @@
         <item>darkgrey</item>
         <item>brown</item>
     </string-array>
+
+    <string-array name="preference_album_sort_orders_values">
+        <item>name</item>
+        <item>year</item>
+    </string-array>
 </resources>

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class MusicLibraryHelper {
     private static final String TAG = "MusicLibraryHelper";
     public static final String[] projectionAlbums = { MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_KEY, MediaStore.Audio.Albums.NUMBER_OF_SONGS, MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART,
-            MediaStore.Audio.Albums.ARTIST };
+            MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.FIRST_YEAR, MediaStore.Audio.Albums.LAST_YEAR };
     public static final String[] projectionArtists = { MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS };
     public static final String[] projectionTracks = { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.TRACK, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA };

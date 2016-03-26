@@ -14,6 +14,15 @@
         android:summary="@string/preference_show_album_artists_only_summary"
         android:title="@string/preference_show_album_artists_only_title"
         android:defaultValue="true"/>
+    <ListPreference
+        android:key="pref_album_sort_order"
+        android:title="@string/preference_album_sort_order_title"
+        android:summary="@string/preference_album_sort_order_summary"
+        android:dialogTitle="@string/preference_album_sort_order_message"
+        android:persistent="true"
+        android:entries="@array/preference_album_sort_orders"
+        android:entryValues="@array/preference_album_sort_orders_values"
+        android:defaultValue="name"/>
     <Preference android:title="@string/preference_launch_about" >
         <intent android:action="android.intent.action.VIEW"
             android:targetPackage="org.odyssey"

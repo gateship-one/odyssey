@@ -37,11 +37,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onCreatePreferences(Bundle bundle, String s) {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.odyssey_main_settings);
-        PreferenceManager.setDefaultValues(getActivity(),R.xml.odyssey_main_settings,false);
+        PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_main_settings, false);
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true,false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
         activity.setUpPlayButton(null);
     }
 

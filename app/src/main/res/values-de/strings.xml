@@ -30,4 +30,23 @@
     <string name="popup_menu_action_clearplaylist">Playlist löschen</string>
     <string name="popup_menu_action_saveplaylist">Playlist speichern</string>
     <string name="popup_menu_action_shuffleplaylist">Playlist durchmischen</string>
+    <string name="activity_about_version">Version:</string>
+    <string name="preference_launch_about">Über</string>
+    <string name="preference_show_album_artists_only_title">Zeige nur Albenintepreten</string>
+    <string name="preference_show_album_artists_only_summary">Zeige nur Albeninterpreten anstatt aller Interpreten aus der Mediendatenbank.</string>
+    <string name="preference_theme_title">Theme</string>
+    <string name="preference_theme_message">Wähle ein Theme</string>
+    <string name="preference_theme_summary">Wähle ein anderes Theme für die Anwendung.</string>
+    <string name="license_text">Diese Anwendung ist unter der GPLv3 Lizenz lizensiert.\n Material Icons sind unter der CC-BY Lizenz durch Google lizensiert.</string>
+    <string name="preference_theme_item_blue">Blau</string>
+    <string name="preference_theme_item_dark_grey">Dunkles Grau</string>
+    <string name="preference_theme_item_brown">Braun</string>
+    <string name="preference_theme_item_indigo">Indigo</string>
+    <string name="preference_theme_item_orange">Orange</string>
+    <string name="preference_theme_item_deep_orange">Dunkles Orange</string>
+    <string name="preference_album_sort_order_summary">Wähle die Sortierung für Alben eines Interpreten.</string>
+    <string name="preference_album_sort_order_name">Name</string>
+    <string name="preference_album_sort_order_year">Jahr</string>
+    <string name="preference_album_sort_order_title">Alben Sortierung</string>
+    <string name="preference_album_sort_order_message">Sortiere nach</string>
 </resources>

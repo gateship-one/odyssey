@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Odyssey</string>
-    <string name="authors">Frederik Lütkes\nHendrik Borghorst</string>
+    <string name="authors" translatable="false">Frederik Lütkes\nHendrik Borghorst</string>
 
 
     <!-- nav drawer -->
@@ -63,13 +63,32 @@
     <string name="preference_theme_summary">Select a different design for the application.</string>
     <string name="preference_theme_message">Select a theme</string>
 
+    <string name="preference_theme_item_indigo">Indigo</string>
+    <string name="preference_theme_item_orange">Orange</string>
+    <string name="preference_theme_item_deep_orange">Deep Orange</string>
+    <string name="preference_theme_item_blue">Blue</string>
+    <string name="preference_theme_item_dark_grey">Dark Grey</string>
+    <string name="preference_theme_item_brown">Brown</string>
+
     <string-array name="preference_odyssey_styles">
-        <item>Indigo</item>
-        <item>Orange</item>
-        <item>Deep Orange</item>
-        <item>Blue</item>
-        <item>Dark Grey</item>
-        <item>Brown</item>
+        <item>@string/preference_theme_item_indigo</item>
+        <item>@string/preference_theme_item_orange</item>
+        <item>@string/preference_theme_item_deep_orange</item>
+        <item>@string/preference_theme_item_blue</item>
+        <item>@string/preference_theme_item_dark_grey</item>
+        <item>@string/preference_theme_item_brown</item>
+    </string-array>
+
+    <string name="preference_album_sort_order_title">Artist Albums sort order</string>
+    <string name="preference_album_sort_order_message">Sort by</string>
+    <string name="preference_album_sort_order_summary">Select the sort order for albums of an artist.</string>
+
+    <string name="preference_album_sort_order_name">Name</string>
+    <string name="preference_album_sort_order_year">Year</string>
+
+    <string-array name="preference_album_sort_orders">
+        <item>@string/preference_album_sort_order_name</item>
+        <item>@string/preference_album_sort_order_year</item>
     </string-array>
 
     <!-- About activity -->
