@@ -53,6 +53,7 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         mContext = context;
+        boolean nowPlaying = false;
         // get remoteviews
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
 
@@ -78,6 +79,7 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
                 } else if (info.getPlaying() == 1) {
                     // Show pause icon
+                    nowPlaying = true;
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_48dp);
                 }
 
@@ -89,7 +91,10 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
         // Main action
         Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW);
+        if (nowPlaying) {
+            // add intent only if playing is active
+            mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW);
+        }
         PendingIntent mainPendingIntent = PendingIntent.getActivity(context, INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_big_cover, mainPendingIntent);
 
