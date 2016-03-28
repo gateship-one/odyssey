@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="15dp" >
 
     <TextView
         android:id="@+id/item_playlists_title"
