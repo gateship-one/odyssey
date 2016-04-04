@@ -478,8 +478,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Keep device at least for 5 seconds turned on
         mTempWakelock.acquire(5000);
 
-        if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
-
+        if (getTrackPosition() > 2000) {
+            // Check if current song should be restarted
+            jumpToIndex(mCurrentPlayingIndex, true);
+        } else if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
+            // handle random mode
             if (mLastPlayingIndex == -1) {
                 // if no lastindex reuse currentindex
                 jumpToIndex(mCurrentPlayingIndex, true);
@@ -487,7 +490,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 Log.v(TAG, "Found old track index");
                 jumpToIndex(mLastPlayingIndex, true);
             }
-
         } else {
             // Check if start is reached
             if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
