@@ -9,7 +9,7 @@
     <string name="context_menu_action_playalbums">Alben abspielen</string>
     <string name="context_menu_action_playplaylist">Playlist abspielen</string>
     <string name="context_menu_action_playsong">Song abspielen</string>
-    <string name="context_menu_action_removetrack">Song löschen</string>
+    <string name="context_menu_action_removetrack">Song entfernen</string>
     <string name="context_menu_action_showartist">Interpret anzeigen</string>
     <string name="context_menu_action_showalbum">Album anzeigen</string>
     <string name="default_playlist_title">Neue Playlist</string>
