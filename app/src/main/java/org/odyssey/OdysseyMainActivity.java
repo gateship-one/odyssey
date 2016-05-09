@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,7 +24,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +36,7 @@ import android.widget.ListView;
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
 import org.odyssey.fragments.MyMusicFragment;
+import org.odyssey.fragments.OdysseyFragment;
 import org.odyssey.fragments.PlaylistTracksFragment;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
@@ -88,28 +89,8 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
-        // ask for permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-            }
-        }
-
         setContentView(R.layout.activity_odyssey_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // enable back navigation
@@ -129,7 +110,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_my_music);
 
-        // register context menu for currenPlaylistListView
+        // register context menu for currentPlaylistListView
         ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
         registerForContextMenu(currentPlaylistListView);
 
@@ -143,9 +124,12 @@ public class OdysseyMainActivity extends AppCompatActivity
             myMusicFragment.setArguments(getIntent().getExtras());
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragment_container, myMusicFragment);
+            transaction.replace(R.id.fragment_container, myMusicFragment);
             transaction.commit();
         }
+
+        // ask for permissions
+        requestPermissionExternalStorage();
     }
 
     @Override
@@ -154,6 +138,9 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         nowPlayingView.registerDragStatusReceiver(this);
+
+        // ask for permissions
+        requestPermissionExternalStorage();
 
         /*
          * Check if the activity got an extra in its intend to show the nowplayingview directly.
@@ -466,6 +453,42 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    private void requestPermissionExternalStorage() {
+        // ask for permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                View layout = findViewById(R.id.drawer_layout);
+                if (layout != null) {
+                    Snackbar.make(layout, R.string.permission_request_snackbar_explanation,
+                            Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ActivityCompat.requestPermissions(OdysseyMainActivity.this,
+                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                                }
+                            })
+                            .show();
+                }
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -475,9 +498,11 @@ public class OdysseyMainActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay!
-                } else {
+                    OdysseyFragment fragment = (OdysseyFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-                    // permission denied, boo!
+                    if (fragment != null) {
+                        fragment.refresh();
+                    }
                 }
                 break;
             }

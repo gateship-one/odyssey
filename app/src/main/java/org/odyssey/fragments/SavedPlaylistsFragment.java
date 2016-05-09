@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -30,7 +29,7 @@ import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
-public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<PlaylistModel>> {
+public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<PlaylistModel>> {
 
     private OnPlaylistSelectedListener mPlaylistSelectedCallback;
 
@@ -226,5 +225,11 @@ public class SavedPlaylistsFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onLoaderReset(Loader<List<PlaylistModel>> arg0) {
         mSavedPlaylistListViewAdapter.swapModel(null);
+    }
+
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 }

@@ -6,7 +6,6 @@ import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -30,7 +29,7 @@ import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
-public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<ArtistModel>>, AdapterView.OnItemClickListener {
+public class ArtistsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<ArtistModel>>, AdapterView.OnItemClickListener {
 
     private ArtistsGridViewAdapter mArtistsGridViewAdapter;
 
@@ -240,5 +239,11 @@ public class ArtistsFragment extends Fragment implements LoaderManager.LoaderCal
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 }

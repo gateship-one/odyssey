@@ -49,4 +49,6 @@
     <string name="preference_album_sort_order_year">Jahr</string>
     <string name="preference_album_sort_order_title">Alben Sortierung</string>
     <string name="preference_album_sort_order_message">Sortiere nach</string>
+    <string name="permission_request_snackbar_button">OK</string>
+    <string name="permission_request_snackbar_explanation">Zugriff auf den Speicher erforderlich um Musik zu laden.</string>
 </resources>

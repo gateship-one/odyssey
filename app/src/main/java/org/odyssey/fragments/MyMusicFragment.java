@@ -18,7 +18,7 @@ import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 
-public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabSelectedListener {
 
     private PlaybackServiceConnection mServiceConnection;
 
@@ -115,11 +115,27 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
     }
 
+    @Override
+    public void refresh() {
+        // reload tabs
+        View view = this.getView();
+
+        if (view != null) {
+            ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
+            myMusicViewPager.getAdapter().notifyDataSetChanged();
+        }
+    }
+
     public static class MyMusicPagerAdapter extends FragmentStatePagerAdapter {
         static final int NUMBER_OF_PAGES = 3;
 
         public MyMusicPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
@@ -138,6 +154,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         @Override
         public int getCount() {
+            // this is done in order to reload all tabs
             return NUMBER_OF_PAGES;
         }
     }

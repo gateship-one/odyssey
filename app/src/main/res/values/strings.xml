@@ -2,6 +2,9 @@
     <string name="app_name">Odyssey</string>
     <string name="authors" translatable="false">Frederik Lütkes\nHendrik Borghorst</string>
 
+    <!-- permission request -->
+    <string name="permission_request_snackbar_button">OK</string>
+    <string name="permission_request_snackbar_explanation">Storage Permission is needed to load music files.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

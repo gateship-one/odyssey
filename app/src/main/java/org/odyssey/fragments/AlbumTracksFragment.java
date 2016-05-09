@@ -1,12 +1,9 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
@@ -26,11 +23,10 @@ import org.odyssey.loaders.TrackLoader;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
-import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
+public class AlbumTracksFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
 
     private TracksListViewAdapter mTracksListViewAdapter;
 
@@ -249,5 +245,11 @@ public class AlbumTracksFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         playAlbum(position);
+    }
+
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 }

@@ -27,7 +27,7 @@ import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
-public class PlaylistTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener{
+public class PlaylistTracksFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener{
 
     private TracksListViewAdapter mTracksListViewAdapter;
 
@@ -216,5 +216,11 @@ public class PlaylistTracksFragment extends Fragment implements LoaderManager.Lo
 
             trackCursor.close();
         }
+    }
+
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 }
