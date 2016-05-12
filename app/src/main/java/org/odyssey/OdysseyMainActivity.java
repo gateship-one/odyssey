@@ -368,10 +368,13 @@ public class OdysseyMainActivity extends AppCompatActivity
 
 
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        View collapsingImageGradient = findViewById(R.id.collapsing_image_gradient);
         if ( showImage ) {
             collapsingImage.setVisibility(View.VISIBLE);
+            collapsingImageGradient.setVisibility(View.VISIBLE);
         } else {
             collapsingImage.setVisibility(View.GONE);
+            collapsingImageGradient.setVisibility(View.GONE);
         }
         // set scrolling behaviour
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);

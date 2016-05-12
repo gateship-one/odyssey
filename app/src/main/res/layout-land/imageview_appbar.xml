@@ -3,9 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ImageView
         android:id="@+id/collapsing_image"
         android:layout_width="match_parent"
         android:layout_height="128dp"
@@ -17,9 +15,11 @@
     </ImageView>
 
     <View
+        android:id="@+id/collapsing_image_gradient"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:background="@drawable/gradient_gridview_item" />
 
 </RelativeLayout>
