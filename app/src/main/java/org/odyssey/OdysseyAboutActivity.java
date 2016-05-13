@@ -42,6 +42,7 @@ public class OdysseyAboutActivity extends Activity {
         try {
             versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
 
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);

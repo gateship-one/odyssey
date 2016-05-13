@@ -43,6 +43,7 @@ import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.listener.OnPlaylistSelectedListener;
+import org.odyssey.listener.OnSavePlaylistListener;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 import org.odyssey.views.CurrentPlaylistView;
@@ -51,7 +52,7 @@ import org.odyssey.views.NowPlayingView;
 import java.util.ArrayList;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, NowPlayingView.NowPlayingDragStatusReceiver{
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSavePlaylistListener, NowPlayingView.NowPlayingDragStatusReceiver{
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -101,14 +102,17 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        if (drawer != null) {
+            mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(mDrawerToggle);
+            mDrawerToggle.syncState();
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_my_music);
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(this);
+            navigationView.setCheckedItem(R.id.nav_my_music);
+        }
 
         // register context menu for currentPlaylistListView
         ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
@@ -137,23 +141,24 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onResume();
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-        nowPlayingView.registerDragStatusReceiver(this);
+        if (nowPlayingView != null) {
+            nowPlayingView.registerDragStatusReceiver(this);
 
-        // ask for permissions
-        requestPermissionExternalStorage();
+            // ask for permissions
+            requestPermissionExternalStorage();
 
-        /*
-         * Check if the activity got an extra in its intend to show the nowplayingview directly.
-         * If yes then pre set the dragoffset of the draggable helper.
-         */
-        Intent resumeIntent = getIntent();
-        if (resumeIntent != null && resumeIntent.getExtras() != null &&
-                resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW) != null &&
-                resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
-            nowPlayingView.setDragOffset(0.0f);
-            getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
+            /*
+             * Check if the activity got an extra in its intend to show the nowplayingview directly.
+             * If yes then pre set the dragoffset of the draggable helper.
+             */
+            Intent resumeIntent = getIntent();
+            if (resumeIntent != null && resumeIntent.getExtras() != null && resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW) != null &&
+                    resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
+                nowPlayingView.setDragOffset(0.0f);
+                getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
+            }
+            nowPlayingView.onResume();
         }
-        nowPlayingView.onResume();
     }
 
     @Override
@@ -161,9 +166,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onPause();
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-        nowPlayingView.registerDragStatusReceiver(null);
+        if (nowPlayingView != null) {
+            nowPlayingView.registerDragStatusReceiver(null);
 
-        nowPlayingView.onPause();
+            nowPlayingView.onPause();
+        }
     }
 
     @Override
@@ -172,11 +179,13 @@ public class OdysseyMainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-            nowPlayingView.minimize();
+            if (nowPlayingView != null) {
+                nowPlayingView.minimize();
+            }
         } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
             // If current fragment is the settings or savedplaylists fragment, jump back to myMusicFragment.
             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -185,7 +194,9 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             // Reset the navigation view
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setCheckedItem(R.id.nav_my_music);
+            if (navigationView != null) {
+                navigationView.setCheckedItem(R.id.nav_my_music);
+            }
         }
         else {
             super.onBackPressed();
@@ -252,32 +263,40 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         CurrentPlaylistView currentPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
-        switch (item.getItemId()) {
-            case R.id.view_current_playlist_action_playnext:
-                currentPlaylistView.enqueueTrackAsNext(info.position);
-                return true;
-            case R.id.view_current_playlist_action_remove:
-                currentPlaylistView.removeTrack(info.position);
-                return true;
-            case R.id.view_current_playlist_action_showalbum:
-                String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                ArrayList<String> albumInformations = MusicLibraryHelper.getAlbumInformationFromKey(albumKey, this);
-                if (albumInformations.size() == 3) {
+        if (currentPlaylistView != null) {
+            switch (item.getItemId()) {
+                case R.id.view_current_playlist_action_playnext:
+                    currentPlaylistView.enqueueTrackAsNext(info.position);
+                    return true;
+                case R.id.view_current_playlist_action_remove:
+                    currentPlaylistView.removeTrack(info.position);
+                    return true;
+                case R.id.view_current_playlist_action_showalbum:
+                    String albumKey = currentPlaylistView.getAlbumKey(info.position);
+                    ArrayList<String> albumInformations = MusicLibraryHelper.getAlbumInformationFromKey(albumKey, this);
+                    if (albumInformations.size() == 3) {
+                        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+                        if (nowPlayingView != null) {
+                            nowPlayingView.minimize();
+                        }
+                        onAlbumSelected(albumKey, albumInformations.get(0), albumInformations.get(1), albumInformations.get(2));
+                    }
+                    return true;
+                case R.id.view_current_playlist_action_showartist:
+                    String artistTitle = currentPlaylistView.getArtistTitle(info.position);
+                    long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
                     NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-                    nowPlayingView.minimize();
-                    onAlbumSelected(albumKey, albumInformations.get(0), albumInformations.get(1), albumInformations.get(2));
-                }
-                return true;
-            case R.id.view_current_playlist_action_showartist:
-                String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-                long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
-                NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-                nowPlayingView.minimize();
-                onArtistSelected(artistTitle, artistID);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+                    if (nowPlayingView != null) {
+                        nowPlayingView.minimize();
+                    }
+                    onArtistSelected(artistTitle, artistID);
+                    return true;
+                default:
+                    return super.onContextItemSelected(item);
+            }
         }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -286,7 +305,9 @@ public class OdysseyMainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-        nowPlayingView.minimize();
+        if (nowPlayingView != null) {
+            nowPlayingView.minimize();
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -304,7 +325,9 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
@@ -369,63 +392,76 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
         View collapsingImageGradient = findViewById(R.id.collapsing_image_gradient);
-        if ( showImage ) {
-            collapsingImage.setVisibility(View.VISIBLE);
-            collapsingImageGradient.setVisibility(View.VISIBLE);
-        } else {
-            collapsingImage.setVisibility(View.GONE);
-            collapsingImageGradient.setVisibility(View.GONE);
+        if (collapsingImage != null && collapsingImageGradient != null) {
+            if (showImage) {
+                collapsingImage.setVisibility(View.VISIBLE);
+                collapsingImageGradient.setVisibility(View.VISIBLE);
+            } else {
+                collapsingImage.setVisibility(View.GONE);
+                collapsingImageGradient.setVisibility(View.GONE);
+            }
         }
         // set scrolling behaviour
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         // set title for both the activity and the collapsingToolbarlayout for both cases
         // where and image is shown and not.
-        toolbar.setTitle(title);
-        setTitle(title);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+
+            setTitle(title);
 
 
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-//
-        AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
-        layout.setExpanded(true, false);
-        if (scrollingEnabled) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        } else {
-            params.setScrollFlags(0);
-        }
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+            AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
+            if (layout != null) {
+                layout.setExpanded(true, false);
+            }
 
-        if ( showImage ) {
-            // Enable title of collapsingToolbarlayout for smooth transition
-            toolbar.setTitleEnabled(true);
-            setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder));
-            params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED );
-        } else {
-            // Disable title for collapsingToolbarLayout and show normal title
-            toolbar.setTitleEnabled(false);
+            if (scrollingEnabled) {
+                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            } else {
+                params.setScrollFlags(0);
+            }
+
+            if (showImage) {
+                // Enable title of collapsingToolbarlayout for smooth transition
+                toolbar.setTitleEnabled(true);
+                setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder, null));
+                params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+            } else {
+                // Disable title for collapsingToolbarLayout and show normal title
+                toolbar.setTitleEnabled(false);
+            }
         }
     }
 
     public void setToolbarImage(Bitmap bm ) {
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        collapsingImage.setImageBitmap(bm);
+        if (collapsingImage != null) {
+            collapsingImage.setImageBitmap(bm);
+        }
     }
 
     public void setToolbarImage(Drawable drawable ) {
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        collapsingImage.setImageDrawable(drawable);
+        if (collapsingImage != null) {
+            collapsingImage.setImageDrawable(drawable);
+        }
     }
 
     public void setUpPlayButton(View.OnClickListener listener) {
         FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.odyssey_play_button);
 
-        if(listener == null) {
-            playButton.hide();
-        } else {
-            playButton.show();
-        }
+        if (playButton != null) {
+            if (listener == null) {
+                playButton.hide();
+            } else {
+                playButton.show();
+            }
 
-        playButton.setOnClickListener(listener);
+            playButton.setOnClickListener(listener);
+        }
     }
 
     @Override
@@ -509,6 +545,14 @@ public class OdysseyMainActivity extends AppCompatActivity
                 }
                 break;
             }
+        }
+    }
+
+    @Override
+    public void onSavePlaylist(String playlistName) {
+        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+        if (nowPlayingView != null) {
+            nowPlayingView.savePlaylist(playlistName);
         }
     }
 }

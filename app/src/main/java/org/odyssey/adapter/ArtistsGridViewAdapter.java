@@ -10,9 +10,8 @@ import org.odyssey.views.ArtistsGridViewItem;
 
 public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
-    private GridView mRootGrid;
-
-    private Context mContext;
+    private final GridView mRootGrid;
+    private final Context mContext;
 
     public ArtistsGridViewAdapter(Context context, GridView rootGrid) {
         super();

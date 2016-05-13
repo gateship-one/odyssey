@@ -11,9 +11,9 @@ import java.util.List;
 
 public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
 
-    ArrayList<String> mSectionList;
-    ArrayList<Integer> mSectionPositions;
-    HashMap<Character, Integer> mPositionSectionMap;
+    private final ArrayList<String> mSectionList;
+    private final ArrayList<Integer> mSectionPositions;
+    private final HashMap<Character, Integer> mPositionSectionMap;
 
     protected List<T> mModelData;
     protected int mScrollSpeed;
@@ -21,11 +21,11 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
     public GenericViewAdapter() {
         super();
 
-        mSectionList = new ArrayList<String>();
-        mSectionPositions = new ArrayList<Integer>();
-        mPositionSectionMap = new HashMap<Character, Integer>();
+        mSectionList = new ArrayList<>();
+        mSectionPositions = new ArrayList<>();
+        mPositionSectionMap = new HashMap<>();
 
-        mModelData = new ArrayList<T>();
+        mModelData = new ArrayList<>();
     }
 
     /**
@@ -49,11 +49,9 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         mSectionPositions.clear();
         mPositionSectionMap.clear();
         if (mModelData.size() > 0) {
-            char lastSection = 0;
-
             GenericModel currentModel = mModelData.get(0);
 
-            lastSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
+            char lastSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
 
             mSectionList.add("" + lastSection);
             mSectionPositions.add(0);

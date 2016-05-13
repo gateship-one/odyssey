@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
 
-    private Context mContext;
+    private final Context mContext;
 
     public PlaylistLoader(Context context) {
         super(context);
@@ -32,7 +32,7 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
     public List<PlaylistModel> loadInBackground() {
         Cursor playlistCursor =  PermissionHelper.query(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
 
-        ArrayList<PlaylistModel> playlists = new ArrayList<PlaylistModel>();
+        ArrayList<PlaylistModel> playlists = new ArrayList<>();
 
         if (playlistCursor != null) {
             int playlistTitleColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);

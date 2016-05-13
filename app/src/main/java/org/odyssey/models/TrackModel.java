@@ -5,13 +5,13 @@ import android.os.Parcelable;
 
 public class TrackModel implements GenericModel, Parcelable {
 
-    private String mTrackName;
-    private String mTrackArtistName;
-    private String mTrackAlbumName;
-    private String mTrackAlbumKey;
-    private String mTrackURL;
-    private long mTrackDuration;
-    private int mTrackNumber;
+    private final String mTrackName;
+    private final String mTrackArtistName;
+    private final String mTrackAlbumName;
+    private final String mTrackAlbumKey;
+    private final String mTrackURL;
+    private final long mTrackDuration;
+    private final int mTrackNumber;
 
     public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url) {
         mTrackName = name;

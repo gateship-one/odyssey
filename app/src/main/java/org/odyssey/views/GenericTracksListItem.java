@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 public abstract class GenericTracksListItem extends LinearLayout {
 
-    protected TextView mNumberView;
-    protected TextView mTitleView;
-    protected TextView mInformationView;
-    protected TextView mDurationView;
+    protected final TextView mNumberView;
+    protected final TextView mTitleView;
+    protected final TextView mInformationView;
+    protected final TextView mDurationView;
 
     public GenericTracksListItem(Context context) {
         super(context);

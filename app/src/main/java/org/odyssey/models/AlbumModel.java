@@ -2,10 +2,10 @@ package org.odyssey.models;
 
 public class AlbumModel implements GenericModel {
 
-    private String mAlbumName;
-    private String mAlbumArtURL;
-    private String mArtistName;
-    private String mAlbumKey;
+    private final String mAlbumName;
+    private final String mAlbumArtURL;
+    private final String mArtistName;
+    private final String mAlbumKey;
 
     public AlbumModel(String name, String albumArtURL, String artistName, String albumKey ) {
         mAlbumName = name;

@@ -10,9 +10,8 @@ import android.widget.GridView;
 
 public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
 
-    private Context mContext;
-
-    private GridView mRootGrid;
+    private final Context mContext;
+    private final GridView mRootGrid;
 
     public AlbumsGridViewAdapter(Context context, GridView rootGrid) {
         super();

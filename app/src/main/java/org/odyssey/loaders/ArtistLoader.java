@@ -19,9 +19,9 @@ import android.support.v7.preference.PreferenceManager;
  */
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
-    private boolean mShowAlbumArtistsOnly;
+    private final boolean mShowAlbumArtistsOnly;
 
-    Context mContext;
+    private final Context mContext;
 
     public ArtistLoader(Context context) {
         super(context);
@@ -39,7 +39,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
      */
     @Override
     public List<ArtistModel> loadInBackground() {
-        ArrayList<ArtistModel> artists = new ArrayList<ArtistModel>();
+        ArrayList<ArtistModel> artists = new ArrayList<>();
         String artist, artistKey, coverPath;
         if ( !mShowAlbumArtistsOnly ) {
             // get all album covers
@@ -49,7 +49,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
             // get all artists
             Cursor cursorArtists = PermissionHelper.query(mContext, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null, MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
 
-            if( cursorAlbumArt != null || cursorArtists != null) {
+            if( cursorAlbumArt != null && cursorArtists != null) {
                 // join both cursor if match is found
                 long artistID;
 

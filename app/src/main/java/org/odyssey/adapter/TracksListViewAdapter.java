@@ -9,7 +9,7 @@ import org.odyssey.views.TracksListViewItem;
 
 public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
 
-    private Context mContext;
+    private final Context mContext;
 
     public TracksListViewAdapter(Context context) {
         super();

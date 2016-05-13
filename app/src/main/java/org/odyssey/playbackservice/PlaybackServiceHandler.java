@@ -15,7 +15,7 @@ public class PlaybackServiceHandler extends Handler {
 
     public PlaybackServiceHandler(Looper looper, PlaybackService service) {
         super(looper);
-        mService = new WeakReference<PlaybackService>(service);
+        mService = new WeakReference<>(service);
         mLock = new Semaphore(1);
     }
 

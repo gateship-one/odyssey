@@ -2,10 +2,10 @@ package org.odyssey.models;
 
 public class ArtistModel implements GenericModel {
 
-    private String mArtistName;
-    private String mArtistURL;
-    private String mArtistKey;
-    private long mArtistID;
+    private final String mArtistName;
+    private final String mArtistURL;
+    private final String mArtistKey;
+    private final long mArtistID;
 
     public ArtistModel(String name, String artURL, String artistKey, long artistID) {
         mArtistName = name;

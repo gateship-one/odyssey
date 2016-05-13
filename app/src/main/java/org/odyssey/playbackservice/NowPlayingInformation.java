@@ -16,13 +16,13 @@ import org.odyssey.models.TrackModel;
 public final class NowPlayingInformation implements Parcelable {
 
     // Parcel data
-    private int mPlaying;
-    private String mPlayingURL;
-    private int mPlayingIndex;
-    private int mRepeat;
-    private int mRandom;
-    private int mPlaylistLength;
-    private TrackModel mCurrentTrack;
+    private final int mPlaying;
+    private final String mPlayingURL;
+    private final int mPlayingIndex;
+    private final int mRepeat;
+    private final int mRandom;
+    private final int mPlaylistLength;
+    private final TrackModel mCurrentTrack;
 
     public static Parcelable.Creator<NowPlayingInformation> CREATOR = new Parcelable.Creator<NowPlayingInformation>() {
 

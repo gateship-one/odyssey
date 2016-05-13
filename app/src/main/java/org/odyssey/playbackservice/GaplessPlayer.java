@@ -37,8 +37,8 @@ public class GaplessPlayer {
     private int mAudioSessionID;
 
     public GaplessPlayer(PlaybackService service) {
-        this.mTrackFinishedListeners = new ArrayList<GaplessPlayer.OnTrackFinishedListener>();
-        this.mTrackStartListeners = new ArrayList<GaplessPlayer.OnTrackStartedListener>();
+        this.mTrackFinishedListeners = new ArrayList<>();
+        this.mTrackStartListeners = new ArrayList<>();
         mPlaybackService = service;
         mSecondPreparingStart = new Semaphore(1);
         Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());

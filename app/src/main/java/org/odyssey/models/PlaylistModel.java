@@ -1,8 +1,8 @@
 package org.odyssey.models;
 
 public class PlaylistModel implements GenericModel {
-    private String mPlaylistName;
-    private long mPlaylistID;
+    private final String mPlaylistName;
+    private final long mPlaylistID;
 
     public PlaylistModel(String playlistName, long playlistID) {
         mPlaylistName = playlistName;

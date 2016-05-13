@@ -15,8 +15,8 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
     private int mLastFirstVisibleItem = 0;
     private int mScrollSpeed = 0;
 
-    private ScrollSpeedAdapter mAdapter;
-    private GridView mRootGrid;
+    private final ScrollSpeedAdapter mAdapter;
+    private final GridView mRootGrid;
 
     public ScrollSpeedListener(ScrollSpeedAdapter adapter, GridView rootGrid) {
         super();

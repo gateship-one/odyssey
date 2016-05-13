@@ -37,7 +37,7 @@
     <string name="preference_theme_title">Theme</string>
     <string name="preference_theme_message">Wähle ein Theme</string>
     <string name="preference_theme_summary">Wähle ein anderes Theme für die Anwendung.</string>
-    <string name="license_text">Diese Anwendung ist unter der GPLv3 Lizenz lizensiert.\n Material Icons sind unter der CC-BY Lizenz durch Google lizensiert.</string>
+    <string name="license_text">Diese Anwendung ist unter der GPLv3 Lizenz lizenziert.\n Material Icons sind unter der CC-BY Lizenz durch Google lizenziert.</string>
     <string name="preference_theme_item_blue">Blau</string>
     <string name="preference_theme_item_dark_grey">Dunkles Grau</string>
     <string name="preference_theme_item_brown">Braun</string>

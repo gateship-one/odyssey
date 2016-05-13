@@ -9,7 +9,7 @@ import org.odyssey.R;
 
 public class PlaylistsListViewItem extends LinearLayout{
 
-    private TextView mTitleView;
+    private final TextView mTitleView;
 
     public PlaylistsListViewItem(Context context, String title) {
         super(context);

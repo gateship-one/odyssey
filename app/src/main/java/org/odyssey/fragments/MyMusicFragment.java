@@ -1,6 +1,7 @@
 package org.odyssey.fragments;
 
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -38,16 +39,25 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         // Icons
         final ColorStateList tabColors = tabLayout.getTabTextColors();
-        Drawable icon = getResources().getDrawable(R.drawable.ic_recent_actors_24dp);
-        icon = DrawableCompat.wrap(icon);
-        DrawableCompat.setTintList(icon,tabColors);
-        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
-        icon = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_album_24dp));
-        DrawableCompat.setTintList(icon, tabColors);
-        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
-        icon = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_my_library_music_24dp));
-        DrawableCompat.setTintList(icon, tabColors);
-        tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        Resources res = getResources();
+        Drawable drawable = res.getDrawable(R.drawable.ic_recent_actors_24dp, null);
+        if (drawable != null) {
+            Drawable icon = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTintList(icon,tabColors);
+            tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        }
+        drawable = res.getDrawable(R.drawable.ic_album_24dp, null);
+        if (drawable != null) {
+            Drawable icon = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTintList(icon,tabColors);
+            tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        }
+        drawable = res.getDrawable(R.drawable.ic_my_library_music_24dp, null);
+        if (drawable != null) {
+            Drawable icon = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTintList(icon,tabColors);
+            tabLayout.addTab(tabLayout.newTab().setIcon(icon));
+        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         ViewPager myMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);

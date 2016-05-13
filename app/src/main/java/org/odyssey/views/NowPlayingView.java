@@ -1,28 +1,22 @@
 package org.odyssey.views;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
-import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +26,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.odyssey.R;
+import org.odyssey.fragments.SavePlaylistDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
@@ -217,7 +212,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 return true;
             case R.id.view_nowplaying_action_saveplaylist:
                 SavePlaylistDialog dlg = new SavePlaylistDialog();
-
                 dlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SavePlaylistDialog");
                 return true;
             default:
@@ -791,32 +785,5 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public interface NowPlayingDragStatusReceiver {
         enum DRAG_STATUS {DRAGGED_UP,DRAGGED_DOWN}
         void onStatusChanged(DRAG_STATUS status);
-    }
-
-    private class SavePlaylistDialog extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            final EditText editTextPlaylistName = new EditText(getActivity());
-            editTextPlaylistName.setText(R.string.default_playlist_title);
-            builder.setView(editTextPlaylistName);
-
-            builder.setMessage(R.string.dialog_save_playlist).setPositiveButton(R.string.dialog_action_save, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // accept playlist name
-                    String playlistName = editTextPlaylistName.getText().toString();
-                    savePlaylist(playlistName);
-                }
-            }).setNegativeButton(R.string.dialog_action_cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog dont create playlist
-                }
-            });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
     }
 }

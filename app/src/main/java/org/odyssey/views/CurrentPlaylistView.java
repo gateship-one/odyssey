@@ -17,11 +17,10 @@ import org.odyssey.playbackservice.PlaybackServiceConnection;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener{
 
+    private final ListView mListView;
+    private final Context mContext;
+
     private CurrentPlaylistListViewAdapter mCurrentPlaylistListViewAdapter;
-
-    private ListView mListView;
-
-    private Context mContext;
 
     private PlaybackServiceConnection mPlaybackServiceConnection;
 

@@ -801,7 +801,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0) {
             // Check current playback state. If playing inform all listeners and
             // check if notification is set, and set if not.
-            TrackModel newTrack = mCurrentList.get(mCurrentPlayingIndex);
             if (mPlayer.isRunning() && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Player is running and current index seems to be valid
                 return PLAYSTATE.PLAYING;
@@ -1091,7 +1090,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
                 String where = MediaStore.Audio.Media.DATA + "=?";
 
-                TrackModel item = null;
+                TrackModel item;
 
                 for (int i = 0; i < mCurrentList.size(); i++) {
 

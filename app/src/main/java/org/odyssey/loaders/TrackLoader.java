@@ -14,9 +14,9 @@ import java.util.List;
 
 public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
-    private Context mContext;
-    private String mAlbumKey;
-    private long mPlaylistID;
+    private final Context mContext;
+    private final String mAlbumKey;
+    private final long mPlaylistID;
 
     public TrackLoader(Context context, String albumKey, long playlistID) {
         super(context);
@@ -83,7 +83,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
             }
         }
 
-        ArrayList<TrackModel> tracks = new ArrayList<TrackModel>();
+        ArrayList<TrackModel> tracks = new ArrayList<>();
 
         if(trackCursor != null) {
             for (int i = 0; i < trackCursor.getCount(); i++) {

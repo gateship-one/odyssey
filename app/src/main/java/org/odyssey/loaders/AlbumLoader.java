@@ -18,9 +18,9 @@ import android.util.Log;
 public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
 
     private final static String TAG = "OdysseyAlbumLoader";
-    private long mArtistID;
-    private Context mContext;
-    private String mOrderBy;
+    private final long mArtistID;
+    private final Context mContext;
+    private final String mOrderBy;
 
     public AlbumLoader(Context context, long artist) {
         super(context);
@@ -38,6 +38,8 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
             case "year":
                 mOrderBy = MediaStore.Audio.Albums.FIRST_YEAR;
                 break;
+            default:
+                mOrderBy = MediaStore.Audio.Albums.ALBUM;
         }
     }
 
@@ -56,7 +58,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
         } else {
             albumCursor = PermissionHelper.query(mContext, MediaStore.Audio.Artists.Albums.getContentUri("external", mArtistID), MusicLibraryHelper.projectionAlbums, "", null, mOrderBy + " COLLATE NOCASE");
         }
-        ArrayList<AlbumModel> albums = new ArrayList<AlbumModel>();
+        ArrayList<AlbumModel> albums = new ArrayList<>();
 
         if(albumCursor != null) {
             int albumKeyColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);

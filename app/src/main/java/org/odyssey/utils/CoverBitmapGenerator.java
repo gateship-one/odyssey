@@ -8,8 +8,8 @@ import android.provider.MediaStore;
 import org.odyssey.models.TrackModel;
 
 public class CoverBitmapGenerator {
-    private CoverBitmapListener mListener;
-    private Context mContext;
+    private final CoverBitmapListener mListener;
+    private final Context mContext;
     private TrackModel mTrack;
     private Thread mGeneratorThread;
 

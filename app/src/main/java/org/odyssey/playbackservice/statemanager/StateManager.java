@@ -55,7 +55,7 @@ public class StateManager {
 
         // get all TrackModels from database and return them
 
-        ArrayList<TrackModel> playList = new ArrayList<TrackModel>();
+        ArrayList<TrackModel> playList = new ArrayList<>();
 
         Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, "", null, "", "", SavedTracksTable.COLUMN_ID);
 
@@ -199,7 +199,7 @@ public class StateManager {
         // TODO not very efficient
 
         // get all Tracks
-        ArrayList<TrackModel> playList = new ArrayList<TrackModel>();
+        ArrayList<TrackModel> playList = new ArrayList<>();
 
         Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, "", null, "", "", SavedTracksTable.COLUMN_ID);
 

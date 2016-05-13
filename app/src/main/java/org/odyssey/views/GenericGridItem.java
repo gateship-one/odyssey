@@ -16,12 +16,12 @@ import java.lang.ref.WeakReference;
 
 public abstract class GenericGridItem extends RelativeLayout {
 
-    protected AsyncLoader.CoverViewHolder mHolder;
-    protected boolean mCoverDone = false;
+    protected final AsyncLoader.CoverViewHolder mHolder;
+    protected final ImageView mImageView;
+    protected final TextView mTitleView;
+    protected final ViewSwitcher mSwitcher;
 
-    protected ImageView mImageView;
-    protected TextView mTitleView;
-    protected ViewSwitcher mSwitcher;
+    protected boolean mCoverDone = false;
 
     public GenericGridItem(Context context, String imageURL, ViewGroup.LayoutParams layoutParams) {
         super(context);
@@ -37,9 +37,9 @@ public abstract class GenericGridItem extends RelativeLayout {
         mSwitcher = provideViewSwitcher();
 
         mHolder = new AsyncLoader.CoverViewHolder();
-        mHolder.coverViewReference = new WeakReference<ImageView>(provideImageView());
-        mHolder.coverViewSwitcher = new WeakReference<ViewSwitcher>(provideViewSwitcher());
-        mHolder.imageDimension = new Pair<Integer,Integer>(mImageView.getWidth(),mImageView.getHeight());
+        mHolder.coverViewReference = new WeakReference<>(provideImageView());
+        mHolder.coverViewSwitcher = new WeakReference<>(provideViewSwitcher());
+        mHolder.imageDimension = new Pair<>(mImageView.getWidth(),mImageView.getHeight());
 
         mCoverDone = false;
         mHolder.imagePath = imageURL;

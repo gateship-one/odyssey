@@ -9,7 +9,7 @@ import org.odyssey.views.PlaylistsListViewItem;
 
 public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistModel> {
 
-    private Context mContext;
+    private final Context mContext;
 
     public SavedPlaylistListViewAdapter(Context context) {
         super();

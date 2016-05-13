@@ -13,12 +13,10 @@ import org.odyssey.views.CurrentPlaylistViewItem;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
-    private Context mContext;
-
-    private PlaybackServiceConnection mPlayBackServiceConnection;
+    private final Context mContext;
+    private final PlaybackServiceConnection mPlayBackServiceConnection;
 
     private int mCurrentPlayingIndex = -1;
-
     private int mPlaylistSize = 0;
 
     public CurrentPlaylistListViewAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {

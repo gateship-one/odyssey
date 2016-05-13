@@ -9,7 +9,7 @@ import org.odyssey.R;
 
 public class CurrentPlaylistViewItem extends GenericTracksListItem {
 
-    TextView mSeparatorView;
+    private final TextView mSeparatorView;
 
     public CurrentPlaylistViewItem(Context context, String number, String title, String information, String duration) {
         super(context);

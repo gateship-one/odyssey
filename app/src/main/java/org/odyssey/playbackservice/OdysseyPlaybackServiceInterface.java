@@ -14,7 +14,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     private final WeakReference<PlaybackService> mService;
 
     public OdysseyPlaybackServiceInterface(PlaybackService service) {
-        mService = new WeakReference<PlaybackService>(service);
+        mService = new WeakReference<>(service);
     }
 
     /*

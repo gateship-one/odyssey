@@ -20,7 +20,7 @@ import org.odyssey.playbackservice.PlaybackService;
  */
 public class OdysseyNotificationManager {
     // Context needed for various Notification building
-    Context mContext;
+    private final Context mContext;
 
     // PendingIntent ids
     private static final int NOTIFICATION_INTENT_PREVIOUS = 0;
@@ -33,11 +33,11 @@ public class OdysseyNotificationManager {
     private static final int NOTIFICATION_ID = 42;
 
     // Notification objects
-    android.app.NotificationManager mNotificationManager;
-    Notification.Builder mNotificationBuilder;
+    private final android.app.NotificationManager mNotificationManager;
+    private Notification.Builder mNotificationBuilder;
 
     // Notification itself
-    Notification mNotification;
+    private Notification mNotification;
 
     // Save last track and last image
     private TrackModel mLastTrack = null;
@@ -82,7 +82,7 @@ public class OdysseyNotificationManager {
             } else {
                 Intent playIntent = new Intent(PlaybackService.ACTION_PLAY);
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                playPauseIcon = R.drawable.ic_play_arrow_48dp;;
+                playPauseIcon = R.drawable.ic_play_arrow_48dp;
             }
             Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon,"PlayPause",playPauseIntent).build();
 
