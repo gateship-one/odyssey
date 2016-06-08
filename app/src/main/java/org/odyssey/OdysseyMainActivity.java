@@ -57,12 +57,19 @@ public class OdysseyMainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
+    private int mSavedDragStatus = -1;
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.odyssey.requestedview";
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // restore drag state
+        if (savedInstanceState != null) {
+            mSavedDragStatus = savedInstanceState.getInt("OdysseyMainActivity.NowPlayingDragStatus");
+        }
+
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String themePref = sharedPref.getString("pref_theme","indigo");
@@ -156,9 +163,33 @@ public class OdysseyMainActivity extends AppCompatActivity
                     resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
                 nowPlayingView.setDragOffset(0.0f);
                 getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
+            } else {
+                if (mSavedDragStatus == 0) {
+                    nowPlayingView.setDragOffset(0.0f);
+                } else if (mSavedDragStatus == 1) {
+                    nowPlayingView.setDragOffset(1.0f);
+                }
+                mSavedDragStatus = -1;
             }
             nowPlayingView.onResume();
         }
+    }
+
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        int dragStatus = -1;
+
+        switch (mNowPlayingDragStatus) {
+            case DRAGGED_UP:
+                dragStatus = 0;
+                break;
+            case DRAGGED_DOWN:
+                dragStatus = 1;
+                break;
+        }
+
+        savedInstanceState.putInt("OdysseyMainActivity.NowPlayingDragStatus", dragStatus);
     }
 
     @Override
