@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 
@@ -17,12 +18,14 @@ import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
 
-public class OdysseyWidgetProvider  extends AppWidgetProvider {
+public class
+OdysseyWidgetProvider  extends AppWidgetProvider {
     private RemoteViews mViews;
     private AppWidgetManager mAppWidgetManager;
     private Context mContext;
 
     private static TrackModel mLastTrack = null;
+    private static Bitmap mLastCover = null;
 
     private final static int INTENT_OPENGUI = 0;
     private final static int INTENT_PREVIOUS = 1;
@@ -72,6 +75,9 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
                         views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
                         CoverBitmapGenerator mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver());
                         mCoverGenerator.getImage(item);
+                        mLastCover = null;
+                    } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null)  {
+                        views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
                     }
                 }
                 if (info.getPlaying() == 0) {
@@ -129,7 +135,8 @@ public class OdysseyWidgetProvider  extends AppWidgetProvider {
         @Override
         public void receiveBitmap(BitmapDrawable bm) {
             if (mViews != null && bm != null) {
-                mViews.setImageViewBitmap(R.id.widget_big_cover, bm.getBitmap());
+                mLastCover = bm.getBitmap();
+                mViews.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
 
                 mAppWidgetManager.updateAppWidget(new ComponentName(mContext, OdysseyWidgetProvider.class), mViews);
 
