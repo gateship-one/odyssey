@@ -137,12 +137,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // read playlist from database
         mCurrentList = mPlaylistManager.readPlaylist();
 
-        // mCurrentList = new ArrayList<TrackModel>();
-        mCurrentPlayingIndex = (int) mPlaylistManager.getLastTrackNumber();
-
-        // Retrieve repeat/random state from settings db
-        mRandom = mPlaylistManager.getLastRandomState();
-        mRepeat = mPlaylistManager.getLastRepeatState();
+        // read state from database
+        OdysseyServiceState state = mPlaylistManager.getState();
+        mCurrentPlayingIndex = state.mTrackNumber;
+        mLastPosition = state.mTrackPosition;
+        mRandom = state.mRandomState;
+        mRepeat = state.mRepeatState;
 
         if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
             mCurrentPlayingIndex = -1;
@@ -290,11 +290,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void resume() {
         cancelQuitAlert();
 
-        // Check if mediaplayer needs preparing
-        long lastPosition = mPlaylistManager.getLastTrackPosition();
-        if (!mPlayer.isPrepared() && (lastPosition != 0) && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            jumpToIndex(mCurrentPlayingIndex, false, (int) lastPosition);
-            Log.v(TAG, "Resuming position before playback to: " + lastPosition);
+//        // Check if mediaplayer needs preparing
+        if (!mPlayer.isPrepared() && (mLastPosition != 0) && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
+            jumpToIndex(mCurrentPlayingIndex, false, (int) mLastPosition);
+            Log.v(TAG, "Resuming position before playback to: " + mLastPosition);
             return;
         }
 
@@ -686,21 +685,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         Log.v(TAG, "Stopping service and saving playlist with size: " + mCurrentList.size() + " and currentplaying: " + mCurrentPlayingIndex + " at position: " + mLastPosition);
-        // save currentlist to database
-        mPlaylistManager.savePlaylist(mCurrentList);
 
-        // Save position in settings table
-        mPlaylistManager.saveCurrentPlayState(mLastPosition, mCurrentPlayingIndex, mRandom, mRepeat);
+        // Save the state of the PBS at once
+        if (mCurrentPlayingIndex != -1) {
+            OdysseyServiceState serviceState = new OdysseyServiceState();
 
-        // Get the actual TrackModel and distribute the information
-//        if ((mCurrentList != null) && (mCurrentPlayingIndex >= 0) && (mCurrentPlayingIndex < mCurrentList.size())) {
-//            TrackModel track = mCurrentList.get(mCurrentPlayingIndex);
-//            mMediaControlManager.updateMetadata(track, PLAYSTATE.STOPPED);
-//            broadcastPlaybackInformation(track, PLAYSTATE.STOPPED);
-//        } else {
-//            mMediaControlManager.updateStatus();
-//        }
-        // FIXME check if this works correctly
+            serviceState.mTrackNumber = mCurrentPlayingIndex;
+            serviceState.mTrackPosition = mLastPosition;
+            serviceState.mRandomState = mRandom;
+            serviceState.mRepeatState = mRepeat;
+            mPlaylistManager.saveState(mCurrentList, serviceState, true);
+        }
+
         mMediaControlManager.updateStatus();
 
         // Stops the service itself.

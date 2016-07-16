@@ -4,28 +4,44 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.OdysseyServiceState;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class StateManager {
+    public static final String TAG = "OdysseyStateManager";
+
     private CurrentPlaylistDBHelper mCurrentPlaylistDBHelper;
     private SQLiteDatabase mPlaylistDB;
 
-    private String[] projectionTrackModels = { SavedTracksTable.COLUMN_TRACKNUMBER, SavedTracksTable.COLUMN_TRACKTITLE, SavedTracksTable.COLUMN_TRACKALBUM, SavedTracksTable.COLUMN_TRACKALBUMKEY, SavedTracksTable.COLUMN_TRACKDURATION,
-            SavedTracksTable.COLUMN_TRACKARTIST, SavedTracksTable.COLUMN_TRACKURL };
+    private String[] projectionTrackModels = { SavedTracksTable.COLUMN_TRACKNUMBER, SavedTracksTable.COLUMN_TRACKTITLE, SavedTracksTable.COLUMN_TRACKALBUM, SavedTracksTable.COLUMN_TRACKALBUMKEY,
+            SavedTracksTable.COLUMN_TRACKDURATION, SavedTracksTable.COLUMN_TRACKARTIST, SavedTracksTable.COLUMN_TRACKURL };
+
+    private String[] projectionState = { StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TRACKNUMBER, StateTable.COLUMN_TRACKPOSITION, StateTable.COLUMN_RANDOM_STATE, StateTable.COLUMN_REPEAT_STATE};
 
     public StateManager(Context context) {
         mCurrentPlaylistDBHelper = new CurrentPlaylistDBHelper(context);
         mPlaylistDB = mCurrentPlaylistDBHelper.getWritableDatabase();
     }
 
-    public void savePlaylist(ArrayList<TrackModel> playList) {
-        // clear the database
-        mPlaylistDB.delete(SavedTracksTable.TABLE_NAME, null, null);
+    public void saveState(ArrayList<TrackModel> playList, OdysseyServiceState state, boolean autosave) {
+        Log.v(TAG, "save state");
 
+        if (autosave) {
+            clearAutoSaveState();
+        }
+
+        long timeStamp = System.currentTimeMillis();
+
+        savePlaylist(playList, timeStamp);
+
+        saveCurrentPlayState(state, timeStamp, autosave);
+    }
+
+    private void savePlaylist(ArrayList<TrackModel> playList, long timeStamp) {
         ContentValues values = new ContentValues();
 
         mPlaylistDB.beginTransaction();
@@ -42,22 +58,23 @@ public class StateManager {
             values.put(SavedTracksTable.COLUMN_TRACKALBUM, item.getTrackAlbumName());
             values.put(SavedTracksTable.COLUMN_TRACKURL, item.getTrackURL());
             values.put(SavedTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
+            values.put(SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP, timeStamp);
 
             mPlaylistDB.insert(SavedTracksTable.TABLE_NAME, null, values);
         }
 
         mPlaylistDB.setTransactionSuccessful();
         mPlaylistDB.endTransaction();
-
     }
 
-    public ArrayList<TrackModel> readPlaylist() {
+    public ArrayList<TrackModel> readPlaylist(long timeStamp) {
 
-        // get all TrackModels from database and return them
+        // get all TrackModels from database for the given timestamp and return them
 
         ArrayList<TrackModel> playList = new ArrayList<>();
 
-        Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, "", null, "", "", SavedTracksTable.COLUMN_ID);
+        Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
+                "", "", SavedTracksTable.COLUMN_ID);
 
         if (cursor.moveToFirst()) {
             do {
@@ -81,96 +98,120 @@ public class StateManager {
         return playList;
     }
 
-    public void clearPlaylist() {
+    public ArrayList<TrackModel> readPlaylist() {
+        // get all TrackModels from database for most recent timestamp and return them
 
-        // clear the database
-        mPlaylistDB.delete(SavedTracksTable.TABLE_NAME, null, null);
+        ArrayList<TrackModel> playList = new ArrayList<>();
+
+        Cursor stateCursor = mPlaylistDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP}, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
+
+        if (stateCursor.moveToFirst()) {
+            long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+
+            Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
+                    "", "", SavedTracksTable.COLUMN_ID);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    String trackName = cursor.getString(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKTITLE));
+                    long duration = cursor.getLong(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKDURATION));
+                    int number = cursor.getInt(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKNUMBER));
+                    String artistName = cursor.getString(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKARTIST));
+                    String albumName = cursor.getString(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKALBUM));
+                    String url = cursor.getString(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKURL));
+                    String albumKey = cursor.getString(cursor.getColumnIndex(SavedTracksTable.COLUMN_TRACKALBUMKEY));
+
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+
+                    playList.add(item);
+
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        stateCursor.close();
+
+        return playList;
     }
 
-    public int getSize() {
+    private void saveCurrentPlayState(OdysseyServiceState state, long timeStamp, boolean autosave) {
 
-        // get number of rows in the database
+        ContentValues values = new ContentValues();
 
-        String[] projection = { SavedTracksTable.COLUMN_ID };
+        mPlaylistDB.beginTransaction();
 
-        Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projection, "", null, "", "", SavedTracksTable.COLUMN_ID);
+        // set state parameters
+        values.put(StateTable.COLUMN_BOOKMARK_TIMESTAMP, timeStamp);
+        values.put(StateTable.COLUMN_TRACKNUMBER, state.mTrackNumber);
+        values.put(StateTable.COLUMN_TRACKPOSITION, state.mTrackPosition);
+        values.put(StateTable.COLUMN_RANDOM_STATE, state.mRandomState);
+        values.put(StateTable.COLUMN_REPEAT_STATE, state.mRepeatState);
+        values.put(StateTable.COLUMN_AUTOSAVE, autosave);
 
-        int size = cursor.getCount();
+        mPlaylistDB.insert(StateTable.TABLE_NAME, null, values);
+
+        mPlaylistDB.setTransactionSuccessful();
+        mPlaylistDB.endTransaction();
+    }
+
+    public OdysseyServiceState getState(long timeStamp) {
+
+        // get state for given timestamp in db
+        OdysseyServiceState state = new OdysseyServiceState();
+
+        Cursor cursor = mPlaylistDB.query(StateTable.TABLE_NAME, projectionState, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)}, "", "", "");
+
+        if (cursor.moveToFirst()) {
+
+            state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
+            state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
+            state.mRandomState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE));
+            state.mRepeatState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE));
+        }
 
         cursor.close();
 
-        return size;
+        return state;
     }
 
-    public void saveCurrentPlayState(long position, long trackNR, int random, int repeat) {
-        // Delete old settings rows
-        String whereStmt = StateTable.COLUMN_SETTINGSNAME + "=? OR " + StateTable.COLUMN_SETTINGSNAME + "=? OR " + StateTable.COLUMN_SETTINGSNAME + "=? OR " + StateTable.COLUMN_SETTINGSNAME + "=?";
-        String[] whereArgs = { StateTable.TRACKNUMBER_ROW, StateTable.TRACKPOSITION_ROW, StateTable.RANDOM_STATE_ROW, StateTable.REPEAT_STATE_ROW };
-        mPlaylistDB.delete(StateTable.TABLE_NAME, whereStmt, whereArgs);
+    public OdysseyServiceState getState() {
+        // get state for most recent timestamp in db
+        OdysseyServiceState state = new OdysseyServiceState();
 
-        // Insert new values into table
-        String positionStmt = "INSERT INTO " + StateTable.TABLE_NAME + " values ( \"" + StateTable.TRACKPOSITION_ROW + "\"," + "\"" + position + "\");";
-        mPlaylistDB.execSQL(positionStmt);
+        Cursor cursor = mPlaylistDB.query(StateTable.TABLE_NAME, projectionState, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
 
-        String nrStmt = "INSERT INTO " + StateTable.TABLE_NAME + " values ( \"" + StateTable.TRACKNUMBER_ROW + "\"," + "\"" + trackNR + "\");";
-        mPlaylistDB.execSQL(nrStmt);
+        if (cursor.moveToFirst()) {
 
-        String randomStmt = "INSERT INTO " + StateTable.TABLE_NAME + " values ( \"" + StateTable.RANDOM_STATE_ROW + "\"," + "\"" + random + "\");";
-        mPlaylistDB.execSQL(randomStmt);
-
-        String repeatStmt = "INSERT INTO " + StateTable.TABLE_NAME + " values ( \"" + StateTable.REPEAT_STATE_ROW + "\"," + "\"" + repeat + "\");";
-        mPlaylistDB.execSQL(repeatStmt);
-    }
-
-    public long getLastTrackPosition() {
-        String[] columns = { StateTable.COLUMN_SETTINGSVALUE };
-        String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
-        String[] selectionArgs = { StateTable.TRACKPOSITION_ROW };
-        Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
-        long value = 0;
-        if (resultCursor.moveToFirst()) {
-            value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
+            state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
+            state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
+            state.mRandomState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE));
+            state.mRepeatState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE));
         }
-        resultCursor.close();
-        return value;
+
+        cursor.close();
+
+        return state;
     }
 
-    public long getLastTrackNumber() {
-        String[] columns = { StateTable.COLUMN_SETTINGSVALUE };
-        String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
-        String[] selectionArgs = { StateTable.TRACKNUMBER_ROW };
-        Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
-        long value = 0;
-        if (resultCursor.moveToFirst()) {
-            value = resultCursor.getLong(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-        }
-        resultCursor.close();
-        return value;
-    }
+    private void clearAutoSaveState() {
+        // remove all auto save states and playlist from db
+        Cursor stateCursor = mPlaylistDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_AUTOSAVE}, StateTable.COLUMN_AUTOSAVE + "=?", new String[]{"1"},
+                "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
 
-    public int getLastRandomState() {
-        String[] columns = { StateTable.COLUMN_SETTINGSVALUE };
-        String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
-        String[] selectionArgs = { StateTable.RANDOM_STATE_ROW };
-        Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
-        int value = 0;
-        if (resultCursor.moveToFirst()) {
-            value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
-        }
-        resultCursor.close();
-        return value;
-    }
+        if (stateCursor.moveToFirst()) {
+            do {
+                long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
-    public int getLastRepeatState() {
-        String[] columns = { StateTable.COLUMN_SETTINGSVALUE };
-        String selection = StateTable.COLUMN_SETTINGSNAME + "=?";
-        String[] selectionArgs = { StateTable.REPEAT_STATE_ROW };
-        Cursor resultCursor = mPlaylistDB.query(StateTable.TABLE_NAME, columns, selection, selectionArgs, null, null, null, null);
-        int value = 0;
-        if (resultCursor.moveToFirst()) {
-            value = resultCursor.getInt(resultCursor.getColumnIndex(StateTable.COLUMN_SETTINGSVALUE));
+                // delete playlist
+                mPlaylistDB.delete(SavedTracksTable.TABLE_NAME, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+
+                // delete state
+                mPlaylistDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+            } while (stateCursor.moveToNext());
         }
-        resultCursor.close();
-        return value;
+
+        stateCursor.close();
     }
 }
