@@ -15,7 +15,8 @@ public class SavedTracksTable {
     public static final String COLUMN_TRACKURL = "url";
 
     // Database creation SQL statement
-    private static final String DATABASE_CREATE = "create table if not exists " + TABLE_NAME + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_TRACKNUMBER + " int, " + COLUMN_TRACKTITLE + " text," + COLUMN_TRACKALBUM + " text,"
+    private static final String DATABASE_CREATE = "create table if not exists " + TABLE_NAME + "(" + COLUMN_ID
+            + " integer primary key autoincrement, " + COLUMN_TRACKNUMBER + " int, " + COLUMN_TRACKTITLE + " text," + COLUMN_TRACKALBUM + " text,"
             + COLUMN_TRACKALBUMKEY + " text," + COLUMN_TRACKDURATION + " int," + COLUMN_TRACKARTIST + " text," + COLUMN_TRACKURL + " text" + ");";
 
     public static void onCreate(SQLiteDatabase database) {
