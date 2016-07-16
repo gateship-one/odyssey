@@ -99,4 +99,6 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
+    <string name="action_add_album">Add Album</string>
+    <string name="action_add_artist_albums">Add Albums</string>
 </resources>

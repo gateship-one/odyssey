@@ -5,9 +5,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,6 +90,8 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
                 playAlbum(0);
             }
         });
+
+        setHasOptionsMenu(true);
 
         return rootView;
     }
@@ -191,6 +196,31 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.options_menu_album_tracks_fragment, menu);
+
+        Drawable drawable = menu.findItem(R.id.action_add_album).getIcon();
+
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
+        menu.findItem(R.id.action_add_album).setIcon(drawable);
+
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_album:
+                enqueueAlbum();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void enqueueTrack(int position) {

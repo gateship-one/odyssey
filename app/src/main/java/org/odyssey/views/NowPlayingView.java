@@ -408,7 +408,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         // Add listeners to top playlist button
-        // FIXME: Clean up this code a bit. And a nice transition?
         mTopPlaylistButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
