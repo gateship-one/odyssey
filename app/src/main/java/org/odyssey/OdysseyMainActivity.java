@@ -35,6 +35,7 @@ import android.widget.ListView;
 
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
+import org.odyssey.fragments.BookmarksFragment;
 import org.odyssey.fragments.MyMusicFragment;
 import org.odyssey.fragments.OdysseyFragment;
 import org.odyssey.fragments.PlaylistTracksFragment;
@@ -342,6 +343,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             fragment = new MyMusicFragment();
         } else if (id == R.id.nav_saved_playlists) {
             fragment = new SavedPlaylistsFragment();
+        } else if (id == R.id.nav_bookmarks) {
+            fragment = new BookmarksFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         }

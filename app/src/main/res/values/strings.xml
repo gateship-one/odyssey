@@ -14,11 +14,18 @@
     <string name="nav_menu_my_music">My Music</string>
     <string name="nav_menu_saved_playlists">Playlists</string>
     <string name="nav_menu_settings">Settings</string>
+    <string name="nav_menu_bookmarks">Bookmarks</string>
 
     <!-- fragment titles -->
     <string name="fragment_title_my_music">My Music</string>
     <string name="fragment_title_saved_playlists">Playlists</string>
     <string name="fragment_title_settings">Settings</string>
+    <string name="fragment_title_bookmarks">Bookmarks</string>
+
+    <!-- bookmark fragment -->
+    <string name="fragment_bookmarks_tracks">Tracks</string>
+    <string name="fragment_bookmarks_autosave_yes">Yes</string>
+    <string name="fragment_bookmarks_autosave_no">No</string>
 
     <!-- my music tab titles -->
     <string name="fragment_title_artists">Artists</string>
@@ -31,7 +38,8 @@
     <string name="dialog_action_save">Save</string>
 
     <!-- actions -->
-    <string name="action_settings">Settings</string>
+    <string name="action_add_album">Add Album</string>
+    <string name="action_add_artist_albums">Add Albums</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">add to playlist</string>
@@ -99,6 +107,4 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
-    <string name="action_add_album">Add Album</string>
-    <string name="action_add_artist_albums">Add Albums</string>
 </resources>

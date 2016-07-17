@@ -38,7 +38,7 @@ public class StateManager {
 
         savePlaylist(playList, timeStamp);
 
-        saveCurrentPlayState(state, timeStamp, autosave);
+        saveCurrentPlayState(state, timeStamp, autosave, "auto", playList.size());
     }
 
     private void savePlaylist(ArrayList<TrackModel> playList, long timeStamp) {
@@ -136,7 +136,7 @@ public class StateManager {
         return playList;
     }
 
-    private void saveCurrentPlayState(OdysseyServiceState state, long timeStamp, boolean autosave) {
+    private void saveCurrentPlayState(OdysseyServiceState state, long timeStamp, boolean autosave, String title, int numberOfTracks) {
 
         ContentValues values = new ContentValues();
 
@@ -149,6 +149,8 @@ public class StateManager {
         values.put(StateTable.COLUMN_RANDOM_STATE, state.mRandomState);
         values.put(StateTable.COLUMN_REPEAT_STATE, state.mRepeatState);
         values.put(StateTable.COLUMN_AUTOSAVE, autosave);
+        values.put(StateTable.COLUMN_TITLE, title);
+        values.put(StateTable.COLUMN_TRACKS, numberOfTracks);
 
         mPlaylistDB.insert(StateTable.TABLE_NAME, null, values);
 

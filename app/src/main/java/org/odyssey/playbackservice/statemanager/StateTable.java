@@ -13,11 +13,13 @@ public class StateTable {
     public static final String COLUMN_RANDOM_STATE = "randomstate";
     public static final String COLUMN_REPEAT_STATE = "repeatstate";
     public static final String COLUMN_AUTOSAVE = "autosave";
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_TRACKS = "tracks";
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table if not exists " + TABLE_NAME + "(" + COLUMN_BOOKMARK_TIMESTAMP
             + " integer primary key," + COLUMN_TRACKNUMBER + " integer," + COLUMN_TRACKPOSITION + " integer," + COLUMN_RANDOM_STATE + " integer, "
-            + COLUMN_REPEAT_STATE + " integer," + COLUMN_AUTOSAVE + " integer" +");";
+            + COLUMN_REPEAT_STATE + " integer," + COLUMN_AUTOSAVE + " integer," + COLUMN_TITLE + " text," + COLUMN_TRACKS + " integer" +");";
 
     public static void onCreate(SQLiteDatabase database) {
         // create new table
