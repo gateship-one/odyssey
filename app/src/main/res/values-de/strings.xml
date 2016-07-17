@@ -57,4 +57,6 @@
     <string name="fragment_bookmarks_tracks">Lieder</string>
     <string name="fragment_title_bookmarks">Lesezeichen</string>
     <string name="nav_menu_bookmarks">Lesezeichen</string>
+    <string name="context_menu_action_deletebookmark">Lesezeichen entfernen</string>
+    <string name="context_menu_action_resumebookmark">Lesezeichen fortsetzen</string>
 </resources>

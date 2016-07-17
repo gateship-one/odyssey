@@ -107,4 +107,6 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
+    <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
+    <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
 </resources>
