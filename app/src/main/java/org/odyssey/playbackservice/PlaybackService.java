@@ -824,7 +824,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         OdysseyServiceState serviceState = new OdysseyServiceState();
 
         serviceState.mTrackNumber = mCurrentPlayingIndex;
-        serviceState.mTrackPosition = mLastPosition;
+        serviceState.mTrackPosition = getTrackPosition();
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
 
