@@ -10,6 +10,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.OdysseyServiceState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StateManager {
     public static final String TAG = "OdysseyStateManager";
@@ -17,20 +18,21 @@ public class StateManager {
     private CurrentPlaylistDBHelper mCurrentPlaylistDBHelper;
     private SQLiteDatabase mPlaylistDB;
 
-    private String[] projectionTrackModels = { SavedTracksTable.COLUMN_TRACKNUMBER, SavedTracksTable.COLUMN_TRACKTITLE, SavedTracksTable.COLUMN_TRACKALBUM, SavedTracksTable.COLUMN_TRACKALBUMKEY,
-            SavedTracksTable.COLUMN_TRACKDURATION, SavedTracksTable.COLUMN_TRACKARTIST, SavedTracksTable.COLUMN_TRACKURL };
+    private String[] projectionTrackModels = {SavedTracksTable.COLUMN_TRACKNUMBER, SavedTracksTable.COLUMN_TRACKTITLE, SavedTracksTable.COLUMN_TRACKALBUM, SavedTracksTable.COLUMN_TRACKALBUMKEY,
+            SavedTracksTable.COLUMN_TRACKDURATION, SavedTracksTable.COLUMN_TRACKARTIST, SavedTracksTable.COLUMN_TRACKURL};
 
-    private String[] projectionState = { StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TRACKNUMBER, StateTable.COLUMN_TRACKPOSITION, StateTable.COLUMN_RANDOM_STATE, StateTable.COLUMN_REPEAT_STATE};
+    private String[] projectionState = {StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TRACKNUMBER, StateTable.COLUMN_TRACKPOSITION, StateTable.COLUMN_RANDOM_STATE, StateTable.COLUMN_REPEAT_STATE};
 
     public StateManager(Context context) {
         mCurrentPlaylistDBHelper = new CurrentPlaylistDBHelper(context);
         mPlaylistDB = mCurrentPlaylistDBHelper.getWritableDatabase();
     }
 
-    public void saveState(ArrayList<TrackModel> playList, OdysseyServiceState state, boolean autosave) {
+    public void saveState(List<TrackModel> playList, OdysseyServiceState state, String title, boolean autosave) {
         Log.v(TAG, "save state");
 
         if (autosave) {
+            // delete previous auto saved states if this save is an auto generated save
             clearAutoSaveState();
         }
 
@@ -38,10 +40,12 @@ public class StateManager {
 
         savePlaylist(playList, timeStamp);
 
-        saveCurrentPlayState(state, timeStamp, autosave, "auto", playList.size());
+        saveCurrentPlayState(state, timeStamp, autosave, title, playList.size());
     }
 
-    private void savePlaylist(ArrayList<TrackModel> playList, long timeStamp) {
+    private void savePlaylist(List<TrackModel> playList, long timeStamp) {
+        // save the given playlist in the database with the given timestamp as an additional identifier
+
         ContentValues values = new ContentValues();
 
         mPlaylistDB.beginTransaction();
@@ -67,11 +71,10 @@ public class StateManager {
         mPlaylistDB.endTransaction();
     }
 
-    public ArrayList<TrackModel> readPlaylist(long timeStamp) {
-
+    public List<TrackModel> readPlaylist(long timeStamp) {
         // get all TrackModels from database for the given timestamp and return them
 
-        ArrayList<TrackModel> playList = new ArrayList<>();
+        List<TrackModel> playList = new ArrayList<>();
 
         Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
                 "", "", SavedTracksTable.COLUMN_ID);
@@ -98,16 +101,18 @@ public class StateManager {
         return playList;
     }
 
-    public ArrayList<TrackModel> readPlaylist() {
+    public List<TrackModel> readPlaylist() {
         // get all TrackModels from database for most recent timestamp and return them
 
-        ArrayList<TrackModel> playList = new ArrayList<>();
+        List<TrackModel> playList = new ArrayList<>();
 
+        // query the most recent timestamp
         Cursor stateCursor = mPlaylistDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP}, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
 
         if (stateCursor.moveToFirst()) {
             long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
+            // get the playlist tracks for the queried timestamp
             Cursor cursor = mPlaylistDB.query(SavedTracksTable.TABLE_NAME, projectionTrackModels, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
                     "", "", SavedTracksTable.COLUMN_ID);
 
@@ -195,6 +200,16 @@ public class StateManager {
         cursor.close();
 
         return state;
+    }
+
+    public void removeState(long timestamp) {
+        // remove the state and playlist for the given timestamp
+
+        // delete playlist
+        mPlaylistDB.delete(SavedTracksTable.TABLE_NAME, SavedTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
+
+        // delete state
+        mPlaylistDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
     }
 
     private void clearAutoSaveState() {

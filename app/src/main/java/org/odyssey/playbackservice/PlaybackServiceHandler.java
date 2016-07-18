@@ -28,7 +28,7 @@ public class PlaybackServiceHandler extends Handler {
         // Check if object is received
         if (msgObj != null && mLock.tryAcquire()) {
             // Parse message
-            switch(msgObj.getAction()) {
+            switch (msgObj.getAction()) {
                 case ODYSSEY_PLAY:
                     mService.get().playURI(msgObj.getTrack());
                     break;
@@ -93,6 +93,15 @@ public class PlaybackServiceHandler extends Handler {
                     break;
                 case ODYSSEY_SAVEPLAYLIST:
                     mService.get().savePlaylist(msgObj.getStringParam());
+                    break;
+                case ODYSSEY_RESUMEBOOKMARK:
+                    mService.get().resumeBookmark(msgObj.getLongParam());
+                    break;
+                case ODYSSEY_DELETEBOOKMARK:
+                    mService.get().deleteBookmark(msgObj.getLongParam());
+                    break;
+                case ODYSSEY_CREATEBOOKMARK:
+                    mService.get().createBookmark(msgObj.getStringParam());
                     break;
             }
 

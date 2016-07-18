@@ -18,4 +18,10 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/popup_menu_action_clearplaylist"/>
+
+    <item
+        android:id="@+id/view_nowplaying_action_createbookmark"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/popup_menu_action_createbookmark"/>
 </menu>

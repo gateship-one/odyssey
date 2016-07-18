@@ -9,11 +9,12 @@ import java.util.ArrayList;
  * PlaybackServiceHandler
  *
  * @author hendrik
- *
  */
 public class ControlObject {
     public enum PLAYBACK_ACTION {
-        ODYSSEY_PLAY, ODYSSEY_PAUSE, ODYSSEY_RESUME, ODYSSEY_TOGGLEPAUSE, ODYSSEY_STOP, ODYSSEY_NEXT, ODYSSEY_PREVIOUS, ODYSSEY_SEEKTO, ODYSSEY_JUMPTO, ODYSSEY_REPEAT, ODYSSEY_RANDOM, ODYSSEY_PLAYNEXT, ODYSSEY_ENQUEUETRACK, ODYSSEY_ENQUEUETRACKS, ODYSSEY_DEQUEUETRACK, ODYSSEY_DEQUEUEINDEX, ODYSSEY_DEQUEUETRACKS, ODYSSEY_SETNEXTRACK, ODYSSEY_CLEARPLAYLIST, ODYSSEY_SHUFFLEPLAYLIST, ODYSSEY_PLAYALLTRACKS, ODYSSEY_PLAYALLTRACKSSHUFFLED, ODYSSEY_SAVEPLAYLIST
+        ODYSSEY_PLAY, ODYSSEY_PAUSE, ODYSSEY_RESUME, ODYSSEY_TOGGLEPAUSE, ODYSSEY_STOP, ODYSSEY_NEXT, ODYSSEY_PREVIOUS, ODYSSEY_SEEKTO, ODYSSEY_JUMPTO, ODYSSEY_REPEAT, ODYSSEY_RANDOM,
+        ODYSSEY_PLAYNEXT, ODYSSEY_ENQUEUETRACK, ODYSSEY_ENQUEUETRACKS, ODYSSEY_DEQUEUETRACK, ODYSSEY_DEQUEUEINDEX, ODYSSEY_DEQUEUETRACKS, ODYSSEY_SETNEXTRACK, ODYSSEY_CLEARPLAYLIST,
+        ODYSSEY_SHUFFLEPLAYLIST, ODYSSEY_PLAYALLTRACKS, ODYSSEY_PLAYALLTRACKSSHUFFLED, ODYSSEY_SAVEPLAYLIST, ODYSSEY_RESUMEBOOKMARK, ODYSSEY_DELETEBOOKMARK, ODYSSEY_CREATEBOOKMARK
     }
 
     private PLAYBACK_ACTION mAction;
@@ -21,6 +22,7 @@ public class ControlObject {
     private int mIntparam;
     private String mStringparam;
     private TrackModel mTrack;
+    private long mLongParam;
     private ArrayList<TrackModel> mTrackList = null;
 
     public ControlObject(PLAYBACK_ACTION action) {
@@ -52,6 +54,11 @@ public class ControlObject {
         mTrack = track;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, long param) {
+        mAction = action;
+        mLongParam = param;
+    }
+
     public PLAYBACK_ACTION getAction() {
         return mAction;
     }
@@ -70,6 +77,10 @@ public class ControlObject {
 
     public boolean getBoolParam() {
         return mBoolparam;
+    }
+
+    public long getLongParam() {
+        return mLongParam;
     }
 
     public TrackModel getTrack() {

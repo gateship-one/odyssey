@@ -129,25 +129,27 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         // identify current bookmark
         BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);
 
-//        // resume state
-//        try {
-//            mServiceConnection.getPBS().resumeState(bookmark.getId());
-//        } catch (RemoteException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        // resume state
+        try {
+            mServiceConnection.getPBS().resumeBookmark(bookmark.getId());
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void deleteBookmark(int position) {
         // identify current bookmark
         BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);
 
-//        // delete state
-//        try {
-//            mServiceConnection.getPBS().removeState(bookmark.getId());
-//        } catch (RemoteException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        // delete state
+        try {
+            mServiceConnection.getPBS().deleteBookmark(bookmark.getId());
+
+            refresh();
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

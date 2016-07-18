@@ -59,4 +59,7 @@
     <string name="nav_menu_bookmarks">Lesezeichen</string>
     <string name="context_menu_action_deletebookmark">Lesezeichen entfernen</string>
     <string name="context_menu_action_resumebookmark">Lesezeichen fortsetzen</string>
+    <string name="default_bookmark_title">Neues Lesezeichen</string>
+    <string name="dialog_create_bookmark">Lesezeichen erstellen</string>
+    <string name="popup_menu_action_createbookmark">Lesezeichen erstellen</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -26,7 +27,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.odyssey.R;
-import org.odyssey.fragments.SavePlaylistDialog;
+import org.odyssey.fragments.SaveDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
@@ -161,8 +162,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // TODO Auto-generated method stub
     }
 
-    public void setDragOffset ( float offset ) {
-        if ( offset > 1.0f || offset < 0.0f ) {
+    public void setDragOffset(float offset) {
+        if (offset > 1.0f || offset < 0.0f) {
             mDragOffset = 1.0f;
         }
         mDragOffset = offset;
@@ -173,19 +174,19 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // are not clickable.
         mDraggedDownButtons.setAlpha(mDragOffset);
         mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
-        
+
         if (mDragOffset == 0.0f) {
             // top
             mDraggedDownButtons.setVisibility(INVISIBLE);
             mDraggedUpButtons.setVisibility(VISIBLE);
-            if ( mDragStatusReceiver != null ) {
+            if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
             }
         } else {
             // bottom
             mDraggedDownButtons.setVisibility(VISIBLE);
             mDraggedUpButtons.setVisibility(INVISIBLE);
-            if ( mDragStatusReceiver != null ) {
+            if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
             }
         }
@@ -193,7 +194,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.view_nowplaying_action_shuffleplaylist:
                 try {
                     mServiceConnection.getPBS().shufflePlaylist();
@@ -211,8 +212,20 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
                 return true;
             case R.id.view_nowplaying_action_saveplaylist:
-                SavePlaylistDialog dlg = new SavePlaylistDialog();
-                dlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SavePlaylistDialog");
+                // open dialog in order to save the current playlist as a playlist in the media db
+                SaveDialog saveDialog = new SaveDialog();
+                Bundle arguments = new Bundle();
+                arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.PLAYLIST);
+                saveDialog.setArguments(arguments);
+                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                return true;
+            case R.id.view_nowplaying_action_createbookmark:
+                // open dialog in order to save the current playlist as a bookmark in the odyssey db
+                saveDialog = new SaveDialog();
+                arguments = new Bundle();
+                arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.BOOKMARK);
+                saveDialog.setArguments(arguments);
+                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
                 return true;
             default:
                 return false;
@@ -224,6 +237,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // call pbs and save current playlist to mediastore
         try {
             mServiceConnection.getPBS().savePlaylist(playlistName);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void createBookmark(String bookmarkTitle) {
+        // call pbs and create bookmark with the given title for the current state
+        try {
+            mServiceConnection.getPBS().createBookmark(bookmarkTitle);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -249,7 +272,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // Visibility still needs to be set otherwise parts of the buttons
             // are not clickable.
             mDraggedDownButtons.setAlpha(mDragOffset);
-            mDraggedUpButtons.setAlpha(1.0f-mDragOffset);
+            mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
         }
 
         @Override
@@ -282,19 +305,19 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
             super.onViewDragStateChanged(state);
 
-            if(state == ViewDragHelper.STATE_IDLE) {
+            if (state == ViewDragHelper.STATE_IDLE) {
                 if (mDragOffset == 0.0f) {
                     // top
                     mDraggedDownButtons.setVisibility(INVISIBLE);
                     mDraggedUpButtons.setVisibility(VISIBLE);
-                    if ( mDragStatusReceiver != null ) {
+                    if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
                     }
                 } else {
                     // bottom
                     mDraggedDownButtons.setVisibility(VISIBLE);
                     mDraggedUpButtons.setVisibility(INVISIBLE);
-                    if ( mDragStatusReceiver != null ) {
+                    if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
                     }
                 }
@@ -532,7 +555,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 0,
                 newTop + mHeaderView.getMeasuredHeight(),
                 r,
-                newTop  + b);
+                newTop + b);
     }
 
     public void onPause() {
@@ -564,7 +587,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // get current track
         TrackModel currentTrack = newTrack;
-        if ( newTrack == null ) {
+        if (newTrack == null) {
             try {
                 currentTrack = mServiceConnection.getPBS().getCurrentSong();
             } catch (RemoteException e) {
@@ -626,14 +649,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                         }
                         if (isRepeat) {
                             TypedValue typedValue = new TypedValue();
-                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
+                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
                             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
                         } else {
                             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
                         }
                         if (isRandom) {
                             TypedValue typedValue = new TypedValue();
-                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
+                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
                             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
                         } else {
                             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
@@ -683,12 +706,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDragStatusReceiver = receiver;
         if (mDragOffset == 0.0f) {
             // top
-            if ( mDragStatusReceiver != null ) {
+            if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
             }
         } else {
             // bottom
-            if ( mDragStatusReceiver != null ) {
+            if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
             }
         }
@@ -782,7 +805,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     public interface NowPlayingDragStatusReceiver {
-        enum DRAG_STATUS {DRAGGED_UP,DRAGGED_DOWN}
+        enum DRAG_STATUS {DRAGGED_UP, DRAGGED_DOWN}
+
         void onStatusChanged(DRAG_STATUS status);
     }
 }

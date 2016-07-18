@@ -64,6 +64,11 @@ interface IOdysseyPlaybackService {
 
 	void getCurrentList(out List<TrackModel> tracks);
 
+	// resume stack methods
+	void resumeBookmark(long timestamp);
+	void deleteBookmark(long timestamp);
+	void createBookmark(String bookmarkTitle);
+
 	// Information getters
 	String getArtist();
 	String getAlbum();

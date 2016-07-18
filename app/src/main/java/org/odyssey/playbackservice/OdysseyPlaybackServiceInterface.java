@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stub  {
+public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stub {
     // Holds the actual playback service for handling reasons
     private final WeakReference<PlaybackService> mService;
 
@@ -304,4 +304,32 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
+
+    @Override
+    public void resumeBookmark(long timestamp) throws RemoteException {
+        // create resume bookmark control object
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_RESUMEBOOKMARK, timestamp);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void deleteBookmark(long timestamp) throws RemoteException {
+        // create delete bookmark control object
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DELETEBOOKMARK, timestamp);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void createBookmark(String bookmarkTitle) throws RemoteException {
+        // create create bookmark control object
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_CREATEBOOKMARK, bookmarkTitle);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
 }

@@ -59,7 +59,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public static final String ACTION_TOGGLEPAUSE = "org.odyssey.togglepause";
 
 
-
     private static final int TIMEOUT_INTENT_QUIT = 5;
 
     private final static int SERVICE_CANCEL_TIME = 60 * 5 * 1000;
@@ -71,7 +70,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     // Mediaplayback stuff
     private GaplessPlayer mPlayer;
-    private ArrayList<TrackModel> mCurrentList;
+    private List<TrackModel> mCurrentList;
     private int mCurrentPlayingIndex;
     private int mNextPlayingIndex;
     private int mLastPlayingIndex;
@@ -246,7 +245,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     // Stops all playback
     public void stop() {
-        Log.v(TAG,"PBS stop()");
+        Log.v(TAG, "PBS stop()");
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // Notify simple last.fm scrobbler
             mMediaControlManager.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackStatusHelper.SLS_STATES.SLS_COMPLETE);
@@ -522,7 +521,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public void clearPlaylist() {
-        Log.v(TAG,"Clearing Playlist");
+        Log.v(TAG, "Clearing Playlist");
         // Clear the list
         mCurrentList.clear();
         // reset random and repeat state
@@ -616,13 +615,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void enqueueTracks(ArrayList<TrackModel> tracklist) {
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
-        Log.v(TAG,"Enqueing " + tracklist.size() + "tracks");
+        Log.v(TAG, "Enqueing " + tracklist.size() + "tracks");
 
         mCurrentList.addAll(tracklist);
     }
 
     public void enqueueTrack(TrackModel track) {
-        Log.v(TAG,"Enqueing track: " + track.getTrackName());
+        Log.v(TAG, "Enqueing track: " + track.getTrackName());
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();
@@ -694,7 +693,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             serviceState.mTrackPosition = mLastPosition;
             serviceState.mRandomState = mRandom;
             serviceState.mRepeatState = mRepeat;
-            mPlaylistManager.saveState(mCurrentList, serviceState, true);
+            mPlaylistManager.saveState(mCurrentList, serviceState, "auto", true);
         }
 
         mMediaControlManager.updateStatus();
@@ -775,12 +774,64 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Save the current playlist in mediastore
      */
     public void savePlaylist(String name) {
-        Thread savePlaylistThread = new Thread(new SavePlaylistRunner(name, getApplicationContext()));
+        Thread savePlaylistThread = new Thread(new SavePlaylistRunner(name, mCurrentList, getApplicationContext()));
 
         savePlaylistThread.start();
     }
 
+    public void resumeBookmark(long timestamp) {
 
+        Log.v(TAG, "resume bookmark: " + timestamp);
+
+        // clear current playlist
+        clearPlaylist();
+
+        // get playlist from database
+        mCurrentList = mPlaylistManager.readPlaylist(timestamp);
+
+        // get state from database
+        OdysseyServiceState state = mPlaylistManager.getState(timestamp);
+
+        mCurrentPlayingIndex = state.mTrackNumber;
+        mLastPosition = state.mTrackPosition;
+        mRandom = state.mRandomState;
+        mRepeat = state.mRepeatState;
+
+        if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
+            mCurrentPlayingIndex = -1;
+        }
+
+        mLastPlayingIndex = -1;
+        mNextPlayingIndex = -1;
+
+        // call resume and start playback
+        resume();
+    }
+
+    public void deleteBookmark(long timestamp) {
+
+        Log.v(TAG, "delete bookmark: " + timestamp);
+        // delete wont affect current playback
+        // so just delete the state and the playlist from the database
+        mPlaylistManager.removeState(timestamp);
+    }
+
+    public void createBookmark(String bookmarkTitle) {
+
+        Log.v(TAG, "create bookmark: " + bookmarkTitle);
+
+        // grab the current state and playlist and save this as a new bookmark with the given title
+        OdysseyServiceState serviceState = new OdysseyServiceState();
+
+        serviceState.mTrackNumber = mCurrentPlayingIndex;
+        serviceState.mTrackPosition = mLastPosition;
+        serviceState.mRandomState = mRandom;
+        serviceState.mRepeatState = mRepeat;
+
+        Thread createBookmarkThread = new Thread(new CreateBookmarkRunner(bookmarkTitle, serviceState, mCurrentList));
+
+        createBookmarkThread.start();
+    }
 
 
     /*
@@ -1013,7 +1064,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 and now the user disconnects it headphone. The music should not resume when the call
                 is finished and the audio focus is regained.
                  */
-                if ( mLostAudioFocus ) {
+                if (mLostAudioFocus) {
                     mLostAudioFocus = false;
                 }
                 Log.v(TAG, "NOISY AUDIO! CANCEL MUSIC");
@@ -1049,19 +1100,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-
-
-
-    /*
+    /**
      * Save playlist async
      */
     private class SavePlaylistRunner implements Runnable {
 
         private String mPlaylistName;
+        private List<TrackModel> mPlaylist;
         private Context mContext;
 
-        public SavePlaylistRunner(String name, Context context) {
+        public SavePlaylistRunner(String name, List<TrackModel> playlist, Context context) {
             mPlaylistName = name;
+            mPlaylist = playlist;
             mContext = context;
         }
 
@@ -1088,9 +1138,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
                 TrackModel item;
 
-                for (int i = 0; i < mCurrentList.size(); i++) {
+                for (int i = 0; i < mPlaylist.size(); i++) {
 
-                    item = mCurrentList.get(i);
+                    item = mPlaylist.get(i);
 
                     if (item != null) {
                         String[] whereVal = {item.getTrackURL()};
@@ -1115,6 +1165,26 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * save bookmark async
+     */
+    private class CreateBookmarkRunner implements Runnable {
+        private String mBookmarkTitle;
+        private OdysseyServiceState mState;
+        private List<TrackModel> mPlaylist;
+
+        public CreateBookmarkRunner(String title, OdysseyServiceState state, List<TrackModel> playlist) {
+            mBookmarkTitle = title;
+            mState = state;
+            mPlaylist = playlist;
+        }
+
+        @Override
+        public void run() {
+            mPlaylistManager.saveState(mPlaylist, mState, mBookmarkTitle, false);
         }
     }
 }

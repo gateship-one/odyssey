@@ -34,8 +34,13 @@
 
     <!-- dialog titles -->
     <string name="dialog_save_playlist">Save Playlist</string>
+    <string name="dialog_create_bookmark">Create Bookmark</string>
     <string name="dialog_action_cancel">Cancel</string>
     <string name="dialog_action_save">Save</string>
+
+    <!-- dialog default filenames  -->
+    <string name="default_playlist_title">New Playlist</string>
+    <string name="default_bookmark_title">New Bookmark</string>
 
     <!-- actions -->
     <string name="action_add_album">Add Album</string>
@@ -57,12 +62,10 @@
     <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
     <string name="popup_menu_action_clearplaylist">clear playlist</string>
     <string name="popup_menu_action_saveplaylist">save playlist</string>
+    <string name="popup_menu_action_createbookmark">create bookmark</string>
 
     <!-- seperator -->
     <string name="separator" translatable="false">" - "</string>
-
-    <!-- default playlist title -->
-    <string name="default_playlist_title">New Playlist</string>
 
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Only show album artists</string>

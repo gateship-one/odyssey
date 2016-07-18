@@ -25,7 +25,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,12 +38,13 @@ import org.odyssey.fragments.BookmarksFragment;
 import org.odyssey.fragments.MyMusicFragment;
 import org.odyssey.fragments.OdysseyFragment;
 import org.odyssey.fragments.PlaylistTracksFragment;
+import org.odyssey.fragments.SaveDialog;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.listener.OnPlaylistSelectedListener;
-import org.odyssey.listener.OnSavePlaylistListener;
+import org.odyssey.listener.OnSaveDialogListener;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 import org.odyssey.views.CurrentPlaylistView;
@@ -53,7 +53,7 @@ import org.odyssey.views.NowPlayingView;
 import java.util.ArrayList;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSavePlaylistListener, NowPlayingView.NowPlayingDragStatusReceiver{
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -73,7 +73,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String themePref = sharedPref.getString("pref_theme","indigo");
+        String themePref = sharedPref.getString("pref_theme", "indigo");
 
         switch (themePref) {
             case "indigo":
@@ -105,7 +105,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         // enable back navigation
         final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
-        if(actionBar != null) {
+        if (actionBar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -126,8 +126,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
         registerForContextMenu(currentPlaylistListView);
 
-        if(findViewById(R.id.fragment_container) != null) {
-            if(savedInstanceState != null) {
+        if (findViewById(R.id.fragment_container) != null) {
+            if (savedInstanceState != null) {
                 return;
             }
 
@@ -218,7 +218,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             if (nowPlayingView != null) {
                 nowPlayingView.minimize();
             }
-        } else if ( fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
+        } else if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
             // If current fragment is the settings or savedplaylists fragment, jump back to myMusicFragment.
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.fragment_container, new MyMusicFragment());
@@ -229,8 +229,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             if (navigationView != null) {
                 navigationView.setCheckedItem(R.id.nav_my_music);
             }
-        }
-        else {
+        } else {
             super.onBackPressed();
 
             // enable navigation bar when backstack empty
@@ -250,14 +249,14 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(fragmentManager.getBackStackEntryCount() > 0) {
+                if (fragmentManager.getBackStackEntryCount() > 0) {
                     onBackPressed();
                 } else {
                     // back stack empty so enable navigation drawer
 
                     mDrawerToggle.setDrawerIndicatorEnabled(true);
 
-                    if(mDrawerToggle.onOptionsItemSelected(item)) {
+                    if (mDrawerToggle.onOptionsItemSelected(item)) {
                         return true;
                     }
                 }
@@ -461,14 +460,14 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
     }
 
-    public void setToolbarImage(Bitmap bm ) {
+    public void setToolbarImage(Bitmap bm) {
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageBitmap(bm);
         }
     }
 
-    public void setToolbarImage(Drawable drawable ) {
+    public void setToolbarImage(Drawable drawable) {
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageDrawable(drawable);
@@ -574,10 +573,18 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSavePlaylist(String playlistName) {
+    public void onSaveObject(String title, SaveDialog.OBJECTTYPE type) {
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
-            nowPlayingView.savePlaylist(playlistName);
+            // check type to identify which object should be saved
+            switch (type) {
+                case PLAYLIST:
+                    nowPlayingView.savePlaylist(title);
+                    break;
+                case BOOKMARK:
+                    nowPlayingView.createBookmark(title);
+                    break;
+            }
         }
     }
 }
