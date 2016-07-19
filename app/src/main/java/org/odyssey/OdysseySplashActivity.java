@@ -10,7 +10,12 @@ public class OdysseySplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle extras = getIntent().getExtras();
+
         Intent intent = new Intent(this, OdysseyMainActivity.class);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         startActivity(intent);
         finish();
     }

@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 
 import org.odyssey.OdysseyMainActivity;
+import org.odyssey.OdysseySplashActivity;
 import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
@@ -19,7 +20,7 @@ import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 public class
-OdysseyWidgetProvider  extends AppWidgetProvider {
+OdysseyWidgetProvider extends AppWidgetProvider {
     private RemoteViews mViews;
     private AppWidgetManager mAppWidgetManager;
     private Context mContext;
@@ -65,9 +66,9 @@ OdysseyWidgetProvider  extends AppWidgetProvider {
             intent.setExtrasClassLoader(context.getClassLoader());
 
             NowPlayingInformation info = intent.getParcelableExtra(PlaybackStatusHelper.INTENT_NOWPLAYINGNAME);
-            if ( info != null ) {
+            if (info != null) {
                 TrackModel item = info.getCurrentTrack();
-                if ( item != null ) {
+                if (item != null) {
                     views.setTextViewText(R.id.widget_big_trackName, item.getTrackName());
                     views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
 
@@ -76,7 +77,7 @@ OdysseyWidgetProvider  extends AppWidgetProvider {
                         CoverBitmapGenerator mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver());
                         mCoverGenerator.getImage(item);
                         mLastCover = null;
-                    } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null)  {
+                    } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null) {
                         views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
                     }
                 }
@@ -95,7 +96,7 @@ OdysseyWidgetProvider  extends AppWidgetProvider {
 
         // set button actions
         // Main action
-        Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
+        Intent mainIntent = new Intent(context, OdysseySplashActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (nowPlaying) {
             // add intent only if playing is active
