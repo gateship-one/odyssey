@@ -13,14 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.indigo">
         <activity
-            android:name=".OdysseyMainActivity"
-            android:label="@string/app_name">
+            android:name=".OdysseySplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".OdysseyMainActivity"
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".OdysseyAboutActivity"
             android:label="About"
@@ -31,36 +35,38 @@
         </activity>
 
         <service
-            android:name="org.odyssey.playbackservice.PlaybackService"
-            android:label="OdysseyPlaybackService"
+            android:name=".playbackservice.PlaybackService"
             android:exported="false"
-            android:process=":serviceProcess" >
+            android:label="OdysseyPlaybackService"
+            android:process=":serviceProcess">
             <intent-filter>
                 <action android:name="org.odyssey.playbackservice.IOdysseyPlaybackService" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
-                <action android:name="org.odyssey.newtrackinfo"/>
-                <action android:name="org.odyssey.togglepause"/>
-                <action android:name="org.odyssey.stop"/>
-                <action android:name="org.odyssey.previous"/>
-                <action android:name="org.odyssey.next"/>
+                <action android:name="org.odyssey.newtrackinfo" />
+                <action android:name="org.odyssey.togglepause" />
+                <action android:name="org.odyssey.stop" />
+                <action android:name="org.odyssey.previous" />
+                <action android:name="org.odyssey.next" />
             </intent-filter>
         </service>
 
-        <receiver android:name="org.odyssey.playbackservice.RemoteControlReceiver" >
+        <receiver android:name=".playbackservice.RemoteControlReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.odyssey.widget.OdysseyWidgetProvider" >
+        <receiver android:name=".widget.OdysseyWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="org.odyssey.newtrackinfo"/>
-                <action android:name="org.odyssey.togglepause"/>
-                <action android:name="org.odyssey.stop"/>
-                <action android:name="org.odyssey.previous"/>
-                <action android:name="org.odyssey.next"/>
+                <action android:name="org.odyssey.newtrackinfo" />
+                <action android:name="org.odyssey.togglepause" />
+                <action android:name="org.odyssey.stop" />
+                <action android:name="org.odyssey.previous" />
+                <action android:name="org.odyssey.next" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/widget_big_info" />
         </receiver>
     </application>

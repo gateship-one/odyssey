@@ -75,11 +75,11 @@
         <item name="android:textColor">@color/colorTextDark</item>
     </style>
 
-    <style name="AppTheme.NavDrawer" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.NavDrawer" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
 
-    <style name="AppTheme.Preference" parent ="PreferenceThemeOverlay.v14.Material">
+    <style name="AppTheme.Preference" parent="PreferenceThemeOverlay.v14.Material">
         <item name="android:colorAccent">?attr/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextLight</item>
         <item name="android:textColorSecondary">@color/colorTextLightSecondary</item>
@@ -87,9 +87,13 @@
     </style>
 
 
-    <style name="AppTheme.NavDrawerHeader" parent ="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
 </resources>
