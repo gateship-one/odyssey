@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@color/colorBackground" />
-
     <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/ic_launcher" />
+        <color android:color="#2195F1"></color>
     </item>
 
+    <item android:drawable="@drawable/odyssey_launch_stable">
+
+    </item>
 </layer-list>
