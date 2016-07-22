@@ -3,11 +3,13 @@ package org.odyssey.fragments;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +25,9 @@ import org.odyssey.R;
 import org.odyssey.adapter.FilesListViewAdapter;
 import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.loaders.FileLoader;
+import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.FileExplorerHelper;
 
 import java.io.File;
 import java.util.List;
@@ -35,11 +39,15 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     private PlaybackServiceConnection mServiceConnection;
 
+    private FileExplorerHelper mFileExplorerHelper;
+
     private File mCurrentDirectory;
     private boolean mIsRootDirectory = false;
 
     public final static String ARG_DIRECTORYPATH = "directory_path";
     public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
+
+    private final static String TAG = "OdysseyFilesFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,6 +81,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
                 mCurrentDirectory = new File(directoryPath);
             }
         }
+
+        // get fileexplorerhelper
+        mFileExplorerHelper = FileExplorerHelper.getInstance(getContext());
 
         return rootView;
     }
@@ -121,7 +132,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     @Override
     public Loader<List<File>> onCreateLoader(int arg0, Bundle bundle) {
-        return new FileLoader(getActivity(), mCurrentDirectory);
+        return new FileLoader(getActivity(), mCurrentDirectory, mFileExplorerHelper.getValidFileExtensions());
     }
 
     @Override
@@ -148,7 +159,17 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_menu_files_fragment, menu);
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        File currentFile = (File) mFilesListViewAdapter.getItem(info.position);
+
+        if (currentFile.isFile()) {
+            // show context menu for files
+            inflater.inflate(R.menu.context_menu_files_files_fragment, menu);
+        } else {
+            // show context menu for directories
+            inflater.inflate(R.menu.context_menu_directories_files_fragment, menu);
+        }
     }
 
     @Override
@@ -161,12 +182,16 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
         switch (item.getItemId()) {
             case R.id.fragment_files_action_add_folder:
+                enqueueFolder(info.position);
                 return true;
             case R.id.fragment_files_action_play_folder:
+                playFolder(info.position);
                 return true;
             case R.id.fragment_files_action_add_file:
+                enqueueFile(info.position);
                 return true;
             case R.id.fragment_files_action_play_file:
+                playFile(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -197,5 +222,71 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void playFile(int position) {
+
+        // clear playlist and play selected file
+
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            enqueueFile(position);
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    private void enqueueFile(int position) {
+        // Enqueue single file
+
+        File currentFile = (File) mFilesListViewAdapter.getItem(position);
+
+        // get a trackmodel for the current file
+        TrackModel track = mFileExplorerHelper.getTrackModelForFile(currentFile);
+
+        try {
+            mServiceConnection.getPBS().enqueueTrack(track);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void playFolder(int position) {
+        // clear playlist and play all music files in the selected folder
+
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            enqueueFolder(position);
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    private void enqueueFolder(int position) {
+        // Enqueue all music files in the current folder
+
+        File currentFolder = (File) mFilesListViewAdapter.getItem(position);
+
+        Log.v(TAG, "create trackmodel list");
+
+        // get trackmodels for all music files in the folder
+        List<TrackModel> tracks = mFileExplorerHelper.getTrackModelsForFolder(currentFolder);
+
+        Log.v(TAG, "create trackmodel list done");
+
+        for (TrackModel track : tracks) {
+            try {
+                // enqueue track
+                mServiceConnection.getPBS().enqueueTrack(track);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }
