@@ -7,6 +7,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.SectionIndexer;
 
 import org.odyssey.R;
 import org.odyssey.views.FilesListViewItem;
@@ -15,19 +16,26 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class FilesListViewAdapter extends BaseAdapter {
+public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer {
 
     private final Context mContext;
     private List<File> mFiles;
+    private final ArrayList<String> mSectionList;
+    private final ArrayList<Integer> mSectionPositions;
+    private final HashMap<Character, Integer> mPositionSectionMap;
 
     public FilesListViewAdapter(Context context) {
         super();
 
         mContext = context;
         mFiles = new ArrayList<>();
+        mSectionList = new ArrayList<>();
+        mSectionPositions = new ArrayList<>();
+        mPositionSectionMap = new HashMap<>();
     }
 
     @Override
@@ -86,12 +94,77 @@ public class FilesListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+        return mSectionPositions.get(sectionIndex);
+    }
+
+    @Override
+    public int getSectionForPosition(int pos) {
+
+        String sectionTitle = mFiles.get(pos).getName();
+
+        char fileSection = sectionTitle.toUpperCase().charAt(0);
+
+        if (mPositionSectionMap.containsKey(fileSection)) {
+            int sectionIndex = mPositionSectionMap.get(fileSection);
+            return sectionIndex;
+        }
+        return 0;
+    }
+
+    @Override
+    public Object[] getSections() {
+        return mSectionList.toArray();
+    }
+
+    /**
+     * Swaps the model of this adapter. This sets the dataset on which the
+     * adapter creates the ListItems. This should generally be safe to call.
+     * Clears old section data and model data and recreates sectionScrolling
+     * data.
+     *
+     * @param files
+     *            Actual filelist
+     */
     public void swapModel(List<File> files) {
         if (files == null) {
             mFiles.clear();
         } else {
             mFiles = files;
         }
+
+        // create sectionlist for fastscrolling
+
+        mSectionList.clear();
+        mSectionPositions.clear();
+        mPositionSectionMap.clear();
+        if (mFiles.size() > 0) {
+            File currentFile = mFiles.get(0);
+
+            char lastSection = currentFile.getName().toUpperCase().charAt(0);
+
+            mSectionList.add("" + lastSection);
+            mSectionPositions.add(0);
+            mPositionSectionMap.put(lastSection, mSectionList.size() - 1);
+
+            for (int i = 1; i < getCount(); i++) {
+
+                currentFile = mFiles.get(i);
+
+                char currentSection = currentFile.getName().toUpperCase().charAt(0);
+
+                if (lastSection != currentSection) {
+                    mSectionList.add("" + currentSection);
+
+                    lastSection = currentSection;
+                    mSectionPositions.add(i);
+                    mPositionSectionMap.put(currentSection, mSectionList.size() - 1);
+                }
+
+            }
+        }
+        notifyDataSetChanged();
 
         notifyDataSetChanged();
     }
