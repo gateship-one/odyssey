@@ -55,6 +55,7 @@ import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
@@ -357,9 +358,19 @@ public class OdysseyMainActivity extends AppCompatActivity
         } else if (id == R.id.nav_files) {
             fragment = new FilesFragment();
 
-            // choose a storage volume
+            // open the default directory
+            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
+
+            String defaultDirectory = "/";
+
+            if (!storageVolumesList.isEmpty()) {
+                // choose the latest used storage volume as default
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
+            }
+
             Bundle args = new Bundle();
-            args.putString(FilesFragment.ARG_DIRECTORYPATH, mFileExplorerHelper.getStorageVolumes().get(0));
+            args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
             args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
 
             fragment.setArguments(args);
@@ -445,6 +456,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         if (isRootDirectory) {
             // if root directory clear the backstack
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+            // save new root directory
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            sharedPrefEditor.putString("pref_file_browser_root_dir", dirPath);
+            sharedPrefEditor.apply();
         } else {
             // no root directory so add fragment to the backstack
             transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
