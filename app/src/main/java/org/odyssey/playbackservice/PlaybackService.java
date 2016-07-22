@@ -774,9 +774,55 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Save the current playlist in mediastore
      */
     public void savePlaylist(String name) {
-        Thread savePlaylistThread = new Thread(new SavePlaylistRunner(name, mCurrentList, getApplicationContext()));
+        Context context = getApplicationContext();
 
-        savePlaylistThread.start();
+        // remove playlist if exists
+        PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[]{name});
+
+        // create new playlist and save row
+        ContentValues mInserts = new ContentValues();
+        mInserts.put(MediaStore.Audio.Playlists.NAME, name);
+        mInserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
+        mInserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
+
+        Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
+
+        // insert current tracks
+
+        if (currentRow != null) {
+            // TODO optimize
+            String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
+            String where = MediaStore.Audio.Media.DATA + "=?";
+
+            TrackModel item;
+
+            for (int i = 0; i < mCurrentList.size(); i++) {
+
+                item = mCurrentList.get(i);
+
+                if (item != null) {
+                    String[] whereVal = {item.getTrackURL()};
+
+                    // get ID of current track
+                    Cursor c = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
+
+                    if (c != null) {
+                        if (c.moveToFirst()) {
+                            // insert track into playlist
+                            String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                            mInserts.clear();
+                            mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
+                            mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
+
+                            PermissionHelper.insert(context, currentRow, mInserts);
+                        }
+
+                        c.close();
+                    }
+                }
+            }
+        }
     }
 
     public void resumeBookmark(long timestamp) {
@@ -828,9 +874,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
 
-        Thread createBookmarkThread = new Thread(new CreateBookmarkRunner(bookmarkTitle, serviceState, mCurrentList));
-
-        createBookmarkThread.start();
+        mPlaylistManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
     }
 
 
@@ -1097,94 +1141,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void run() {
             Log.v(TAG, "Cancel odyssey playbackservice");
             stopService();
-        }
-    }
-
-    /**
-     * Save playlist async
-     */
-    private class SavePlaylistRunner implements Runnable {
-
-        private String mPlaylistName;
-        private List<TrackModel> mPlaylist;
-        private Context mContext;
-
-        public SavePlaylistRunner(String name, List<TrackModel> playlist, Context context) {
-            mPlaylistName = name;
-            mPlaylist = playlist;
-            mContext = context;
-        }
-
-        @Override
-        public void run() {
-
-            // remove playlist if exists
-            PermissionHelper.delete(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[]{mPlaylistName});
-
-            // create new playlist and save row
-            ContentValues mInserts = new ContentValues();
-            mInserts.put(MediaStore.Audio.Playlists.NAME, mPlaylistName);
-            mInserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
-            mInserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
-
-            Uri currentRow = PermissionHelper.insert(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
-
-            // insert current tracks
-
-            if (currentRow != null) {
-                // TODO optimize
-                String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
-                String where = MediaStore.Audio.Media.DATA + "=?";
-
-                TrackModel item;
-
-                for (int i = 0; i < mPlaylist.size(); i++) {
-
-                    item = mPlaylist.get(i);
-
-                    if (item != null) {
-                        String[] whereVal = {item.getTrackURL()};
-
-                        // get ID of current track
-                        Cursor c = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
-
-                        if (c != null) {
-                            if (c.moveToFirst()) {
-                                // insert track into playlist
-                                String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                                mInserts.clear();
-                                mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
-                                mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
-
-                                PermissionHelper.insert(mContext, currentRow, mInserts);
-                            }
-
-                            c.close();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * save bookmark async
-     */
-    private class CreateBookmarkRunner implements Runnable {
-        private String mBookmarkTitle;
-        private OdysseyServiceState mState;
-        private List<TrackModel> mPlaylist;
-
-        public CreateBookmarkRunner(String title, OdysseyServiceState state, List<TrackModel> playlist) {
-            mBookmarkTitle = title;
-            mState = state;
-            mPlaylist = playlist;
-        }
-
-        @Override
-        public void run() {
-            mPlaylistManager.saveState(mPlaylist, mState, mBookmarkTitle, false);
         }
     }
 }
