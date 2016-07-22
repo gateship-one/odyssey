@@ -15,6 +15,7 @@
     <string name="nav_menu_saved_playlists">Playlists</string>
     <string name="nav_menu_settings">Settings</string>
     <string name="nav_menu_bookmarks">Bookmarks</string>
+    <string name="nav_menu_files">Files</string>
 
     <!-- fragment titles -->
     <string name="fragment_title_my_music">My Music</string>
@@ -37,6 +38,7 @@
     <string name="dialog_create_bookmark">Create Bookmark</string>
     <string name="dialog_action_cancel">Cancel</string>
     <string name="dialog_action_save">Save</string>
+    <string name="dialog_choose_storage_volume_title">Choose storage volume</string>
 
     <!-- dialog default filenames  -->
     <string name="default_playlist_title">New Playlist</string>
@@ -45,6 +47,7 @@
     <!-- actions -->
     <string name="action_add_album">Add Album</string>
     <string name="action_add_artist_albums">Add Albums</string>
+    <string name="action_switch_storage_volume">Switch storage volume</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">add to playlist</string>
@@ -57,6 +60,12 @@
     <string name="context_menu_action_removetrack">remove track</string>
     <string name="context_menu_action_playplaylist">play playlist</string>
     <string name="context_menu_action_deleteplaylist">delete playlist</string>
+    <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
+    <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
+    <string name="context_menu_action_enqueue_folder">add folder to playlist</string>
+    <string name="context_menu_action_play_folder">play folder</string>
+    <string name="context_menu_action_enqueue_file">add file to playlist</string>
+    <string name="context_menu_action_play_file">play file</string>
 
     <!-- popup menu titles -->
     <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
@@ -110,6 +119,4 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
-    <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
-    <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
 </resources>

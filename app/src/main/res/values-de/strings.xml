@@ -62,4 +62,11 @@
     <string name="default_bookmark_title">Neues Lesezeichen</string>
     <string name="dialog_create_bookmark">Lesezeichen erstellen</string>
     <string name="popup_menu_action_createbookmark">Lesezeichen erstellen</string>
+    <string name="context_menu_action_enqueue_file">Datei zur Playlist hinzufügen</string>
+    <string name="context_menu_action_enqueue_folder">Ordner zur Playlist hinzufügen</string>
+    <string name="context_menu_action_play_file">Datei abspielen</string>
+    <string name="context_menu_action_play_folder">Ordner abspielen</string>
+    <string name="nav_menu_files">Dateien</string>
+    <string name="action_switch_storage_volume">Speichermedium wechseln</string>
+    <string name="dialog_choose_storage_volume_title">Wähle Speichermedium</string>
 </resources>

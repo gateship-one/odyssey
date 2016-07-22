@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -35,6 +36,7 @@ import android.widget.ListView;
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
 import org.odyssey.fragments.BookmarksFragment;
+import org.odyssey.fragments.FilesFragment;
 import org.odyssey.fragments.MyMusicFragment;
 import org.odyssey.fragments.OdysseyFragment;
 import org.odyssey.fragments.PlaylistTracksFragment;
@@ -43,8 +45,10 @@ import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.listener.OnArtistSelectedListener;
+import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.listener.OnPlaylistSelectedListener;
 import org.odyssey.listener.OnSaveDialogListener;
+import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 import org.odyssey.views.CurrentPlaylistView;
@@ -53,12 +57,15 @@ import org.odyssey.views.NowPlayingView;
 import java.util.ArrayList;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver {
+        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
+        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
     private int mSavedDragStatus = -1;
+
+    private FileExplorerHelper mFileExplorerHelper = null;
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.odyssey.requestedview";
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
@@ -99,6 +106,9 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_odyssey_main);
+
+        // get fileexplorerhelper
+        mFileExplorerHelper = FileExplorerHelper.getInstance(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -344,6 +354,16 @@ public class OdysseyMainActivity extends AppCompatActivity
             fragment = new SavedPlaylistsFragment();
         } else if (id == R.id.nav_bookmarks) {
             fragment = new BookmarksFragment();
+        } else if (id == R.id.nav_files) {
+            fragment = new FilesFragment();
+
+            // choose a storage volume
+            Bundle args = new Bundle();
+            args.putString(FilesFragment.ARG_DIRECTORYPATH, mFileExplorerHelper.getStorageVolumes().get(0));
+            args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
+
+            fragment.setArguments(args);
+
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         }
@@ -403,6 +423,35 @@ public class OdysseyMainActivity extends AppCompatActivity
         // back
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack("AlbumTracksFragment");
+
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    @Override
+    public void onDirectorySelected(String dirPath, boolean isRootDirectory) {
+        // Create fragment and give it an argument for the selected directory
+        FilesFragment newFragment = new FilesFragment();
+        Bundle args = new Bundle();
+        args.putString(FilesFragment.ARG_DIRECTORYPATH, dirPath);
+        args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, isRootDirectory);
+
+        newFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        if (isRootDirectory) {
+            // if root directory clear the backstack
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            // no root directory so add fragment to the backstack
+            transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            transaction.addToBackStack("FilesFragment");
+        }
+
+        transaction.replace(R.id.fragment_container, newFragment);
 
         // Commit the transaction
         transaction.commit();

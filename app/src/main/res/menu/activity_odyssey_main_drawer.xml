@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_bookmark_black_24dp"
             android:title="@string/nav_menu_bookmarks"/>
         <item
+            android:id="@+id/nav_files"
+            android:icon="@drawable/ic_folder_24dp"
+            android:title="@string/nav_menu_files"/>
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_24dp"
             android:title="@string/nav_menu_settings"/>
