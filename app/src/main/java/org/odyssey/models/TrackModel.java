@@ -92,7 +92,7 @@ public class TrackModel implements GenericModel, Parcelable {
             return false;
         }
         TrackModel track = (TrackModel)model;
-        if ( !this.mTrackName.equals(track.mTrackArtistName)) {
+        if ( !this.mTrackName.equals(track.mTrackName)) {
             return false;
         }
         if ( !this.mTrackAlbumName.equals(track.mTrackAlbumName)) {
