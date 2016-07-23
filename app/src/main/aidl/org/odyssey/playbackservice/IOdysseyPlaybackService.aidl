@@ -32,6 +32,9 @@ interface IOdysseyPlaybackService {
 	// save current playlist in mediastore
 	void savePlaylist(String name);
 
+    // enqueue a playlist from mediastore
+    void enqueuePlaylist(long playlistId);
+
 	// return the current index
 	int getCurrentIndex();
 

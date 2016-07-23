@@ -142,53 +142,21 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
     }
 
     private void playPlaylist(int position) {
-        // Remove current playlist
-        try {
-            mServiceConnection.getPBS().clearPlaylist();
-        } catch (RemoteException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
         // identify current playlist
         PlaylistModel clickedPlaylist = (PlaylistModel) mSavedPlaylistListViewAdapter.getItem(position);
 
-        Cursor cursorTracks = PermissionHelper.query(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", clickedPlaylist.getPlaylistID()), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
-
-        if (cursorTracks != null) {
-            // get all tracks of the playlist
-            if (cursorTracks.moveToFirst()) {
-                do {
-                    String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));
-                    long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION));
-                    int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK));
-                    String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
-                    String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
-                    String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-                    String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
-
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-                    // enqueue current track
-                    try {
-                        mServiceConnection.getPBS().enqueueTrack(item);
-                    } catch (RemoteException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                } while (cursorTracks.moveToNext());
-            }
-
-            cursorTracks.close();
-        }
-
-        // play playlist
         try {
+            // clear the playlist
+            mServiceConnection.getPBS().clearPlaylist();
+
+            // add playlist
+            mServiceConnection.getPBS().enqueuePlaylist(clickedPlaylist.getPlaylistID());
+
+            // start playback
             mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e) {
+        } catch (RemoteException e1) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e1.printStackTrace();
         }
     }
 

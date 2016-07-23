@@ -149,29 +149,19 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
     }
 
     void playPlaylist(int position) {
-        // clear playlist and play current album
 
         try {
+            // clear the current playlist
             mServiceConnection.getPBS().clearPlaylist();
-            enqueuePlaylist();
+
+            // add the playlist
+            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+
+            // jump to selected track
             mServiceConnection.getPBS().jumpTo(position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
-        }
-    }
-
-    void enqueuePlaylist() {
-        // enqueue complete playlist
-
-        for (int i = 0; i < mTracksListViewAdapter.getCount(); i++) {
-            try {
-                TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(i);
-                mServiceConnection.getPBS().enqueueTrack(track);
-            } catch (RemoteException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
     }
 

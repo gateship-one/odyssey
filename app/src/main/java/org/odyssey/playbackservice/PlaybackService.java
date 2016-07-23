@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
@@ -823,6 +824,43 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
             }
         }
+    }
+
+    /**
+     * enqueue a selected playlist from mediastore
+     * @param playlistId the id of the selected playlist
+     */
+    public void enqueuePlaylist(long playlistId) {
+
+        // get playlist from mediastore
+        Cursor cursorTracks = PermissionHelper.query(getApplicationContext(), MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
+                MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+
+        if (cursorTracks != null) {
+            // get all tracks of the playlist
+            if (cursorTracks.moveToFirst()) {
+                do {
+                    String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));
+                    long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION));
+                    int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK));
+                    String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
+                    String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
+                    String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
+                    String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
+
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+
+                    // add the track to the current playlist
+                    mCurrentList.add(item);
+
+                } while (cursorTracks.moveToNext());
+            }
+
+            cursorTracks.close();
+        }
+
+        // Send new NowPlaying because playlist changed
+        mMediaControlManager.updateStatus();
     }
 
     public void resumeBookmark(long timestamp) {
