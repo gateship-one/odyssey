@@ -33,8 +33,12 @@ public class BookmarkLoader extends AsyncTaskLoader<List<BookmarkModel>> {
 
         SQLiteDatabase mBookmarkDB = new CurrentPlaylistDBHelper(mContext).getReadableDatabase();
 
+        String whereVal[] = {"0"};
+
+        String where = StateTable.COLUMN_AUTOSAVE + "=?";
+
         Cursor bookmarkCursor = mBookmarkDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE, StateTable.COLUMN_TRACKS, StateTable.COLUMN_AUTOSAVE},
-                "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
+                where, whereVal, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
 
         if (bookmarkCursor != null) {
 
@@ -43,9 +47,8 @@ public class BookmarkLoader extends AsyncTaskLoader<List<BookmarkModel>> {
                     long timeStamp = bookmarkCursor.getLong(bookmarkCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
                     String title = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(StateTable.COLUMN_TITLE));
                     int numberOfTracks = bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(StateTable.COLUMN_TRACKS));
-                    int autosave = bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(StateTable.COLUMN_AUTOSAVE));
 
-                    bookmarks.add(new BookmarkModel(timeStamp, title, numberOfTracks, autosave));
+                    bookmarks.add(new BookmarkModel(timeStamp, title, numberOfTracks));
 
                 } while (bookmarkCursor.moveToNext());
             }

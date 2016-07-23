@@ -38,18 +38,14 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         Date date = new Date(timestamp);
         String dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
 
-        // autosave flag
-        String autosave = (bookmark.getAutoSave() == 1) ? mContext.getString(R.string.fragment_bookmarks_autosave_yes) : mContext.getString(R.string.fragment_bookmarks_autosave_no);
-
         if (convertView != null) {
             BookmarksListViewItem bookmarksListViewItem = (BookmarksListViewItem) convertView;
 
             bookmarksListViewItem.setTitle(bookmarkTitle);
             bookmarksListViewItem.setNumberOfTracks(numberOfTracks);
             bookmarksListViewItem.setDate(dateString);
-            bookmarksListViewItem.setAutosave(autosave);
         } else {
-            convertView = new BookmarksListViewItem(mContext, bookmarkTitle, numberOfTracks, dateString, autosave);
+            convertView = new BookmarksListViewItem(mContext, bookmarkTitle, numberOfTracks, dateString);
         }
 
         return convertView;

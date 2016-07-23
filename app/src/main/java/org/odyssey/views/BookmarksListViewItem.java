@@ -12,9 +12,8 @@ public class BookmarksListViewItem extends LinearLayout {
     TextView mTitleView;
     TextView mNumberOfTracksView;
     TextView mDateStringView;
-    TextView mAutosaveView;
 
-    public BookmarksListViewItem(Context context, String title, String numberOfTracks, String dateString, String autosave) {
+    public BookmarksListViewItem(Context context, String title, String numberOfTracks, String dateString) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -28,9 +27,6 @@ public class BookmarksListViewItem extends LinearLayout {
 
         mDateStringView = (TextView) findViewById(R.id.item_bookmarks_date);
         mDateStringView.setText(dateString);
-
-        mAutosaveView = (TextView) findViewById(R.id.item_bookmarks_autosave);
-        mAutosaveView.setText(autosave);
     }
 
     public void setTitle(String title) {
@@ -43,9 +39,5 @@ public class BookmarksListViewItem extends LinearLayout {
 
     public void setDate(String dateString) {
         mDateStringView.setText(dateString);
-    }
-
-    public void setAutosave(String autosave) {
-        mAutosaveView.setText(autosave);
     }
 }
