@@ -244,10 +244,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         File currentFile = (File) mFilesListViewAdapter.getItem(position);
 
         // get a trackmodel for the current file
-        TrackModel track = mFileExplorerHelper.getTrackModelForFile(currentFile);
+        //TrackModel track = mFileExplorerHelper.getTrackModelForFile(currentFile);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track);
+            mServiceConnection.getPBS().enqueueFile(currentFile.toString());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -272,21 +272,12 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
         File currentFolder = (File) mFilesListViewAdapter.getItem(position);
 
-        Log.v(TAG, "create trackmodel list");
-
-        // get trackmodels for all music files in the folder
-        List<TrackModel> tracks = mFileExplorerHelper.getTrackModelsForFolder(currentFolder);
-
-        Log.v(TAG, "create trackmodel list done");
-
-        for (TrackModel track : tracks) {
-            try {
-                // enqueue track
-                mServiceConnection.getPBS().enqueueTrack(track);
-            } catch (RemoteException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        try {
+            mServiceConnection.getPBS().enqueueDirectory(currentFolder.toString());
+            //enqueueFolder(position);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
     }
 }

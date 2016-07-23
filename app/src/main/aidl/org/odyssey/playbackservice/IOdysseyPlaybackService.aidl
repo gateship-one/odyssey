@@ -72,6 +72,10 @@ interface IOdysseyPlaybackService {
 	void deleteBookmark(long timestamp);
 	void createBookmark(String bookmarkTitle);
 
+	// file explorer methods
+	void enqueueFile(String filePath);
+	void enqueueDirectory(String directoryPath);
+
 	// Information getters
 	String getArtist();
 	String getAlbum();

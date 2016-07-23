@@ -5,6 +5,7 @@ import android.os.RemoteException;
 
 import org.odyssey.models.TrackModel;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -340,4 +341,19 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         mService.get().getHandler().sendMessage(msg);
     }
 
+    @Override
+    public void enqueueFile(String filePath) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEFILE, filePath);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void enqueueDirectory(String directoryPath) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEDIRECTORY, directoryPath);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
 }

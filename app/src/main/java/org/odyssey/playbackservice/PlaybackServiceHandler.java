@@ -106,6 +106,12 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_CREATEBOOKMARK:
                     mService.get().createBookmark(msgObj.getStringParam());
                     break;
+                case ODYSSEY_ENQUEUEFILE:
+                    mService.get().enqueueFile(msgObj.getStringParam());
+                    break;
+                case ODYSSEY_ENQUEUEDIRECTORY:
+                    mService.get().enqueueDirectory(msgObj.getStringParam());
+                    break;
             }
 
             mLock.release();

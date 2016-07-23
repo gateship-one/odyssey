@@ -1,5 +1,6 @@
 package org.odyssey.playbackservice;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.playbackservice.statemanager.StateManager;
+import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 
@@ -915,6 +917,34 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaylistManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
     }
 
+    /**
+     * creates a trackmodel for a given filepath and add the track to the playlist
+     * @param filePath the path to the selected file
+     */
+    public void enqueueFile(String filePath) {
+        File currentFile = new File(filePath);
+
+        TrackModel track = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelForFile(currentFile);
+
+        enqueueTrack(track);
+    }
+
+    /**
+     * creates trackmodels for a given directorypath and adds the tracks to the playlist
+     * @param directoryPath the path to the selected directory
+     */
+    public void enqueueDirectory(String directoryPath) {
+        File currentDirectory = new File(directoryPath);
+
+        List<TrackModel> tracks = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelsForFolder(currentDirectory);
+
+        for (TrackModel track : tracks) {
+            mCurrentList.add(track);
+        }
+
+        // Send new NowPlaying because playlist changed
+        mMediaControlManager.updateStatus();
+    }
 
     /*
      * True if the GaplessPlayer is actually playing a song.
