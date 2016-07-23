@@ -8,8 +8,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,30 +25,60 @@ import org.odyssey.R;
 import org.odyssey.adapter.FilesListViewAdapter;
 import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.loaders.FileLoader;
-import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.FileExplorerHelper;
+import org.odyssey.utils.ThemeUtils;
 
 import java.io.File;
 import java.util.List;
 
 public class FilesFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<File>>, AdapterView.OnItemClickListener {
 
+    /**
+     * Adapter used for the ListView
+     */
     private FilesListViewAdapter mFilesListViewAdapter;
+
+    /**
+     * Listener to open a child directory
+     */
     private OnDirectorySelectedListener mOnDirectorySelectedCallback;
 
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
     private PlaybackServiceConnection mServiceConnection;
 
+    /**
+     * Helper object for file operations
+     */
     private FileExplorerHelper mFileExplorerHelper;
 
+    /**
+     * Save the swipe layout for later usage
+     */
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    /**
+     * the current directory that is displayed by the fragment
+     */
     private File mCurrentDirectory;
+    /**
+     * flag if the current directory is a root directory
+     */
     private boolean mIsRootDirectory = false;
 
+    /**
+     * key values for arguments of the fragment
+     */
     public final static String ARG_DIRECTORYPATH = "directory_path";
     public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
 
     private final static String TAG = "OdysseyFilesFragment";
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -58,6 +88,20 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         // get listview
         ListView filesListView = (ListView) rootView.findViewById(R.id.files_listview);
 
+        // get swipe layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.files_refresh_layout);
+        // set swipe colors
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        // set swipe refresh listener
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
         // add progressbar
         filesListView.setEmptyView(rootView.findViewById(R.id.files_progressbar));
 
@@ -66,8 +110,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         filesListView.setAdapter(mFilesListViewAdapter);
         filesListView.setOnItemClickListener(this);
 
+        // register listview for a context menu
         registerForContextMenu(filesListView);
 
+        // activate options menu in toolbar
         setHasOptionsMenu(true);
 
         // get the current directory
@@ -88,6 +134,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         return rootView;
     }
 
+    /**
+     * Called when the fragment is first attached to its context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -101,6 +150,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -124,27 +176,50 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         getLoaderManager().initLoader(0, getArguments(), this);
     }
 
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
     @Override
     public void refresh() {
         // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
+    /**
+     * This method creates a new loader for this fragment.
+     * @param id The id of the loader
+     * @param bundle Optional arguments
+     * @return Return a new Loader instance that is ready to start loading.
+     */
     @Override
-    public Loader<List<File>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<File>> onCreateLoader(int id, Bundle bundle) {
         return new FileLoader(getActivity(), mCurrentDirectory, mFileExplorerHelper.getValidFileExtensions());
     }
 
+    /**
+     * Called when the loader finished loading its data.
+     * @param loader The used loader itself
+     * @param model Data of the loader
+     */
     @Override
-    public void onLoadFinished(Loader<List<File>> arg0, List<File> model) {
+    public void onLoadFinished(Loader<List<File>> loader, List<File> model) {
         mFilesListViewAdapter.swapModel(model);
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * If a loader is reset the model data should be cleared.
+     * @param loader Loader that was resetted.
+     */
     @Override
-    public void onLoaderReset(Loader<List<File>> arg0) {
+    public void onLoaderReset(Loader<List<File>> loader) {
         mFilesListViewAdapter.swapModel(null);
     }
 
+    /**
+     * Callback when an item in the ListView was clicked.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         File selectedFile = (File) mFilesListViewAdapter.getItem(position);
@@ -155,6 +230,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -172,6 +250,11 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -198,6 +281,12 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
+     * @param menu The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -212,6 +301,11 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -224,6 +318,11 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Call the PBS to play the selected file.
+     * A previous playlist will be cleared.
+     * @param position the position of the selected file
+     */
     private void playFile(int position) {
 
         // clear playlist and play selected file
@@ -238,6 +337,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Call the PBS to enqueue the selected file.
+     * @param position the position of the selected file
+     */
     private void enqueueFile(int position) {
         // Enqueue single file
 
@@ -254,6 +357,11 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Call the PBS to play all music files from the selected folder and his children.
+     * A previous playlist will be cleared.
+     * @param position the position of the selected folder
+     */
     private void playFolder(int position) {
         // clear playlist and play all music files in the selected folder
 
@@ -267,6 +375,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
     }
 
+    /**
+     * Call the PBS to enqueue all music files from the selected folder and his children.
+     * @param position the position of the selected folder
+     */
     private void enqueueFolder(int position) {
         // Enqueue all music files in the current folder
 

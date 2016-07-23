@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/files_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListView
         android:id="@+id/files_listview"
@@ -24,4 +25,4 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
