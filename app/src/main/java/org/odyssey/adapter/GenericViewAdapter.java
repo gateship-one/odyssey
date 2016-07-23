@@ -39,7 +39,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
     /**
      * Swaps the model of this adapter. This sets the dataset on which the
-     * adapter creates the GridItems. This should generally be safe to jll.
+     * adapter creates the GridItems. This should generally be safe to call.
      * Clears old section data and model data and recreates sectionScrolling
      * data.
      *
@@ -75,7 +75,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
                 currentModel = mModelData.get(i);
 
-                char currentSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
+                char currentSection;
+                if ( currentModel.getSectionTitle().length() > 0 ) {
+                    currentSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
+                } else {
+                    currentSection = ' ';
+                }
 
                 if (lastSection != currentSection) {
                     mSectionList.add("" + currentSection);
@@ -118,8 +123,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         }
 
         if (mPositionSectionMap.containsKey(itemSection)) {
-            int sectionIndex = mPositionSectionMap.get(itemSection);
-            return sectionIndex;
+            return mPositionSectionMap.get(itemSection);
         }
         return 0;
     }
@@ -135,7 +139,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
     /**
      *
-     * @return The length of the modeldata of this adapter.
+     * @return The length of the model data of this adapter.
      */
     @Override
     public int getCount() {
@@ -165,7 +169,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
     /**
      * Sets the scrollspeed of the parent GridView. For smoother scrolling
      *
-     * @param speed
+     * @param speed The scrollspeed of the parent GridView.
      */
     public void setScrollSpeed(int speed) {
         mScrollSpeed = speed;
