@@ -90,45 +90,73 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         notifyDataSetChanged();
     }
 
+    /**
+     * Looks up the position(index) of a given section(index)
+     * @param sectionIndex Section to get the ListView/GridView position for
+     * @return The item position of this section start.
+     */
     @Override
     public int getPositionForSection(int sectionIndex) {
         return mSectionPositions.get(sectionIndex);
     }
 
+    /**
+     * Reverse lookup of a section for a given position
+     * @param pos Position to get the section for
+     * @return Section (index) for the items position
+     */
     @Override
     public int getSectionForPosition(int pos) {
 
         String sectionTitle = mModelData.get(pos).getSectionTitle();
 
-        char albumSection;
+        char itemSection;
         if (sectionTitle.length() > 0) {
-            albumSection = sectionTitle.toUpperCase().charAt(0);
+            itemSection = sectionTitle.toUpperCase().charAt(0);
         } else {
-            albumSection = ' ';
+            itemSection = ' ';
         }
 
-        if (mPositionSectionMap.containsKey(albumSection)) {
-            int sectionIndex = mPositionSectionMap.get(albumSection);
+        if (mPositionSectionMap.containsKey(itemSection)) {
+            int sectionIndex = mPositionSectionMap.get(itemSection);
             return sectionIndex;
         }
         return 0;
     }
 
+    /**
+     *
+     * @return A list of all available sections
+     */
     @Override
     public Object[] getSections() {
         return mSectionList.toArray();
     }
 
+    /**
+     *
+     * @return The length of the modeldata of this adapter.
+     */
     @Override
     public int getCount() {
         return mModelData.size();
     }
 
+    /**
+     * Simple getter for the model data.
+     * @param position Index of the item to get. No check for boundaries here.
+     * @return The item at index position.
+     */
     @Override
     public Object getItem(int position) {
         return mModelData.get(position);
     }
 
+    /**
+     * Simple position->id mapping here.
+     * @param position Position to get the id from
+     * @return The id (position)
+     */
     @Override
     public long getItemId(int position) {
         return position;

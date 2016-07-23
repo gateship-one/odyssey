@@ -30,11 +30,16 @@ import org.odyssey.utils.ScrollSpeedListener;
 import java.util.List;
 
 public class ArtistsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<ArtistModel>>, AdapterView.OnItemClickListener {
-
+    /**
+     * GridView adapter object used for this GridView
+     */
     private ArtistsGridViewAdapter mArtistsGridViewAdapter;
 
     private OnArtistSelectedListener mArtistSelectedCallback;
 
+    /**
+     * Save the root GridView for later usage.
+     */
     private GridView mRootGrid;
 
     /**
@@ -92,13 +97,24 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         mServiceConnection.openConnection();
     }
 
+    /**
+     * This method creates a new loader for this fragment.
+     * @param id
+     * @param bundle
+     * @return
+     */
     @Override
-    public Loader<List<ArtistModel>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
         return new ArtistLoader(getActivity());
     }
 
+    /**
+     * Called when the loader finished loading its data.
+     * @param loader The used loader itself
+     * @param model Data of the loader
+     */
     @Override
-    public void onLoadFinished(Loader<List<ArtistModel>> arg0, List<ArtistModel> model) {
+    public void onLoadFinished(Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
         // Set the actual data to the adapter.
         mArtistsGridViewAdapter.swapModel(model);
 
@@ -109,8 +125,12 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         }
     }
 
+    /**
+     * If a loader is reset the model data should be cleared.
+     * @param loader Loader that was resetted.
+     */
     @Override
-    public void onLoaderReset(Loader<List<ArtistModel>> arg0) {
+    public void onLoaderReset(Loader<List<ArtistModel>> loader) {
         // Clear the model data of the adapter.
         mArtistsGridViewAdapter.swapModel(null);
     }
