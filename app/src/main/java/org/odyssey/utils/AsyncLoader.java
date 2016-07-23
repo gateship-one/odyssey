@@ -14,7 +14,7 @@ import android.widget.ViewSwitcher;
  */
 public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bitmap> {
 
-    private CoverViewHolder cover;
+    private CoverViewHolder mCover;
     private static boolean mIsScaled;
     private static final String TAG = "OdysseyAsyncLoader";
 
@@ -33,9 +33,9 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
     @Override
     protected Bitmap doInBackground(CoverViewHolder... params) {
-        cover = params[0];
-        if (cover.imagePath != null) {
-            return decodeSampledBitmapFromResource(cover.imagePath, cover.imageDimension.first, cover.imageDimension.second);
+        mCover = params[0];
+        if (mCover.imagePath != null) {
+            return decodeSampledBitmapFromResource(mCover.imagePath, mCover.imageDimension.first, mCover.imageDimension.second);
         }
 
         return null;
@@ -90,15 +90,15 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
         super.onPostExecute(result);
 
-        // set cover if exists
-        if (cover.coverViewReference.get() != null && result != null) {
+        // set mCover if exists
+        if (mCover.coverViewReference.get() != null && result != null) {
             // FIXME Disable cache for now because it is never checked, just stored
-//            if (cover.cache != null && mIsScaled) {
+//            if (mCover.cache != null && mIsScaled) {
 //                // only use cache if image was scaled
-//                cover.cache.get().put(cover.imagePath, result);
+//                mCover.cache.get().put(mCover.imagePath, result);
 //            }
-            cover.coverViewReference.get().setImageBitmap(result);
-            cover.coverViewSwitcher.get().setDisplayedChild(1);
+            mCover.coverViewReference.get().setImageBitmap(result);
+            mCover.coverViewSwitcher.get().setDisplayedChild(1);
         }
     }
 }

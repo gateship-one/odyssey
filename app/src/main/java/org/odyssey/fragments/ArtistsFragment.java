@@ -37,7 +37,10 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     private GridView mRootGrid;
 
-    // Save the last scroll position to resume there
+    /**
+     * Save the last position here. Gets reused when the user returns to this view after selecting sme
+     * albums.
+     */
     private int mLastPosition;
 
     private PlaybackServiceConnection mServiceConnection;
@@ -96,7 +99,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<List<ArtistModel>> arg0, List<ArtistModel> model) {
+        // Set the actual data to the adapter.
         mArtistsGridViewAdapter.swapModel(model);
+
         // Reset old scroll position
         if (mLastPosition >= 0) {
             mRootGrid.setSelection(mLastPosition);
@@ -106,6 +111,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     @Override
     public void onLoaderReset(Loader<List<ArtistModel>> arg0) {
+        // Clear the model data of the adapter.
         mArtistsGridViewAdapter.swapModel(null);
     }
 

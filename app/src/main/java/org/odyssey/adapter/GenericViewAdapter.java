@@ -10,12 +10,21 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
-
+    /**
+     * Variables used for sectioning (fast scroll).
+     */
     private final ArrayList<String> mSectionList;
     private final ArrayList<Integer> mSectionPositions;
     private final HashMap<Character, Integer> mPositionSectionMap;
 
+    /**
+     * Abstract list with model data used for this adapter.
+     */
     protected List<T> mModelData;
+
+    /**
+     * Variable to store the current scroll speed. Used for image view optimizations
+     */
     protected int mScrollSpeed;
 
     public GenericViewAdapter() {
@@ -51,7 +60,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         if (mModelData.size() > 0) {
             GenericModel currentModel = mModelData.get(0);
 
-            char lastSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
+            char lastSection;
+            if ( currentModel.getSectionTitle().length() > 0 ) {
+                lastSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
+            } else {
+                lastSection = ' ';
+            }
 
             mSectionList.add("" + lastSection);
             mSectionPositions.add(0);
@@ -86,7 +100,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
         String sectionTitle = mModelData.get(pos).getSectionTitle();
 
-        char albumSection = sectionTitle.toUpperCase().charAt(0);
+        char albumSection;
+        if (sectionTitle.length() > 0) {
+            albumSection = sectionTitle.toUpperCase().charAt(0);
+        } else {
+            albumSection = ' ';
+        }
 
         if (mPositionSectionMap.containsKey(albumSection)) {
             int sectionIndex = mPositionSectionMap.get(albumSection);
