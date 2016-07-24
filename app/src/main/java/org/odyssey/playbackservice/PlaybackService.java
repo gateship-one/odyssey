@@ -23,14 +23,13 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
-import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
-import org.odyssey.playbackservice.statemanager.StateManager;
+import org.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
@@ -96,8 +95,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private WakeLock mTempWakelock = null;
 
 
-    // Playlistmanager for saving and reading playlist
-    private StateManager mPlaylistManager = null;
+    // Databasemanager for saving and restoring states including their playlist
+    private OdysseyDatabaseManager mDatabaseManager = null;
 
 
     @Override
@@ -134,13 +133,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
         // set up playlistmanager
-        mPlaylistManager = new StateManager(getApplicationContext());
+        mDatabaseManager = new OdysseyDatabaseManager(getApplicationContext());
 
         // read playlist from database
-        mCurrentList = mPlaylistManager.readPlaylist();
+        mCurrentList = mDatabaseManager.readPlaylist();
 
         // read state from database
-        OdysseyServiceState state = mPlaylistManager.getState();
+        OdysseyServiceState state = mDatabaseManager.getState();
         mCurrentPlayingIndex = state.mTrackNumber;
         mLastPosition = state.mTrackPosition;
         mRandom = state.mRandomState;
@@ -696,7 +695,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             serviceState.mTrackPosition = mLastPosition;
             serviceState.mRandomState = mRandom;
             serviceState.mRepeatState = mRepeat;
-            mPlaylistManager.saveState(mCurrentList, serviceState, "auto", true);
+            mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
         }
 
         mMediaControlManager.updateStatus();
@@ -873,10 +872,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         clearPlaylist();
 
         // get playlist from database
-        mCurrentList = mPlaylistManager.readPlaylist(timestamp);
+        mCurrentList = mDatabaseManager.readPlaylist(timestamp);
 
         // get state from database
-        OdysseyServiceState state = mPlaylistManager.getState(timestamp);
+        OdysseyServiceState state = mDatabaseManager.getState(timestamp);
 
         mCurrentPlayingIndex = state.mTrackNumber;
         mLastPosition = state.mTrackPosition;
@@ -899,7 +898,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG, "delete bookmark: " + timestamp);
         // delete wont affect current playback
         // so just delete the state and the playlist from the database
-        mPlaylistManager.removeState(timestamp);
+        mDatabaseManager.removeState(timestamp);
     }
 
     public void createBookmark(String bookmarkTitle) {
@@ -914,7 +913,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
 
-        mPlaylistManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
+        mDatabaseManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
     }
 
     /**
