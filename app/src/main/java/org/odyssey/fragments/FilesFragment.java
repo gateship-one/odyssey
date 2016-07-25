@@ -102,9 +102,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
             }
         });
 
-        // add progressbar
-        filesListView.setEmptyView(rootView.findViewById(R.id.files_progressbar));
-
         mFilesListViewAdapter = new FilesListViewAdapter(getActivity());
 
         filesListView.setAdapter(mFilesListViewAdapter);
@@ -173,6 +170,8 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(true);
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
     }

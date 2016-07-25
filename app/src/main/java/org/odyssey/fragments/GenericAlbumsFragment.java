@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.models.AlbumModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.ScrollSpeedListener;
+import org.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -36,6 +38,11 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
      * Save the root GridView for later usage.
      */
     protected GridView mRootGrid;
+
+    /**
+     * Save the swipe layout for later usage
+     */
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Save the last scroll position to resume there
@@ -59,8 +66,19 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         // get gridview
         mRootGrid = (GridView) rootView.findViewById(R.id.albums_gridview);
 
-        // add progressbar to visualize asynchronous load
-        mRootGrid.setEmptyView(rootView.findViewById(R.id.albums_progressbar));
+        // get swipe layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.albums_refresh_layout);
+        // set swipe colors
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        // set swipe refresh listener
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
@@ -97,6 +115,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     @Override
     public void onResume() {
         super.onResume();
+
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(true);
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
 
@@ -117,6 +138,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
             mRootGrid.setSelection(mLastPosition);
             mLastPosition = -1;
         }
+
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

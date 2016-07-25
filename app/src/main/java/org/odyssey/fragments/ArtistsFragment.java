@@ -5,6 +5,7 @@ import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import org.odyssey.models.ArtistModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.ScrollSpeedListener;
+import org.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -40,6 +42,11 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
      * Save the root GridView for later usage.
      */
     private GridView mRootGrid;
+
+    /**
+     * Save the swipe layout for later usage
+     */
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Save the last scroll position to resume there
@@ -63,8 +70,19 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         // get gridview
         mRootGrid = (GridView) rootView.findViewById(R.id.artists_gridview);
 
-        // add progressbar
-        mRootGrid.setEmptyView(rootView.findViewById(R.id.artists_progressbar));
+        // get swipe layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.artists_refresh_layout);
+        // set swipe colors
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        // set swipe refresh listener
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         mArtistsGridViewAdapter = new ArtistsGridViewAdapter(getActivity(), mRootGrid);
 
@@ -101,6 +119,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     @Override
     public void onResume() {
         super.onResume();
+
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(true);
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
 
@@ -134,6 +155,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
             mRootGrid.setSelection(mLastPosition);
             mLastPosition = -1;
         }
+
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

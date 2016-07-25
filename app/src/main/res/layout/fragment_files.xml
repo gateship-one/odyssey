@@ -15,14 +15,6 @@
         android:fastScrollStyle="?attr/colorAccent"
         android:nestedScrollingEnabled="true"
         android:divider="@color/colorTextLightSecondary"
-        android:dividerHeight="1sp">
-    </ListView>
-
-    <ProgressBar
-        android:id="@+id/files_progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:dividerHeight="1sp" />
 
 </android.support.v4.widget.SwipeRefreshLayout>

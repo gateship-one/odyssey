@@ -35,8 +35,6 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         // get listview
         mListView = (ListView) this.findViewById(R.id.current_playlist_listview);
 
-        // add progressbar
-        mListView.setEmptyView(this.findViewById(R.id.albums_progressbar));
         mListView.setOnItemClickListener(this);
 
         mContext = context;
