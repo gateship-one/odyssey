@@ -24,13 +24,26 @@ import java.util.List;
 
 public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
+    /**
+     * The name of the artist showed in the fragment.
+     */
     private String mArtistName = "";
+
+    /**
+     * The id of the artist showed in the fragment.
+     */
     private long mArtistID = -1;
 
+    /**
+     * key values for arguments of the fragment
+     */
     // FIXME move to separate class to get unified constants?
     public final static String ARG_ARTISTNAME = "artistname";
     public final static String ARG_ARTISTID = "artistid";
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,6 +60,10 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         return rootView;
     }
 
+    /**
+     * Called when the fragment resumes.
+     * Reload the data, setup the toolbar and create the PBS connection.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -59,16 +76,25 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         activity.setUpPlayButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playAllAlbums();
+                playArtist();
             }
         });
     }
 
+    /**
+     * This method creates a new loader for this fragment.
+     * @param id The id of the loader
+     * @param bundle Optional arguments
+     * @return Return a new Loader instance that is ready to start loading.
+     */
     @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
         return new AlbumLoader(getActivity(), mArtistID);
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -76,6 +102,11 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         inflater.inflate(R.menu.context_menu_artist_albums_fragment, menu);
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -96,6 +127,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         }
     }
 
+    /**
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
+     * @param menu The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -110,25 +147,40 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_artist_albums:
-                enqueueAllAlbums();
+                enqueueArtist();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void enqueueAllAlbums() {
-        // iterate over all albums and add to playlist queue
-        for (int i = 0; i < mAlbumsGridViewAdapter.getCount(); i++) {
-            enqueueAlbum(i);
+    /**
+     * Call the PBS to enqueue artist.
+     */
+    private void enqueueArtist() {
+        // enqueue artist
+        try {
+            mServiceConnection.getPBS().enqueueArtist(mArtistID);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
-    private void playAllAlbums() {
+    /**
+     * Call the PBS to play artist.
+     * A previous playlist will be cleared.
+     */
+    private void playArtist() {
 
         // play all album of current artist if exists
 
@@ -140,10 +192,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
             e1.printStackTrace();
         }
 
-        // get and enqueue albumtracks
-        for (int i = 0; i < mAlbumsGridViewAdapter.getCount(); i++) {
-            enqueueAlbum(i);
-        }
+        // enqueue artist
+        enqueueArtist();
 
         // play album
         try {

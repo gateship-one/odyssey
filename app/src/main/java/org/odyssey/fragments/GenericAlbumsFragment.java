@@ -1,10 +1,8 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -17,27 +15,41 @@ import org.odyssey.R;
 import org.odyssey.adapter.AlbumsGridViewAdapter;
 import org.odyssey.listener.OnAlbumSelectedListener;
 import org.odyssey.models.AlbumModel;
-import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
-import org.odyssey.utils.MusicLibraryHelper;
-import org.odyssey.utils.PermissionHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
 
 public abstract class GenericAlbumsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>>, AdapterView.OnItemClickListener{
 
+    /**
+     * GridView adapter object used for this GridView
+     */
     protected AlbumsGridViewAdapter mAlbumsGridViewAdapter;
 
+    /**
+     * Listener to open an album
+     */
     protected OnAlbumSelectedListener mAlbumSelectedCallback;
 
+    /**
+     * Save the root GridView for later usage.
+     */
     protected GridView mRootGrid;
 
-    // Save the last scroll position to resume there
+    /**
+     * Save the last scroll position to resume there
+     */
     protected int mLastPosition;
 
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
     protected PlaybackServiceConnection mServiceConnection;
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +74,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         return rootView;
     }
 
+    /**
+     * Called when the fragment is first attached to its context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -75,6 +90,10 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         }
     }
 
+    /**
+     * Called when the fragment resumes.
+     * Reload the data and create the PBS connection.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -85,6 +104,11 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         mServiceConnection.openConnection();
     }
 
+    /**
+     * Called when the loader finished loading its data.
+     * @param loader The used loader itself
+     * @param data Data of the loader
+     */
     @Override
     public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
         mAlbumsGridViewAdapter.swapModel(data);
@@ -95,17 +119,27 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         }
     }
 
+    /**
+     * If a loader is reset the model data should be cleared.
+     * @param loader Loader that was resetted.
+     */
     @Override
     public void onLoaderReset(Loader<List<AlbumModel>> loader) {
         mAlbumsGridViewAdapter.swapModel(null);
     }
 
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
     @Override
     public void refresh() {
         // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
+    /**
+     * Callback when an item in the ListView was clicked.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // save last scroll position
@@ -123,49 +157,30 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         mAlbumSelectedCallback.onAlbumSelected(albumKey, albumTitle, albumArtURL, artistName);
     }
 
+    /**
+     * Call the PBS to enqueue the selected album.
+     * @param position the position of the selected album in the adapter
+     */
     protected void enqueueAlbum(int position) {
         // identify current album
 
         AlbumModel clickedAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
-        // get and enqueue albumtracks
 
-        String whereVal[] = { albumKey };
-
-        String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
-
-        String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
-
-        Cursor cursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
-
-        if(cursor != null) {
-            // get all tracks on the current album
-            if (cursor.moveToFirst()) {
-                do {
-                    String trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    int number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                    String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                    String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-                    // enqueue current track
-                    try {
-                        mServiceConnection.getPBS().enqueueTrack(item);
-                    } catch (RemoteException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
+        // enqueue album
+        try {
+            mServiceConnection.getPBS().enqueueAlbum(albumKey);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Call the PBS to play the selected album.
+     * A previous playlist will be cleared.
+     * @param position the position of the selected album in the adapter
+     */
     protected void playAlbum(int position) {
         // Remove old tracks
         try {

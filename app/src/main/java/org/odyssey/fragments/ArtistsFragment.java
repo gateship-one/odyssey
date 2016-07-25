@@ -1,9 +1,7 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.RemoteException;
-import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
@@ -21,10 +19,8 @@ import org.odyssey.adapter.ArtistsGridViewAdapter;
 import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.loaders.ArtistLoader;
 import org.odyssey.models.ArtistModel;
-import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
-import org.odyssey.utils.PermissionHelper;
 import org.odyssey.utils.ScrollSpeedListener;
 
 import java.util.List;
@@ -35,6 +31,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
      */
     private ArtistsGridViewAdapter mArtistsGridViewAdapter;
 
+    /**
+     * Listener to open an artist
+     */
     private OnArtistSelectedListener mArtistSelectedCallback;
 
     /**
@@ -43,13 +42,18 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     private GridView mRootGrid;
 
     /**
-     * Save the last position here. Gets reused when the user returns to this view after selecting sme
-     * albums.
+     * Save the last scroll position to resume there
      */
     private int mLastPosition;
 
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
     private PlaybackServiceConnection mServiceConnection;
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,6 +78,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         return rootView;
     }
 
+    /**
+     * Called when the fragment is first attached to its context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -87,6 +94,10 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         }
     }
 
+    /**
+     * Called when the fragment resumes.
+     * Reload the data and create the PBS connection.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -99,9 +110,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * This method creates a new loader for this fragment.
-     * @param id
-     * @param bundle
-     * @return
+     * @param id The id of the loader
+     * @param bundle Optional arguments
+     * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
     public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
@@ -135,6 +146,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         mArtistsGridViewAdapter.swapModel(null);
     }
 
+    /**
+     * Callback when an item in the ListView was clicked.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Save scroll position
@@ -155,6 +169,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         mArtistSelectedCallback.onArtistSelected(artist, artistID);
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -162,6 +179,11 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         inflater.inflate(R.menu.context_menu_artists_fragment, menu);
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -172,17 +194,21 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
         switch (item.getItemId()) {
             case R.id.fragment_artist_action_enqueue:
-                enqueueAllAlbums(info.position);
+                enqueueArtist(info.position);
                 return true;
             case R.id.fragment_artist_action_play:
-                playAllAlbums(info.position);
+                playArtist(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
 
-    private void enqueueAllAlbums(int position) {
+    /**
+     * Call the PBS to enqueue the selected artist
+     * @param position the position of the selected artist in the adapter
+     */
+    private void enqueueArtist(int position) {
 
         // identify current artist
         ArtistModel currentArtist = (ArtistModel) mArtistsGridViewAdapter.getItem(position);
@@ -195,57 +221,21 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
-        // get all albums of the current artist
-        Cursor cursorAlbums = PermissionHelper.query(getActivity(), MediaStore.Audio.Artists.Albums.getContentUri("external", artistID), MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
-
-        String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
-
-        String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
-
-        if(cursorAlbums != null) {
-            // get all albums of the current artist
-            if (cursorAlbums.moveToFirst()) {
-                do {
-                    String[] whereVal = {cursorAlbums.getString(cursorAlbums.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY))};
-
-                    Cursor cursorTracks = PermissionHelper.query(getActivity(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, orderBy);
-
-                    if (cursorTracks != null) {
-                        // get all tracks of the current album
-                        if (cursorTracks.moveToFirst()) {
-                            do {
-                                String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                                long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                                int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                                String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                                String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                                String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.DATA));
-                                String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-
-                                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-                                // enqueue current track
-                                try {
-                                    mServiceConnection.getPBS().enqueueTrack(item);
-                                } catch (RemoteException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-
-                            } while (cursorTracks.moveToNext());
-                        }
-
-                        cursorTracks.close();
-                    }
-
-                } while (cursorAlbums.moveToNext());
-            }
-
-            cursorAlbums.close();
+        // enqueue artist
+        try {
+            mServiceConnection.getPBS().enqueueArtist(artistID);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
-    private void playAllAlbums(int position) {
+    /**
+     * Call the PBS to play the selected artist.
+     * A previous playlist will be cleared.
+     * @param position the position of the selected artist in the adapter
+     */
+    private void playArtist(int position) {
 
         // Remove old tracks
         try {
@@ -256,7 +246,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         }
 
         // get and enqueue all albums of the current artist
-        enqueueAllAlbums(position);
+        enqueueArtist(position);
 
         // play album
         try {
@@ -267,6 +257,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         }
     }
 
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
     @Override
     public void refresh() {
         // reload data

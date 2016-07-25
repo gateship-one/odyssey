@@ -18,7 +18,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         mService = new WeakReference<>(service);
     }
 
-    /*
+    /**
      * Following are methods which call the handler thread (which runs at
      * audio priority) so that handling of playback is done in a seperate
      * thread for performance reasons.
@@ -309,6 +309,22 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void enqueuePlaylist(long playlistId) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlistId);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void enqueueAlbum(String albumKey) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumKey);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void enqueueArtist(long artistId) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

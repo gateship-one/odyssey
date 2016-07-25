@@ -151,7 +151,8 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     }
 
     /**
-     *
+     * Called when the fragment resumes.
+     * Reload the data, setup the toolbar and create the PBS connection.
      */
     @Override
     public void onResume() {

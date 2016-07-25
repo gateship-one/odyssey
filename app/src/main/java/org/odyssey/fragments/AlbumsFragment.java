@@ -21,8 +21,14 @@ import java.util.List;
 
 public class AlbumsFragment extends GenericAlbumsFragment {
 
+    /**
+     * Listener to open an artist
+     */
     private OnArtistSelectedListener mArtistSelectedCallback;
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -30,6 +36,9 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    /**
+     * Called when the fragment is first attached to its context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -43,12 +52,21 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         }
     }
 
+    /**
+     * This method creates a new loader for this fragment.
+     * @param id The id of the loader
+     * @param bundle Optional arguments
+     * @return Return a new Loader instance that is ready to start loading.
+     */
     @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int arg0, Bundle bundle) {
+    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
         // all albums
         return new AlbumLoader(getActivity(), -1);
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -56,6 +74,11 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         inflater.inflate(R.menu.context_menu_albums_fragment, menu);
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -79,6 +102,10 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         }
     }
 
+    /**
+     * Open a fragment for the artist of the selected album.
+     * @param position the position of the selected album in the adapter
+     */
     private void showArtist(int position) {
         // identify current artist
 

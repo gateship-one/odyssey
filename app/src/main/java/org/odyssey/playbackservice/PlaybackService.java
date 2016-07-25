@@ -36,7 +36,9 @@ import org.odyssey.utils.PermissionHelper;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
-    // enums for random, repeat state
+    /**
+     * enums for random, repeat state
+     */
     public enum RANDOMSTATE {
         RANDOM_OFF, RANDOM_ON
     }
@@ -70,7 +72,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private boolean mLostAudioFocus = false;
 
-    // Mediaplayback stuff
+    /**
+     * Mediaplayback stuff
+     */
     private GaplessPlayer mPlayer;
     private List<TrackModel> mCurrentList;
     private int mCurrentPlayingIndex;
@@ -84,18 +88,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mRandom = 0;
     private int mRepeat = 0;
 
-    // MediaControls manager
+    /**
+     * MediaControls manager
+     */
     private PlaybackStatusHelper mMediaControlManager;
 
-
-    /* Temporary wakelock for transition to next song.
+    /**
+     * Temporary wakelock for transition to next song.
      * Without it, some android devices go to sleep and don't start
      * the next song.
      */
     private WakeLock mTempWakelock = null;
 
-
-    // Databasemanager for saving and restoring states including their playlist
+    /**
+     * Databasemanager for saving and restoring states including their playlist
+     */
     private OdysseyDatabaseManager mDatabaseManager = null;
 
 
@@ -229,7 +236,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     }
 
-    // Directly plays uri
+    /**
+     * Directly plays uri
+     */
     public void playURI(TrackModel track) {
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
@@ -245,7 +254,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         am.cancel(quitPI);
     }
 
-    // Stops all playback
+    /**
+     * Stops all playback
+     */
     public void stop() {
         Log.v(TAG, "PBS stop()");
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
@@ -344,7 +355,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    // add all tracks to playlist and play
+    /**
+     * add all tracks to playlist and play
+     */
     public void playAllTracks() {
 
         // clear playlist
@@ -354,53 +367,25 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stop();
 
         // get all tracks
-        Cursor cursor = PermissionHelper.query(getApplicationContext(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
+        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(getApplicationContext());
 
-        // add all tracks to playlist
-        if (cursor.moveToFirst()) {
+        mCurrentList.addAll(allTracks);
 
-            String trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-            long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-            int number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-            String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-            String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-            String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-            String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-
-            TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-            mCurrentList.add(item);
-
-            // start playing
-            jumpToIndex(0, true);
-
-            while (cursor.moveToNext()) {
-
-                trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-
-                item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-                mCurrentList.add(item);
-
-            }
-        }
-
-        cursor.close();
+        // start playing
+        jumpToIndex(0, true);
     }
 
-    // add all tracks to playlist, shuffle and play
+    /**
+     * add all tracks to playlist, shuffle and play
+     */
     public void playAllTracksShuffled() {
         playAllTracks();
         shufflePlaylist();
     }
 
-    // shuffle the current playlist
+    /**
+     * shuffle the current playlist
+     */
     public void shufflePlaylist() {
 
         // save currentindex
@@ -622,6 +607,36 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mCurrentList.addAll(tracklist);
     }
 
+    /**
+     * Enqueue all tracks of an album identified by the albumKey.
+     * @param albumKey The key of the album
+     */
+    public void enqueueAlbum(String albumKey) {
+        // get all tracks for the current albumkey from mediastore
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
+
+        // add all retrieved tracks
+        mCurrentList.addAll(tracks);
+
+        // Send new NowPlaying because playlist changed
+        mMediaControlManager.updateStatus();
+    }
+
+    /**
+     * Enqueue all tracks of an artist identified by the artistId.
+     * @param artistId The id of the artist
+     */
+    public void enqueueArtist(long artistId) {
+        // get all tracks for the current artistId from mediastore
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, getApplicationContext());
+
+        // add all retrieved tracks
+        mCurrentList.addAll(tracks);
+
+        // Send new NowPlaying because playlist changed
+        mMediaControlManager.updateStatus();
+    }
+
     public void enqueueTrack(TrackModel track) {
         Log.v(TAG, "Enqueing track: " + track.getTrackName());
         // Check if current song is old last one, if so set next song to MP for
@@ -712,7 +727,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return mRepeat;
     }
 
-    /*
+    /**
      * Enables/disables repeat function. If enabling check if end of playlist is
      * already reached and then set next track to track0.
      *
@@ -735,7 +750,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Enables/disables the random function. If enabling randomize next song and
      * notify the gaplessPlayer about the new track. If deactivating set check
      * if new track exists and set it to this.
@@ -755,14 +770,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         setNextTrackForMP();
     }
 
-    /*
+    /**
      * Returns the index of the currently playing/paused track
      */
     public int getCurrentIndex() {
         return mCurrentPlayingIndex;
     }
 
-    /*
+    /**
      * Returns current track if any is playing/paused at the moment.
      */
     public TrackModel getCurrentTrack() {
@@ -772,59 +787,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return null;
     }
 
-    /*
+    /**
      * Save the current playlist in mediastore
      */
     public void savePlaylist(String name) {
-        Context context = getApplicationContext();
-
-        // remove playlist if exists
-        PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[]{name});
-
-        // create new playlist and save row
-        ContentValues mInserts = new ContentValues();
-        mInserts.put(MediaStore.Audio.Playlists.NAME, name);
-        mInserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
-        mInserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
-
-        Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
-
-        // insert current tracks
-
-        if (currentRow != null) {
-            // TODO optimize
-            String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
-            String where = MediaStore.Audio.Media.DATA + "=?";
-
-            TrackModel item;
-
-            for (int i = 0; i < mCurrentList.size(); i++) {
-
-                item = mCurrentList.get(i);
-
-                if (item != null) {
-                    String[] whereVal = {item.getTrackURL()};
-
-                    // get ID of current track
-                    Cursor c = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
-
-                    if (c != null) {
-                        if (c.moveToFirst()) {
-                            // insert track into playlist
-                            String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                            mInserts.clear();
-                            mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
-                            mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
-
-                            PermissionHelper.insert(context, currentRow, mInserts);
-                        }
-
-                        c.close();
-                    }
-                }
-            }
-        }
+        MusicLibraryHelper.savePlaylist(name, mCurrentList, getApplicationContext());
     }
 
     /**
@@ -834,36 +801,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void enqueuePlaylist(long playlistId) {
 
         // get playlist from mediastore
-        Cursor cursorTracks = PermissionHelper.query(getApplicationContext(), MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
-                MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+        List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
 
-        if (cursorTracks != null) {
-            // get all tracks of the playlist
-            if (cursorTracks.moveToFirst()) {
-                do {
-                    String trackName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE));
-                    long duration = cursorTracks.getLong(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION));
-                    int number = cursorTracks.getInt(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK));
-                    String artistName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ARTIST));
-                    String albumName = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
-                    String url = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
-                    String albumKey = cursorTracks.getString(cursorTracks.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
-
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
-
-                    // add the track to the current playlist
-                    mCurrentList.add(item);
-
-                } while (cursorTracks.moveToNext());
-            }
-
-            cursorTracks.close();
-        }
+        mCurrentList.addAll(playlistTracks);
 
         // Send new NowPlaying because playlist changed
         mMediaControlManager.updateStatus();
     }
 
+    /**
+     * Resume the bookmark with the given timestamp
+     */
     public void resumeBookmark(long timestamp) {
 
         Log.v(TAG, "resume bookmark: " + timestamp);
@@ -893,6 +841,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         resume();
     }
 
+    /**
+     * Delete the bookmark with the given timestamp from the database.
+     */
     public void deleteBookmark(long timestamp) {
 
         Log.v(TAG, "delete bookmark: " + timestamp);
@@ -901,6 +852,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mDatabaseManager.removeState(timestamp);
     }
 
+    /**
+     * Create a bookmark with the given title and save it in the database.
+     */
     public void createBookmark(String bookmarkTitle) {
 
         Log.v(TAG, "create bookmark: " + bookmarkTitle);
@@ -926,6 +880,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         TrackModel track = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelForFile(currentFile);
 
         enqueueTrack(track);
+
+        // Send new NowPlaying because playlist changed
+        mMediaControlManager.updateStatus();
     }
 
     /**
@@ -937,22 +894,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         List<TrackModel> tracks = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelsForFolder(currentDirectory);
 
-        for (TrackModel track : tracks) {
-            mCurrentList.add(track);
-        }
+        mCurrentList.addAll(tracks);
 
         // Send new NowPlaying because playlist changed
         mMediaControlManager.updateStatus();
     }
 
-    /*
+    /**
      * True if the GaplessPlayer is actually playing a song.
      */
     public boolean isPlaying() {
         return mPlayer.isRunning();
     }
 
-    /*
+    /**
      * Returns the playback state of the service
      */
     public PLAYSTATE getPlaybackState() {
@@ -974,7 +929,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Handles all the exceptions from the GaplessPlayer. For now it justs stops
      * itself and outs an Toast message to the user. Thats the best we could
      * think of now :P.
@@ -987,7 +942,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stopService();
     }
 
-    /*
+    /**
      * Sets the index of the track to play next to a random generated one.
      */
     private void randomizeNextTrack() {
@@ -1005,7 +960,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Sets the next track of the GaplessPlayer to the nextTrack in the queue so
      * there can be a smooth transition from one track to the next one.
      */
@@ -1033,7 +988,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Listener class for playback begin of the GaplessPlayer. Handles the
      * different scenarios: If no random playback is active, check if new track
      * is ready and set index and GaplessPlayer to it. If no track remains in
@@ -1084,7 +1039,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Listener class for the GaplessPlayer. If a track finishes playback send
      * it to the simple last.fm scrobbler. Check if this was the last track of
      * the queue and if so send an update to all the things like
@@ -1111,7 +1066,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    /*
+    /**
      * Callback method for AudioFocus changes. If audio focus change a call got
      * in or a notification for example. React to the different kinds of
      * changes. Resumes on regaining.
@@ -1160,7 +1115,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private BroadcastControlReceiver mNoisyReceiver = null;
 
-    /*
+    /**
      * Receiver class for all the different broadcasts which are able to control
      * the PlaybackService. Also the receiver for the noisy event (e.x.
      * headphone unplugging)
@@ -1199,7 +1154,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     }
 
-    /*
+    /**
      * Stops the service after a specific amount of time
      */
     private class ServiceCancelTask extends TimerTask {
