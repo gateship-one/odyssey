@@ -144,13 +144,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/now_playing_control_layout"
-                android:animateLayoutChanges="true"
                 android:background="@color/colorBackground">
 
                 <ViewSwitcher
                     android:id="@+id/now_playing_view_switcher"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:inAnimation="@anim/fadein"
+                    android:outAnimation="@anim/fadeout">
 
                     <ImageView
                         android:id="@+id/now_playing_cover"
