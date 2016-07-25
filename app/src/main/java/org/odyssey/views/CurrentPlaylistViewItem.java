@@ -2,10 +2,10 @@ package org.odyssey.views;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.TypedValue;
 import android.widget.TextView;
 
 import org.odyssey.R;
+import org.odyssey.utils.ThemeUtils;
 
 public class CurrentPlaylistViewItem extends GenericTracksListItem {
 
@@ -49,15 +49,15 @@ public class CurrentPlaylistViewItem extends GenericTracksListItem {
 
     public void setPlaying(boolean state) {
         if(state) {
-            TypedValue typedValue = new TypedValue();
-            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent,typedValue,true);
-            mTitleView.setTextColor(typedValue.data);
-            mNumberView.setTextColor(typedValue.data);
-            mSeparatorView.setTextColor(typedValue.data);
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            mTitleView.setTextColor(color);
+            mNumberView.setTextColor(color);
+            mSeparatorView.setTextColor(color);
         } else {
-            mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
-            mNumberView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
-            mSeparatorView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorTextLight));
+            int color = ContextCompat.getColor(getContext(), R.color.colorTextLight);
+            mTitleView.setTextColor(color);
+            mNumberView.setTextColor(color);
+            mSeparatorView.setTextColor(color);
         }
 
     }

@@ -14,7 +14,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -659,16 +658,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                             mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
                         }
                         if (isRepeat) {
-                            TypedValue typedValue = new TypedValue();
-                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
-                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
+                            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
                         } else {
                             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
                         }
                         if (isRandom) {
-                            TypedValue typedValue = new TypedValue();
-                            getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
-                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
+                            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
                         } else {
                             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
                         }
