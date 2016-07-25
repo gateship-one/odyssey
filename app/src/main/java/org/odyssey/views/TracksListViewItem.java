@@ -1,14 +1,39 @@
 package org.odyssey.views;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.odyssey.R;
 
-public class TracksListViewItem extends GenericTracksListItem {
+public class TracksListViewItem extends LinearLayout {
 
-    public TracksListViewItem(Context context, String number, String title, String information, String duration) {
+    protected final TextView mNumberView;
+    protected final TextView mTitleView;
+    protected final TextView mInformationView;
+    protected final TextView mDurationView;
+
+    /**
+     * Constructor that only initialize the layout.
+     */
+    public TracksListViewItem(Context context) {
         super(context);
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.listview_item_tracks, this, true);
+
+        mTitleView = (TextView) findViewById(R.id.item_tracks_title);
+        mNumberView = (TextView) findViewById(R.id.item_tracks_number);
+        mInformationView = (TextView) findViewById(R.id.item_tracks_additional_information);
+        mDurationView = (TextView) findViewById(R.id.item_tracks_duration);
+    }
+
+    /**
+     * Constructor that already sets the values for each view.
+     */
+    public TracksListViewItem(Context context, String number, String title, String information, String duration) {
+        this(context);
 
         mTitleView.setText(title);
         mNumberView.setText(number);
@@ -16,28 +41,32 @@ public class TracksListViewItem extends GenericTracksListItem {
         mDurationView.setText(duration);
     }
 
-    @Override
-    TextView provideTitleView() {
-        return (TextView) this.findViewById(R.id.item_tracks_title);
+    /**
+     * Sets the title for the ListItem.
+     */
+    public void setTitle(String title) {
+        mTitleView.setText(title);
     }
 
-    @Override
-    TextView provideNumberView() {
-        return (TextView) this.findViewById(R.id.item_tracks_number);
+    /**
+     * Sets the number text for the ListItem.
+     */
+    public void setNumber(String number) {
+        mNumberView.setText(number);
     }
 
-    @Override
-    TextView provideInformationView() {
-        return (TextView) this.findViewById(R.id.item_tracks_additional_information);
+    /**
+     * Sets the additional information text for the ListItem.
+     * For example a combination text of artist and album for the representing track.
+     */
+    public void setAdditionalInformation(String information) {
+        mInformationView.setText(information);
     }
 
-    @Override
-    TextView provideDurationView() {
-        return (TextView) this.findViewById(R.id.item_tracks_duration);
-    }
-
-    @Override
-    int provideLayout() {
-        return R.layout.listview_item_tracks;
+    /**
+     * Sets the duration text for the ListItem.
+     */
+    public void setDuration(String duration) {
+        mDurationView.setText(duration);
     }
 }
