@@ -25,6 +25,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
 import org.odyssey.fragments.SaveDialog;
@@ -34,6 +35,7 @@ import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.ThemeUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,6 +77,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private ImageView mTopCoverImage;
 
     private CurrentPlaylistView mPlaylistView;
+    private ViewSwitcher mViewSwitcher;
 
     private PlaybackServiceConnection mServiceConnection = null;
     private NowPlayingReceiver mNowPlayingReceiver = null;
@@ -396,6 +399,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mTopCoverImage = (ImageView) findViewById(R.id.now_playing_topCover);
         mPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
+        // view switcher for cover and playlist view
+        mViewSwitcher = (ViewSwitcher) findViewById(R.id.now_playing_view_switcher);
+
         mDraggedUpButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_up);
         mDraggedDownButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_down);
 
@@ -434,15 +440,20 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mTopPlaylistButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPlaylistView.getVisibility() == View.INVISIBLE) {
-                    mPlaylistView.setVisibility(View.VISIBLE);
-                    TypedValue typedValue = new TypedValue();
-                    getContext().getTheme().resolveAttribute(R.attr.odyssey_color_accent, typedValue, true);
-                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(typedValue.data));
+
+                // get color for playlist button
+                int color;
+                if (mViewSwitcher.getCurrentView() != mPlaylistView) {
+                    color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
                 } else {
-                    mPlaylistView.setVisibility(View.INVISIBLE);
-                    mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+                    color = ContextCompat.getColor(getContext(), R.color.colorTextLight);
                 }
+
+                // tint the button
+                mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(color));
+
+                // toggle between cover and playlistview
+                mViewSwitcher.showNext();
             }
         });
 
