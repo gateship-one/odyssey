@@ -1,12 +1,11 @@
 package org.odyssey.utils;
 
 
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.odyssey.adapter.ScrollSpeedAdapter;
-import org.odyssey.views.GenericGridItem;
+import org.odyssey.views.GridViewItem;
 
 public class ScrollSpeedListener implements AbsListView.OnScrollListener {
     private static String TAG = "ScrollSpeedListener";
@@ -29,7 +28,7 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             mScrollSpeed = 0;
             mAdapter.setScrollSpeed(0);
             for (int i = 0; i <= mRootGrid.getLastVisiblePosition() - mRootGrid.getFirstVisiblePosition(); i++) {
-                GenericGridItem gridItem = (GenericGridItem) mRootGrid.getChildAt(i);
+                GridViewItem gridItem = (GridViewItem) mRootGrid.getChildAt(i);
                 gridItem.startCoverImageTask();
             }
         }
@@ -50,7 +49,7 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
 
             if (mScrollSpeed < visibleItemCount) {
                 for (int i = 0; i < visibleItemCount; i++) {
-                    GenericGridItem gridItem = (GenericGridItem) mRootGrid.getChildAt(i);
+                    GridViewItem gridItem = (GridViewItem) mRootGrid.getChildAt(i);
                     gridItem.startCoverImageTask();
                 }
             }

@@ -6,11 +6,15 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import org.odyssey.models.ArtistModel;
-import org.odyssey.views.ArtistsGridViewItem;
+import org.odyssey.views.GridViewItem;
 
 public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
     private final GridView mRootGrid;
+
+    /**
+     * The parent grid to adjust the layoutparams.
+     */
     private final Context mContext;
 
     public ArtistsGridViewAdapter(Context context, GridView rootGrid) {
@@ -20,6 +24,13 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
         mRootGrid = rootGrid;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ArtistModel artist = mModelData.get(position);
@@ -28,23 +39,24 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
         // Check if a view can be recycled
         if (convertView != null) {
-            ArtistsGridViewItem gridItem = (ArtistsGridViewItem) convertView;
+            GridViewItem gridItem = (GridViewItem) convertView;
 
             // Make sure to reset the layoutParams in case of change (rotation for example)
             ViewGroup.LayoutParams layoutParams = gridItem.getLayoutParams();
             layoutParams.height = mRootGrid.getColumnWidth();
             layoutParams.width = mRootGrid.getColumnWidth();
             gridItem.setLayoutParams(layoutParams);
+
             gridItem.setTitle(label);
             gridItem.setImageURL(imageURL);
         } else {
             // Create new view if no reusable is available
-            convertView = new ArtistsGridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
         }
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
-            ((ArtistsGridViewItem) convertView).startCoverImageTask();
+            ((GridViewItem) convertView).startCoverImageTask();
         }
         return convertView;
     }

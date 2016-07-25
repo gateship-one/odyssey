@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <ViewSwitcher
-        android:id="@+id/item_artists_view_switcher"
+        android:id="@+id/grid_item_view_switcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:outAnimation="@anim/fadeout"
+        android:animateFirstView="true"
         android:inAnimation="@anim/fadein"
-        android:animateFirstView="true">
-        <ImageView
-            android:id="@+id/item_artists_cover_placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cover_placeholder_96dp"
-            android:background="@color/colorBackgroundDark"/>
+        android:outAnimation="@anim/fadeout">
 
         <ImageView
-            android:id="@+id/item_artists_cover_image"
+            android:id="@+id/grid_item_cover_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackgroundDark"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_placeholder_96dp" />
+
+        <ImageView
+            android:id="@+id/grid_item_cover_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
@@ -36,16 +37,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true">
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/gradient_gridview_item" />
+            android:background="@drawable/grid_item_gradient" />
 
         <TextView
-            android:id="@+id/item_artists_title"
+            android:id="@+id/grid_item_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"

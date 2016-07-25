@@ -5,41 +5,45 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import org.odyssey.R;
 import org.odyssey.utils.AsyncLoader;
 
 import java.lang.ref.WeakReference;
 
-public abstract class GenericGridItem extends RelativeLayout {
+public class GridViewItem extends RelativeLayout {
 
-    protected final AsyncLoader.CoverViewHolder mHolder;
-    protected final ImageView mImageView;
-    protected final TextView mTitleView;
-    protected final ViewSwitcher mSwitcher;
+    private final AsyncLoader.CoverViewHolder mHolder;
+    private final ImageView mImageView;
+    private final TextView mTitleView;
+    private final ViewSwitcher mSwitcher;
 
-    protected boolean mCoverDone = false;
+    private boolean mCoverDone = false;
 
-    public GenericGridItem(Context context, String imageURL, ViewGroup.LayoutParams layoutParams) {
+    /**
+     * Constructor that already sets the values for each view.
+     */
+    public GridViewItem(Context context, String title, String imageURL, ViewGroup.LayoutParams layoutParams) {
         super(context);
 
-        setLayoutParams(layoutParams);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(provideLayout(), this, true);
+        inflater.inflate(R.layout.gridview_item, this, true);
+
         setLayoutParams(layoutParams);
 
-        mImageView = provideImageView();
-        mTitleView = provideTitleView();
-
-        mSwitcher = provideViewSwitcher();
+        mImageView = (ImageView) findViewById(R.id.grid_item_cover_image);
+        mTitleView = (TextView) findViewById(R.id.grid_item_title);
+        mSwitcher = (ViewSwitcher) findViewById(R.id.grid_item_view_switcher);
 
         mHolder = new AsyncLoader.CoverViewHolder();
-        mHolder.coverViewReference = new WeakReference<>(provideImageView());
-        mHolder.coverViewSwitcher = new WeakReference<>(provideViewSwitcher());
-        mHolder.imageDimension = new Pair<>(mImageView.getWidth(),mImageView.getHeight());
+        mHolder.coverViewReference = new WeakReference<>(mImageView);
+        mHolder.coverViewSwitcher = new WeakReference<>(mSwitcher);
+        mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
 
         mCoverDone = false;
         mHolder.imagePath = imageURL;
@@ -49,29 +53,20 @@ public abstract class GenericGridItem extends RelativeLayout {
         mSwitcher.setDisplayedChild(0);
         mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
         mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+
+        mTitleView.setText(title);
     }
 
-    /* Methods needed to provide generic imageview, generic and textview
-    viewswitcher and layout to inflate.
-     */
-    abstract ImageView provideImageView();
-
-    abstract TextView provideTitleView();
-
-    abstract ViewSwitcher provideViewSwitcher();
-
-    abstract int provideLayout();
-
-    /*
-    * Sets the title for the GridItem
+    /**
+     * Sets the title for the GridItem
      */
     public void setTitle(String text) {
         mTitleView.setText(text);
     }
 
-    /*
-    * Starts the image retrieval task
-    */
+    /**
+     * Starts the image retrieval task
+     */
     public void startCoverImageTask() {
         if (mHolder.imagePath != null && mHolder.task == null && !mCoverDone) {
             mCoverDone = true;
@@ -80,21 +75,20 @@ public abstract class GenericGridItem extends RelativeLayout {
         }
     }
 
-
-    /*
-* Sets the new image url for this particular gridItem. If already an image
-* getter task is running it will be cancelled. The image is reset to the
-* dummy picture.
-*/
+    /**
+     * Sets the new image url for this particular gridItem. If already an image
+     * getter task is running it will be cancelled. The image is reset to the
+     * dummy picture.
+     */
     public void setImageURL(String url) {
         // Check if image url has actually changed, otherwise there is no need to redo the image.
-        if ( (mHolder.imagePath == null) ||  (!mHolder.imagePath.equals(url) ) ) {
+        if ((mHolder.imagePath == null) || (!mHolder.imagePath.equals(url))) {
             // Cancel old task
             if (mHolder.task != null) {
                 mHolder.task.cancel(true);
                 mHolder.task = null;
             }
-            
+
             mCoverDone = false;
             mHolder.imagePath = url;
             mSwitcher.setOutAnimation(null);
@@ -106,12 +100,12 @@ public abstract class GenericGridItem extends RelativeLayout {
         }
     }
 
-    /*
-* If this GridItem gets detached from the parent it makes no sense to let
-* the task for image retrieval runnig. (non-Javadoc)
-*
-* @see android.view.View#onDetachedFromWindow()
-*/
+    /**
+     * If this GridItem gets detached from the parent it makes no sense to let
+     * the task for image retrieval runnig. (non-Javadoc)
+     *
+     * @see android.view.View#onDetachedFromWindow()
+     */
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
