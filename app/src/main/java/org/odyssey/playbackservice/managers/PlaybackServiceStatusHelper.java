@@ -13,7 +13,7 @@ import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.RemoteControlReceiver;
 import org.odyssey.utils.CoverBitmapGenerator;
 
-public class PlaybackStatusHelper {
+public class PlaybackServiceStatusHelper {
     public enum SLS_STATES { SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE }
 
     /**
@@ -25,7 +25,8 @@ public class PlaybackStatusHelper {
      *  Broadcast message to filter to.
      */
     public static final String MESSAGE_NEWTRACKINFORMATION = "org.odyssey.newtrackinfo";
-
+    public static final String MESSAGE_WORKING = "org.odyssey.working";
+    public static final String MESSAGE_IDLE = "org.odyssey.idle";
 
     private PlaybackService mPlaybackService;
 
@@ -41,7 +42,7 @@ public class PlaybackStatusHelper {
     // Notification manager
     OdysseyNotificationManager mNotificationManager;
 
-    public PlaybackStatusHelper(PlaybackService playbackService) {
+    public PlaybackServiceStatusHelper(PlaybackService playbackService) {
         mPlaybackService = playbackService;
 
         // Get MediaSession objects
@@ -188,6 +189,26 @@ public class PlaybackStatusHelper {
             NowPlayingInformation info = new NowPlayingInformation(0, "", -1, repeat, random, playlistLength, new TrackModel());
             // Add nowplayingInfo to parcel
             broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
+
+            // We're good to go, send it away
+            mPlaybackService.sendBroadcast(broadcastIntent);
+        }
+    }
+
+    /**
+     * Broadcasts the state of the PlaybackService in order to show a progressDialog for long operations.
+     * @param state State of the PlaybackService
+     */
+    public void broadcastPlaybackServiceState(PlaybackService.PLAYBACKSERVICESTATE state) {
+        if (state == PlaybackService.PLAYBACKSERVICESTATE.WORKING) {
+            // Create the broadcast intent
+            Intent broadcastIntent = new Intent(MESSAGE_WORKING);
+
+            // We're good to go, send it away
+            mPlaybackService.sendBroadcast(broadcastIntent);
+        } else if (state == PlaybackService.PLAYBACKSERVICESTATE.IDLE) {
+            // Create the broadcast intent
+            Intent broadcastIntent = new Intent(MESSAGE_IDLE);
 
             // We're good to go, send it away
             mPlaybackService.sendBroadcast(broadcastIntent);

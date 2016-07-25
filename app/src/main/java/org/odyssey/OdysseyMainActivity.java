@@ -1,13 +1,16 @@
 package org.odyssey;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -48,6 +51,7 @@ import org.odyssey.listener.OnArtistSelectedListener;
 import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.listener.OnPlaylistSelectedListener;
 import org.odyssey.listener.OnSaveDialogListener;
+import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
@@ -70,6 +74,9 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.odyssey.requestedview";
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
+
+    public ProgressDialog mProgressDialog;
+    private PBSOperationFinishedReceiver mPBSOerPbsOperationFinishedReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +117,12 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance(this);
+
+        // setup progressdialog
+        mProgressDialog = new ProgressDialog(OdysseyMainActivity.this);
+        mProgressDialog.setTitle(R.string.playbackservice_working);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminate(true);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,6 +172,16 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        if (mPBSOerPbsOperationFinishedReceiver != null) {
+            unregisterReceiver(mPBSOerPbsOperationFinishedReceiver);
+            mPBSOerPbsOperationFinishedReceiver = null;
+        }
+        mPBSOerPbsOperationFinishedReceiver = new PBSOperationFinishedReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_IDLE);
+        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
+        registerReceiver(mPBSOerPbsOperationFinishedReceiver, filter);
+
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
             nowPlayingView.registerDragStatusReceiver(this);
@@ -207,6 +230,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (mPBSOerPbsOperationFinishedReceiver != null) {
+            unregisterReceiver(mPBSOerPbsOperationFinishedReceiver);
+            mPBSOerPbsOperationFinishedReceiver = null;
+        }
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -649,6 +677,34 @@ public class OdysseyMainActivity extends AppCompatActivity
                 case BOOKMARK:
                     nowPlayingView.createBookmark(title);
                     break;
+            }
+        }
+    }
+
+    private class PBSOperationFinishedReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_WORKING)) {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (mProgressDialog != null) {
+                            mProgressDialog.show();
+                        }
+                    }
+                });
+            } else if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_IDLE)) {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (mProgressDialog != null) {
+                            mProgressDialog.dismiss();
+                        }
+                    }
+                });
             }
         }
     }

@@ -16,7 +16,7 @@ import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
-import org.odyssey.playbackservice.managers.PlaybackStatusHelper;
+import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 public class
@@ -61,11 +61,11 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         // get remoteviews
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
 
-        if (intent.getAction().equals(PlaybackStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
+        if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
 
             intent.setExtrasClassLoader(context.getClassLoader());
 
-            NowPlayingInformation info = intent.getParcelableExtra(PlaybackStatusHelper.INTENT_NOWPLAYINGNAME);
+            NowPlayingInformation info = intent.getParcelableExtra(PlaybackServiceStatusHelper.INTENT_NOWPLAYINGNAME);
             if (info != null) {
                 TrackModel item = info.getCurrentTrack();
                 if (item != null) {

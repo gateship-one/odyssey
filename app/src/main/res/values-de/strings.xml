@@ -69,4 +69,5 @@
     <string name="nav_menu_files">Dateien</string>
     <string name="action_switch_storage_volume">Speichermedium wechseln</string>
     <string name="dialog_choose_storage_volume_title">Wähle Speichermedium</string>
+    <string name="playbackservice_working">Bitte warten</string>
 </resources>

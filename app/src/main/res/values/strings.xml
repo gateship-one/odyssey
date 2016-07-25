@@ -117,4 +117,5 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
+    <string name="playbackservice_working">Please wait</string>
 </resources>
