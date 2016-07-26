@@ -34,6 +34,12 @@ public class MusicLibraryHelper {
     public static final String[] projectionPlaylists = {MediaStore.Audio.Playlists.NAME, MediaStore.Audio.Playlists._ID};
 
     /**
+     * Threshold how many items should be inserted in the mediastore at once.
+     * The threshold is needed to not exceed the size of the binder IPC transaction buffer.
+     */
+    private static final int chunkSize = 1000;
+
+    /**
      * Return the artistId for the given artistname
      */
     public static long getArtistIDFromName(String artistName, Context context) {
@@ -285,9 +291,16 @@ public class MusicLibraryHelper {
                         values.add(insert);
                     }
                 }
+
+                if (values.size() > chunkSize) {
+                    // insert valid tracks
+                    PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[values.size()]));
+
+                    values.clear();
+                }
             }
 
-            // insert all valid tracks
+            // insert valid tracks
             PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[values.size()]));
         }
     }
