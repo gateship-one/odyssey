@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,6 +57,7 @@ import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
+import org.odyssey.utils.ThemeUtils;
 import org.odyssey.views.CurrentPlaylistView;
 import org.odyssey.views.NowPlayingView;
 
@@ -606,6 +609,24 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
+    }
+
+    /**
+     * This method smoothly fades out the alpha value of the statusbar to give
+     * a transition if the user pulls up the NowPlayingView.
+     * @param pos
+     */
+    @Override
+    public void onDragPositionChanged(float pos) {
+        // Get the primary color of the active theme from the helper.
+        int newColor = ThemeUtils.getThemeColor(this, R.attr.colorPrimary);
+
+        // Calculate the offset depending on the floating point position (0.0-1.0 of the view)
+        // Shift by 24 bit to set it as the A from ARGB and set all remaining 24 bits to 1 to
+        int alphaOffset = (((255 - (int)(255.0 * pos)) << 24) | 0xFFFFFF);
+        // and with this mask to set the new alpha value.
+        newColor &= (alphaOffset);
+        getWindow().setStatusBarColor(newColor);
     }
 
     @Override

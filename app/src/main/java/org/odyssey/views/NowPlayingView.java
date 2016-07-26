@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -109,6 +110,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     TextView mElapsedTime;
     TextView mDuration;
 
+    Window mWindow;
+
     private String mLastAlbumName;
 
     public NowPlayingView(Context context) {
@@ -171,6 +174,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
         mDragOffset = offset;
         requestLayout();
+
 
         // Set inverse alpha values for smooth layout transition.
         // Visibility still needs to be set otherwise parts of the buttons
@@ -276,6 +280,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // are not clickable.
             mDraggedDownButtons.setAlpha(mDragOffset);
             mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
+
+            if (mDragStatusReceiver != null) {
+                mDragStatusReceiver.onDragPositionChanged(mDragOffset);
+            }
+
         }
 
         @Override
@@ -817,5 +826,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         enum DRAG_STATUS {DRAGGED_UP, DRAGGED_DOWN}
 
         void onStatusChanged(DRAG_STATUS status);
+        void onDragPositionChanged(float pos);
     }
 }
