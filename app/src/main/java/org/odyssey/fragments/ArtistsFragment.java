@@ -65,13 +65,13 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_artists, container, false);
+        View rootView = inflater.inflate(R.layout.grid_refresh, container, false);
 
         // get gridview
-        mRootGrid = (GridView) rootView.findViewById(R.id.artists_gridview);
+        mRootGrid = (GridView) rootView.findViewById(R.id.grid_refresh_gridview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.artists_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.grid_refresh_swipe_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -131,7 +131,8 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * This method creates a new loader for this fragment.
-     * @param id The id of the loader
+     *
+     * @param id     The id of the loader
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -142,8 +143,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * Called when the loader finished loading its data.
+     *
      * @param loader The used loader itself
-     * @param model Data of the loader
+     * @param model  Data of the loader
      */
     @Override
     public void onLoadFinished(Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
@@ -162,12 +164,22 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * If a loader is reset the model data should be cleared.
+     *
      * @param loader Loader that was resetted.
      */
     @Override
     public void onLoaderReset(Loader<List<ArtistModel>> loader) {
         // Clear the model data of the adapter.
         mArtistsGridViewAdapter.swapModel(null);
+    }
+
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -184,7 +196,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
 
-        if (artistID == -1 ) {
+        if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
@@ -205,6 +217,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * Hook called when an menu item in the context menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */
@@ -230,6 +243,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
     /**
      * Call the PBS to enqueue the selected artist
+     *
      * @param position the position of the selected artist in the adapter
      */
     private void enqueueArtist(int position) {
@@ -240,7 +254,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
 
-        if (artistID == -1 ) {
+        if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
@@ -257,6 +271,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     /**
      * Call the PBS to play the selected artist.
      * A previous playlist will be cleared.
+     *
      * @param position the position of the selected artist in the adapter
      */
     private void playArtist(int position) {
@@ -279,14 +294,5 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 }

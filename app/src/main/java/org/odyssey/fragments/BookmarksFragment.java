@@ -23,36 +23,43 @@ import org.odyssey.playbackservice.PlaybackServiceConnection;
 import java.util.List;
 
 public class BookmarksFragment extends OdysseyFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<BookmarkModel>> {
-    private BookmarksListViewAdapter mBookmarksListViewAdapter;
-    private ListView mListView;
 
+    /**
+     * Adapter used for the ListView
+     */
+    private BookmarksListViewAdapter mBookmarksListViewAdapter;
+
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
     private PlaybackServiceConnection mServiceConnection;
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
+        View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mListView = (ListView) rootView.findViewById(R.id.bookmarks_listview);
+        ListView listView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
         mBookmarksListViewAdapter = new BookmarksListViewAdapter(getActivity());
 
-        mListView.setAdapter(mBookmarksListViewAdapter);
+        listView.setAdapter(mBookmarksListViewAdapter);
 
-        mListView.setOnItemClickListener(this);
+        listView.setOnItemClickListener(this);
 
-        registerForContextMenu(mListView);
-
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_bookmarks), false, true, false);
-
-        activity.setUpPlayButton(null);
+        registerForContextMenu(listView);
 
         return rootView;
     }
 
+    /**
+     * Called when the fragment resumes.
+     * Reload the data, setup the toolbar and create the PBS connection.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -71,33 +78,59 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         getLoaderManager().initLoader(0, getArguments(), this);
     }
 
-
+    /**
+     * This method creates a new loader for this fragment.
+     *
+     * @param id     The id of the loader
+     * @param bundle Optional arguments
+     * @return Return a new Loader instance that is ready to start loading.
+     */
     @Override
-    public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
         return new BookmarkLoader(getActivity());
     }
 
+    /**
+     * Called when the loader finished loading its data.
+     *
+     * @param loader The used loader itself
+     * @param data   Data of the loader
+     */
     @Override
     public void onLoadFinished(Loader<List<BookmarkModel>> loader, List<BookmarkModel> data) {
         mBookmarksListViewAdapter.swapModel(data);
     }
 
+    /**
+     * If a loader is reset the model data should be cleared.
+     *
+     * @param loader Loader that was resetted.
+     */
     @Override
     public void onLoaderReset(Loader<List<BookmarkModel>> loader) {
         mBookmarksListViewAdapter.swapModel(null);
     }
 
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
     @Override
     public void refresh() {
         // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
+    /**
+     * Play the clicked bookmark.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         resumeBookmark(position);
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -105,6 +138,12 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         inflater.inflate(R.menu.context_menu_bookmarks_fragment, menu);
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -125,6 +164,12 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         }
     }
 
+    /**
+     * Call the PBS to play the selected bookmark.
+     * A previous playlist will be cleared.
+     *
+     * @param position the position of the selected bookmark in the adapter
+     */
     private void resumeBookmark(int position) {
         // identify current bookmark
         BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);
@@ -138,6 +183,11 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         }
     }
 
+    /**
+     * Call the PBS to delete the selected bookmark.
+     *
+     * @param position the position of the selected bookmark in the adapter
+     */
     private void deleteBookmark(int position) {
         // identify current bookmark
         BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);

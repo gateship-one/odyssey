@@ -46,10 +46,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_saved_playlists, container, false);
+        View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mListView = (ListView) rootView.findViewById(R.id.saved_playlists_listview);
+        mListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
         mSavedPlaylistListViewAdapter = new SavedPlaylistListViewAdapter(getActivity());
 
@@ -61,7 +61,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true,false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
 
         activity.setUpPlayButton(null);
 
@@ -81,12 +81,13 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         }
     }
 
+    @Override
     public void onResume() {
         super.onResume();
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true,false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
 
         activity.setUpPlayButton(null);
 
@@ -166,7 +167,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
 
         // delete current playlist
         String where = MediaStore.Audio.Playlists._ID + "=?";
-        String[] whereVal = { ""+clickedPlaylist.getPlaylistID() };
+        String[] whereVal = {"" + clickedPlaylist.getPlaylistID()};
 
         PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
 

@@ -65,13 +65,13 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_all_tracks, container, false);
+        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        mRootList = (ListView) rootView.findViewById(R.id.all_tracks_listview);
+        mRootList = (ListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.all_tracks_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.list_refresh_swipe_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -129,7 +129,8 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * This method creates a new loader for this fragment.
-     * @param id The id of the loader
+     *
+     * @param id     The id of the loader
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -140,8 +141,9 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * Called when the loader finished loading its data.
+     *
      * @param loader The used loader itself
-     * @param data Data of the loader
+     * @param data   Data of the loader
      */
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
@@ -158,12 +160,31 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * If a loader is reset the model data should be cleared.
+     *
      * @param loader Loader that was resetted.
      */
     @Override
     public void onLoaderReset(Loader<List<TrackModel>> loader) {
         mTracksListViewAdapter.swapModel(null);
     }
+
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
+    }
+
+    /**
+     * Play the clicked track.
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        playTrack(position);
+    }
+
 
     /**
      * Create the context menu.
@@ -177,6 +198,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * Hook called when an menu item in the context menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */
@@ -207,24 +229,8 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     }
 
     /**
-     * Play the clicked track.
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playTrack(position);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
-    }
-
-    /**
      * Callback to open a view for the artist of the selected track.
+     *
      * @param position the position of the selected track in the adapter
      */
     private void showArtist(int position) {
@@ -242,6 +248,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     /**
      * Call the PBS to play the selected track.
      * A previous playlist will be cleared.
+     *
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
@@ -259,6 +266,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * Call the PBS to enqueue the selected track.
+     *
      * @param position the position of the selected track in the adapter
      */
     private void enqueueTrack(int position) {
@@ -275,6 +283,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
     /**
      * Call the PBS to enqueue the selected track as the next track.
+     *
      * @param position the position of the selected track in the adapter
      */
     private void enqueueTrackAsNext(int position) {

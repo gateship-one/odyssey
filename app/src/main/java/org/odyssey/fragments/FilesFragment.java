@@ -83,13 +83,13 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_files, container, false);
+        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        ListView filesListView = (ListView) rootView.findViewById(R.id.files_listview);
+        ListView filesListView = (ListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.files_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.list_refresh_swipe_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -187,7 +187,8 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * This method creates a new loader for this fragment.
-     * @param id The id of the loader
+     *
+     * @param id     The id of the loader
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -198,8 +199,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * Called when the loader finished loading its data.
+     *
      * @param loader The used loader itself
-     * @param model Data of the loader
+     * @param model  Data of the loader
      */
     @Override
     public void onLoadFinished(Loader<List<File>> loader, List<File> model) {
@@ -210,6 +212,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * If a loader is reset the model data should be cleared.
+     *
      * @param loader Loader that was resetted.
      */
     @Override
@@ -252,6 +255,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * Hook called when an menu item in the context menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */
@@ -284,7 +288,8 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     /**
      * Initialize the options menu.
      * Be sure to call {@link #setHasOptionsMenu} before.
-     * @param menu The container for the custom options menu.
+     *
+     * @param menu         The container for the custom options menu.
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
@@ -303,6 +308,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * Hook called when an menu item in the options menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */
@@ -321,6 +327,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     /**
      * Call the PBS to play the selected file.
      * A previous playlist will be cleared.
+     *
      * @param position the position of the selected file
      */
     private void playFile(int position) {
@@ -339,6 +346,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * Call the PBS to enqueue the selected file.
+     *
      * @param position the position of the selected file
      */
     private void enqueueFile(int position) {
@@ -360,6 +368,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     /**
      * Call the PBS to play all music files from the selected folder and his children.
      * A previous playlist will be cleared.
+     *
      * @param position the position of the selected folder
      */
     private void playFolder(int position) {
@@ -377,6 +386,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
     /**
      * Call the PBS to enqueue all music files from the selected folder and his children.
+     *
      * @param position the position of the selected folder
      */
     private void enqueueFolder(int position) {

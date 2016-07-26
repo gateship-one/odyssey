@@ -22,7 +22,7 @@ import org.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public abstract class GenericAlbumsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>>, AdapterView.OnItemClickListener{
+public abstract class GenericAlbumsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>>, AdapterView.OnItemClickListener {
 
     /**
      * GridView adapter object used for this GridView
@@ -61,13 +61,13 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_albums, container, false);
+        View rootView = inflater.inflate(R.layout.grid_refresh, container, false);
 
         // get gridview
-        mRootGrid = (GridView) rootView.findViewById(R.id.albums_gridview);
+        mRootGrid = (GridView) rootView.findViewById(R.id.grid_refresh_gridview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.albums_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.grid_refresh_swipe_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -83,7 +83,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAlbumsGridViewAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter,mRootGrid));
+        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter, mRootGrid));
         mRootGrid.setOnItemClickListener(this);
 
         // register for context menu
@@ -127,8 +127,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
 
     /**
      * Called when the loader finished loading its data.
+     *
      * @param loader The used loader itself
-     * @param data Data of the loader
+     * @param data   Data of the loader
      */
     @Override
     public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
@@ -145,6 +146,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
 
     /**
      * If a loader is reset the model data should be cleared.
+     *
      * @param loader Loader that was resetted.
      */
     @Override
@@ -162,7 +164,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     }
 
     /**
-     * Callback when an item in the ListView was clicked.
+     * Callback when an item in the GridView was clicked.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -183,6 +185,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
 
     /**
      * Call the PBS to enqueue the selected album.
+     *
      * @param position the position of the selected album in the adapter
      */
     protected void enqueueAlbum(int position) {
@@ -203,6 +206,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     /**
      * Call the PBS to play the selected album.
      * A previous playlist will be cleared.
+     *
      * @param position the position of the selected album in the adapter
      */
     protected void playAlbum(int position) {
