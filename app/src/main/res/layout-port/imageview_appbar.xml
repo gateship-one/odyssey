@@ -5,7 +5,7 @@
     android:fitsSystemWindows="true"
     >
 
-    <ImageView
+    <org.odyssey.views.SquareImageView
         android:id="@+id/collapsing_image"
         android:layout_width="match_parent"
         android:layout_height="300dp"
