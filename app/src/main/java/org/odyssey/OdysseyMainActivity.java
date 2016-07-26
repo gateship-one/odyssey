@@ -123,7 +123,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // setup progressdialog
         mProgressDialog = new ProgressDialog(OdysseyMainActivity.this);
-        mProgressDialog.setTitle(R.string.playbackservice_working);
+        mProgressDialog.setMessage(getString(R.string.playbackservice_working));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setIndeterminate(true);
 
