@@ -49,7 +49,6 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
     }
 
     /**
-     *
      * @return The length of the model data of this adapter.
      */
     @Override
@@ -59,6 +58,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
 
     /**
      * Simple getter for the model data.
+     *
      * @param position Index of the item to get. No check for boundaries here.
      * @return The item at index position.
      */
@@ -69,6 +69,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
 
     /**
      * Simple position->id mapping here.
+     *
      * @param position Position to get the id from
      * @return The id (position)
      */
@@ -79,9 +80,10 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
 
     /**
      * Get a View that displays the data at the specified position in the data set.
-     * @param position The position of the item within the adapter's data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
      * @param convertView The old view to reuse, if possible.
-     * @param parent The parent that this view will eventually be attached to.
+     * @param parent      The parent that this view will eventually be attached to.
      * @return A View corresponding to the data at the specified position.
      */
     @Override
@@ -96,10 +98,10 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
         Drawable icon;
         if (file.isDirectory()) {
             // choose directory icon
-            icon = mContext.getDrawable(R.drawable.ic_folder_24dp);
+            icon = mContext.getDrawable(R.drawable.ic_folder_48dp);
         } else {
             // choose file icon
-            icon = mContext.getDrawable(R.drawable.ic_file_24dp);
+            icon = mContext.getDrawable(R.drawable.ic_file_48dp);
         }
 
         if (icon != null) {
@@ -114,7 +116,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
         String lastModifiedDateString = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
 
         // Check if a view can be recycled
-        if(convertView != null) {
+        if (convertView != null) {
             FilesListViewItem filesListViewItem = (FilesListViewItem) convertView;
             filesListViewItem.setTitle(title);
             filesListViewItem.setModifiedDate(lastModifiedDateString);
@@ -129,6 +131,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
 
     /**
      * Looks up the position(index) of a given section(index)
+     *
      * @param sectionIndex Section to get the ListView position for
      * @return The item position of this section start.
      */
@@ -139,6 +142,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
 
     /**
      * Reverse lookup of a section for a given position
+     *
      * @param pos Position to get the section for
      * @return Section (index) for the items position
      */
@@ -161,7 +165,6 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
     }
 
     /**
-     *
      * @return A list of all available sections
      */
     @Override
@@ -175,8 +178,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
      * Clears old section data and model data and recreates sectionScrolling
      * data.
      *
-     * @param files
-     *            Actual filelist
+     * @param files Actual filelist
      */
     public void swapModel(List<File> files) {
         if (files == null) {
@@ -194,7 +196,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
             File currentFile = mModelData.get(0);
 
             char lastSection;
-            if ( currentFile.getName().length() > 0 ) {
+            if (currentFile.getName().length() > 0) {
                 lastSection = currentFile.getName().toUpperCase().charAt(0);
             } else {
                 lastSection = ' ';
@@ -209,7 +211,7 @@ public class FilesListViewAdapter extends BaseAdapter implements SectionIndexer 
                 currentFile = mModelData.get(i);
 
                 char currentSection;
-                if ( currentFile.getName().length() > 0 ) {
+                if (currentFile.getName().length() > 0) {
                     currentSection = currentFile.getName().toUpperCase().charAt(0);
                 } else {
                     currentSection = ' ';

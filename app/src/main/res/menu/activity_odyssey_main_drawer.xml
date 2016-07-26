@@ -16,7 +16,7 @@
             android:title="@string/nav_menu_bookmarks"/>
         <item
             android:id="@+id/nav_files"
-            android:icon="@drawable/ic_folder_24dp"
+            android:icon="@drawable/ic_folder_48dp"
             android:title="@string/nav_menu_files"/>
         <item
             android:id="@+id/nav_settings"
