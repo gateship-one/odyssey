@@ -1,6 +1,5 @@
 package org.odyssey.playbackservice;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +22,7 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.odyssey.models.FileModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
@@ -612,6 +612,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * Enqueue all tracks of an album identified by the albumKey.
+     *
      * @param albumKey The key of the album
      */
     public void enqueueAlbum(String albumKey) {
@@ -631,6 +632,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * Enqueue all tracks of an artist identified by the artistId.
+     *
      * @param artistId The id of the artist
      */
     public void enqueueArtist(long artistId) {
@@ -741,7 +743,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Enables/disables repeat function. If enabling check if end of playlist is
      * already reached and then set next track to track0.
-     *
+     * <p/>
      * If disabling check if last track plays.
      */
     public void setRepeat(int repeat) {
@@ -811,6 +813,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * enqueue a selected playlist from mediastore
+     *
      * @param playlistId the id of the selected playlist
      */
     public void enqueuePlaylist(long playlistId) {
@@ -903,12 +906,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * creates a trackmodel for a given filepath and add the track to the playlist
+     *
      * @param filePath the path to the selected file
      */
     public void enqueueFile(String filePath) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
-        File currentFile = new File(filePath);
+        FileModel currentFile = new FileModel(filePath);
 
         TrackModel track = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelForFile(currentFile);
 
@@ -922,12 +926,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * creates trackmodels for a given directorypath and adds the tracks to the playlist
+     *
      * @param directoryPath the path to the selected directory
      */
     public void enqueueDirectory(String directoryPath) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
-        File currentDirectory = new File(directoryPath);
+        FileModel currentDirectory = new FileModel(directoryPath);
 
         List<TrackModel> tracks = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelsForFolder(currentDirectory);
 

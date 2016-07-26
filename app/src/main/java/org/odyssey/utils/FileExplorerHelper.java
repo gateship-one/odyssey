@@ -6,12 +6,11 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import org.odyssey.models.FileModel;
 import org.odyssey.models.TrackModel;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,19 +21,10 @@ public class FileExplorerHelper {
     private List<String> mStorageVolumesList;
     private HashMap<String, TrackModel> mTrackHash;
 
-    private final FileExtensionFilter mFileExtensionFilter;
-    private final FileComparator mFileComparator;
-
-    // todo add extensions
-    private static List<String> mFileExtensions = new ArrayList<>(Arrays.asList("mp3", "flac", "wav", "ogg"));
-
     private final static String TAG = "FileExplorerHelper";
 
     private FileExplorerHelper(Context context) {
         mContext = context;
-
-        mFileExtensionFilter = new FileExtensionFilter(mFileExtensions);
-        mFileComparator = new FileComparator();
 
         mTrackHash = new HashMap<>();
 
@@ -63,20 +53,13 @@ public class FileExplorerHelper {
     }
 
     /**
-     * return a list of valid fileextensions
-     */
-    public List<String> getValidFileExtensions() {
-        return mFileExtensions;
-    }
-
-    /**
      * create a TrackModel for the given File
      * if no entry in the mediadb is found a dummy TrackModel will be created
      */
-    public TrackModel getTrackModelForFile(File file) {
+    public TrackModel getTrackModelForFile(FileModel file) {
         TrackModel track = null;
 
-        String urlString = file.toString();
+        String urlString = file.getURLString();
 
         if (mTrackHash.isEmpty()) {
             // lookup the current file in the media db
@@ -119,14 +102,14 @@ public class FileExplorerHelper {
      * return a list of TrackModels created for the given folder
      * this includes all subfolders
      */
-    public List<TrackModel> getTrackModelsForFolder(File folder) {
+    public List<TrackModel> getTrackModelsForFolder(FileModel folder) {
         List<TrackModel> tracks = new ArrayList<>();
 
         // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
         Log.v(TAG, "create track hash");
         mTrackHash.clear();
 
-        String urlString = folder.toString();
+        String urlString = folder.getURLString();
         String whereVal[] = {urlString+"%"};
 
         String where = MediaStore.Audio.Media.DATA + " LIKE ?";
@@ -161,27 +144,23 @@ public class FileExplorerHelper {
         getTrackModelsForFolder(folder, tracks);
         Log.v(TAG, "create track models done");
 
+        // clear the hash
+        mTrackHash.clear();
+
         return tracks;
     }
 
     /**
      * add TrackModel objects for the current folder and all subfolders to the tracklist
      */
-    public void getTrackModelsForFolder(File folder, List<TrackModel> tracks) {
+    public void getTrackModelsForFolder(FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
             tracks.add(getTrackModelForFile(folder));
         } else {
-            List<File> files = new ArrayList<>();
+            List<FileModel> files = folder.listFilesSorted();
 
-            // get all valid files
-            File[] filesArray = folder.listFiles(mFileExtensionFilter);
-            Collections.addAll(files, filesArray);
-
-            // sort the loaded files
-            Collections.sort(files, mFileComparator);
-
-            for (File file : files) {
+            for (FileModel file : files) {
                 // call method for all files found in this folder
                 getTrackModelsForFolder(file, tracks);
             }

@@ -25,14 +25,13 @@ import org.odyssey.R;
 import org.odyssey.adapter.FilesListViewAdapter;
 import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.loaders.FileLoader;
+import org.odyssey.models.FileModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
-import org.odyssey.utils.FileExplorerHelper;
 import org.odyssey.utils.ThemeUtils;
 
-import java.io.File;
 import java.util.List;
 
-public class FilesFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<File>>, AdapterView.OnItemClickListener {
+public class FilesFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<FileModel>>, AdapterView.OnItemClickListener {
 
     /**
      * Adapter used for the ListView
@@ -50,11 +49,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     private PlaybackServiceConnection mServiceConnection;
 
     /**
-     * Helper object for file operations
-     */
-    private FileExplorerHelper mFileExplorerHelper;
-
-    /**
      * Save the swipe layout for later usage
      */
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -62,7 +56,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     /**
      * the current directory that is displayed by the fragment
      */
-    private File mCurrentDirectory;
+    private FileModel mCurrentDirectory;
     /**
      * flag if the current directory is a root directory
      */
@@ -121,12 +115,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
             mIsRootDirectory = args.getBoolean(ARG_ISROOTDIRECTORY);
 
             if (directoryPath != null) {
-                mCurrentDirectory = new File(directoryPath);
+                mCurrentDirectory = new FileModel(directoryPath);
             }
         }
-
-        // get fileexplorerhelper
-        mFileExplorerHelper = FileExplorerHelper.getInstance(getContext());
 
         return rootView;
     }
@@ -193,8 +184,8 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<List<File>> onCreateLoader(int id, Bundle bundle) {
-        return new FileLoader(getActivity(), mCurrentDirectory, mFileExplorerHelper.getValidFileExtensions());
+    public Loader<List<FileModel>> onCreateLoader(int id, Bundle bundle) {
+        return new FileLoader(getActivity(), mCurrentDirectory);
     }
 
     /**
@@ -204,7 +195,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * @param model  Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<File>> loader, List<File> model) {
+    public void onLoadFinished(Loader<List<FileModel>> loader, List<FileModel> model) {
         mFilesListViewAdapter.swapModel(model);
         // change refresh state
         mSwipeRefreshLayout.setRefreshing(false);
@@ -216,7 +207,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * @param loader Loader that was resetted.
      */
     @Override
-    public void onLoaderReset(Loader<List<File>> loader) {
+    public void onLoaderReset(Loader<List<FileModel>> loader) {
         mFilesListViewAdapter.swapModel(null);
     }
 
@@ -225,7 +216,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        File selectedFile = (File) mFilesListViewAdapter.getItem(position);
+        FileModel selectedFile = (FileModel) mFilesListViewAdapter.getItem(position);
 
         // if file is directory open new fragment
         if (selectedFile.isDirectory()) {
@@ -242,7 +233,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         MenuInflater inflater = getActivity().getMenuInflater();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        File currentFile = (File) mFilesListViewAdapter.getItem(info.position);
+        FileModel currentFile = (FileModel) mFilesListViewAdapter.getItem(info.position);
 
         if (currentFile.isFile()) {
             // show context menu for files
@@ -352,13 +343,13 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     private void enqueueFile(int position) {
         // Enqueue single file
 
-        File currentFile = (File) mFilesListViewAdapter.getItem(position);
+        FileModel currentFile = (FileModel) mFilesListViewAdapter.getItem(position);
 
         // get a trackmodel for the current file
         //TrackModel track = mFileExplorerHelper.getTrackModelForFile(currentFile);
 
         try {
-            mServiceConnection.getPBS().enqueueFile(currentFile.toString());
+            mServiceConnection.getPBS().enqueueFile(currentFile.getPath());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -392,10 +383,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     private void enqueueFolder(int position) {
         // Enqueue all music files in the current folder
 
-        File currentFolder = (File) mFilesListViewAdapter.getItem(position);
+        FileModel currentFolder = (FileModel) mFilesListViewAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueDirectory(currentFolder.toString());
+            mServiceConnection.getPBS().enqueueDirectory(currentFolder.getPath());
             //enqueueFolder(position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block

@@ -3,49 +3,41 @@ package org.odyssey.loaders;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import org.odyssey.utils.FileComparator;
-import org.odyssey.utils.FileExtensionFilter;
+import org.odyssey.models.FileModel;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class FileLoader extends AsyncTaskLoader<List<File>> {
+public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
 
-    private final File mCurrentDirectory;
-    private final FileExtensionFilter mFileExtensionFilter;
-    private final FileComparator mFileComparator;
+    private final FileModel mCurrentDirectory;
 
-    public FileLoader(Context context, File directory, List<String> validExtensions) {
+    public FileLoader(Context context, FileModel directory) {
         super(context);
 
         mCurrentDirectory = directory;
-
-        mFileExtensionFilter = new FileExtensionFilter(validExtensions);
-        mFileComparator = new FileComparator();
     }
 
+    /**
+     * Load all FileModel objects for the given directory FileModel.
+     */
     @Override
-    public List<File> loadInBackground() {
+    public List<FileModel> loadInBackground() {
 
-        List<File> files = new ArrayList<>();
-
-        // get all valid files
-        File[] filesArray = mCurrentDirectory.listFiles(mFileExtensionFilter);
-        Collections.addAll(files, filesArray);
-
-        // sort the loaded files
-        Collections.sort(files, mFileComparator);
-
-        return files;
+        return mCurrentDirectory.listFilesSorted();
     }
 
+    /**
+     * Start loading the data.
+     * A previous load dataset will be ignored
+     */
     @Override
     protected void onStartLoading() {
         forceLoad();
     }
 
+    /**
+     * Stop the loader and cancel the current task.
+     */
     @Override
     protected void onStopLoading() {
         cancelLoad();
