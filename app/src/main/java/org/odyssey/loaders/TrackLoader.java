@@ -43,6 +43,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
         int trackAlbumColumnIndex = -1;
         int trackURLColumnIndex = -1;
         int trackAlbumKeyColumnIndex = -1;
+        int trackIdColumnIndex = -1;
 
         if(mPlaylistID != -1) {
             // load playlist tracks
@@ -56,6 +57,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
                 trackAlbumColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM);
                 trackURLColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA);
                 trackAlbumKeyColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY);
+                trackIdColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID);
             }
         } else {
 
@@ -80,6 +82,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
                 trackAlbumColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
                 trackURLColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                 trackAlbumKeyColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
+                trackIdColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media._ID);
             }
         }
 
@@ -96,8 +99,9 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
                 String album = trackCursor.getString(trackAlbumColumnIndex);
                 String url = trackCursor.getString(trackURLColumnIndex);
                 String albumKey = trackCursor.getString(trackAlbumKeyColumnIndex);
+                long id = trackCursor.getLong(trackIdColumnIndex);
 
-                TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url);
+                TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
                 tracks.add(track);
 
             }

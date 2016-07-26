@@ -22,12 +22,13 @@ public class TrackModelTest {
     private final String TEST_TRACKURL = "Trackurl";
     private final long TEST_TRACKDURATION = 12345678L;
     private final int TEST_TRACKNUMBER = 12;
+    private final long TEST_TRACKID = 42L;
 
     private TrackModel mTrackModel;
 
     @Before
     public void setUp() {
-        mTrackModel = new TrackModel(TEST_TRACKNAME, TEST_TRACKARTISTNAME, TEST_TRACKALBUMNAME, TEST_TRACKALBUMKEY, TEST_TRACKDURATION, TEST_TRACKNUMBER, TEST_TRACKURL);
+        mTrackModel = new TrackModel(TEST_TRACKNAME, TEST_TRACKARTISTNAME, TEST_TRACKALBUMNAME, TEST_TRACKALBUMKEY, TEST_TRACKDURATION, TEST_TRACKNUMBER, TEST_TRACKURL, TEST_TRACKID);
     }
 
     @Test
@@ -41,6 +42,7 @@ public class TrackModelTest {
         assertThat(mTrackModel.getTrackDuration(), is(TEST_TRACKDURATION));
         assertThat(mTrackModel.getTrackNumber(), is(TEST_TRACKNUMBER));
         assertThat(mTrackModel.getTrackURL(), is(TEST_TRACKURL));
+        assertThat(mTrackModel.getTrackId(), is(TEST_TRACKID));
     }
 
     @Test
@@ -66,5 +68,6 @@ public class TrackModelTest {
         assertThat(createdFromParcel.getTrackDuration(), is(TEST_TRACKDURATION));
         assertThat(createdFromParcel.getTrackNumber(), is(TEST_TRACKNUMBER));
         assertThat(createdFromParcel.getTrackURL(), is(TEST_TRACKURL));
+        assertThat(createdFromParcel.getTrackId(), is(TEST_TRACKID));
     }
 }

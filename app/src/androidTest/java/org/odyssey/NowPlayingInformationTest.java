@@ -24,6 +24,7 @@ public class NowPlayingInformationTest {
     private final String TEST_TRACKURL = "Trackurl";
     private final long TEST_TRACKDURATION = 12345678L;
     private final int TEST_TRACKNUMBER = 12;
+    private final long TEST_TRACKID = 42L;
 
     // nowplaying values
     private final int TEST_PLAYING = 1;
@@ -38,7 +39,7 @@ public class NowPlayingInformationTest {
 
     @Before
     public void setUp() {
-        mTrackModel = new TrackModel(TEST_TRACKNAME, TEST_TRACKARTISTNAME, TEST_TRACKALBUMNAME, TEST_TRACKALBUMKEY, TEST_TRACKDURATION, TEST_TRACKNUMBER, TEST_TRACKURL);
+        mTrackModel = new TrackModel(TEST_TRACKNAME, TEST_TRACKARTISTNAME, TEST_TRACKALBUMNAME, TEST_TRACKALBUMKEY, TEST_TRACKDURATION, TEST_TRACKNUMBER, TEST_TRACKURL, TEST_TRACKID);
 
         mNowPlayingInformation = new NowPlayingInformation(TEST_PLAYING, TEST_PLAYINGURL, TEST_PLAYINGINDEX, TEST_REPEAT, TEST_RANDOM, TEST_PLAYLISTLENGTH, mTrackModel);
     }

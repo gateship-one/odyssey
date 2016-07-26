@@ -26,10 +26,10 @@ public class MusicLibraryHelper {
     public static final String[] projectionArtists = {MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
 
     public static final String[] projectionTracks = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.TRACK, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA};
+            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID};
 
     public static final String[] projectionPlaylistTracks = {MediaStore.Audio.Playlists.Members.TITLE, MediaStore.Audio.Playlists.Members.DISPLAY_NAME, MediaStore.Audio.Playlists.Members.TRACK, MediaStore.Audio.Playlists.Members.ALBUM_KEY,
-            MediaStore.Audio.Playlists.Members.DURATION, MediaStore.Audio.Playlists.Members.ALBUM, MediaStore.Audio.Playlists.Members.ARTIST, MediaStore.Audio.Playlists.Members.DATA, MediaStore.Audio.Playlists.Members._ID};
+            MediaStore.Audio.Playlists.Members.DURATION, MediaStore.Audio.Playlists.Members.ALBUM, MediaStore.Audio.Playlists.Members.ARTIST, MediaStore.Audio.Playlists.Members.DATA, MediaStore.Audio.Playlists.Members._ID, MediaStore.Audio.Playlists.Members.AUDIO_ID};
 
     public static final String[] projectionPlaylists = {MediaStore.Audio.Playlists.NAME, MediaStore.Audio.Playlists._ID};
 
@@ -90,6 +90,7 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of all tracks of an album.
+     *
      * @param albumKey The key to identify the album in the mediastore
      */
     public static List<TrackModel> getTracksForAlbum(String albumKey, Context context) {
@@ -113,8 +114,9 @@ public class MusicLibraryHelper {
                     String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                     String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
                     // add current track
                     albumTracks.add(item);
@@ -130,6 +132,7 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of all tracks of an artist
+     *
      * @param artistId The id to identify the artist in the mediastore
      */
     public static List<TrackModel> getTracksForArtist(long artistId, Context context) {
@@ -169,6 +172,7 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of all tracks of a playlist
+     *
      * @param playlistId The id to identify the playlist in the mediastore
      */
     public static List<TrackModel> getTracksForPlaylist(long playlistId, Context context) {
@@ -187,8 +191,9 @@ public class MusicLibraryHelper {
                     String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DATA));
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
                     // add the track
                     playlistTracks.add(item);
@@ -222,8 +227,9 @@ public class MusicLibraryHelper {
                     String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
                     // add the track
                     allTracks.add(item);
@@ -240,56 +246,49 @@ public class MusicLibraryHelper {
     /**
      * Save a playlist in the mediastore.
      * A previous playlist with the same name will be deleted.
+     * Only tracks that exists in the mediastore will be saved in the playlist.
+     *
      * @param playlistName The name for the playlist
-     * @param tracks The tracklist for the playlist
+     * @param tracks       The tracklist for the playlist
      */
     public static void savePlaylist(String playlistName, List<TrackModel> tracks, Context context) {
         // remove playlist if exists
         PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MediaStore.Audio.Playlists.NAME + "=?", new String[]{playlistName});
 
         // create new playlist and save row
-        ContentValues mInserts = new ContentValues();
-        mInserts.put(MediaStore.Audio.Playlists.NAME, playlistName);
-        mInserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
-        mInserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
+        ContentValues inserts = new ContentValues();
+        inserts.put(MediaStore.Audio.Playlists.NAME, playlistName);
+        inserts.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
+        inserts.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
 
-        Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, mInserts);
+        Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, inserts);
 
-        // insert current tracks
+        // create list of valid tracks
+        List<ContentValues> values = new ArrayList<>();
 
         if (currentRow != null) {
-            // TODO optimize
-            String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA};
-            String where = MediaStore.Audio.Media.DATA + "=?";
-
-            TrackModel item;
 
             for (int i = 0; i < tracks.size(); i++) {
 
-                item = tracks.get(i);
+                TrackModel item = tracks.get(i);
 
                 if (item != null) {
-                    String[] whereVal = {item.getTrackURL()};
+                    long id = item.getTrackId();
 
-                    // get ID of current track
-                    Cursor c = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, whereVal, null);
+                    if (id != -1) {
+                        // only tracks that exists in the mediastore should be saved in the playlist
 
-                    if (c != null) {
-                        if (c.moveToFirst()) {
-                            // insert track into playlist
-                            String id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
+                        ContentValues insert = new ContentValues();
+                        insert.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
+                        insert.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
 
-                            mInserts.clear();
-                            mInserts.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
-                            mInserts.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, i);
-
-                            PermissionHelper.insert(context, currentRow, mInserts);
-                        }
-
-                        c.close();
+                        values.add(insert);
                     }
                 }
             }
+
+            // insert all valid tracks
+            PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[values.size()]));
         }
     }
 }

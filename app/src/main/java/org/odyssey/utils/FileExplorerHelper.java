@@ -95,8 +95,9 @@ public class FileExplorerHelper {
                     String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    track = new TrackModel(title, artist, album, albumKey, duration, no, url);
+                    track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
                 }
 
                 cursor.close();
@@ -108,7 +109,7 @@ public class FileExplorerHelper {
 
         if (track == null) {
             // no entry in the media db was found so create a dummy track
-            track = new TrackModel(file.getName(), "Dummyartist", "Dummyalbum", "", 0, 1, urlString);
+            track = new TrackModel(file.getName(), "Dummyartist", "Dummyalbum", "", 0, 1, urlString, -1);
         }
 
         return track;
@@ -142,8 +143,9 @@ public class FileExplorerHelper {
                     String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url);
+                    TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
 
                     mTrackHash.put(url, track);
                 } while(cursor.moveToNext());

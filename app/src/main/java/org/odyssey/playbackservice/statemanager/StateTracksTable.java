@@ -50,6 +50,11 @@ public class StateTracksTable {
     public static final String COLUMN_TRACKURL = "url";
 
     /**
+     * Name of the column that holds the id of the rack from mediastore
+     */
+    public static final String COLUMN_TRACKID = "trackid";
+
+    /**
      * Name of the column that holds the timestamp related to the track
      */
     public static final String COLUMN_BOOKMARK_TIMESTAMP = "bookmark_timestamp";
@@ -59,7 +64,8 @@ public class StateTracksTable {
      */
     private static final String DATABASE_CREATE = "create table if not exists " + TABLE_NAME + "(" + COLUMN_ID
             + " integer primary key autoincrement," + COLUMN_TRACKNUMBER + " integer," + COLUMN_TRACKTITLE + " text," + COLUMN_TRACKALBUM + " text,"
-            + COLUMN_TRACKALBUMKEY + " text," + COLUMN_TRACKDURATION + " integer," + COLUMN_TRACKARTIST + " text," + COLUMN_TRACKURL + " text," + COLUMN_BOOKMARK_TIMESTAMP + " integer " + ");";
+            + COLUMN_TRACKALBUMKEY + " text," + COLUMN_TRACKDURATION + " integer," + COLUMN_TRACKARTIST + " text," + COLUMN_TRACKURL + " text,"
+            + COLUMN_TRACKID + " integer," + COLUMN_BOOKMARK_TIMESTAMP + " integer " + ");";
 
     public static void onCreate(SQLiteDatabase database) {
         // create new table

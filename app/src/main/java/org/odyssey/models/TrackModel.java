@@ -12,8 +12,9 @@ public class TrackModel implements GenericModel, Parcelable {
     private final String mTrackURL;
     private final long mTrackDuration;
     private final int mTrackNumber;
+    private final long mTrackId;
 
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url) {
+    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
         mTrackName = name;
         mTrackArtistName = artistName;
         mTrackAlbumName = albumName;
@@ -21,6 +22,7 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackDuration = duration;
         mTrackNumber = trackNumber;
         mTrackURL = url;
+        mTrackId = trackId;
     }
 
     public TrackModel() {
@@ -31,6 +33,7 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackDuration = 0;
         mTrackNumber = 0;
         mTrackURL = "";
+        mTrackId = -1;
     }
 
     public String getTrackName() {
@@ -59,6 +62,10 @@ public class TrackModel implements GenericModel, Parcelable {
 
     public String getTrackURL() { return mTrackURL; }
 
+    public long getTrackId() {
+        return mTrackId;
+    }
+
     @Override
     public String getSectionTitle() {
         return mTrackName;
@@ -78,6 +85,7 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeInt(mTrackNumber);
         dest.writeLong(mTrackDuration);
         dest.writeString(mTrackAlbumKey);
+        dest.writeLong(mTrackId);
     }
 
     @Override
@@ -92,13 +100,8 @@ public class TrackModel implements GenericModel, Parcelable {
             return false;
         }
         TrackModel track = (TrackModel)model;
-        if ( !this.mTrackName.equals(track.mTrackName)) {
-            return false;
-        }
-        if ( !this.mTrackAlbumName.equals(track.mTrackAlbumName)) {
-            return false;
-        }
-        return this.mTrackArtistName.equals(track.mTrackArtistName);
+
+        return (this.mTrackId == track.mTrackId);
     }
 
     public static Parcelable.Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
@@ -117,8 +120,9 @@ public class TrackModel implements GenericModel, Parcelable {
             int number = source.readInt();
             long duration = source.readLong();
             String albumKey = source.readString();
+            long trackId = source.readLong();
 
-            TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+            TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, trackId);
             return item;
         }
     };

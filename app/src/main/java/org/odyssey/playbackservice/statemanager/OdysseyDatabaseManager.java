@@ -30,7 +30,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      * Array of returned columns from the StateTracks table
      */
     private String[] projectionTrackModels = {StateTracksTable.COLUMN_TRACKNUMBER, StateTracksTable.COLUMN_TRACKTITLE, StateTracksTable.COLUMN_TRACKALBUM, StateTracksTable.COLUMN_TRACKALBUMKEY,
-            StateTracksTable.COLUMN_TRACKDURATION, StateTracksTable.COLUMN_TRACKARTIST, StateTracksTable.COLUMN_TRACKURL};
+            StateTracksTable.COLUMN_TRACKDURATION, StateTracksTable.COLUMN_TRACKARTIST, StateTracksTable.COLUMN_TRACKURL, StateTracksTable.COLUMN_TRACKID};
 
     /**
      * Array of returned columns from the State table
@@ -109,6 +109,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             values.put(StateTracksTable.COLUMN_TRACKALBUM, item.getTrackAlbumName());
             values.put(StateTracksTable.COLUMN_TRACKURL, item.getTrackURL());
             values.put(StateTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
+            values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
             values.put(StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, timeStamp);
 
             odysseyStateDB.insert(StateTracksTable.TABLE_NAME, null, values);
@@ -142,8 +143,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUM));
                 String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKURL));
                 String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
+                long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
                 playList.add(item);
 
@@ -185,8 +187,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                     String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUM));
                     String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKURL));
                     String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
                     playList.add(item);
 
