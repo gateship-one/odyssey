@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
+    >
 
     <ImageView
         android:id="@+id/collapsing_image"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:background="@android:color/black"
-        android:fitsSystemWindows="true"
         android:scaleType="centerCrop"
         android:src="@drawable/cover_placeholder"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
     <View
         android:id="@+id/collapsing_image_gradient"

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.odyssey.OdysseyMainActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:expanded="true"
+        android:fitsSystemWindows="true"
         android:id="@+id/appbar">
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
@@ -20,9 +21,8 @@
             app:contentScrim="?attr/colorPrimary"
             app:titleEnabled="false"
             android:fitsSystemWindows="true">
-
             <include layout="@layout/imageview_appbar"
-                app:layout_collapseMode="parallax"/>
+                app:layout_collapseMode="parallax" />
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"

@@ -549,11 +549,30 @@ public class OdysseyMainActivity extends AppCompatActivity
                 toolbar.setTitleEnabled(true);
                 setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder, null));
                 params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+
+                // Reset the previously added padding again.
+                toolbar.setPadding(0, 0, 0, 0);
             } else {
                 // Disable title for collapsingToolbarLayout and show normal title
                 toolbar.setTitleEnabled(false);
+                // Set the padding to match the statusbar height if a picture is shown.
+                toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             }
+
         }
+    }
+
+    /**
+     * Method to retrieve the height of the statusbar to compensate in non-transparent cases.
+     * @return The Dimension of the statusbar. Used to compensate the padding.
+     */
+    private int getStatusBarHeight() {
+        int resHeight = 0;
+        int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resId > 0) {
+            resHeight = getResources().getDimensionPixelSize(resId);
+        }
+        return resHeight;
     }
 
     public void setToolbarImage(Bitmap bm) {
