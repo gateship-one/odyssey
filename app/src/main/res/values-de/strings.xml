@@ -70,4 +70,6 @@
     <string name="action_switch_storage_volume">Speichermedium wechseln</string>
     <string name="dialog_choose_storage_volume_title">Wähle Speichermedium</string>
     <string name="playbackservice_working">Bitte warten</string>
+    <string name="preference_theme_item_light_green">Helles Grün</string>
+    <string name="action_add_directory">Verzeichnis hinzufügen</string>
 </resources>

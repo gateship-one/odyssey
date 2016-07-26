@@ -46,6 +46,7 @@
     <string name="action_add_album">Add Album</string>
     <string name="action_add_artist_albums">Add Albums</string>
     <string name="action_switch_storage_volume">Switch storage volume</string>
+    <string name="action_add_directory">Add directory</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">add to playlist</string>

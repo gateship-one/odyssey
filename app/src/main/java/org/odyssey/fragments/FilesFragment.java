@@ -155,7 +155,12 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         }
 
         // set up play button
-        activity.setUpPlayButton(null);
+        activity.setUpPlayButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playCurrentFolder();
+            }
+        });
 
         // set up pbs connection
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
@@ -288,8 +293,12 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_files_fragment, menu);
 
-        Drawable drawable = menu.findItem(R.id.action_switch_storage_volume).getIcon();
+        Drawable drawable = menu.findItem(R.id.action_add_directory).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
+        menu.findItem(R.id.action_add_directory).setIcon(drawable);
 
+        drawable = menu.findItem(R.id.action_switch_storage_volume).getIcon();
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
         menu.findItem(R.id.action_switch_storage_volume).setIcon(drawable);
@@ -306,6 +315,9 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_add_directory:
+                enqueueCurrentFolder();
+                return true;
             case R.id.action_switch_storage_volume:
                 ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
                 chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
@@ -387,6 +399,34 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
         try {
             mServiceConnection.getPBS().enqueueDirectory(currentFolder.getPath());
+            //enqueueFolder(position);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the PBS to play all music in the current folder and his children.
+     * A previous playlist will be cleared.
+     */
+    private void playCurrentFolder() {
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            enqueueCurrentFolder();
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the PBS to enqueue all music in the current folder and his children.
+     */
+    private void enqueueCurrentFolder() {
+        try {
+            mServiceConnection.getPBS().enqueueDirectory(mCurrentDirectory.getPath());
             //enqueueFolder(position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block

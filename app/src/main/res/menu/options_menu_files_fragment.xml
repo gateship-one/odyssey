@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add_directory"
+        android:icon="@drawable/ic_queue_24dp"
+        android:orderInCategory="100"
+        android:title="@string/action_add_directory"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_switch_storage_volume"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_storage_24dp"
+        android:orderInCategory="100"
         android:title="@string/action_switch_storage_volume"
         app:showAsAction="always" />
 </menu>
