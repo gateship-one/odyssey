@@ -182,6 +182,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDraggedDownButtons.setAlpha(mDragOffset);
         mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
 
+
+        // Notify the observers about the change
+        if ( mDragStatusReceiver != null ) {
+            mDragStatusReceiver.onDragPositionChanged(offset);
+        }
+
         if (mDragOffset == 0.0f) {
             // top
             mDraggedDownButtons.setVisibility(INVISIBLE);
