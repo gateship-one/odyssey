@@ -15,15 +15,15 @@
         <RelativeLayout
             android:id="@+id/now_playing_headerLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/material_toolbar_height"
+            android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
             android:background="?attr/colorPrimary"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/now_playing_topCover"
-                android:layout_width="@dimen/material_toolbar_height"
-                android:layout_height="@dimen/material_toolbar_height"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
@@ -86,18 +86,18 @@
             <RelativeLayout
                 android:id="@+id/now_playing_topButtonLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/material_toolbar_height"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_alignParentEnd="true">
 
                 <LinearLayout
                     android:id="@+id/now_playing_layout_dragged_up"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/material_toolbar_height">
+                    android:layout_height="?attr/actionBarSize">
 
                     <ImageButton
                         android:id="@+id/now_playing_topPlaylistButton"
-                        android:layout_width="@dimen/material_toolbar_height"
-                        android:layout_height="@dimen/material_toolbar_height"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
                         android:adjustViewBounds="false"
                         android:background="?android:selectableItemBackground"
                         android:baselineAlignBottom="false"
@@ -107,8 +107,8 @@
 
                     <ImageButton
                         android:id="@+id/now_playing_topMenuButton"
-                        android:layout_width="@dimen/material_toolbar_height"
-                        android:layout_height="@dimen/material_toolbar_height"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
                         android:adjustViewBounds="false"
                         android:background="?android:selectableItemBackground"
                         android:baselineAlignBottom="false"
@@ -119,8 +119,8 @@
 
                 <LinearLayout
                     android:id="@+id/now_playing_layout_dragged_down"
-                    android:layout_width="@dimen/material_toolbar_height"
-                    android:layout_height="@dimen/material_toolbar_height"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
 
                     <ImageButton
@@ -181,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:orientation="vertical"
-                android:paddingBottom="56dp">
+                android:paddingBottom="?attr/actionBarSize">
 
                 <RelativeLayout
                     android:id="@+id/now_playing_seekBarLayout"
