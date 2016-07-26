@@ -19,6 +19,7 @@ import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
+import org.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -83,7 +84,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * This method creates a new loader for this fragment.
-     * @param id The id of the loader
+     *
+     * @param id     The id of the loader
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -104,6 +106,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * Hook called when an menu item in the context menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */
@@ -130,7 +133,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
     /**
      * Initialize the options menu.
      * Be sure to call {@link #setHasOptionsMenu} before.
-     * @param menu The container for the custom options menu.
+     *
+     * @param menu         The container for the custom options menu.
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
@@ -138,10 +142,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_artist_albums_fragment, menu);
 
-        Drawable drawable = menu.findItem(R.id.action_add_artist_albums).getIcon();
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
 
+        Drawable drawable = menu.findItem(R.id.action_add_artist_albums).getIcon();
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
+        DrawableCompat.setTint(drawable, tintColor);
         menu.findItem(R.id.action_add_artist_albums).setIcon(drawable);
 
         super.onCreateOptionsMenu(menu, menuInflater);
@@ -149,6 +155,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * Hook called when an menu item in the options menu is selected.
+     *
      * @param item The menu item that was selected.
      * @return True if the hook was consumed here.
      */

@@ -12,6 +12,7 @@ import android.widget.SectionIndexer;
 import org.odyssey.R;
 import org.odyssey.models.FileModel;
 import org.odyssey.models.GenericModel;
+import org.odyssey.utils.ThemeUtils;
 import org.odyssey.views.FilesListViewItem;
 
 import java.io.File;
@@ -59,8 +60,10 @@ public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
         }
 
         if (icon != null) {
+            // get tint color
+            int tintColor = ThemeUtils.getThemeColor(mContext, android.R.attr.textColor);
             // tint the icon
-            DrawableCompat.setTint(icon, ContextCompat.getColor(mContext, R.color.colorTextLight));
+            DrawableCompat.setTint(icon, tintColor);
         }
 
         // last modified

@@ -293,14 +293,17 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_files_fragment, menu);
 
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+
         Drawable drawable = menu.findItem(R.id.action_add_directory).getIcon();
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
+        DrawableCompat.setTint(drawable, tintColor);
         menu.findItem(R.id.action_add_directory).setIcon(drawable);
 
         drawable = menu.findItem(R.id.action_switch_storage_volume).getIcon();
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.colorTextLight));
+        DrawableCompat.setTint(drawable, tintColor);
         menu.findItem(R.id.action_switch_storage_volume).setIcon(drawable);
 
         super.onCreateOptionsMenu(menu, menuInflater);
