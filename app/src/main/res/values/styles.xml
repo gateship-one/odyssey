@@ -8,6 +8,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_indigo</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_indigo</item>
     </style>
 
     <style name="AppTheme.orange" parent="AppTheme">
@@ -17,6 +19,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_orange</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_orange</item>
     </style>
 
     <style name="AppTheme.deepOrange" parent="AppTheme">
@@ -26,6 +30,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_deepOrange</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_deepOrange</item>
     </style>
 
     <style name="AppTheme.blue" parent="AppTheme">
@@ -35,6 +41,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_blue</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_blue</item>
     </style>
 
     <style name="AppTheme.darkGrey" parent="AppTheme">
@@ -45,6 +53,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_darkGrey</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_darkGrey</item>
     </style>
 
     <style name="AppTheme.brown" parent="AppTheme">
@@ -55,6 +65,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_brown</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_brown</item>
     </style>
 
     <style name="AppTheme.lightGreen" parent="AppTheme">
@@ -65,6 +77,8 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_lightGreen</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_lightGreen</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

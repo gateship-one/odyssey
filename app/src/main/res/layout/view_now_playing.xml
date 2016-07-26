@@ -59,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="@color/colorTextLightSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:text="You Me At Six" />
 
                     <TextView
@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="@color/colorTextLightSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:text="@string/separator" />
 
                     <TextView
@@ -77,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="@color/colorTextLightSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:text="Cavalier Youth" />
                 </LinearLayout>
 
