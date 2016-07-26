@@ -544,7 +544,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                 params.setScrollFlags(0);
             }
 
-            if (showImage) {
+            if (showImage && collapsingImage != null) {
                 // Enable title of collapsingToolbarlayout for smooth transition
                 toolbar.setTitleEnabled(true);
                 setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder, null));

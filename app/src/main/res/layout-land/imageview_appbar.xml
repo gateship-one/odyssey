@@ -5,22 +5,5 @@
     android:fitsSystemWindows="true"
     >
 
-    <ImageView
-        android:id="@+id/collapsing_image"
-        android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:background="@android:color/black"
-        android:scaleType="fitCenter"
-        android:src="@drawable/cover_placeholder"
-        android:visibility="gone"
-        />
-
-    <View
-        android:id="@+id/collapsing_image_gradient"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/grid_item_gradient"
-        android:visibility="gone" />
 
 </RelativeLayout>
