@@ -57,6 +57,16 @@
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
     </style>
 
+    <style name="AppTheme.lightGreen" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_lightGreen</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_lightGreen</item>
+        <item name="odyssey_color_accent">@color/colorAccent_lightGreen</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/colorBackground</item>
