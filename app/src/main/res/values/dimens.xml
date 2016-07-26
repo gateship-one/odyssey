@@ -10,6 +10,8 @@
     <!-- padding values -->
     <dimen name="standard_padding_small">4dp</dimen>
     <dimen name="standard_padding_medium">8dp</dimen>
+
+    <dimen name="standard_padding_outside">16dp</dimen>
     <!-- margins for fragment content -->
     <dimen name="fragment_content_horizontal_margin">0dp</dimen>
     <dimen name="fragment_content_vertical_margin">0dp</dimen>
@@ -25,4 +27,20 @@
     <dimen name="notification_font_size_small">14sp</dimen>
     <dimen name="notification_font_size_medium">16sp</dimen>
     <dimen name="notification_font_size_big">20sp</dimen>
+
+    <!-- values from: https://material.google.com/layout/metrics-keylines.html -->
+    <dimen name="material_list_item_height">72dp</dimen>
+    <dimen name="material_list_item_height_no_detail">64dp</dimen>
+    <dimen name="material_toolbar_height">56dp</dimen>
+    <dimen name="material_screen_edge_spacing">16dp</dimen>
+    <dimen name="material_content_spacing">8dp</dimen>
+    <dimen name="material_standard_horizontal_spacing">16dp</dimen>
+
+
+    <!-- Font size -->
+    <dimen name="material_font_style_size_headline">24sp</dimen>
+    <dimen name="material_font_style_size_title">20sp</dimen>
+    <dimen name="material_font_style_size_subheading">16sp</dimen>
+    <dimen name="material_font_style_size_body_2">14sp</dimen>
+    <dimen name="material_font_style_size_body_1">14sp</dimen>
 </resources>

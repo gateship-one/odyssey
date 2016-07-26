@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="@dimen/material_standard_horizontal_spacing"
+    android:minHeight="@dimen/material_list_item_height">
 
 
     <TextView
@@ -11,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textSize="16sp" />
+        android:fontFamily="sans-serif-regular"
+        android:textSize="@dimen/material_font_style_size_subheading" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -24,7 +26,9 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/item_bookmarks_numberOfTracks"
             android:maxLines="1"
-            android:textSize="16sp" />
+            android:textColor="@color/colorTextLightSecondary"
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_body_1" />
 
         <TextView
             android:id="@+id/item_bookmarks_numberOfTracks"
@@ -32,7 +36,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:maxLines="1"
-            android:textSize="16sp" />
+            android:textColor="@color/colorTextLightSecondary"
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_body_1" />
     </RelativeLayout>
 
 </LinearLayout>

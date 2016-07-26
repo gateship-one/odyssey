@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="15dp" >
+    android:padding="@dimen/material_standard_horizontal_spacing"
+    android:minHeight="@dimen/material_list_item_height_no_detail">
 
     <TextView
         android:id="@+id/item_playlists_title"

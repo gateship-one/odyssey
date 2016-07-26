@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="@dimen/material_standard_horizontal_spacing"
+    android:minHeight="@dimen/material_list_item_height">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,7 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:textSize="16sp" />
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_subheading"
+            />
 
         <TextView
             android:id="@+id/item_tracks_separator"
@@ -24,14 +27,18 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:text="@string/separator"
-            android:textSize="16sp" />
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_subheading"
+            />
 
         <TextView
             android:id="@+id/item_tracks_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:textSize="16sp" />
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_subheading"
+            />
     </LinearLayout>
 
     <RelativeLayout
@@ -48,7 +55,8 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/colorTextLightSecondary"
-            android:textSize="12sp" />
+            android:fontFamily="sans-serif-regular"
+            android:textSize="@dimen/material_font_style_size_body_1" />
 
         <TextView
             android:id="@+id/item_tracks_duration"

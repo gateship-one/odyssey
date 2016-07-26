@@ -109,6 +109,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             case "brown":
                 setTheme(R.style.AppTheme_brown);
                 break;
+            case "lightgreen":
+                setTheme(R.style.AppTheme_lightGreen);
+                break;
         }
 
         super.onCreate(savedInstanceState);

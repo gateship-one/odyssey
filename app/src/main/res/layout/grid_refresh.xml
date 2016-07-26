@@ -27,15 +27,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="@dimen/grid_item_height"
-        android:fastScrollAlwaysVisible="true"
+        android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
-        android:horizontalSpacing="4dp"
+        android:horizontalSpacing="8dp"
         android:nestedScrollingEnabled="true"
         android:numColumns="auto_fit"
         android:scrollbarStyle="outsideInset"
         android:scrollingCache="false"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="4dp" />
+        android:verticalSpacing="8dp" />
 
 </android.support.v4.widget.SwipeRefreshLayout>
