@@ -43,6 +43,7 @@
     <color name="secondaryLightText_lightGreen">#DDDDDD</color>
 
     <!-- Deprecate those with theme values -->
+    <color name="colorDivider">#626262</color>
     <color name="colorBackground">#424242</color>
     <color name="colorBackgroundDark">#212121</color>
     <color name="colorTextLight">#FFFFFF</color>

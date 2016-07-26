@@ -34,7 +34,7 @@
             android:id="@+id/item_files_lastModifiedDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextLightSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1"
             android:maxLines="1" />

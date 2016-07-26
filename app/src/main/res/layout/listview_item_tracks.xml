@@ -54,7 +54,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="@color/colorTextLightSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
