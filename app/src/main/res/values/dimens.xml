@@ -16,9 +16,8 @@
     <dimen name="fragment_content_horizontal_margin">0dp</dimen>
     <dimen name="fragment_content_vertical_margin">0dp</dimen>
     <!-- dimensions for grid items -->
-    <dimen name="grid_item_height">136dp</dimen>
+    <dimen name="grid_item_height">128dp</dimen>
     <dimen name="grid_text_height">48dp</dimen>
-    <dimen name="grid_cover_height">128dp</dimen>
 
     <!-- big notification dimensions -->
     <dimen name="notification_big_height">128dp</dimen>

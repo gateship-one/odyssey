@@ -11,7 +11,7 @@
         android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
-        android:scrollbarStyle="outsideInset"
+        android:scrollbarStyle="outsideOverlay"
         android:divider="@color/colorDivider"
         android:dividerHeight="1sp"/>
 

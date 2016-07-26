@@ -33,7 +33,7 @@
         android:horizontalSpacing="8dp"
         android:nestedScrollingEnabled="true"
         android:numColumns="auto_fit"
-        android:scrollbarStyle="outsideInset"
+        android:scrollbarStyle="outsideOverlay"
         android:scrollingCache="false"
         android:stretchMode="columnWidth"
         android:verticalSpacing="8dp" />

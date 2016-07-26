@@ -32,6 +32,6 @@
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
         android:nestedScrollingEnabled="true"
-        android:scrollbarStyle="outsideInset" />
+        android:scrollbarStyle="outsideOverlay" />
 
 </android.support.v4.widget.SwipeRefreshLayout>
