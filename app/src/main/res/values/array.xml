@@ -7,7 +7,6 @@
         <item>blue</item>
         <item>darkgrey</item>
         <item>brown</item>
-        <item>lightgreen</item>
     </string-array>
 
     <string-array name="preference_album_sort_orders_values">

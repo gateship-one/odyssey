@@ -24,13 +24,9 @@
     <color name="colorPrimaryDark_brown">#5d4037</color>
     <color name="colorAccent_brown">#ff6d00</color>
 
-    <color name="colorPrimary_lightGreen">#8bc34a</color>
-    <color name="colorPrimaryDark_lightGreen">#689f38</color>
-    <color name="colorAccent_lightGreen">#d50000</color>
-
     <color name="colorBackground">#424242</color>
     <color name="colorBackgroundDark">#212121</color>
     <color name="colorTextLight">#FFFFFF</color>
-    <color name="colorTextLightSecondary">#888888</color>
+    <color name="colorTextLightSecondary">#666666</color>
     <color name="colorTextDark">#000000</color>
 </resources>
