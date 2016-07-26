@@ -6,6 +6,7 @@ import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
+import org.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -32,6 +34,11 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      * Adapter used for the ListView
      */
     private TracksListViewAdapter mTracksListViewAdapter;
+
+    /**
+     * Save the swipe layout for later usage
+     */
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * ServiceConnection object to communicate with the PlaybackService
@@ -57,10 +64,24 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_linear, container, false);
+        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        ListView playlistTracksListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
+        ListView playlistTracksListView = (ListView) rootView.findViewById(R.id.list_refresh_listview);
+
+        // get swipe layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.list_refresh_swipe_layout);
+        // set swipe colors
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        // set swipe refresh listener
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
 
@@ -102,6 +123,8 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(true);
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
     }
@@ -127,6 +150,9 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
         mTracksListViewAdapter.swapModel(data);
+
+        // change refresh state
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**
