@@ -37,14 +37,15 @@
                 android:layout_toStartOf="@+id/now_playing_topButtonLayout"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:paddingEnd="@dimen/standard_padding_small"
-                android:paddingStart="@dimen/standard_padding_small">
+                android:paddingEnd="@dimen/material_content_spacing"
+                android:paddingStart="@dimen/material_content_spacing">
 
                 <TextView
                     android:id="@+id/now_playing_trackName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Wild Ones" />
 
                 <LinearLayout
@@ -57,6 +58,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
+                        android:fontFamily="sans-serif-regular"
+                        android:textColor="@color/colorTextLightSecondary"
                         android:text="You Me At Six" />
 
                     <TextView
@@ -64,6 +67,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
+                        android:fontFamily="sans-serif-regular"
+                        android:textColor="@color/colorTextLightSecondary"
                         android:text="@string/separator" />
 
                     <TextView
@@ -71,6 +76,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
+                        android:fontFamily="sans-serif-regular"
+                        android:textColor="@color/colorTextLightSecondary"
                         android:text="Cavalier Youth" />
                 </LinearLayout>
 
@@ -181,8 +188,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
+                    android:paddingLeft="@dimen/material_standard_horizontal_spacing"
+                    android:paddingRight="@dimen/material_standard_horizontal_spacing"
                     android:paddingTop="@dimen/standard_padding_medium">
 
                     <TextView
