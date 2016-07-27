@@ -109,7 +109,7 @@ public class PlaybackServiceStatusHelper {
                 break;
             case STOPPED:
                 stopMediaSession();
-                broadcastPlaybackInformation(null, PlaybackService.PLAYSTATE.STOPPED);
+                broadcastPlaybackInformation(currentTrack, PlaybackService.PLAYSTATE.STOPPED);
                 mNotificationManager.clearNotification();
                 break;
         }
