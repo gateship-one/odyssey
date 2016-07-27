@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="pref_theme"
-        android:title="@string/preference_theme_title"
-        android:summary="@string/preference_theme_summary"
+        android:defaultValue="indigo"
         android:dialogTitle="@string/preference_theme_title"
-        android:persistent="true"
         android:entries="@array/preference_odyssey_styles"
         android:entryValues="@array/preference_style_values"
-        android:defaultValue="indigo"/>
+        android:key="pref_theme"
+        android:persistent="true"
+        android:summary="@string/preference_theme_summary"
+        android:title="@string/preference_theme_title" />
     <CheckBoxPreference
+        android:defaultValue="true"
         android:key="pref_key_album_artists_only"
         android:summary="@string/preference_show_album_artists_only_summary"
-        android:title="@string/preference_show_album_artists_only_title"
-        android:defaultValue="true"/>
+        android:title="@string/preference_show_album_artists_only_title" />
     <ListPreference
-        android:key="pref_album_sort_order"
-        android:title="@string/preference_album_sort_order_title"
-        android:summary="@string/preference_album_sort_order_summary"
+        android:defaultValue="name"
         android:dialogTitle="@string/preference_album_sort_order_message"
-        android:persistent="true"
         android:entries="@array/preference_album_sort_orders"
         android:entryValues="@array/preference_album_sort_orders_values"
-        android:defaultValue="name"/>
-    <Preference android:title="@string/preference_launch_about" >
-        <intent android:action="android.intent.action.VIEW"
-            android:targetPackage="org.odyssey"
-            android:targetClass="org.odyssey.OdysseyAboutActivity"/>
+        android:key="pref_album_sort_order"
+        android:persistent="true"
+        android:summary="@string/preference_album_sort_order_summary"
+        android:title="@string/preference_album_sort_order_title" />
+    <Preference
+        android:key="pref_key_open_equalizer"
+        android:title="@string/popup_menu_action_startequalizer" />
+    <Preference android:title="@string/preference_launch_about">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="org.odyssey.OdysseyAboutActivity"
+            android:targetPackage="org.odyssey" />
     </Preference>
 </PreferenceScreen>

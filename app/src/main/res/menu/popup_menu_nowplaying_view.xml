@@ -4,24 +4,31 @@
     <item
         android:id="@+id/view_nowplaying_action_shuffleplaylist"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/popup_menu_action_shuffleplaylist"/>
+        android:title="@string/popup_menu_action_shuffleplaylist"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/view_nowplaying_action_saveplaylist"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/popup_menu_action_saveplaylist"/>
+        android:title="@string/popup_menu_action_saveplaylist"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/view_nowplaying_action_clearplaylist"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/popup_menu_action_clearplaylist"/>
+        android:title="@string/popup_menu_action_clearplaylist"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/view_nowplaying_action_createbookmark"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/popup_menu_action_createbookmark"/>
+        android:title="@string/popup_menu_action_createbookmark"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/view_nowplaying_action_startequalizer"
+        android:orderInCategory="100"
+        android:title="@string/popup_menu_action_startequalizer"
+        app:showAsAction="never" />
+
 </menu>

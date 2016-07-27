@@ -71,6 +71,7 @@
     <string name="popup_menu_action_clearplaylist">clear playlist</string>
     <string name="popup_menu_action_saveplaylist">save playlist</string>
     <string name="popup_menu_action_createbookmark">create bookmark</string>
+    <string name="popup_menu_action_startequalizer">Open equalizer</string>
 
     <!-- seperator -->
     <string name="separator" translatable="false">" - "</string>
@@ -120,5 +121,7 @@
     Material icons are licensed under the CC-BY license by Google.
     </string>
     <string name="activity_about_version">Version: </string>
+
+    <!-- PBS working message -->
     <string name="playbackservice_working">Please wait</string>
 </resources>

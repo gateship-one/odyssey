@@ -52,8 +52,6 @@
     <string name="permission_request_snackbar_explanation">Zugriff auf den Speicher erforderlich um Musik zu laden.</string>
     <string name="action_add_album">Album hinzufügen</string>
     <string name="action_add_artist_albums">Alben hinzufügen</string>
-    <string name="fragment_bookmarks_autosave_no">Nein</string>
-    <string name="fragment_bookmarks_autosave_yes">Ja</string>
     <string name="fragment_bookmarks_tracks">Lieder</string>
     <string name="fragment_title_bookmarks">Lesezeichen</string>
     <string name="nav_menu_bookmarks">Lesezeichen</string>
@@ -72,4 +70,5 @@
     <string name="playbackservice_working">Bitte warten</string>
     <string name="preference_theme_item_light_green">Helles Grün</string>
     <string name="action_add_directory">Verzeichnis hinzufügen</string>
+    <string name="popup_menu_action_startequalizer">Öffne Equalizer</string>
 </resources>

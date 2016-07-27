@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.ContextCompat;
@@ -110,8 +111,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     TextView mElapsedTime;
     TextView mDuration;
 
-    Window mWindow;
-
     private String mLastAlbumName;
 
     public NowPlayingView(Context context) {
@@ -184,7 +183,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
 
         // Notify the observers about the change
-        if ( mDragStatusReceiver != null ) {
+        if (mDragStatusReceiver != null) {
             mDragStatusReceiver.onDragPositionChanged(offset);
         }
 
@@ -239,6 +238,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.BOOKMARK);
                 saveDialog.setArguments(arguments);
                 saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                return true;
+            case R.id.view_nowplaying_action_startequalizer:
+                // start the audio equalizer
+                Activity activity = (Activity) getContext();
+                if (activity != null) {
+                    Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                    activity.startActivityForResult(startEqualizerIntent, 0);
+                }
                 return true;
             default:
                 return false;
@@ -832,6 +839,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         enum DRAG_STATUS {DRAGGED_UP, DRAGGED_DOWN}
 
         void onStatusChanged(DRAG_STATUS status);
+
         void onDragPositionChanged(float pos);
     }
 }

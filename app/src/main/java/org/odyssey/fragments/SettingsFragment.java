@@ -1,10 +1,11 @@
 package org.odyssey.fragments;
 
-
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.odyssey.OdysseyMainActivity;
@@ -14,6 +15,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Preference openEqualizer = findPreference("pref_key_open_equalizer");
+        openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                // start the audio equalizer
+                Intent viewIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                getActivity().startActivity(viewIntent);
+
+                return true;
+            }
+        });
     }
 
     @Override
