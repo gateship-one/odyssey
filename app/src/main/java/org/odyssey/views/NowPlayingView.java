@@ -15,11 +15,9 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +35,7 @@ import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.FormatHelper;
 import org.odyssey.utils.ThemeUtils;
 
 import java.util.Timer;
@@ -158,7 +157,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * Name of the last played album. This is used for a optimization of cover fetching. If album
      * did not change with a track, there is no need to refetch the cover.
      */
-    private String mLastAlbumName;
+    private String mLastAlbumKey;
 
     public NowPlayingView(Context context) {
         this(context, null, 0);
@@ -190,6 +189,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Slides the view to the given position.
+     *
      * @param slideOffset 0.0 - 1.0 (0.0 is dragged down, 1.0 is dragged up)
      * @return If the move was successful
      */
@@ -207,7 +207,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Called if the user drags the seekbar to a new position or the seekbar is altered from
      * outside. Just do some seeking, if the action is done by the user.
-     * @param seekBar Seekbar of which the progress was changed.
+     *
+     * @param seekBar  Seekbar of which the progress was changed.
      * @param progress The new position of the seekbar.
      * @param fromUser If the action was initiated by the user.
      */
@@ -225,6 +226,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Called if the user starts moving the seekbar. We do not handle this for now.
+     *
      * @param seekBar SeekBar that is used for dragging.
      */
     @Override
@@ -234,6 +236,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Called if the user ends moving the seekbar. We do not handle this for now.
+     *
      * @param seekBar SeekBar that is used for dragging.
      */
     @Override
@@ -244,6 +247,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Set the position of the draggable view to the given offset. This is done without an animation.
      * Can be used to resume a certain state of the view (e.g. on resuming an activity)
+     *
      * @param offset Offset to position the view to from 0.0 - 1.0 (0.0 dragged up, 1.0 dragged down)
      */
     public void setDragOffset(float offset) {
@@ -285,6 +289,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Menu click listener. This method gets called when the user selects an item of the popup menu (right top corner).
+     *
      * @param item MenuItem that was clicked.
      * @return Returns true if the item was handled by this method. False otherwise.
      */
@@ -338,6 +343,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Saves the current playlist. This just calls the PBS and asks him to save the playlist.
+     *
      * @param playlistName Name of the playlist to save.
      */
     public void savePlaylist(String playlistName) {
@@ -353,6 +359,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Saves the current state as a bookmar. This just calls the PBS and asks him to save the state.
+     *
      * @param bookmarkTitle Name of the bookmark to store.
      */
     public void createBookmark(String bookmarkTitle) {
@@ -373,7 +380,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         /**
          * Checks if a given child view should act as part of the drag. This is only true for the header
          * element of this View-class.
-         * @param child Child that was touched by the user
+         *
+         * @param child     Child that was touched by the user
          * @param pointerId Id of the pointer used for touching the view.
          * @return True if the view should be allowed to be used as dragging part, false otheriwse.
          */
@@ -384,11 +392,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Called if the position of the draggable view is changed. This rerequests the layout of the view.
+         *
          * @param changedView The view that was changed.
-         * @param left Left position of the view (should stay constant in this case)
-         * @param top Top position of the view
-         * @param dx Dimension of the width
-         * @param dy Dimension of the height
+         * @param left        Left position of the view (should stay constant in this case)
+         * @param top         Top position of the view
+         * @param dx          Dimension of the width
+         * @param dy          Dimension of the height
          */
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
@@ -415,9 +424,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Called if the user lifts the finger(release the view) with a velocity
+         *
          * @param releasedChild View that was released
-         * @param xvel x position of the view
-         * @param yvel y position of the view
+         * @param xvel          x position of the view
+         * @param yvel          y position of the view
          */
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
@@ -432,6 +442,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Returns the range within a view is allowed to be dragged.
+         *
          * @param child Child to get the dragrange for
          * @return Dragging range
          */
@@ -443,9 +454,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Clamps (limits) the view during dragging to the top or bottom(plus header height)
+         *
          * @param child Child that is being dragged
-         * @param top Top position of the dragged view
-         * @param dy Delta value of the height
+         * @param top   Top position of the dragged view
+         * @param dy    Delta value of the height
          * @return The limited height value (or valid position inside the clamped range).
          */
         @Override
@@ -461,6 +473,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         /**
          * Called when the drag state changed. Informs observers that it is either dragged up or down.
          * Also sets the visibility of button groups in the header
+         *
          * @param state New drag state
          */
         @Override
@@ -509,6 +522,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Handles touch inputs to some views, to make sure, the ViewDragHelper is called.
+     *
      * @param ev Touch input event
      * @return True if handled by this view or false otherwise
      */
@@ -531,9 +545,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Checks if an input to coordinates lay within a View
+     *
      * @param view View to check with
-     * @param x x value of the input
-     * @param y y value of the input
+     * @param x    x value of the input
+     * @param y    y value of the input
      * @return
      */
     private boolean isViewHit(View view, int x, int y) {
@@ -549,7 +564,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Asks the ViewGroup about the size of all its children and paddings around.
-     * @param widthMeasureSpec The width requirements for this view
+     *
+     * @param widthMeasureSpec  The width requirements for this view
      * @param heightMeasureSpec The height requirements for this view
      */
     @Override
@@ -738,6 +754,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Called to open the popup menu on the top right corner.
+     *
      * @param v
      */
     private void showAdditionalOptionsMenu(View v) {
@@ -752,11 +769,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Called when a layout is requested from the graphics system.
+     *
      * @param changed If the layout is changed (size, ...)
-     * @param l Left position
-     * @param t Top position
-     * @param r Right position
-     * @param b Bottom position
+     * @param l       Left position
+     * @param t       Top position
+     * @param r       Right position
+     * @param b       Bottom position
      */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -825,6 +843,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Updates all sub-views with the new information of a new TrackModel.
+     *
      * @param newTrack New Track that is now active.
      */
     private void updateStatus(TrackModel newTrack) {
@@ -854,8 +873,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mTrackAlbumName.setText(currentTrack.getTrackAlbumName());
 
         // Check if the album title changed. If true, start the cover generator thread.
-        // FIXME use album key as a key for comparison
-        if (!currentTrack.getTrackAlbumName().equals(mLastAlbumName)) {
+        if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
             // Show the placeholder image until the cover fetch process finishes
             mCoverImage.setImageResource(R.drawable.cover_placeholder);
             // The same for the small header image
@@ -864,23 +882,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mCoverGenerator.getImage(currentTrack);
         }
         // Save the name of the album for rechecking later
-        // FIXME, use the album key for this
-        mLastAlbumName = currentTrack.getTrackAlbumName();
+        mLastAlbumKey = currentTrack.getTrackAlbumKey();
 
         // Set the artist of the track
         mTrackArtistName.setText(currentTrack.getTrackArtistName());
 
-        // calculate duration in minutes and seconds
-        String seconds = String.valueOf((currentTrack.getTrackDuration() % 60000) / 1000);
+        // Set the track duration
+        mDuration.setText(FormatHelper.formatTracktimeFromMS(currentTrack.getTrackDuration()));
 
-        String minutes = String.valueOf(currentTrack.getTrackDuration() / 60000);
-
-        // FIXME move to updateDurationView
-        if (seconds.length() == 1) {
-            mDuration.setText(minutes + ":0" + seconds);
-        } else {
-            mDuration.setText(minutes + ":" + seconds);
-        }
 
         // set up seekbar (set maximum value, track total duration)
         mPositionSeekbar.setMax((int) currentTrack.getTrackDuration());
@@ -897,42 +906,30 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             final boolean songPlaying = mServiceConnection.getPBS().getPlaying() == 1;
             final boolean isRepeat = mServiceConnection.getPBS().getRepeat() == 1;
 
-            // FIXME, check sanity here
-            Activity activity = (Activity) getContext();
-            if (activity != null) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // update imagebuttons
-                        if (songPlaying) {
-                            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
-                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
-                        } else {
-                            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
-                            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
-                        }
-                        if (isRepeat) {
-                            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
-                        } else {
-                            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
-                        }
-                        if (isRandom) {
-                            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
-                        } else {
-                            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
-                        }
-
-                    }
-                });
+            // update imagebuttons
+            if (songPlaying) {
+                mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
+                mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
+            } else {
+                mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
+                mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
             }
-
+            if (isRepeat) {
+                int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
+            } else {
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+            }
+            if (isRandom) {
+                int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
+            } else {
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+            }
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
+
 
     /**
      * Asks the PBS for the current track position and positions the seekbar accordingly
@@ -950,28 +947,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * Ask the PBS for the track position, calculate the time to a formatted string and set the textview texts.
      */
     private void updateDurationView() {
-        // calculate duration in minutes and seconds
-        String seconds = "";
-        String minutes = "";
+        // Request current elapsed time and format it and set it
         try {
-            if (mServiceConnection != null) {
-                seconds = String.valueOf((mServiceConnection.getPBS().getTrackPosition() % 60000) / 1000);
-                minutes = String.valueOf(mServiceConnection.getPBS().getTrackPosition() / 60000);
-            }
+            mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(mServiceConnection.getPBS().getTrackPosition()));
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        if (seconds.length() == 1) {
-            mElapsedTime.setText(minutes + ":0" + seconds);
-        } else {
-            mElapsedTime.setText(minutes + ":" + seconds);
         }
     }
 
     /**
      * Can be used to register an observer to this view, that is notified when a change of the dragstatus,offset happens.
+     *
      * @param receiver Observer to register, only one observer at a time is possible.
      */
     public void registerDragStatusReceiver(NowPlayingDragStatusReceiver receiver) {
@@ -1004,6 +989,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         public void onConnect() {
             // Initial update of the current track information. Null as Track results in the update status
             // method requesting the current track.
+            // Already running in main UI thread handler here. No need for runOnUIThread
             updateStatus(null);
             // Start a periodically time to update the seekbar. If one is already existing overwrite it.
             if (mRefreshTimer != null) {
@@ -1037,8 +1023,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Called when receiving a NowPlayingInformation parcelable.
+         *
          * @param context Context of the received broadcasts
-         * @param intent Intent with the message content
+         * @param intent  Intent with the message content
          */
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1070,6 +1057,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         /**
          * Called when a bitmap is created
+         *
          * @param bm Bitmap ready for use in the UI
          */
         @Override
@@ -1120,7 +1108,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     public interface NowPlayingDragStatusReceiver {
         // Possible values for DRAG_STATUS (up,down)
-        enum DRAG_STATUS {DRAGGED_UP, DRAGGED_DOWN}
+        enum DRAG_STATUS {
+            DRAGGED_UP, DRAGGED_DOWN
+        }
 
         // Called when the whole view is either completely dragged up or down
         void onStatusChanged(DRAG_STATUS status);
