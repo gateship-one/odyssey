@@ -567,11 +567,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public int getTrackPosition() {
-        if (!mIsPaused) {
-            return mPlayer.getPosition();
-        } else {
-            return mLastPosition;
+        switch (getPlaybackState()) {
+            case PLAYING:
+                return mPlayer.getPosition();
+            case PAUSE:
+                return mLastPosition;
+            case STOPPED:
+                return 0;
         }
+        return 0;
     }
 
     public int getTrackDuration() {
@@ -987,11 +991,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mPlayer.isRunning() && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Player is running and current index seems to be valid
                 return PLAYSTATE.PLAYING;
-            } else if (mPlayer.isPaused()) {
-                return PLAYSTATE.PAUSE;
             } else {
-                // Only case left is that the player is stopped
-                return PLAYSTATE.STOPPED;
+                // Only case left is that the player is paused, because a track is set but its not playing
+                return PLAYSTATE.PAUSE;
             }
         } else {
             // No playback because list is empty
@@ -1224,15 +1226,4 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     }
 
-    /**
-     * Stops the service after a specific amount of time
-     */
-    private class ServiceCancelTask extends TimerTask {
-
-        @Override
-        public void run() {
-            Log.v(TAG, "Cancel odyssey playbackservice");
-            stopService();
-        }
-    }
 }
