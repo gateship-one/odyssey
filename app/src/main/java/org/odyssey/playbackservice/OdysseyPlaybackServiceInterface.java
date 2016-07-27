@@ -5,7 +5,6 @@ import android.os.RemoteException;
 
 import org.odyssey.models.TrackModel;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +68,9 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueTrack(TrackModel track) throws RemoteException {
+    public void enqueueTrack(TrackModel track, boolean asNext) throws RemoteException {
         // Create enqueuetrack control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUETRACK, track);
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUETRACK, track, asNext);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -256,15 +255,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueTrackAsNext(TrackModel track) throws RemoteException {
-        // Create nexttrack control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYNEXT, track);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
     public void shufflePlaylist() throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SHUFFLEPLAYLIST);
         Message msg = mService.get().getHandler().obtainMessage();
@@ -358,8 +348,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueFile(String filePath) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEFILE, filePath);
+    public void enqueueFile(String filePath, boolean asNext) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEFILE, filePath, asNext);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

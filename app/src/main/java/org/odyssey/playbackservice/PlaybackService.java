@@ -303,7 +303,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 //        // Check if mediaplayer needs preparing
         if (!mPlayer.isPrepared() && (mLastPosition != 0) && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            jumpToIndex(mCurrentPlayingIndex, false, (int) mLastPosition);
+            jumpToIndex(mCurrentPlayingIndex, false, mLastPosition);
             Log.v(TAG, "Resuming position before playback to: " + mLastPosition);
             return;
         }
@@ -433,26 +433,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mTempWakelock.acquire(5000);
         mLastPlayingIndex = mCurrentPlayingIndex;
         jumpToIndex(mNextPlayingIndex, true);
-    }
-
-    public void enqueueAsNextTrack(TrackModel track) {
-
-        // Check if currently playing, than enqueue after current song
-        if (mCurrentPlayingIndex >= 0) {
-            // Enqueue in list structure
-            mCurrentList.add(mCurrentPlayingIndex + 1, track);
-            mNextPlayingIndex = mCurrentPlayingIndex + 1;
-            // Set next track to new one
-            setNextTrackForMP();
-        } else {
-            // If not playing just add it to the beginning of the playlist
-            mCurrentList.add(0, track);
-            // Start playback which is probably intended
-            jumpToIndex(0, true);
-        }
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
     }
 
     /**
@@ -650,7 +630,27 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
 
-    public void enqueueTrack(TrackModel track) {
+    /**
+     * Enqueue the given track.
+     *
+     * @param track  the current trackmodel
+     * @param asNext flag if the track should be enqueued as next
+     */
+    public void enqueueTrack(TrackModel track, boolean asNext) {
+        if (asNext) {
+            enqueueAsNextTrack(track);
+        } else {
+            enqueueTrack(track);
+        }
+    }
+
+    /**
+     * Enqueue the given track.
+     *
+     * @param track the current trackmodel
+     */
+    private void enqueueTrack(TrackModel track) {
+
         Log.v(TAG, "Enqueing track: " + track.getTrackName());
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
@@ -665,6 +665,31 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mNextPlayingIndex = mCurrentPlayingIndex + 1;
             setNextTrackForMP();
         }
+        // Send new NowPlaying because playlist changed
+        mPlaybackServiceStatusHelper.updateStatus();
+    }
+
+    /**
+     * Enqueue the given track as next.
+     *
+     * @param track the current trackmodel
+     */
+    private void enqueueAsNextTrack(TrackModel track) {
+
+        // Check if currently playing, than enqueue after current song
+        if (mCurrentPlayingIndex >= 0) {
+            // Enqueue in list structure
+            mCurrentList.add(mCurrentPlayingIndex + 1, track);
+            mNextPlayingIndex = mCurrentPlayingIndex + 1;
+            // Set next track to new one
+            setNextTrackForMP();
+        } else {
+            // If not playing just add it to the beginning of the playlist
+            mCurrentList.add(0, track);
+            // Start playback which is probably intended
+            jumpToIndex(0, true);
+        }
+
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
     }
@@ -908,15 +933,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * creates a trackmodel for a given filepath and add the track to the playlist
      *
      * @param filePath the path to the selected file
+     * @param asNext   flag if the file should be enqueued as next
      */
-    public void enqueueFile(String filePath) {
+    public void enqueueFile(String filePath, boolean asNext) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         FileModel currentFile = new FileModel(filePath);
 
         TrackModel track = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelForFile(currentFile);
 
-        enqueueTrack(track);
+        enqueueTrack(track, asNext);
 
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
@@ -1152,7 +1178,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
                 break;
             default:
-                return;
+                break;
         }
 
     }

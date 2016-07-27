@@ -61,11 +61,8 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_RANDOM:
                     mService.get().setRandom(msgObj.getIntParam());
                     break;
-                case ODYSSEY_PLAYNEXT:
-                    mService.get().enqueueAsNextTrack(msgObj.getTrack());
-                    break;
                 case ODYSSEY_ENQUEUETRACK:
-                    mService.get().enqueueTrack(msgObj.getTrack());
+                    mService.get().enqueueTrack(msgObj.getTrack(), msgObj.getBoolParam());
                     break;
                 case ODYSSEY_ENQUEUETRACKS:
                     mService.get().enqueueTracks(msgObj.getTrackList());
@@ -107,7 +104,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().createBookmark(msgObj.getStringParam());
                     break;
                 case ODYSSEY_ENQUEUEFILE:
-                    mService.get().enqueueFile(msgObj.getStringParam());
+                    mService.get().enqueueFile(msgObj.getStringParam(), msgObj.getBoolParam());
                     break;
                 case ODYSSEY_ENQUEUEDIRECTORY:
                     mService.get().enqueueDirectory(msgObj.getStringParam());

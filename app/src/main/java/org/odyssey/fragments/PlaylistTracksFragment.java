@@ -250,11 +250,11 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      * @param position the position of the selected track in the adapter
      */
     private void enqueueTrack(int position) {
-        // Enqueue single track
+
+        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
 
         try {
-            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
-            mServiceConnection.getPBS().enqueueTrack(track);
+            mServiceConnection.getPBS().enqueueTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -267,11 +267,11 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      * @param position the position of the selected track in the adapter
      */
     private void enqueueTrackAsNext(int position) {
-        // Enqueue single track as next
+
+        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
 
         try {
-            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
-            mServiceConnection.getPBS().enqueueTrackAsNext(track);
+            mServiceConnection.getPBS().enqueueTrack(track, true);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

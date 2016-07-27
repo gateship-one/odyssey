@@ -62,9 +62,7 @@ interface IOdysseyPlaybackService {
 	// track is the full uri with "file://" !
 	void setNextTrack(String track);
 
-	void enqueueTrackAsNext(in TrackModel track);
-
-	void enqueueTrack(in TrackModel track);
+	void enqueueTrack(in TrackModel track, boolean asNext);
 	void enqueueTracks(in List<TrackModel> tracks);
 	void dequeueTrack(in TrackModel track);
 	void dequeueTracks(in List<TrackModel> tracks);
@@ -79,7 +77,7 @@ interface IOdysseyPlaybackService {
 	void createBookmark(String bookmarkTitle);
 
 	// file explorer methods
-	void enqueueFile(String filePath);
+	void enqueueFile(String filePath, boolean asNext);
 	void enqueueDirectory(String directoryPath);
 
 	// Information getters

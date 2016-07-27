@@ -8,6 +8,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/fragment_files_action_enqueueasnext"
+        android:orderInCategory="100"
+        android:title="@string/context_menu_action_enqueueasnext"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/fragment_files_action_play_file"
         android:orderInCategory="100"
         android:title="@string/context_menu_action_play_file"

@@ -15,7 +15,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 
-public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener{
+public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener {
 
     private final ListView mListView;
     private final Context mContext;
@@ -25,9 +25,12 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private PlaybackServiceConnection mPlaybackServiceConnection;
 
     public CurrentPlaylistView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
+    /**
+     * Set up the layout of the view.
+     */
     public CurrentPlaylistView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.view_current_playlist, this, true);
@@ -40,25 +43,21 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mContext = context;
     }
 
-    public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection){
+    /**
+     * Set the PBSServiceConnection object.
+     * This will create a new Adapter.
+     */
+    public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection) {
         mPlaybackServiceConnection = playbackServiceConnection;
 
         mCurrentPlaylistListViewAdapter = new CurrentPlaylistListViewAdapter(mContext, mPlaybackServiceConnection);
 
         mListView.setAdapter(mCurrentPlaylistListViewAdapter);
-        try {
-            mListView.setSelection(mPlaybackServiceConnection.getPBS().getCurrentIndex());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void playlistChanged(NowPlayingInformation info) {
-        mCurrentPlaylistListViewAdapter.updateState(info);
-        mListView.setSelection(info.getPlayingIndex());
-    }
-
-
+    /**
+     * Play the selected track.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
@@ -69,6 +68,18 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         }
     }
 
+    /**
+     * The playlist has changed so update the view.
+     */
+    public void playlistChanged(NowPlayingInformation info) {
+        mCurrentPlaylistListViewAdapter.updateState(info);
+    }
+
+    /**
+     * Removes the selected track from the playlist.
+     *
+     * @param position The position of the track in the playlist.
+     */
     public void removeTrack(int position) {
         try {
             mPlaybackServiceConnection.getPBS().dequeueTrackIndex(position);
@@ -78,6 +89,11 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         }
     }
 
+    /**
+     * Enqueue the selected track as next track in the playlist.
+     *
+     * @param position The position of the track in the playlist.
+     */
     public void enqueueTrackAsNext(int position) {
         // save track
         TrackModel track = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
@@ -87,25 +103,32 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
 
         try {
             // enqueue removed track as next
-            mPlaybackServiceConnection.getPBS().enqueueTrackAsNext(track);
+            mPlaybackServiceConnection.getPBS().enqueueTrack(track, true);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
+    /**
+     * Return the album key for the selected track.
+     *
+     * @param position The position of the track in the playlist.
+     */
     public String getAlbumKey(int position) {
         TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
 
-        String albumKey = clickedTrack.getTrackAlbumKey();
-
-        return albumKey;
+        return clickedTrack.getTrackAlbumKey();
     }
 
+    /**
+     * Return the selected artist title for the selected track.
+     *
+     * @param position The position of the track in the playlist.
+     */
     public String getArtistTitle(int position) {
         TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
-        String artistTitle = clickedTrack.getTrackArtistName();
 
-        return artistTitle;
+        return clickedTrack.getTrackArtistName();
     }
 }

@@ -212,10 +212,10 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
         switch (item.getItemId()) {
             case R.id.fragment_all_tracks_action_enqueue:
-                enqueueTrack(info.position);
+                enqueueTrack(info.position, false);
                 return true;
             case R.id.fragment_all_tracks_action_enqueueasnext:
-                enqueueTrackAsNext(info.position);
+                enqueueTrack(info.position, true);
                 return true;
             case R.id.fragment_all_tracks_action_play:
                 playTrack(info.position);
@@ -256,7 +256,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
         try {
             mServiceConnection.getPBS().clearPlaylist();
-            enqueueTrack(position);
+            enqueueTrack(position, false);
             mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
@@ -268,30 +268,14 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
      * Call the PBS to enqueue the selected track.
      *
      * @param position the position of the selected track in the adapter
+     * @param asNext   flag if the track should be enqueued as next
      */
-    private void enqueueTrack(int position) {
-        // Enqueue single track
+    private void enqueueTrack(int position, boolean asNext) {
+
+        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
 
         try {
-            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
-            mServiceConnection.getPBS().enqueueTrack(track);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Call the PBS to enqueue the selected track as the next track.
-     *
-     * @param position the position of the selected track in the adapter
-     */
-    private void enqueueTrackAsNext(int position) {
-        // Enqueue single track
-
-        try {
-            TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
-            mServiceConnection.getPBS().enqueueTrackAsNext(track);
+            mServiceConnection.getPBS().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

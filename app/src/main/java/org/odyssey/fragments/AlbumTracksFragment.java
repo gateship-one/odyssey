@@ -221,10 +221,10 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
 
         switch (item.getItemId()) {
             case R.id.fragment_album_tracks_action_enqueue:
-                enqueueTrack(info.position);
+                enqueueTrack(info.position, false);
                 return true;
             case R.id.fragment_album_tracks_action_enqueueasnext:
-                enqueueTrackAsNext(info.position);
+                enqueueTrack(info.position, true);
                 return true;
             case R.id.fragment_album_tracks_action_play:
                 playAlbum(info.position);
@@ -296,26 +296,16 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
 
     /**
      * Call the PBS to enqueue the selected track.
+     *
+     * @param position the position of the selected track in the adapter
+     * @param asNext   flag if the track should be enqueued as next
      */
-    private void enqueueTrack(int position) {
-        // Enqueue single track
+    private void enqueueTrack(int position, boolean asNext) {
+
+        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack((TrackModel) mTracksListViewAdapter.getItem(position));
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Call the PBS to enqueue the selected track as next track.
-     */
-    private void enqueueTrackAsNext(int position) {
-        // Enqueue single track
-
-        try {
-            mServiceConnection.getPBS().enqueueTrackAsNext((TrackModel) mTracksListViewAdapter.getItem(position));
+            mServiceConnection.getPBS().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -328,14 +318,11 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
     private void enqueueAlbum() {
         // Enqueue complete album
 
-        // enqueue albumtracks
-        for (int i = 0; i < mTracksListViewAdapter.getCount(); i++) {
-            try {
-                mServiceConnection.getPBS().enqueueTrack((TrackModel) mTracksListViewAdapter.getItem(i));
-            } catch (RemoteException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        try {
+            mServiceConnection.getPBS().enqueueAlbum(mAlbumKey);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

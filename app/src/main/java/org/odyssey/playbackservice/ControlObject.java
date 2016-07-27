@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class ControlObject {
     public enum PLAYBACK_ACTION {
         ODYSSEY_PLAY, ODYSSEY_PAUSE, ODYSSEY_RESUME, ODYSSEY_TOGGLEPAUSE, ODYSSEY_STOP, ODYSSEY_NEXT, ODYSSEY_PREVIOUS, ODYSSEY_SEEKTO, ODYSSEY_JUMPTO, ODYSSEY_REPEAT, ODYSSEY_RANDOM,
-        ODYSSEY_PLAYNEXT, ODYSSEY_ENQUEUETRACK, ODYSSEY_ENQUEUETRACKS, ODYSSEY_DEQUEUETRACK, ODYSSEY_DEQUEUEINDEX, ODYSSEY_DEQUEUETRACKS, ODYSSEY_SETNEXTRACK, ODYSSEY_CLEARPLAYLIST,
+        ODYSSEY_ENQUEUETRACK, ODYSSEY_ENQUEUETRACKS, ODYSSEY_DEQUEUETRACK, ODYSSEY_DEQUEUEINDEX, ODYSSEY_DEQUEUETRACKS, ODYSSEY_SETNEXTRACK, ODYSSEY_CLEARPLAYLIST,
         ODYSSEY_SHUFFLEPLAYLIST, ODYSSEY_PLAYALLTRACKS, ODYSSEY_PLAYALLTRACKSSHUFFLED, ODYSSEY_SAVEPLAYLIST, ODYSSEY_RESUMEBOOKMARK, ODYSSEY_DELETEBOOKMARK, ODYSSEY_CREATEBOOKMARK,
         ODYSSEY_ENQUEUEPLAYLIST, ODYSSEY_ENQUEUEFILE, ODYSSEY_ENQUEUEDIRECTORY, ODYSSEY_ENQUEUEALBUM, ODYSSEY_ENQUEUEARTIST
     }
@@ -30,11 +30,6 @@ public class ControlObject {
         mAction = action;
     }
 
-    public ControlObject(PLAYBACK_ACTION action, boolean param) {
-        mBoolparam = param;
-        mAction = action;
-    }
-
     public ControlObject(PLAYBACK_ACTION action, int param) {
         mIntparam = param;
         mAction = action;
@@ -45,6 +40,12 @@ public class ControlObject {
         mAction = action;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, String param, boolean asNext) {
+        mAction = action;
+        mStringparam = param;
+        mBoolparam = asNext;
+    }
+
     public ControlObject(PLAYBACK_ACTION action, ArrayList<TrackModel> list) {
         mTrackList = list;
         mAction = action;
@@ -53,6 +54,12 @@ public class ControlObject {
     public ControlObject(PLAYBACK_ACTION action, TrackModel track) {
         mAction = action;
         mTrack = track;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, TrackModel track, boolean asNext) {
+        mAction = action;
+        mTrack = track;
+        mBoolparam = asNext;
     }
 
     public ControlObject(PLAYBACK_ACTION action, long param) {

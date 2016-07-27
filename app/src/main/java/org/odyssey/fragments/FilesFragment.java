@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -271,7 +270,10 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
                 playFolder(info.position);
                 return true;
             case R.id.fragment_files_action_add_file:
-                enqueueFile(info.position);
+                enqueueFile(info.position, false);
+                return true;
+            case R.id.fragment_files_action_enqueueasnext:
+                enqueueFile(info.position, true);
                 return true;
             case R.id.fragment_files_action_play_file:
                 playFile(info.position);
@@ -342,7 +344,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
         try {
             mServiceConnection.getPBS().clearPlaylist();
-            enqueueFile(position);
+            enqueueFile(position, false);
             mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
@@ -354,17 +356,14 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * Call the PBS to enqueue the selected file.
      *
      * @param position the position of the selected file
+     * @param asNext   flag if the file should be enqueued as next
      */
-    private void enqueueFile(int position) {
-        // Enqueue single file
+    private void enqueueFile(int position, boolean asNext) {
 
         FileModel currentFile = (FileModel) mFilesListViewAdapter.getItem(position);
 
-        // get a trackmodel for the current file
-        //TrackModel track = mFileExplorerHelper.getTrackModelForFile(currentFile);
-
         try {
-            mServiceConnection.getPBS().enqueueFile(currentFile.getPath());
+            mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -378,7 +377,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * @param position the position of the selected folder
      */
     private void playFolder(int position) {
-        // clear playlist and play all music files in the selected folder
 
         try {
             mServiceConnection.getPBS().clearPlaylist();
@@ -396,7 +394,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * @param position the position of the selected folder
      */
     private void enqueueFolder(int position) {
-        // Enqueue all music files in the current folder
 
         FileModel currentFolder = (FileModel) mFilesListViewAdapter.getItem(position);
 
@@ -414,6 +411,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * A previous playlist will be cleared.
      */
     private void playCurrentFolder() {
+
         try {
             mServiceConnection.getPBS().clearPlaylist();
             enqueueCurrentFolder();
@@ -428,6 +426,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      * Call the PBS to enqueue all music in the current folder and his children.
      */
     private void enqueueCurrentFolder() {
+
         try {
             mServiceConnection.getPBS().enqueueDirectory(mCurrentDirectory.getPath());
             //enqueueFolder(position);
