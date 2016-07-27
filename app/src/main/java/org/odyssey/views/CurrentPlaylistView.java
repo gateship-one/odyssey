@@ -53,6 +53,13 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mCurrentPlaylistListViewAdapter = new CurrentPlaylistListViewAdapter(mContext, mPlaybackServiceConnection);
 
         mListView.setAdapter(mCurrentPlaylistListViewAdapter);
+
+        // set the selection to the current track, so the list view will positioned appropriately
+        try {
+            mListView.setSelection(mPlaybackServiceConnection.getPBS().getCurrentIndex());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,6 +80,8 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void playlistChanged(NowPlayingInformation info) {
         mCurrentPlaylistListViewAdapter.updateState(info);
+        // set the selection to the current track, so the list view will positioned appropriately
+        mListView.setSelection(info.getPlayingIndex());
     }
 
     /**
