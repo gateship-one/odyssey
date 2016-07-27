@@ -14,7 +14,7 @@ import org.odyssey.playbackservice.RemoteControlReceiver;
 import org.odyssey.utils.CoverBitmapGenerator;
 
 public class PlaybackServiceStatusHelper {
-    public enum SLS_STATES { SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE }
+    public enum SLS_STATES {SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE}
 
     /**
      * INTENT Name of the NowPlayingInformation.
@@ -22,7 +22,7 @@ public class PlaybackServiceStatusHelper {
     public static final String INTENT_NOWPLAYINGNAME = "OdysseyNowPlaying";
 
     /**
-     *  Broadcast message to filter to.
+     * Broadcast message to filter to.
      */
     public static final String MESSAGE_NEWTRACKINFORMATION = "org.odyssey.newtrackinfo";
     public static final String MESSAGE_WORKING = "org.odyssey.working";
@@ -54,7 +54,7 @@ public class PlaybackServiceStatusHelper {
         mBitmapGenerator = new CoverBitmapGenerator(mPlaybackService, new BitmapCoverListener());
 
         // Register the button receiver
-        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService,0, new Intent(mPlaybackService,RemoteControlReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService, 0, new Intent(mPlaybackService, RemoteControlReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
         mMediaSession.setMediaButtonReceiver(mediaButtonPendingIntent);
 
         // Initialize the notification manager
@@ -89,11 +89,11 @@ public class PlaybackServiceStatusHelper {
         TrackModel currentTrack = mPlaybackService.getCurrentTrack();
         PlaybackService.PLAYSTATE playbackState = mPlaybackService.getPlaybackState();
         // Ask playback service for its state
-        switch ( playbackState ) {
+        switch (playbackState) {
             case PLAYING:
             case PAUSE:
                 // Call the notification manager, it handles the rest.
-                mNotificationManager.updateNotification(currentTrack,playbackState,mMediaSession.getSessionToken());
+                mNotificationManager.updateNotification(currentTrack, playbackState, mMediaSession.getSessionToken());
 
                 // Update MediaSession metadata.
                 updateMetadata(currentTrack, playbackState);
@@ -102,7 +102,7 @@ public class PlaybackServiceStatusHelper {
                 broadcastPlaybackInformation(currentTrack, playbackState);
 
                 // Only update cover image if album changed to preserve energy
-                if ( mLastTrack == null || !currentTrack.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                if (mLastTrack == null || !currentTrack.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
                     mLastTrack = currentTrack;
                     startCoverImageTask();
                 }
@@ -119,12 +119,13 @@ public class PlaybackServiceStatusHelper {
     /**
      * Updates the Metadata from Androids MediaSession. This sets track/album and stuff
      * for a lockscreen image for example.
-     * @param track Current track.
+     *
+     * @param track         Current track.
      * @param playbackState State of the PlaybackService.
      */
     private void updateMetadata(TrackModel track, PlaybackService.PLAYSTATE playbackState) {
         if (track != null) {
-            if ( playbackState == PlaybackService.PLAYSTATE.PLAYING ) {
+            if (playbackState == PlaybackService.PLAYSTATE.PLAYING) {
                 mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING, 0, 1.0f)
                         .setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE +
                                 PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS +
@@ -139,7 +140,7 @@ public class PlaybackServiceStatusHelper {
             // Try to get old metadata to save image retrieval.
             MediaMetadata oldData = mMediaSession.getController().getMetadata();
             MediaMetadata.Builder metaDataBuilder;
-            if (oldData == null ) {
+            if (oldData == null) {
                 metaDataBuilder = new MediaMetadata.Builder();
             } else {
                 metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
@@ -159,6 +160,7 @@ public class PlaybackServiceStatusHelper {
     /**
      * Broadcasts the new NowPlayingInformation which is received by multiple instances.
      * NowPlayingView in the GUI, Widget for example receives it.
+     *
      * @param track Currently played track.
      * @param state State of the PlaybackService
      */
@@ -175,7 +177,7 @@ public class PlaybackServiceStatusHelper {
             String playingURL = track.getTrackURL();
             int playingIndex = mPlaybackService.getCurrentIndex();
 
-            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistLength,track);
+            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistLength, track);
 
             // Add nowplayingInfo to parcel
             broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
@@ -197,6 +199,7 @@ public class PlaybackServiceStatusHelper {
 
     /**
      * Broadcasts the state of the PlaybackService in order to show a progressDialog for long operations.
+     *
      * @param state State of the PlaybackService
      */
     public void broadcastPlaybackServiceState(PlaybackService.PLAYBACKSERVICESTATE state) {
@@ -218,14 +221,15 @@ public class PlaybackServiceStatusHelper {
     /**
      * Notify the Simple Last.FM scrobbler with its specific api.
      * Documentation here: https://github.com/tgwizard/sls/wiki/Developer's-API.
-     *
+     * <p/>
      * It is better to call this directly from the PlaybackService because it knows
      * when a song starts AND finishes.
+     *
      * @param currentTrack currently changed track.
-     * @param slsState PlaybackState but NOT in the same format as the PlaybackService States. See
-     *                 documentation.
+     * @param slsState     PlaybackState but NOT in the same format as the PlaybackService States. See
+     *                     documentation.
      */
-    public void notifyLastFM(TrackModel currentTrack, SLS_STATES slsState ) {
+    public void notifyLastFM(TrackModel currentTrack, SLS_STATES slsState) {
         Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
         bCast.putExtra("state", slsState.ordinal());
         bCast.putExtra("app-name", "Odyssey");
@@ -244,7 +248,7 @@ public class PlaybackServiceStatusHelper {
         // Try to get old metadata to save image retrieval.
         MediaMetadata oldData = mMediaSession.getController().getMetadata();
         MediaMetadata.Builder metaDataBuilder;
-        if (oldData == null ) {
+        if (oldData == null) {
             metaDataBuilder = new MediaMetadata.Builder();
         } else {
             metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
@@ -296,7 +300,7 @@ public class PlaybackServiceStatusHelper {
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
-            mPlaybackService.seekTo((int)pos);
+            mPlaybackService.seekTo((int) pos);
         }
     }
 
