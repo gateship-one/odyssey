@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -29,7 +28,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -79,7 +77,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
 
     public ProgressDialog mProgressDialog;
-    private PBSOperationFinishedReceiver mPBSOerPbsOperationFinishedReceiver = null;
+    private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,15 +176,20 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (mPBSOerPbsOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOerPbsOperationFinishedReceiver);
-            mPBSOerPbsOperationFinishedReceiver = null;
+        if (mPBSOperationFinishedReceiver != null) {
+            unregisterReceiver(mPBSOperationFinishedReceiver);
+            mPBSOperationFinishedReceiver = null;
         }
-        mPBSOerPbsOperationFinishedReceiver = new PBSOperationFinishedReceiver();
+        mPBSOperationFinishedReceiver = new PBSOperationFinishedReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(PlaybackServiceStatusHelper.MESSAGE_IDLE);
         filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
-        registerReceiver(mPBSOerPbsOperationFinishedReceiver, filter);
+        registerReceiver(mPBSOperationFinishedReceiver, filter);
+
+        // if progress dialog is still active close it
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -237,9 +240,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        if (mPBSOerPbsOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOerPbsOperationFinishedReceiver);
-            mPBSOerPbsOperationFinishedReceiver = null;
+        if (mPBSOperationFinishedReceiver != null) {
+            unregisterReceiver(mPBSOperationFinishedReceiver);
+            mPBSOperationFinishedReceiver = null;
         }
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
