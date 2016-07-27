@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.odyssey.models.TrackModel;
+import org.odyssey.utils.FormatHelper;
 import org.odyssey.views.TracksListViewItem;
 
 public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
@@ -17,6 +18,14 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
         mContext = context;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -29,21 +38,12 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
         String trackInformation = track.getTrackArtistName() + " - " + track.getTrackAlbumName();
 
         // tracknumber
-        String trackNumber = String.valueOf(track.getTrackNumber());
-        if(trackNumber.length() >= 4) {
-            trackNumber = trackNumber.substring(2);
-        }
+        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+
         // duration
-        String seconds = String.valueOf((track.getTrackDuration() % 60000) / 1000);
-        if(seconds.length() == 1) {
-            seconds = "0" + seconds;
-        }
+        String trackDuration = FormatHelper.formatTracktimeFromMS(track.getTrackDuration());
 
-        String minutes = String.valueOf(track.getTrackDuration() / 60000);
-
-        String trackDuration = minutes + ":" + seconds;
-
-        if(convertView != null) {
+        if (convertView != null) {
             TracksListViewItem tracksListViewItem = (TracksListViewItem) convertView;
             tracksListViewItem.setNumber(trackNumber);
             tracksListViewItem.setTitle(trackTitle);

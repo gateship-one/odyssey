@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.FormatHelper;
 import org.odyssey.views.CurrentPlaylistViewItem;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
@@ -34,11 +35,21 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Return the length of the model data of this adapter.
+     */
     @Override
     public int getCount() {
         return mPlaylistSize;
     }
 
+    /**
+     * Simple getter for the model data.
+     * This method will call the PBS to get the trackmodel from the current playlist.
+     *
+     * @param position Index of the track to get. No check for boundaries here.
+     * @return The trackmodel at index position.
+     */
     @Override
     public Object getItem(int position) {
         try {
@@ -52,14 +63,29 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * Simple position->id mapping here.
+     *
+     * @param position Position to get the id from
+     * @return The id (position)
+     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        // get the trackmodel for the current position from the PBS
         TrackModel track;
         try {
             if (mPlayBackServiceConnection != null) {
@@ -78,22 +104,12 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
         String trackInformation = track.getTrackArtistName() + " - " + track.getTrackAlbumName();
 
         // tracknumber
-        String trackNumber = String.valueOf(track.getTrackNumber());
+        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
 
-        if(trackNumber.length() >= 4) {
-            trackNumber = trackNumber.substring(2);
-        }
         // duration
-        String seconds = String.valueOf((track.getTrackDuration() % 60000) / 1000);
-        if(seconds.length() == 1) {
-            seconds = "0" + seconds;
-        }
+        String trackDuration = FormatHelper.formatTracktimeFromMS(track.getTrackDuration());
 
-        String minutes = String.valueOf(track.getTrackDuration() / 60000);
-
-        String trackDuration = minutes + ":" + seconds;
-
-        if(convertView != null) {
+        if (convertView != null) {
             CurrentPlaylistViewItem currentPlaylistViewItem = (CurrentPlaylistViewItem) convertView;
             currentPlaylistViewItem.setNumber(trackNumber);
             currentPlaylistViewItem.setTitle(trackTitle);
@@ -103,15 +119,20 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
             convertView = new CurrentPlaylistViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
         }
 
-        if(position == mCurrentPlayingIndex) {
-            ((CurrentPlaylistViewItem)convertView).setPlaying(true);
+        if (position == mCurrentPlayingIndex) {
+            ((CurrentPlaylistViewItem) convertView).setPlaying(true);
         } else {
-            ((CurrentPlaylistViewItem)convertView).setPlaying(false);
+            ((CurrentPlaylistViewItem) convertView).setPlaying(false);
         }
 
         return convertView;
     }
 
+    /**
+     * Update the playlist size and the index of the current track.
+     *
+     * @param info The NowplayingInformation object containing the new playlist size and the current track index
+     */
     public void updateState(NowPlayingInformation info) {
         mCurrentPlayingIndex = info.getPlayingIndex();
         mPlaylistSize = info.getPlaylistLength();

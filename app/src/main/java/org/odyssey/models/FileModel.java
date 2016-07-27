@@ -20,14 +20,11 @@ package org.odyssey.models;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class FileModel implements GenericModel {
 
@@ -72,13 +69,10 @@ public class FileModel implements GenericModel {
     }
 
     /**
-     * Return the formatted date string for the last modified value of the file object.
+     * return the lastModified value of the file object
      */
-    public String getLastModifiedDate() {
-        long lastModified = mFile.lastModified();
-        Date date = new Date(lastModified);
-        
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
+    public long getLastModified() {
+        return mFile.lastModified();
     }
 
     /**

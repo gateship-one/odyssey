@@ -6,11 +6,8 @@ import android.view.ViewGroup;
 
 import org.odyssey.R;
 import org.odyssey.models.BookmarkModel;
+import org.odyssey.utils.FormatHelper;
 import org.odyssey.views.BookmarksListViewItem;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> {
 
@@ -22,6 +19,14 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         mContext = context;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         BookmarkModel bookmark = mModelData.get(position);
@@ -32,11 +37,8 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         // number of tracks
         String numberOfTracks = Integer.toString(bookmark.getNumberOfTracks()) + " " + mContext.getString(R.string.fragment_bookmarks_tracks);
 
-        // get formatted date string
-        long timestamp = bookmark.getId();
-
-        Date date = new Date(timestamp);
-        String dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
+        // get date string
+        String dateString = FormatHelper.formatTimeStampToString(bookmark.getId());
 
         if (convertView != null) {
             BookmarksListViewItem bookmarksListViewItem = (BookmarksListViewItem) convertView;

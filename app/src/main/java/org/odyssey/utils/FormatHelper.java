@@ -19,6 +19,8 @@
 package org.odyssey.utils;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class FormatHelper {
@@ -26,7 +28,7 @@ public class FormatHelper {
      * Helper method to uniformly format length strings in Odyssey.
      *
      * @param length Length value in milliseconds
-     * @return The formatted string, usable in the ui
+     * @return the formatted string, usable in the ui
      */
     public static String formatTracktimeFromMS(long length) {
 
@@ -47,5 +49,34 @@ public class FormatHelper {
         }
 
         return retVal;
+    }
+
+    /**
+     * Helper method to format the mediastore track number to a track number string
+     *
+     * @param trackNumber the tracknumber from the mediastore
+     * @return the formatted string, usable in the ui
+     */
+    public static String formatTrackNumber(int trackNumber) {
+
+        String trackNumberString = String.valueOf(trackNumber);
+
+        // mediastore combines track and cd number in one string so cut off the first two literals
+        if (trackNumberString.length() >= 4) {
+            trackNumberString = trackNumberString.substring(2);
+        }
+
+        return trackNumberString;
+    }
+
+    /**
+     * Helper method to format a timestamp to a uniformly format date string in Odyssey.
+     *
+     * @param timestamp The timestamp in milliseconds
+     * @return the formatted string, usable in the ui
+     */
+    public static String formatTimeStampToString(long timestamp) {
+        Date date = new Date(timestamp);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
     }
 }

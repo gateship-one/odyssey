@@ -2,26 +2,15 @@ package org.odyssey.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.SectionIndexer;
 
 import org.odyssey.R;
 import org.odyssey.models.FileModel;
-import org.odyssey.models.GenericModel;
+import org.odyssey.utils.FormatHelper;
 import org.odyssey.utils.ThemeUtils;
 import org.odyssey.views.FilesListViewItem;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
 
@@ -67,7 +56,7 @@ public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
         }
 
         // last modified
-        String lastModifiedDateString = file.getLastModifiedDate();
+        String lastModifiedDateString = FormatHelper.formatTimeStampToString(file.getLastModified());
 
         // Check if a view can be recycled
         if (convertView != null) {
