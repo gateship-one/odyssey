@@ -75,42 +75,89 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     private int mDragRange;
 
+    /**
+     * Main cover imageview
+     */
     private ImageView mCoverImage;
+
+    /**
+     * Small cover image, part of the draggable header
+     */
     private ImageView mTopCoverImage;
 
+    /**
+     * View that contains the playlist ListVIew
+     */
     private CurrentPlaylistView mPlaylistView;
+
+    /**
+     * ViewSwitcher used for switching between the main cover image and the playlist
+     */
     private ViewSwitcher mViewSwitcher;
 
+    /**
+     * Connection to the PBS for requesting information about current song/status.
+     */
     private PlaybackServiceConnection mServiceConnection = null;
+
+    /**
+     * Receiver for NowPlayingInformation items (that include information about state changes, song
+     * changes).
+     */
     private NowPlayingReceiver mNowPlayingReceiver = null;
+
+    /**
+     * Asynchronous generator for coverimages for TrackItems.
+     */
     private CoverBitmapGenerator mCoverGenerator = null;
+
+    /**
+     * Timer that periodically updates the state of the view (seekbar)
+     */
     private Timer mRefreshTimer = null;
 
-    // Dragstatus receiver (usually the hosting activity)
+    /**
+     * Observer for information about the state of the draggable part of this view.
+     * This is probably the Activity of which this view is part of.
+     * (Used for smooth statusbar transition and state resuming)
+     */
     private NowPlayingDragStatusReceiver mDragStatusReceiver = null;
 
-    // buttons
+    /**
+     * Top buttons in the draggable header part.
+     */
     ImageButton mTopPlayPauseButton;
     ImageButton mTopPlaylistButton;
     ImageButton mTopMenuButton;
 
-    // bottom buttons
+    /**
+     * Buttons in the bottom part of the view
+     */
     ImageButton mBottomRepeatButton;
     ImageButton mBottomPreviousButton;
     ImageButton mBottomPlayPauseButton;
     ImageButton mBottomNextButton;
     ImageButton mBottomRandomButton;
 
-    // seekbar
+    /**
+     * Seekbar used for seeking and informing the user of the current playback position.
+     */
     SeekBar mPositionSeekbar;
 
-    // textviews
+    /**
+     * Various textviews for track information
+     */
     TextView mTrackName;
     TextView mTrackArtistName;
     TextView mTrackAlbumName;
     TextView mElapsedTime;
     TextView mDuration;
 
+
+    /**
+     * Name of the last played album. This is used for a optimization of cover fetching. If album
+     * did not change with a track, there is no need to refetch the cover.
+     */
     private String mLastAlbumName;
 
     public NowPlayingView(Context context) {
@@ -126,14 +173,26 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDragHelper = ViewDragHelper.create(this, 1f, new BottomDragCallbackHelper());
     }
 
+    /**
+     * Maximizes this view with an animation.
+     */
     public void maximize() {
         smoothSlideTo(0f);
     }
 
+
+    /**
+     * Minimizes the view with an animation.
+     */
     public void minimize() {
         smoothSlideTo(1f);
     }
 
+    /**
+     * Slides the view to the given position.
+     * @param slideOffset 0.0 - 1.0 (0.0 is dragged down, 1.0 is dragged up)
+     * @return If the move was successful
+     */
     boolean smoothSlideTo(float slideOffset) {
         final int topBound = getPaddingTop();
         int y = (int) (topBound + slideOffset * mDragRange);
@@ -145,6 +204,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         return false;
     }
 
+    /**
+     * Called if the user drags the seekbar to a new position or the seekbar is altered from
+     * outside. Just do some seeking, if the action is done by the user.
+     * @param seekBar Seekbar of which the progress was changed.
+     * @param progress The new position of the seekbar.
+     * @param fromUser If the action was initiated by the user.
+     */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
@@ -157,16 +223,29 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Called if the user starts moving the seekbar. We do not handle this for now.
+     * @param seekBar SeekBar that is used for dragging.
+     */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * Called if the user ends moving the seekbar. We do not handle this for now.
+     * @param seekBar SeekBar that is used for dragging.
+     */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * Set the position of the draggable view to the given offset. This is done without an animation.
+     * Can be used to resume a certain state of the view (e.g. on resuming an activity)
+     * @param offset Offset to position the view to from 0.0 - 1.0 (0.0 dragged up, 1.0 dragged down)
+     */
     public void setDragOffset(float offset) {
         if (offset > 1.0f || offset < 0.0f) {
             mDragOffset = 1.0f;
@@ -204,6 +283,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Menu click listener. This method gets called when the user selects an item of the popup menu (right top corner).
+     * @param item MenuItem that was clicked.
+     * @return Returns true if the item was handled by this method. False otherwise.
+     */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -252,6 +336,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Saves the current playlist. This just calls the PBS and asks him to save the playlist.
+     * @param playlistName Name of the playlist to save.
+     */
     public void savePlaylist(String playlistName) {
 
         // call pbs and save current playlist to mediastore
@@ -263,6 +351,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Saves the current state as a bookmar. This just calls the PBS and asks him to save the state.
+     * @param bookmarkTitle Name of the bookmark to store.
+     */
     public void createBookmark(String bookmarkTitle) {
         // call pbs and create bookmark with the given title for the current state
         try {
@@ -273,19 +365,40 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Observer class for changes of the drag status.
+     */
     private class BottomDragCallbackHelper extends ViewDragHelper.Callback {
 
+        /**
+         * Checks if a given child view should act as part of the drag. This is only true for the header
+         * element of this View-class.
+         * @param child Child that was touched by the user
+         * @param pointerId Id of the pointer used for touching the view.
+         * @return True if the view should be allowed to be used as dragging part, false otheriwse.
+         */
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return child == mHeaderView;
         }
 
+        /**
+         * Called if the position of the draggable view is changed. This rerequests the layout of the view.
+         * @param changedView The view that was changed.
+         * @param left Left position of the view (should stay constant in this case)
+         * @param top Top position of the view
+         * @param dx Dimension of the width
+         * @param dy Dimension of the height
+         */
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            // Save the heighest top position of this view.
             mTopPosition = top;
 
+            // Calculate the new drag offset
             mDragOffset = (float) top / mDragRange;
 
+            // Relayout this view
             requestLayout();
 
             // Set inverse alpha values for smooth layout transition.
@@ -300,21 +413,41 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         }
 
+        /**
+         * Called if the user lifts the finger(release the view) with a velocity
+         * @param releasedChild View that was released
+         * @param xvel x position of the view
+         * @param yvel y position of the view
+         */
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             int top = getPaddingTop();
             if (yvel > 0 || (yvel == 0 && mDragOffset > 0.5f)) {
                 top += mDragRange;
             }
+            // Snap the view to top/bottom position
             mDragHelper.settleCapturedViewAt(releasedChild.getLeft(), top);
             invalidate();
         }
 
+        /**
+         * Returns the range within a view is allowed to be dragged.
+         * @param child Child to get the dragrange for
+         * @return Dragging range
+         */
         @Override
         public int getViewVerticalDragRange(View child) {
             return mDragRange;
         }
 
+
+        /**
+         * Clamps (limits) the view during dragging to the top or bottom(plus header height)
+         * @param child Child that is being dragged
+         * @param top Top position of the dragged view
+         * @param dy Delta value of the height
+         * @return The limited height value (or valid position inside the clamped range).
+         */
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             final int topBound = getPaddingTop();
@@ -325,21 +458,26 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             return newTop;
         }
 
+        /**
+         * Called when the drag state changed. Informs observers that it is either dragged up or down.
+         * Also sets the visibility of button groups in the header
+         * @param state New drag state
+         */
         @Override
         public void onViewDragStateChanged(int state) {
-
             super.onViewDragStateChanged(state);
 
+            // Check if the new state is the idle state. If then notify the observer (if one is registered)
             if (state == ViewDragHelper.STATE_IDLE) {
                 if (mDragOffset == 0.0f) {
-                    // top
+                    // Called when dragged up
                     mDraggedDownButtons.setVisibility(INVISIBLE);
                     mDraggedUpButtons.setVisibility(VISIBLE);
                     if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
                     }
                 } else {
-                    // bottom
+                    // Called when dragged down
                     mDraggedDownButtons.setVisibility(VISIBLE);
                     mDraggedUpButtons.setVisibility(INVISIBLE);
                     if (mDragStatusReceiver != null) {
@@ -347,8 +485,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     }
                 }
             } else {
-                /* Show both layouts to enable a smooth transition via
-                alpha values of the layouts.
+                /*
+                 * Show both layouts to enable a smooth transition via
+                 * alpha values of the layouts.
                  */
                 mDraggedDownButtons.setVisibility(VISIBLE);
                 mDraggedUpButtons.setVisibility(VISIBLE);
@@ -356,26 +495,47 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Informs the dragHelper about a scroll movement.
+     */
     @Override
     public void computeScroll() {
+        // Continues the movement of the View Drag Helper and sets the invalidation for this View
+        // if the animation is not finished and needs continuation
         if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 
+    /**
+     * Handles touch inputs to some views, to make sure, the ViewDragHelper is called.
+     * @param ev Touch input event
+     * @return True if handled by this view or false otherwise
+     */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        // Call the drag helper
         mDragHelper.processTouchEvent(ev);
 
+        // Get the position of the new touch event
         final float x = ev.getX();
         final float y = ev.getY();
 
+        // Check if the position lies in the bounding box of the header view (which is draggable)
         boolean isHeaderViewUnder = mDragHelper.isViewUnder(mHeaderView, (int) x, (int) y);
 
+        // Check if drag is handled by the helper, or the header or mainview. If not notify the system that input is not yet handled.
         return isHeaderViewUnder && isViewHit(mHeaderView, (int) x, (int) y) || isViewHit(mMainView, (int) x, (int) y);
     }
 
 
+    /**
+     * Checks if an input to coordinates lay within a View
+     * @param view View to check with
+     * @param x x value of the input
+     * @param y y value of the input
+     * @return
+     */
     private boolean isViewHit(View view, int x, int y) {
         int[] viewLocation = new int[2];
         view.getLocationOnScreen(viewLocation);
@@ -387,6 +547,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 screenY >= viewLocation[1] && screenY < viewLocation[1] + view.getHeight();
     }
 
+    /**
+     * Asks the ViewGroup about the size of all its children and paddings around.
+     * @param widthMeasureSpec The width requirements for this view
+     * @param heightMeasureSpec The height requirements for this view
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureChildren(widthMeasureSpec, heightMeasureSpec);
@@ -398,14 +563,19 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 resolveSizeAndState(maxHeight, heightMeasureSpec, 0));
     }
 
+    /**
+     * Called after the layout inflater is finished.
+     * Sets all global view variables to the ones inflatd.
+     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        // Get both main views (header and bottom part)
         mHeaderView = findViewById(R.id.now_playing_headerLayout);
         mMainView = findViewById(R.id.now_playing_bodyLayout);
 
-        // top buttons
+        // header buttons
         mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
         mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
         mTopMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
@@ -417,14 +587,20 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mBottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
         mBottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
 
+        // Main cover image
         mCoverImage = (ImageView) findViewById(R.id.now_playing_cover);
+        // Small header cover image
         mTopCoverImage = (ImageView) findViewById(R.id.now_playing_topCover);
+
+        // View with the ListView of the playlist
         mPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
         // view switcher for cover and playlist view
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.now_playing_view_switcher);
 
+        // Button container for the buttons shown if dragged up
         mDraggedUpButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_up);
+        // Button container for the buttons shown if dragged down
         mDraggedDownButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_down);
 
         // textviews
@@ -432,10 +608,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mTrackAlbumName = (TextView) findViewById(R.id.now_playing_trackAlbum);
         mTrackArtistName = (TextView) findViewById(R.id.now_playing_trackArtist);
 
+        // Textviews directly under the seekbar
         mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
         mDuration = (TextView) findViewById(R.id.now_playing_duration);
 
-        // seekbar
+        // seekbar (position)
         mPositionSeekbar = (SeekBar) findViewById(R.id.now_playing_seekBar);
         mPositionSeekbar.setOnSeekBarChangeListener(this);
 
@@ -559,18 +736,34 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mCoverGenerator = new CoverBitmapGenerator(getContext(), new CoverReceiverClass());
     }
 
+    /**
+     * Called to open the popup menu on the top right corner.
+     * @param v
+     */
     private void showAdditionalOptionsMenu(View v) {
         PopupMenu menu = new PopupMenu(getContext(), v);
-
+        // Inflate the menu from a menu xml file
         menu.inflate(R.menu.popup_menu_nowplaying_view);
+        // Set the main NowPlayingView as a listener (directly implements callback)
         menu.setOnMenuItemClickListener(this);
+        // Open the menu itself
         menu.show();
     }
 
+    /**
+     * Called when a layout is requested from the graphics system.
+     * @param changed If the layout is changed (size, ...)
+     * @param l Left position
+     * @param t Top position
+     * @param r Right position
+     * @param b Bottom position
+     */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        // Calculate the maximal range that the view is allowed to be dragged
         mDragRange = (getHeight() - mHeaderView.getHeight());
 
+        // New temporary top position, to fix the view at top or bottom later if state is idle.
         int newTop = mTopPosition;
 
         // fix height at top or bottom if state idle
@@ -578,12 +771,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             newTop = (int) (mDragRange * mDragOffset);
         }
 
+        // Request the upper part of the NowPlayingView (header)
         mHeaderView.layout(
                 0,
                 newTop,
                 r,
                 newTop + mHeaderView.getMeasuredHeight());
 
+        // Request the lower part of the NowPlayingView (main part)
         mMainView.layout(
                 0,
                 newTop + mHeaderView.getMeasuredHeight(),
@@ -591,35 +786,54 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 newTop + b);
     }
 
+    /**
+     * Stop the refresh timer when the view is not visible to the user anymore.
+     * Unregister the receiver for NowPlayingInformation intends, not needed anylonger.
+     */
     public void onPause() {
         if (mRefreshTimer != null) {
+            // Cancel the running refresh timer
             mRefreshTimer.cancel();
             mRefreshTimer.purge();
+            // Clean the reference
             mRefreshTimer = null;
         }
         if (mNowPlayingReceiver != null) {
+            // Unregister the broadcast receiver
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
     }
 
+    /**
+     * Resumes refreshing operation because the view is visible to the user again.
+     * Also registers to the NowPlayingInformation intends again.
+     */
     public void onResume() {
+        // Create new Receiver
         if (mNowPlayingReceiver != null) {
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
         mNowPlayingReceiver = new NowPlayingReceiver();
         getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION));
-        // get the playbackservice
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
         mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
     }
 
+    /**
+     * Updates all sub-views with the new information of a new TrackModel.
+     * @param newTrack New Track that is now active.
+     */
     private void updateStatus(TrackModel newTrack) {
 
         // get current track
         TrackModel currentTrack = newTrack;
+
+        // If called without a track, check with the PBS if no track is playing. After the establishing
+        // of the service connection it can be that a track is playing and we've not yet received the NowPlayingInformation
         if (newTrack == null) {
             try {
                 currentTrack = mServiceConnection.getPBS().getCurrentSong();
@@ -629,19 +843,31 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
         }
 
+        // If still no track is active set a dummy empty track to clear the view
         if (currentTrack == null) {
             currentTrack = new TrackModel();
         }
+
         // set tracktitle, album, artist and albumcover
         mTrackName.setText(currentTrack.getTrackName());
 
         mTrackAlbumName.setText(currentTrack.getTrackAlbumName());
+
+        // Check if the album title changed. If true, start the cover generator thread.
+        // FIXME use album key as a key for comparison
         if (!currentTrack.getTrackAlbumName().equals(mLastAlbumName)) {
+            // Show the placeholder image until the cover fetch process finishes
             mCoverImage.setImageResource(R.drawable.cover_placeholder);
+            // The same for the small header image
             mTopCoverImage.setImageResource(R.drawable.cover_placeholder_96dp);
+            // Start the cover generator
             mCoverGenerator.getImage(currentTrack);
         }
+        // Save the name of the album for rechecking later
+        // FIXME, use the album key for this
         mLastAlbumName = currentTrack.getTrackAlbumName();
+
+        // Set the artist of the track
         mTrackArtistName.setText(currentTrack.getTrackArtistName());
 
         // calculate duration in minutes and seconds
@@ -649,24 +875,29 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         String minutes = String.valueOf(currentTrack.getTrackDuration() / 60000);
 
+        // FIXME move to updateDurationView
         if (seconds.length() == 1) {
             mDuration.setText(minutes + ":0" + seconds);
         } else {
             mDuration.setText(minutes + ":" + seconds);
         }
 
-        // set up seekbar
+        // set up seekbar (set maximum value, track total duration)
         mPositionSeekbar.setMax((int) currentTrack.getTrackDuration());
 
+        // Call the update method for the seekbar (sets track position) with a value from the pbs
         updateSeekBar();
 
+        // Sets the duration textviews under the seekbar
         updateDurationView();
 
         try {
+            // Get boolean states for repeat,random, play buttons
             final boolean isRandom = mServiceConnection.getPBS().getRandom() == 1;
             final boolean songPlaying = mServiceConnection.getPBS().getPlaying() == 1;
             final boolean isRepeat = mServiceConnection.getPBS().getRepeat() == 1;
 
+            // FIXME, check sanity here
             Activity activity = (Activity) getContext();
             if (activity != null) {
                 activity.runOnUiThread(new Runnable() {
@@ -703,6 +934,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Asks the PBS for the current track position and positions the seekbar accordingly
+     */
     private void updateSeekBar() {
         try {
             mPositionSeekbar.setProgress(mServiceConnection.getPBS().getTrackPosition());
@@ -712,6 +946,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Ask the PBS for the track position, calculate the time to a formatted string and set the textview texts.
+     */
     private void updateDurationView() {
         // calculate duration in minutes and seconds
         String seconds = "";
@@ -733,8 +970,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Can be used to register an observer to this view, that is notified when a change of the dragstatus,offset happens.
+     * @param receiver Observer to register, only one observer at a time is possible.
+     */
     public void registerDragStatusReceiver(NowPlayingDragStatusReceiver receiver) {
         mDragStatusReceiver = receiver;
+        // Initial status notification
         if (mDragOffset == 0.0f) {
             // top
             if (mDragStatusReceiver != null) {
@@ -749,11 +991,21 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     }
 
+    /**
+     * Observers if the connection to the PBS is successfully established. If so the status updates
+     * can be started.
+     */
     private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
 
+        /**
+         * Called when the service connection to the PBS is established.
+         */
         @Override
         public void onConnect() {
+            // Initial update of the current track information. Null as Track results in the update status
+            // method requesting the current track.
             updateStatus(null);
+            // Start a periodically time to update the seekbar. If one is already existing overwrite it.
             if (mRefreshTimer != null) {
                 mRefreshTimer.cancel();
                 mRefreshTimer.purge();
@@ -761,19 +1013,33 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
             mRefreshTimer = new Timer();
             mRefreshTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
+
+            // Register the service connection to the PlaylistView (it needs it to start its listadapter)
             mPlaylistView.registerPBServiceConnection(mServiceConnection);
         }
 
+        /**
+         * Called when the service is disconnected.
+         */
         @Override
         public void onDisconnect() {
-            // TODO Auto-generated method stub
-
+            // Do nothing for now.
+            // FIXME perhaps reconnect?
         }
 
     }
 
+    /**
+     * Private BroadcastReceiver for handling PBS NowPlayingInformation broadcasts to update the shown
+     * information when a new track starts or the PBS status changes because of other reasons (repeat,random state, ...)
+     */
     private class NowPlayingReceiver extends BroadcastReceiver {
 
+        /**
+         * Called when receiving a NowPlayingInformation parcelable.
+         * @param context Context of the received broadcasts
+         * @param intent Intent with the message content
+         */
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
@@ -782,7 +1048,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
-
+                    // Run the updateStatus method in the UI thread because it touches all the gui elements.
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -797,18 +1063,28 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Private class that handles when the CoverGenerator finishes its fetching of cover images.
+     */
     private class CoverReceiverClass implements CoverBitmapGenerator.CoverBitmapListener {
 
+        /**
+         * Called when a bitmap is created
+         * @param bm Bitmap ready for use in the UI
+         */
         @Override
         public void receiveBitmap(final BitmapDrawable bm) {
             if (bm != null) {
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
+                    // Run on the UI thread of the activity because we are modifying gui elements.
                     activity.runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
+                            // Set the main cover image
                             mCoverImage.setImageDrawable(bm);
+                            // Set the small header image
                             mTopCoverImage.setImageDrawable(bm);
                         }
                     });
@@ -817,11 +1093,15 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Private class that handles periodically updates of the duration views (seekbar, textviews)
+     */
     private class RefreshTask extends TimerTask {
 
         @Override
         public void run() {
             Activity activity = (Activity) getContext();
+            // Run on the UI thread because we are updating gui elements
             if (activity != null) {
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -835,11 +1115,17 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
+    /**
+     * Public interface used by observers to be notified about a change in drag state or drag position.
+     */
     public interface NowPlayingDragStatusReceiver {
+        // Possible values for DRAG_STATUS (up,down)
         enum DRAG_STATUS {DRAGGED_UP, DRAGGED_DOWN}
 
+        // Called when the whole view is either completely dragged up or down
         void onStatusChanged(DRAG_STATUS status);
 
+        // Called continuously during dragging.
         void onDragPositionChanged(float pos);
     }
 }
