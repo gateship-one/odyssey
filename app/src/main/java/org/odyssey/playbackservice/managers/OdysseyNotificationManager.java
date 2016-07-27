@@ -43,6 +43,8 @@ public class OdysseyNotificationManager {
     private TrackModel mLastTrack = null;
     private Bitmap mLastBitmap = null;
 
+    private PlaybackService.PLAYSTATE mLastState;
+
     public OdysseyNotificationManager(Context context) {
         mContext = context;
 
@@ -56,7 +58,8 @@ public class OdysseyNotificationManager {
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
     public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSession.Token mediaSessionToken) {
-        if (track != null) {
+        // FIXME temporary workaround for notification not dismissible. Will be fixed with a 4 PBS state (RESUMED, to differentiate between real pause by the user, and resumed,ready but never actually played state of PBS)
+        if (track != null && ((state == PlaybackService.PLAYSTATE.PLAYING) || ( state == PlaybackService.PLAYSTATE.PAUSE && mLastState == PlaybackService.PLAYSTATE.PLAYING)  ))  {
             mNotificationBuilder = new Notification.Builder(mContext);
 
             // Open application intent
@@ -138,6 +141,7 @@ public class OdysseyNotificationManager {
             // Send the notification away
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }
+        mLastState = state;
     }
 
     /* Removes the Foreground notification */
