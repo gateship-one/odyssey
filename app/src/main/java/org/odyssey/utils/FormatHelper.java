@@ -19,6 +19,8 @@
 package org.odyssey.utils;
 
 
+import java.util.Locale;
+
 public class FormatHelper {
     /**
      * Helper method to uniformly format length strings in Odyssey.
@@ -27,17 +29,23 @@ public class FormatHelper {
      * @return The formatted string, usable in the ui
      */
     public static String formatTracktimeFromMS(long length) {
+
         String retVal;
-        // calculate duration in minutes and seconds
-        String seconds = String.valueOf((length % 60000) / 1000);
 
-        String minutes = String.valueOf(length / 60000);
+        int seconds = (int) (length / 1000);
 
-        if (seconds.length() == 1) {
-            retVal = minutes + ":0" + seconds;
+        int hours = seconds / 3600;
+
+        int minutes = (seconds - (hours * 3600)) / 60;
+
+        seconds = seconds - (hours * 3600) - (minutes * 60);
+
+        if (hours == 0) {
+            retVal = String.format(Locale.getDefault(), "%02d" + ":" + "%02d", minutes, seconds);
         } else {
-            retVal = minutes + ":" + seconds;
+            retVal = String.format(Locale.getDefault(), "%02d" + ":" + "%02d" + ":" + "%02d", hours, minutes, seconds);
         }
+
         return retVal;
     }
 }
