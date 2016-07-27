@@ -43,7 +43,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public enum PLAYSTATE {
-        PLAYING, PAUSE, STOPPED
+        PLAYING, PAUSE, RESUMED, STOPPED
     }
 
     public enum PLAYBACKSERVICESTATE {
@@ -571,6 +571,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             case PLAYING:
                 return mPlayer.getPosition();
             case PAUSE:
+            case RESUMED:
                 return mLastPosition;
             case STOPPED:
                 return 0;
@@ -991,8 +992,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (mPlayer.isRunning() && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Player is running and current index seems to be valid
                 return PLAYSTATE.PLAYING;
+            } else if (!mPlayer.isPrepared()) {
+                // If a position is set but the player is not prepared yet it is clear, that the user has not played the song yet
+                return PLAYSTATE.RESUMED;
             } else {
-                // Only case left is that the player is paused, because a track is set but its not playing
+                // Only case left is that the player is paused, because a track is set AND PREPARED so it was played already
                 return PLAYSTATE.PAUSE;
             }
         } else {

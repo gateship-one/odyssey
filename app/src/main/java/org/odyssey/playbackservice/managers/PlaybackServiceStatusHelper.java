@@ -107,6 +107,21 @@ public class PlaybackServiceStatusHelper {
                     startCoverImageTask();
                 }
                 break;
+            case RESUMED:
+                // In this state all broadcast listeners should be informed already.
+                // Notification should NOT be created in this state, so skip it in contrast to state PAUSE
+                // Update MediaSession metadata.
+                updateMetadata(currentTrack, playbackState);
+
+                // Broadcast all the information.
+                broadcastPlaybackInformation(currentTrack, playbackState);
+
+                // Only update cover image if album changed to preserve energy
+                if (mLastTrack == null || !currentTrack.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                    mLastTrack = currentTrack;
+                    startCoverImageTask();
+                }
+                break;
             case STOPPED:
                 stopMediaSession();
                 broadcastPlaybackInformation(currentTrack, PlaybackService.PLAYSTATE.STOPPED);

@@ -58,8 +58,7 @@ public class OdysseyNotificationManager {
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
     public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSession.Token mediaSessionToken) {
-        // FIXME temporary workaround for notification not dismissible. Will be fixed with a 4 PBS state (RESUMED, to differentiate between real pause by the user, and resumed,ready but never actually played state of PBS)
-        if (track != null && ((state == PlaybackService.PLAYSTATE.PLAYING) || ( state == PlaybackService.PLAYSTATE.PAUSE && mLastState == PlaybackService.PLAYSTATE.PLAYING)  ))  {
+        if (track != null) {
             mNotificationBuilder = new Notification.Builder(mContext);
 
             // Open application intent
@@ -73,7 +72,7 @@ public class OdysseyNotificationManager {
             // Previous song action
             Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
             PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_48dp,"Previous",prevPendingIntent).build();
+            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_48dp, "Previous", prevPendingIntent).build();
 
             // Pause/Play action
             PendingIntent playPauseIntent;
@@ -87,12 +86,12 @@ public class OdysseyNotificationManager {
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 playPauseIcon = R.drawable.ic_play_arrow_48dp;
             }
-            Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon,"PlayPause",playPauseIntent).build();
+            Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon, "PlayPause", playPauseIntent).build();
 
             // Next song action
             Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_48dp,"Next",nextPendingIntent).build();
+            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_48dp, "Next", nextPendingIntent).build();
 
             // Quit action
             Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);
@@ -115,13 +114,13 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.setWhen(0);
 
             // Cover but only if changed
-            if ( mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+            if (mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
                 mLastTrack = track;
                 mLastBitmap = null;
             }
 
             // Only set image if an saved one is available
-            if ( mLastBitmap != null ) {
+            if (mLastBitmap != null) {
                 mNotificationBuilder.setLargeIcon(mLastBitmap);
             }
 
@@ -130,11 +129,11 @@ public class OdysseyNotificationManager {
 
             // Check if run from service and check if playing or pause.
             // Pause notification should be dismissible.
-            if ( mContext instanceof Service ) {
-                if ( state == PlaybackService.PLAYSTATE.PLAYING) {
-                    ((Service)mContext).startForeground(NOTIFICATION_ID, mNotification);
+            if (mContext instanceof Service) {
+                if (state == PlaybackService.PLAYSTATE.PLAYING) {
+                    ((Service) mContext).startForeground(NOTIFICATION_ID, mNotification);
                 } else {
-                    ((Service)mContext).stopForeground(false);
+                    ((Service) mContext).stopForeground(false);
                 }
             }
 
@@ -147,8 +146,8 @@ public class OdysseyNotificationManager {
     /* Removes the Foreground notification */
     public void clearNotification() {
         if (mNotification != null) {
-            if ( mContext instanceof Service ) {
-                ((Service)mContext).stopForeground(true);
+            if (mContext instanceof Service) {
+                ((Service) mContext).stopForeground(true);
                 mNotificationBuilder.setOngoing(false);
                 mNotificationManager.cancel(NOTIFICATION_ID);
             }
