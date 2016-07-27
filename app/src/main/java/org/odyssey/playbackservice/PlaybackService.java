@@ -242,7 +242,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
         enqueueTrack(track);
-        jumpToIndex(0, true);
+        jumpToIndex(0);
     }
 
     public synchronized void cancelQuitAlert() {
@@ -303,14 +303,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 //        // Check if mediaplayer needs preparing
         if (!mPlayer.isPrepared() && (mLastPosition != 0) && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            jumpToIndex(mCurrentPlayingIndex, false, mLastPosition);
+            jumpToIndex(mCurrentPlayingIndex, mLastPosition);
             Log.v(TAG, "Resuming position before playback to: " + mLastPosition);
             return;
         }
 
         if (mCurrentPlayingIndex < 0 && mCurrentList.size() > 0) {
             // Songs existing so start playback of playlist begin
-            jumpToIndex(0, true);
+            jumpToIndex(0);
         } else if (mCurrentPlayingIndex < 0 && mCurrentList.size() == 0) {
             mPlaybackServiceStatusHelper.updateStatus();
         } else if (mCurrentPlayingIndex < mCurrentList.size()) {
@@ -373,7 +373,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mCurrentList.addAll(allTracks);
 
         // start playing
-        jumpToIndex(0, true);
+        jumpToIndex(0);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
@@ -432,7 +432,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Keep device at least for 5 seconds turned on
         mTempWakelock.acquire(5000);
         mLastPlayingIndex = mCurrentPlayingIndex;
-        jumpToIndex(mNextPlayingIndex, true);
+        jumpToIndex(mNextPlayingIndex);
     }
 
     /**
@@ -448,23 +448,23 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         if (getTrackPosition() > 2000) {
             // Check if current song should be restarted
-            jumpToIndex(mCurrentPlayingIndex, true);
+            jumpToIndex(mCurrentPlayingIndex);
         } else if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
             // handle random mode
             if (mLastPlayingIndex == -1) {
                 // if no lastindex reuse currentindex
-                jumpToIndex(mCurrentPlayingIndex, true);
+                jumpToIndex(mCurrentPlayingIndex);
             } else if (mLastPlayingIndex >= 0 && mLastPlayingIndex < mCurrentList.size()) {
                 Log.v(TAG, "Found old track index");
-                jumpToIndex(mLastPlayingIndex, true);
+                jumpToIndex(mLastPlayingIndex);
             }
         } else {
             // Check if start is reached
             if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
-                jumpToIndex(mCurrentPlayingIndex - 1, true);
+                jumpToIndex(mCurrentPlayingIndex - 1);
             } else if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
                 // In repeat mode next track is last track of playlist
-                jumpToIndex(mCurrentList.size() - 1, true);
+                jumpToIndex(mCurrentList.size() - 1);
             } else {
                 stop();
             }
@@ -501,11 +501,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stop();
     }
 
-    public void jumpToIndex(int index, boolean startPlayback) {
-        jumpToIndex(index, startPlayback, 0);
+    public void jumpToIndex(int index) {
+        jumpToIndex(index, 0);
     }
 
-    public void jumpToIndex(int index, boolean startPlayback, int jumpTime) {
+    public void jumpToIndex(int index, int jumpTime) {
         Log.v(TAG, "Playback of index: " + index + " requested");
         Log.v(TAG, "Playlist size: " + mCurrentList.size());
 
@@ -687,7 +687,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // If not playing just add it to the beginning of the playlist
             mCurrentList.add(0, track);
             // Start playback which is probably intended
-            jumpToIndex(0, true);
+            jumpToIndex(0);
         }
 
         // Send new NowPlaying because playlist changed
@@ -703,7 +703,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mCurrentList.remove(index);
             // Jump to next song which should be at index now
             // Jump is safe about playlist length so no need for extra safety
-            jumpToIndex(index, true);
+            jumpToIndex(index);
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
             // because of gapless playback, set next song to next on

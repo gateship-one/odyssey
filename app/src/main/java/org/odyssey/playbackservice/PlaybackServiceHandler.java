@@ -53,7 +53,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().seekTo(msgObj.getIntParam());
                     break;
                 case ODYSSEY_JUMPTO:
-                    mService.get().jumpToIndex(msgObj.getIntParam(), true);
+                    mService.get().jumpToIndex(msgObj.getIntParam());
                     break;
                 case ODYSSEY_REPEAT:
                     mService.get().setRepeat(msgObj.getIntParam());
