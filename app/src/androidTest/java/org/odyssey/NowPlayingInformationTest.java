@@ -29,7 +29,6 @@ public class NowPlayingInformationTest {
 
     // nowplaying values
     private final PlaybackService.PLAYSTATE TEST_PLAYING = PlaybackService.PLAYSTATE.RESUMED;
-    private final String TEST_PLAYINGURL = "PlayingURL";
     private final int TEST_PLAYINGINDEX = 42;
     private final int TEST_REPEAT = 0;
     private final int TEST_RANDOM = 1;
@@ -42,14 +41,13 @@ public class NowPlayingInformationTest {
     public void setUp() {
         mTrackModel = new TrackModel(TEST_TRACKNAME, TEST_TRACKARTISTNAME, TEST_TRACKALBUMNAME, TEST_TRACKALBUMKEY, TEST_TRACKDURATION, TEST_TRACKNUMBER, TEST_TRACKURL, TEST_TRACKID);
 
-        mNowPlayingInformation = new NowPlayingInformation(TEST_PLAYING, TEST_PLAYINGURL, TEST_PLAYINGINDEX, TEST_REPEAT, TEST_RANDOM, TEST_PLAYLISTLENGTH, mTrackModel);
+        mNowPlayingInformation = new NowPlayingInformation(TEST_PLAYING, TEST_PLAYINGINDEX, TEST_REPEAT, TEST_RANDOM, TEST_PLAYLISTLENGTH, mTrackModel);
     }
 
     @Test
     public void testCreate() {
         // Verify that the object is correct.
         assertThat(mNowPlayingInformation.getPlayState(), is(TEST_PLAYING));
-        assertThat(mNowPlayingInformation.getPlayingURL(), is(TEST_PLAYINGURL));
         assertThat(mNowPlayingInformation.getPlayingIndex(), is(TEST_PLAYINGINDEX));
         assertThat(mNowPlayingInformation.getRepeat(), is(TEST_REPEAT));
         assertThat(mNowPlayingInformation.getRandom(), is(TEST_RANDOM));
@@ -73,7 +71,6 @@ public class NowPlayingInformationTest {
 
         // Verify that the received data is correct.
         assertThat(createdFromParcel.getPlayState(), is(TEST_PLAYING));
-        assertThat(createdFromParcel.getPlayingURL(), is(TEST_PLAYINGURL));
         assertThat(createdFromParcel.getPlayingIndex(), is(TEST_PLAYINGINDEX));
         assertThat(createdFromParcel.getRepeat(), is(TEST_REPEAT));
         assertThat(createdFromParcel.getRandom(), is(TEST_RANDOM));

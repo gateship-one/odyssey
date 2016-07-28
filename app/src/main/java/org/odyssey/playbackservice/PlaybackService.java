@@ -838,6 +838,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return null;
     }
 
+    public NowPlayingInformation getNowPlayingInformation() {
+
+        PLAYSTATE state = getPlaybackState();
+
+        if (state == PLAYSTATE.STOPPED) {
+            return null;
+        } else {
+            TrackModel currentTrack = mCurrentList.get(mCurrentPlayingIndex);
+
+            return new NowPlayingInformation(state, mCurrentPlayingIndex, mRepeat, mRandom, mCurrentList.size(), currentTrack);
+        }
+    }
+
     /**
      * Save the current playlist in mediastore
      */

@@ -3,6 +3,7 @@ package org.odyssey.playbackservice;
 
 // Declare any non-default types here with import statements
 import org.odyssey.models.TrackModel;
+import org.odyssey.playbackservice.NowPlayingInformation;
 
 interface IOdysseyPlaybackService {
 
@@ -28,6 +29,9 @@ interface IOdysseyPlaybackService {
 
 	// If currently playing return this song otherwise null
 	TrackModel getCurrentSong();
+
+	// return the current nowplayinginformation or null if state is stopped
+	NowPlayingInformation getNowPlayingInformation();
 
 	// save current playlist in mediastore
 	void savePlaylist(String name);

@@ -842,30 +842,32 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Updates all sub-views with the new information of a new TrackModel.
+     * Updates all sub-views with the new pbs states
      *
-     * @param newTrack New Track that is now active.
+     * @param info the new pbs states including the current track
      */
-    private void updateStatus(TrackModel newTrack) {
+    private void updateStatus(NowPlayingInformation info) {
 
-        // get current track
-        TrackModel currentTrack = newTrack;
-
-        // If called without a track, check with the PBS if no track is playing. After the establishing
-        // of the service connection it can be that a track is playing and we've not yet received the NowPlayingInformation
-        if (newTrack == null) {
+        // If called without a nowplayinginformation, ask the PBS directly for the information.
+        // After the establishing of the service connection it can be that a track is playing and we've not yet received the NowPlayingInformation
+        if (info == null) {
             try {
-                currentTrack = mServiceConnection.getPBS().getCurrentSong();
+                info = mServiceConnection.getPBS().getNowPlayingInformation();
             } catch (RemoteException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+
+            // If still no information is available. Setup an empty nowplayinformation object to clear the view.
+            if (info == null) {
+                info = new NowPlayingInformation();
             }
         }
 
-        // If still no track is active set a dummy empty track to clear the view
-        if (currentTrack == null) {
-            currentTrack = new TrackModel();
-        }
+        // notify playlist has changed
+        mPlaylistView.playlistChanged(info);
+
+        // get current track
+        TrackModel currentTrack = info.getCurrentTrack();
 
         // set tracktitle, album, artist and albumcover
         mTrackName.setText(currentTrack.getTrackName());
@@ -890,46 +892,56 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Set the track duration
         mDuration.setText(FormatHelper.formatTracktimeFromMS(currentTrack.getTrackDuration()));
 
-
         // set up seekbar (set maximum value, track total duration)
         mPositionSeekbar.setMax((int) currentTrack.getTrackDuration());
 
-        // Call the update method for the seekbar (sets track position) with a value from the pbs
-        updateSeekBar();
+        // update seekbar and elapsedview
+        updateTrackPosition();
 
-        // Sets the duration textviews under the seekbar
-        updateDurationView();
+        // update buttons
 
-        try {
-            // Get boolean states for repeat,random, play buttons
-            final boolean isRandom = mServiceConnection.getPBS().getRandom() == 1;
-            final boolean songPlaying = mServiceConnection.getPBS().getPlaying() == 1;
-            final boolean isRepeat = mServiceConnection.getPBS().getRepeat() == 1;
+        // update play buttons
+        if (info.getPlayState() == PlaybackService.PLAYSTATE.PLAYING) {
+            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
+            mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
+        } else {
+            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
+            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
+        }
 
-            // update imagebuttons
-            if (songPlaying) {
-                mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
-                mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
-            } else {
-                mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
-                mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
-            }
-            if (isRepeat) {
-                int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
-            } else {
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
-            }
-            if (isRandom) {
-                int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
-            } else {
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
-            }
-        } catch (RemoteException e) {
+        // update repeat button
+        // FIXME make repeat enum
+        if (info.getRepeat() == 1) {
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
+        } else {
+            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+        }
+
+        // update random button
+        // FIXME make random enum
+        if (info.getRandom() == 1) {
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
+        } else {
+            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
         }
     }
 
+    private void updateTrackPosition() {
+        // get trackposition
+        int trackPosition = 0;
+        try {
+            trackPosition = mServiceConnection.getPBS().getTrackPosition();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        // update the seekbar
+        mPositionSeekbar.setProgress(trackPosition);
+        // update the elapsed view
+        mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(trackPosition));
+    }
 
     /**
      * Asks the PBS for the current track position and positions the seekbar accordingly
@@ -946,7 +958,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Ask the PBS for the track position, calculate the time to a formatted string and set the textview texts.
      */
-    private void updateDurationView() {
+    private void updateElapsedView() {
         // Request current elapsed time and format it and set it
         try {
             mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(mServiceConnection.getPBS().getTrackPosition()));
@@ -989,8 +1001,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         public void onConnect() {
             // Initial update of the current track information. Null as Track results in the update status
             // method requesting the current track.
+
+            // Register the service connection to the PlaylistView (it needs it to start its listadapter)
+            mPlaylistView.registerPBServiceConnection(mServiceConnection);
+
             // Already running in main UI thread handler here. No need for runOnUIThread
             updateStatus(null);
+
             // Start a periodically time to update the seekbar. If one is already existing overwrite it.
             if (mRefreshTimer != null) {
                 mRefreshTimer.cancel();
@@ -999,9 +1016,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
             mRefreshTimer = new Timer();
             mRefreshTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
-
-            // Register the service connection to the PlaylistView (it needs it to start its listadapter)
-            mPlaylistView.registerPBServiceConnection(mServiceConnection);
         }
 
         /**
@@ -1039,10 +1053,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // notify playlist has changed
-                            mPlaylistView.playlistChanged(info);
                             // update views
-                            updateStatus(info.getCurrentTrack());
+                            updateStatus(info);
                         }
                     });
                 }
@@ -1094,8 +1106,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        updateDurationView();
-                        updateSeekBar();
+                        updateTrackPosition();
                     }
                 });
             }

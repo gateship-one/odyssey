@@ -17,7 +17,6 @@ public final class NowPlayingInformation implements Parcelable {
 
     // Parcel data
     private final PlaybackService.PLAYSTATE mPlayState;
-    private final String mPlayingURL;
     private final int mPlayingIndex;
     private final int mRepeat;
     private final int mRandom;
@@ -29,13 +28,12 @@ public final class NowPlayingInformation implements Parcelable {
         @Override
         public NowPlayingInformation createFromParcel(Parcel source) {
             PlaybackService.PLAYSTATE playState = PlaybackService.PLAYSTATE.values()[source.readInt()];
-            String playingURL = source.readString();
             int playingIndex = source.readInt();
             int repeat = source.readInt();
             int random = source.readInt();
             int playlistlength = source.readInt();
             TrackModel currentTrack = source.readParcelable(TrackModel.class.getClassLoader());
-            return new NowPlayingInformation(playState, playingURL, playingIndex, repeat, random, playlistlength, currentTrack);
+            return new NowPlayingInformation(playState, playingIndex, repeat, random, playlistlength, currentTrack);
         }
 
         @Override
@@ -50,9 +48,17 @@ public final class NowPlayingInformation implements Parcelable {
         return 0;
     }
 
-    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, String playingURL, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
+    public NowPlayingInformation() {
+        mPlayState = PlaybackService.PLAYSTATE.STOPPED;
+        mPlayingIndex = -1;
+        mRepeat = 0;
+        mRandom = 0;
+        mPlaylistLength = 0;
+        mCurrentTrack = new TrackModel();
+    }
+
+    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
         mPlayState = playing;
-        mPlayingURL = playingURL;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
         mRandom = random;
@@ -63,7 +69,6 @@ public final class NowPlayingInformation implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mPlayState.ordinal());
-        dest.writeString(mPlayingURL);
         dest.writeInt(mPlayingIndex);
         dest.writeInt(mRepeat);
         dest.writeInt(mRandom);
@@ -75,12 +80,8 @@ public final class NowPlayingInformation implements Parcelable {
         return mPlayState;
     }
 
-    public String getPlayingURL() {
-        return mPlayingURL;
-    }
-
     public String toString() {
-        return "Playing: " + mPlayState.name() + " URL: " + mPlayingURL + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom;
+        return "Playstate: " + mPlayState.name() + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom + "playlistlength: " + mPlaylistLength + "track: " + mCurrentTrack.toString();
     }
 
     public int getPlayingIndex() {

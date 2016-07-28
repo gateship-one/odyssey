@@ -236,6 +236,10 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         return mService.get().getCurrentTrack();
     }
 
+    public NowPlayingInformation getNowPlayingInformation() throws RemoteException {
+        return mService.get().getNowPlayingInformation();
+    }
+
     @Override
     public void dequeueTrackIndex(int index) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUEINDEX, index);
