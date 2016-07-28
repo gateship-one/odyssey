@@ -40,10 +40,8 @@ public class OdysseyNotificationManager {
     private Notification mNotification;
 
     // Save last track and last image
-    private TrackModel mLastTrack = null;
     private Bitmap mLastBitmap = null;
-
-    private PlaybackService.PLAYSTATE mLastState;
+    private TrackModel mLastTrack = null;
 
     public OdysseyNotificationManager(Context context) {
         mContext = context;
@@ -140,7 +138,7 @@ public class OdysseyNotificationManager {
             // Send the notification away
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }
-        mLastState = state;
+
     }
 
     /* Removes the Foreground notification */

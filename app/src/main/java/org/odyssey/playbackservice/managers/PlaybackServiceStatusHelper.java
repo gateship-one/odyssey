@@ -121,6 +121,11 @@ public class PlaybackServiceStatusHelper {
                     mLastTrack = currentTrack;
                     startCoverImageTask();
                 }
+
+
+                // Clear possible notifications here. This could be the case when the PBS quits itself after a certain amount of time.
+                // Depending on the situation (if the GUI is open) the service will instantly restart and go into the resume state.
+                mNotificationManager.clearNotification();
                 break;
             case STOPPED:
                 stopMediaSession();
