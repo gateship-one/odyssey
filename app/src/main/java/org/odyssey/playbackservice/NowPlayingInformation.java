@@ -5,18 +5,18 @@ import android.os.Parcelable;
 
 import org.odyssey.models.TrackModel;
 
-/*
+/**
  * This class is the parcelable which got send from the PlaybackService to notify
  * receivers like the main-GUI or possible later home screen widgets
- *
+ * <p/>
  * PlaybackService --> NowPlayingInformation --> OdysseyApplication --> MainActivity
- * 											 |-> Homescreen Widget (later)
+ * |-> Homescreen Widget (later)
  */
 
 public final class NowPlayingInformation implements Parcelable {
 
     // Parcel data
-    private final int mPlaying;
+    private final PlaybackService.PLAYSTATE mPlayState;
     private final String mPlayingURL;
     private final int mPlayingIndex;
     private final int mRepeat;
@@ -28,14 +28,14 @@ public final class NowPlayingInformation implements Parcelable {
 
         @Override
         public NowPlayingInformation createFromParcel(Parcel source) {
-            int playing = source.readInt();
+            PlaybackService.PLAYSTATE playState = PlaybackService.PLAYSTATE.values()[source.readInt()];
             String playingURL = source.readString();
             int playingIndex = source.readInt();
             int repeat = source.readInt();
             int random = source.readInt();
             int playlistlength = source.readInt();
             TrackModel currentTrack = source.readParcelable(TrackModel.class.getClassLoader());
-            return new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistlength,currentTrack);
+            return new NowPlayingInformation(playState, playingURL, playingIndex, repeat, random, playlistlength, currentTrack);
         }
 
         @Override
@@ -50,8 +50,8 @@ public final class NowPlayingInformation implements Parcelable {
         return 0;
     }
 
-    public NowPlayingInformation(int playing, String playingURL, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
-        mPlaying = playing;
+    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, String playingURL, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
+        mPlayState = playing;
         mPlayingURL = playingURL;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
@@ -62,17 +62,17 @@ public final class NowPlayingInformation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mPlaying);
+        dest.writeInt(mPlayState.ordinal());
         dest.writeString(mPlayingURL);
         dest.writeInt(mPlayingIndex);
         dest.writeInt(mRepeat);
         dest.writeInt(mRandom);
         dest.writeInt(mPlaylistLength);
-        dest.writeParcelable(mCurrentTrack,flags);
+        dest.writeParcelable(mCurrentTrack, flags);
     }
 
-    public int getPlaying() {
-        return mPlaying;
+    public PlaybackService.PLAYSTATE getPlayState() {
+        return mPlayState;
     }
 
     public String getPlayingURL() {
@@ -80,7 +80,7 @@ public final class NowPlayingInformation implements Parcelable {
     }
 
     public String toString() {
-        return "Playing: " + mPlaying + " URL: " + mPlayingURL + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom;
+        return "Playing: " + mPlayState.name() + " URL: " + mPlayingURL + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom;
     }
 
     public int getPlayingIndex() {

@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
+import org.odyssey.playbackservice.PlaybackService;
 
 @RunWith(AndroidJUnit4.class)
 public class NowPlayingInformationTest {
@@ -27,7 +28,7 @@ public class NowPlayingInformationTest {
     private final long TEST_TRACKID = 42L;
 
     // nowplaying values
-    private final int TEST_PLAYING = 1;
+    private final PlaybackService.PLAYSTATE TEST_PLAYING = PlaybackService.PLAYSTATE.RESUMED;
     private final String TEST_PLAYINGURL = "PlayingURL";
     private final int TEST_PLAYINGINDEX = 42;
     private final int TEST_REPEAT = 0;
@@ -47,7 +48,7 @@ public class NowPlayingInformationTest {
     @Test
     public void testCreate() {
         // Verify that the object is correct.
-        assertThat(mNowPlayingInformation.getPlaying(), is(TEST_PLAYING));
+        assertThat(mNowPlayingInformation.getPlayState(), is(TEST_PLAYING));
         assertThat(mNowPlayingInformation.getPlayingURL(), is(TEST_PLAYINGURL));
         assertThat(mNowPlayingInformation.getPlayingIndex(), is(TEST_PLAYINGINDEX));
         assertThat(mNowPlayingInformation.getRepeat(), is(TEST_REPEAT));
@@ -71,7 +72,7 @@ public class NowPlayingInformationTest {
         NowPlayingInformation createdFromParcel = NowPlayingInformation.CREATOR.createFromParcel(parcel);
 
         // Verify that the received data is correct.
-        assertThat(createdFromParcel.getPlaying(), is(TEST_PLAYING));
+        assertThat(createdFromParcel.getPlayState(), is(TEST_PLAYING));
         assertThat(createdFromParcel.getPlayingURL(), is(TEST_PLAYINGURL));
         assertThat(createdFromParcel.getPlayingIndex(), is(TEST_PLAYINGINDEX));
         assertThat(createdFromParcel.getRepeat(), is(TEST_REPEAT));

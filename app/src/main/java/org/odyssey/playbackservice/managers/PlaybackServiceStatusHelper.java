@@ -188,11 +188,10 @@ public class PlaybackServiceStatusHelper {
             Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
 
             // Create NowPlayingInfo for parcel
-            int playing = (state == PlaybackService.PLAYSTATE.PLAYING ? 1 : 0);
             String playingURL = track.getTrackURL();
             int playingIndex = mPlaybackService.getCurrentIndex();
 
-            NowPlayingInformation info = new NowPlayingInformation(playing, playingURL, playingIndex, repeat, random, playlistLength, track);
+            NowPlayingInformation info = new NowPlayingInformation(state, playingURL, playingIndex, repeat, random, playlistLength, track);
 
             // Add nowplayingInfo to parcel
             broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
@@ -203,7 +202,7 @@ public class PlaybackServiceStatusHelper {
             // Send empty broadcast with stopped information
             Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
 
-            NowPlayingInformation info = new NowPlayingInformation(0, "", -1, repeat, random, playlistLength, new TrackModel());
+            NowPlayingInformation info = new NowPlayingInformation(PlaybackService.PLAYSTATE.STOPPED, "", -1, repeat, random, playlistLength, new TrackModel());
             // Add nowplayingInfo to parcel
             broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
 

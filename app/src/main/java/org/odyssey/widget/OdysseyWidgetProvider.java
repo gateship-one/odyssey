@@ -81,10 +81,13 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                         views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
                     }
                 }
-                if (info.getPlaying() == 0) {
+
+                PlaybackService.PLAYSTATE playState = info.getPlayState();
+
+                if (playState == PlaybackService.PLAYSTATE.PAUSE) {
                     // Show play icon
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
-                } else if (info.getPlaying() == 1) {
+                } else if (playState == PlaybackService.PLAYSTATE.PLAYING) {
                     // Show pause icon
                     nowPlaying = true;
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_48dp);
