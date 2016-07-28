@@ -84,13 +84,13 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
                 PlaybackService.PLAYSTATE playState = info.getPlayState();
 
-                if (playState == PlaybackService.PLAYSTATE.PAUSE) {
-                    // Show play icon
-                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
-                } else if (playState == PlaybackService.PLAYSTATE.PLAYING) {
+                if (playState == PlaybackService.PLAYSTATE.PLAYING) {
                     // Show pause icon
                     nowPlaying = true;
                     views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_48dp);
+                } else {
+                    // Show play icon
+                    views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
                 }
 
                 mLastTrack = item;
