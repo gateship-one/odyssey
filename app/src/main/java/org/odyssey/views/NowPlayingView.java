@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
@@ -661,7 +660,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mPlaylistView) {
                     color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
                 } else {
-                    color = ContextCompat.getColor(getContext(), R.color.colorTextLight);
+                    color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
                 }
 
                 // tint the button
@@ -669,6 +668,18 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
                 // toggle between cover and playlistview
                 mViewSwitcher.showNext();
+
+                // report the change of the view
+                if (mDragStatusReceiver != null) {
+                    // set view status
+                    if (mViewSwitcher.getCurrentView() == mCoverImage) {
+                        // cover image is shown
+                        mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.COVER_VIEW);
+                    } else {
+                        // playlist view is shown
+                        mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.PLAYLIST_VIEW);
+                    }
+                }
             }
         });
 
@@ -915,7 +926,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
         } else {
-            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
         }
 
         // update random button
@@ -924,10 +935,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
         } else {
-            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorTextLight)));
+            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
         }
     }
 
+    /**
+     * Get the current trackposition from the PBS and update the seekbar and the elapsed view.
+     */
     private void updateTrackPosition() {
         // get trackposition
         int trackPosition = 0;
@@ -944,29 +958,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Asks the PBS for the current track position and positions the seekbar accordingly
-     */
-    private void updateSeekBar() {
-        try {
-            mPositionSeekbar.setProgress(mServiceConnection.getPBS().getTrackPosition());
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Ask the PBS for the track position, calculate the time to a formatted string and set the textview texts.
-     */
-    private void updateElapsedView() {
-        // Request current elapsed time and format it and set it
-        try {
-            mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(mServiceConnection.getPBS().getTrackPosition()));
-        } catch (RemoteException e) {
-        }
-    }
-
-    /**
      * Can be used to register an observer to this view, that is notified when a change of the dragstatus,offset happens.
      *
      * @param receiver Observer to register, only one observer at a time is possible.
@@ -974,18 +965,54 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public void registerDragStatusReceiver(NowPlayingDragStatusReceiver receiver) {
         mDragStatusReceiver = receiver;
         // Initial status notification
-        if (mDragOffset == 0.0f) {
-            // top
-            if (mDragStatusReceiver != null) {
+        if (mDragStatusReceiver != null) {
+
+            // set drag status
+            if (mDragOffset == 0.0f) {
+                // top
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
-            }
-        } else {
-            // bottom
-            if (mDragStatusReceiver != null) {
+            } else {
+                // bottom
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
             }
+
+            // set view status
+            if (mViewSwitcher.getCurrentView() == mCoverImage) {
+                // cover image is shown
+                mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.COVER_VIEW);
+            } else {
+                // playlist view is shown
+                mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.PLAYLIST_VIEW);
+            }
+        }
+    }
+
+    /**
+     * Set the viewswitcher of cover/playlist view to the requested state.
+     * @param view the view which should be displayed.
+     */
+    public void setViewSwitcherStatus(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS view) {
+        int color = 0;
+
+        switch (view) {
+            case COVER_VIEW:
+                // change the view only if the requested view is not displayed
+                if (mViewSwitcher.getCurrentView() != mCoverImage) {
+                    mViewSwitcher.showNext();
+                }
+                color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+                break;
+            case PLAYLIST_VIEW:
+                // change the view only if the requested view is not displayed
+                if (mViewSwitcher.getCurrentView() != mPlaylistView) {
+                    mViewSwitcher.showNext();
+                }
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                break;
         }
 
+        // tint the button according to the requested view
+        mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(color));
     }
 
     /**
@@ -1123,10 +1150,18 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             DRAGGED_UP, DRAGGED_DOWN
         }
 
+        // Possible values for the view in the viewswitcher (cover, playlist)
+        enum VIEW_SWITCHER_STATUS {
+            COVER_VIEW, PLAYLIST_VIEW
+        }
+
         // Called when the whole view is either completely dragged up or down
         void onStatusChanged(DRAG_STATUS status);
 
         // Called continuously during dragging.
         void onDragPositionChanged(float pos);
+
+        // Called when the view switcher switches between cover and playlist view
+        void onSwitchedViews(VIEW_SWITCHER_STATUS view);
     }
 }

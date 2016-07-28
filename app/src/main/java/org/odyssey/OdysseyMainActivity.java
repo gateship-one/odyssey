@@ -69,12 +69,18 @@ public class OdysseyMainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
-    private int mSavedDragStatus = -1;
+    private DRAG_STATUS mSavedNowPlayingDragStatus = null;
+
+    private VIEW_SWITCHER_STATUS mNowPlayingViewSwitcherStatus;
+    private VIEW_SWITCHER_STATUS mSavedNowPlayingViewSwitcherStatus = null;
 
     private FileExplorerHelper mFileExplorerHelper = null;
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.odyssey.requestedview";
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.odyssey.requestedview.nowplaying";
+
+    public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
+    public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
 
     public ProgressDialog mProgressDialog;
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
@@ -84,7 +90,8 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // restore drag state
         if (savedInstanceState != null) {
-            mSavedDragStatus = savedInstanceState.getInt("OdysseyMainActivity.NowPlayingDragStatus");
+            mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
+            mSavedNowPlayingViewSwitcherStatus = VIEW_SWITCHER_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW)];
         }
 
         // Read theme preference
@@ -208,12 +215,20 @@ public class OdysseyMainActivity extends AppCompatActivity
                 nowPlayingView.setDragOffset(0.0f);
                 getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
             } else {
-                if (mSavedDragStatus == 0) {
+                // set drag status
+                if (mSavedNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
                     nowPlayingView.setDragOffset(0.0f);
-                } else if (mSavedDragStatus == 1) {
+                } else if (mSavedNowPlayingDragStatus == DRAG_STATUS.DRAGGED_DOWN) {
                     nowPlayingView.setDragOffset(1.0f);
                 }
-                mSavedDragStatus = -1;
+                mSavedNowPlayingDragStatus = null;
+
+                // set view switcher status
+                if (mSavedNowPlayingViewSwitcherStatus != null) {
+                    nowPlayingView.setViewSwitcherStatus(mSavedNowPlayingViewSwitcherStatus);
+                    mNowPlayingViewSwitcherStatus = mSavedNowPlayingViewSwitcherStatus;
+                }
+                mSavedNowPlayingViewSwitcherStatus = null;
             }
             nowPlayingView.onResume();
         }
@@ -222,18 +237,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        int dragStatus = -1;
+        // save drag status of the nowplayingview
+        savedInstanceState.putInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS, mNowPlayingDragStatus.ordinal());
 
-        switch (mNowPlayingDragStatus) {
-            case DRAGGED_UP:
-                dragStatus = 0;
-                break;
-            case DRAGGED_DOWN:
-                dragStatus = 1;
-                break;
-        }
-
-        savedInstanceState.putInt("OdysseyMainActivity.NowPlayingDragStatus", dragStatus);
+        // save the cover/playlist view status of the nowplayingview
+        savedInstanceState.putInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW, mNowPlayingViewSwitcherStatus.ordinal());
     }
 
     @Override
@@ -612,6 +620,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
+    }
+
+    @Override
+    public void onSwitchedViews(VIEW_SWITCHER_STATUS view) {
+        mNowPlayingViewSwitcherStatus = view;
     }
 
     /**
