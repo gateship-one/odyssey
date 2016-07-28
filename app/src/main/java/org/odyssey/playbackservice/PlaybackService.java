@@ -43,7 +43,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public enum PLAYSTATE {
-        PLAYING, PAUSE, RESUMED, STOPPED
+        // If a song is actual playing
+        PLAYING,
+        // If a song was playing before but is now paused (but the GaplessPlayer is prepared and ready to resume).
+        PAUSE,
+        // If the PBS was loaded and is ready to resume playing. This is a state
+        // where the user never actually played a song in this session (GaplessPlayer is not yet prepared).
+        RESUMED,
+        // If no track is in the playlist the state is stopped. (Does not mean the PBS is not running)
+        STOPPED
     }
 
     public enum PLAYBACKSERVICESTATE {
