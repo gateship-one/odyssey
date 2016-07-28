@@ -746,15 +746,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPosition = getTrackPosition();
 
         // If it is still running stop playback.
-        if (mPlayer.isRunning() || mPlayer.isPrepared()) {
+        PLAYSTATE state = getPlaybackState();
+        if (state == PLAYSTATE.PLAYING  || state == PLAYSTATE.PAUSE) {
             mPlayer.stop();
         }
-
 
         Log.v(TAG, "Stopping service and saving playlist with size: " + mCurrentList.size() + " and currentplaying: " + mCurrentPlayingIndex + " at position: " + mLastPosition);
 
         // Save the state of the PBS at once
-        if (mCurrentPlayingIndex != -1) {
+        if (mCurrentList.size() > 0) {
             OdysseyServiceState serviceState = new OdysseyServiceState();
 
             serviceState.mTrackNumber = mCurrentPlayingIndex;
@@ -838,6 +838,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return null;
     }
 
+    /**
+     * Return the current nowplaying information including the current track.
+     * This method will return null if state is stopped.
+     */
     public NowPlayingInformation getNowPlayingInformation() {
 
         PLAYSTATE state = getPlaybackState();
