@@ -45,7 +45,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // If repeat mode is off
         REPEAT_OFF,
         // If the playlist should be repeated
-        REPEAT_ALL
+        REPEAT_ALL,
+        // If the current track should be repeated
+        REPEAT_TRACK
     }
 
     public enum PLAYSTATE {
@@ -476,14 +478,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 jumpToIndex(mLastPlayingIndex);
             }
         } else {
-            // Check if start is reached
-            if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
-                jumpToIndex(mCurrentPlayingIndex - 1);
-            } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
-                // In repeat mode next track is last track of playlist
-                jumpToIndex(mCurrentList.size() - 1);
+            if (mRepeat == REPEATSTATE.REPEAT_TRACK) {
+                // repeat the current track again
+                jumpToIndex(mCurrentPlayingIndex);
             } else {
-                stop();
+                // Check if start is reached
+                if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
+                    jumpToIndex(mCurrentPlayingIndex - 1);
+                } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
+                    // In repeat mode next track is last track of playlist
+                    jumpToIndex(mCurrentList.size() - 1);
+                } else {
+                    stop();
+                }
             }
         }
     }
@@ -804,17 +811,30 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // update the status
         mPlaybackServiceStatusHelper.updateStatus();
 
-        if (mRepeat == REPEATSTATE.REPEAT_ALL) {
-            // If playing last track, next must be first in playlist
-            if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
-                mNextPlayingIndex = 0;
+        switch (mRepeat) {
+            case REPEAT_OFF:
+                // If playing last track, next track must be invalid
+                if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
+                    mNextPlayingIndex = -1;
+                } else {
+                    mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                }
                 setNextTrackForMP();
-            }
-        } else {
-            if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
-                mNextPlayingIndex = -1;
+                break;
+            case REPEAT_ALL:
+                // If playing last track, next must be first in playlist
+                if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
+                    mNextPlayingIndex = 0;
+                } else {
+                    mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                }
                 setNextTrackForMP();
-            }
+                break;
+            case REPEAT_TRACK:
+                // Next track must be same track again
+                mNextPlayingIndex = mCurrentPlayingIndex;
+                setNextTrackForMP();
+                break;
         }
     }
 
@@ -1127,19 +1147,27 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlaybackServiceStatusHelper.updateStatus();
             if (mRandom == RANDOMSTATE.RANDOM_OFF) {
                 // Random off
-                if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
-                    mNextPlayingIndex = mCurrentPlayingIndex + 1;
-                } else {
-                    if (mRepeat == REPEATSTATE.REPEAT_ALL) {
-                        // Repeat on so set to first PL song if last song is
+
+                switch (mRepeat) {
+                    case REPEAT_OFF:
+                        // Repeat off so next track is the next track in the playlist if available
+                        if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                            mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                        } else {
+                            mNextPlayingIndex = -1;
+                        }
+                        break;
+                    case REPEAT_ALL:
+                        // Repeat playlist so set to first PL song if last song is
                         // reached
                         if (mCurrentList.size() > 0 && mCurrentPlayingIndex + 1 == mCurrentList.size()) {
                             mNextPlayingIndex = 0;
                         }
-                    } else {
-                        // No song remains and not repating
-                        mNextPlayingIndex = -1;
-                    }
+                        break;
+                    case REPEAT_TRACK:
+                        // Repeat track so next track is the current track
+                        mNextPlayingIndex = mCurrentPlayingIndex;
+                        break;
                 }
             } else {
                 // Random on

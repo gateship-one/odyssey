@@ -906,28 +906,43 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update buttons
 
         // update play buttons
-        if (info.getPlayState() == PlaybackService.PLAYSTATE.PLAYING) {
-            mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
-            mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
-        } else {
-            mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
-            mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
+        switch(info.getPlayState()) {
+            case PLAYING:
+                mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
+                mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
+                break;
+            case PAUSE:
+            case RESUMED:
+            case STOPPED:
+                mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
+                mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
+                break;
         }
 
         // update repeat button
-        if (info.getRepeat() == PlaybackService.REPEATSTATE.REPEAT_ALL) {
-            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
-        } else {
-            mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+        switch (info.getRepeat()) {
+            case REPEAT_OFF:
+                mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                break;
+            case REPEAT_ALL:
+                mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                break;
+            case REPEAT_TRACK:
+                mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_one_24dp);
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                break;
         }
 
         // update random button
-        if (info.getRandom() == PlaybackService.RANDOMSTATE.RANDOM_ON) {
-            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
-            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
-        } else {
-            mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+        switch (info.getRandom()) {
+            case RANDOM_OFF:
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                break;
+            case RANDOM_ON:
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                break;
         }
     }
 
@@ -981,6 +996,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     /**
      * Set the viewswitcher of cover/playlist view to the requested state.
+     *
      * @param view the view which should be displayed.
      */
     public void setViewSwitcherStatus(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS view) {
