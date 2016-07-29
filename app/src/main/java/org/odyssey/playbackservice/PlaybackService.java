@@ -35,11 +35,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * enums for random, repeat state
      */
     public enum RANDOMSTATE {
-        RANDOM_OFF, RANDOM_ON
+        // If random mode is off
+        RANDOM_OFF,
+        // If random mode is on
+        RANDOM_ON
     }
 
     public enum REPEATSTATE {
-        REPEAT_OFF, REPEAT_ALL, REPEAT_TRACK
+        // If repeat mode is off
+        REPEAT_OFF,
+        // If the playlist should be repeated
+        REPEAT_ALL
     }
 
     public enum PLAYSTATE {
@@ -55,7 +61,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public enum PLAYBACKSERVICESTATE {
-        WORKING, IDLE
+        // If the serivce is performing an operation
+        WORKING,
+        // If the service is finished with the operation
+        IDLE
     }
 
     public static final String TAG = "OdysseyPlaybackService";
@@ -92,8 +101,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private int mLastPosition = 0;
     private Random mRandomGenerator;
 
-    private int mRandom = 0;
-    private int mRepeat = 0;
+    private RANDOMSTATE mRandom = RANDOMSTATE.RANDOM_OFF;
+    private REPEATSTATE mRepeat = REPEATSTATE.REPEAT_OFF;
 
     /**
      * MediaControls manager
@@ -457,7 +466,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (getTrackPosition() > 2000) {
             // Check if current song should be restarted
             jumpToIndex(mCurrentPlayingIndex);
-        } else if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
+        } else if (mRandom == RANDOMSTATE.RANDOM_ON) {
             // handle random mode
             if (mLastPlayingIndex == -1) {
                 // if no lastindex reuse currentindex
@@ -470,7 +479,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Check if start is reached
             if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
                 jumpToIndex(mCurrentPlayingIndex - 1);
-            } else if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
+            } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
                 // In repeat mode next track is last track of playlist
                 jumpToIndex(mCurrentList.size() - 1);
             } else {
@@ -503,8 +512,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Clear the list
         mCurrentList.clear();
         // reset random and repeat state
-        mRandom = 0;
-        mRepeat = 0;
+        mRandom = RANDOMSTATE.RANDOM_OFF;
+        mRepeat = REPEATSTATE.REPEAT_OFF;
         // Stop the playback
         stop();
     }
@@ -770,11 +779,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stopSelf();
     }
 
-    public int getRandom() {
+    public RANDOMSTATE getRandom() {
         return mRandom;
     }
 
-    public int getRepeat() {
+    public REPEATSTATE getRepeat() {
         return mRepeat;
     }
 
@@ -784,10 +793,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * <p/>
      * If disabling check if last track plays.
      */
-    public void setRepeat(int repeat) {
-        mRepeat = repeat;
+    public void toggleRepeat() {
+
+        // get all repeat states
+        REPEATSTATE[] repeatstates = REPEATSTATE.values();
+
+        // toggle the repeat state
+        mRepeat = repeatstates[(mRepeat.ordinal() + 1) % repeatstates.length];
+
+        // update the status
         mPlaybackServiceStatusHelper.updateStatus();
-        if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
+
+        if (mRepeat == REPEATSTATE.REPEAT_ALL) {
             // If playing last track, next must be first in playlist
             if (mCurrentPlayingIndex == mCurrentList.size() - 1) {
                 mNextPlayingIndex = 0;
@@ -806,10 +823,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * notify the gaplessPlayer about the new track. If deactivating set check
      * if new track exists and set it to this.
      */
-    public void setRandom(int random) {
-        mRandom = random;
+    public void toggleRandom() {
+
+        // get all random states
+        RANDOMSTATE[] randomstates = RANDOMSTATE.values();
+
+        // toggle the random state
+        mRandom = randomstates[(mRandom.ordinal() + 1) % randomstates.length];
+
+        // update the status
         mPlaybackServiceStatusHelper.updateStatus();
-        if (mRandom == RANDOMSTATE.RANDOM_ON.ordinal()) {
+        if (mRandom == RANDOMSTATE.RANDOM_ON) {
             randomizeNextTrack();
         } else {
             // Set nextTrack to next in list
@@ -1001,13 +1025,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * True if the GaplessPlayer is actually playing a song.
-     */
-    public boolean isPlaying() {
-        return mPlayer.isRunning();
-    }
-
-    /**
      * Returns the playback state of the service
      */
     public PLAYSTATE getPlaybackState() {
@@ -1109,12 +1126,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
             // Notify all the things
             mPlaybackServiceStatusHelper.updateStatus();
-            if (mRandom == RANDOMSTATE.RANDOM_OFF.ordinal()) {
+            if (mRandom == RANDOMSTATE.RANDOM_OFF) {
                 // Random off
                 if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
                     mNextPlayingIndex = mCurrentPlayingIndex + 1;
                 } else {
-                    if (mRepeat == REPEATSTATE.REPEAT_ALL.ordinal()) {
+                    if (mRepeat == REPEATSTATE.REPEAT_ALL) {
                         // Repeat on so set to first PL song if last song is
                         // reached
                         if (mCurrentList.size() > 0 && mCurrentPlayingIndex + 1 == mCurrentList.size()) {
@@ -1189,7 +1206,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             case AudioManager.AUDIOFOCUS_LOSS:
                 Log.v(TAG, "Lost audiofocus");
                 // Stop playback service
-                if (isPlaying()) {
+                if (mPlayer.isRunning()) {
                     pause();
                 }
                 break;

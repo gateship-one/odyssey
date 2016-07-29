@@ -102,18 +102,18 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void setRandom(int random) throws RemoteException {
+    public void toggleRandom() throws RemoteException {
         // Create random control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_RANDOM, random);
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_RANDOM);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void setRepeat(int repeat) throws RemoteException {
+    public void toggleRepeat() throws RemoteException {
         // Create repeat control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_REPEAT, repeat);
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_REPEAT);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -222,16 +222,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public int getRandom() throws RemoteException {
-        return mService.get().getRandom();
-    }
-
-    @Override
-    public int getRepeat() throws RemoteException {
-        return mService.get().getRepeat();
-    }
-
-    @Override
     public TrackModel getCurrentSong() throws RemoteException {
         return mService.get().getCurrentTrack();
     }
@@ -285,11 +275,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public int getCurrentIndex() throws RemoteException {
         return mService.get().getCurrentIndex();
-    }
-
-    @Override
-    public int getPlaying() throws RemoteException {
-        return mService.get().isPlaying() ? 1 : 0;
     }
 
     @Override

@@ -18,8 +18,8 @@ public final class NowPlayingInformation implements Parcelable {
     // Parcel data
     private final PlaybackService.PLAYSTATE mPlayState;
     private final int mPlayingIndex;
-    private final int mRepeat;
-    private final int mRandom;
+    private final PlaybackService.REPEATSTATE mRepeat;
+    private final PlaybackService.RANDOMSTATE mRandom;
     private final int mPlaylistLength;
     private final TrackModel mCurrentTrack;
 
@@ -29,8 +29,8 @@ public final class NowPlayingInformation implements Parcelable {
         public NowPlayingInformation createFromParcel(Parcel source) {
             PlaybackService.PLAYSTATE playState = PlaybackService.PLAYSTATE.values()[source.readInt()];
             int playingIndex = source.readInt();
-            int repeat = source.readInt();
-            int random = source.readInt();
+            PlaybackService.REPEATSTATE repeat = PlaybackService.REPEATSTATE.values()[source.readInt()];
+            PlaybackService.RANDOMSTATE random = PlaybackService.RANDOMSTATE.values()[source.readInt()];
             int playlistlength = source.readInt();
             TrackModel currentTrack = source.readParcelable(TrackModel.class.getClassLoader());
             return new NowPlayingInformation(playState, playingIndex, repeat, random, playlistlength, currentTrack);
@@ -51,13 +51,13 @@ public final class NowPlayingInformation implements Parcelable {
     public NowPlayingInformation() {
         mPlayState = PlaybackService.PLAYSTATE.STOPPED;
         mPlayingIndex = -1;
-        mRepeat = 0;
-        mRandom = 0;
+        mRepeat = PlaybackService.REPEATSTATE.REPEAT_OFF;
+        mRandom = PlaybackService.RANDOMSTATE.RANDOM_OFF;
         mPlaylistLength = 0;
         mCurrentTrack = new TrackModel();
     }
 
-    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, int repeat, int random, int playlistlength, TrackModel currentTrack) {
+    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, PlaybackService.REPEATSTATE repeat, PlaybackService.RANDOMSTATE random, int playlistlength, TrackModel currentTrack) {
         mPlayState = playing;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
@@ -70,8 +70,8 @@ public final class NowPlayingInformation implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mPlayState.ordinal());
         dest.writeInt(mPlayingIndex);
-        dest.writeInt(mRepeat);
-        dest.writeInt(mRandom);
+        dest.writeInt(mRepeat.ordinal());
+        dest.writeInt(mRandom.ordinal());
         dest.writeInt(mPlaylistLength);
         dest.writeParcelable(mCurrentTrack, flags);
     }
@@ -88,11 +88,11 @@ public final class NowPlayingInformation implements Parcelable {
         return mPlayingIndex;
     }
 
-    public int getRepeat() {
+    public PlaybackService.REPEATSTATE getRepeat() {
         return mRepeat;
     }
 
-    public int getRandom() {
+    public PlaybackService.RANDOMSTATE getRandom() {
         return mRandom;
     }
 

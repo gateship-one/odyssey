@@ -185,8 +185,8 @@ public class PlaybackServiceStatusHelper {
      * @param state State of the PlaybackService
      */
     private void broadcastPlaybackInformation(TrackModel track, PlaybackService.PLAYSTATE state) {
-        int repeat = mPlaybackService.getRepeat();
-        int random = mPlaybackService.getRandom();
+        PlaybackService.REPEATSTATE repeat = mPlaybackService.getRepeat();
+        PlaybackService.RANDOMSTATE random = mPlaybackService.getRandom();
         int playlistLength = mPlaybackService.getPlaylistSize();
         if (track != null) {
             // Create the broadcast intent

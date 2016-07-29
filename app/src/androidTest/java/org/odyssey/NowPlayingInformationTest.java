@@ -30,8 +30,8 @@ public class NowPlayingInformationTest {
     // nowplaying values
     private final PlaybackService.PLAYSTATE TEST_PLAYING = PlaybackService.PLAYSTATE.RESUMED;
     private final int TEST_PLAYINGINDEX = 42;
-    private final int TEST_REPEAT = 0;
-    private final int TEST_RANDOM = 1;
+    private final PlaybackService.REPEATSTATE TEST_REPEAT = PlaybackService.REPEATSTATE.REPEAT_OFF;
+    private final PlaybackService.RANDOMSTATE TEST_RANDOM = PlaybackService.RANDOMSTATE.RANDOM_OFF;
     private final int TEST_PLAYLISTLENGTH = 13;
 
     private NowPlayingInformation mNowPlayingInformation;

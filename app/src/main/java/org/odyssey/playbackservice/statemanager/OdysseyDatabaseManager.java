@@ -10,6 +10,7 @@ import android.util.Log;
 import org.odyssey.models.BookmarkModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.OdysseyServiceState;
+import org.odyssey.playbackservice.PlaybackService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +228,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         values.put(StateTable.COLUMN_BOOKMARK_TIMESTAMP, timeStamp);
         values.put(StateTable.COLUMN_TRACKNUMBER, state.mTrackNumber);
         values.put(StateTable.COLUMN_TRACKPOSITION, state.mTrackPosition);
-        values.put(StateTable.COLUMN_RANDOM_STATE, state.mRandomState);
-        values.put(StateTable.COLUMN_REPEAT_STATE, state.mRepeatState);
+        values.put(StateTable.COLUMN_RANDOM_STATE, state.mRandomState.ordinal());
+        values.put(StateTable.COLUMN_REPEAT_STATE, state.mRepeatState.ordinal());
         values.put(StateTable.COLUMN_AUTOSAVE, autosave);
         values.put(StateTable.COLUMN_TITLE, title);
         values.put(StateTable.COLUMN_TRACKS, numberOfTracks);
@@ -256,8 +257,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
             state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE));
-            state.mRepeatState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE));
+            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();
@@ -282,8 +283,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
             state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE));
-            state.mRepeatState = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE));
+            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();

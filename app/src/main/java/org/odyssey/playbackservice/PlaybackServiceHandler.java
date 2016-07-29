@@ -56,10 +56,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().jumpToIndex(msgObj.getIntParam());
                     break;
                 case ODYSSEY_REPEAT:
-                    mService.get().setRepeat(msgObj.getIntParam());
+                    mService.get().toggleRepeat();
                     break;
                 case ODYSSEY_RANDOM:
-                    mService.get().setRandom(msgObj.getIntParam());
+                    mService.get().toggleRandom();
                     break;
                 case ODYSSEY_ENQUEUETRACK:
                     mService.get().enqueueTrack(msgObj.getTrack(), msgObj.getBoolParam());

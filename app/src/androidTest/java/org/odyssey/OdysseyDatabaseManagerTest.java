@@ -15,6 +15,7 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import org.odyssey.models.BookmarkModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.OdysseyServiceState;
+import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.odyssey.playbackservice.statemanager.StateTable;
 import org.odyssey.playbackservice.statemanager.StateTracksTable;
@@ -92,20 +93,20 @@ public class OdysseyDatabaseManagerTest {
         mStateCustom1 = new OdysseyServiceState();
         mStateCustom1.mTrackNumber = 1;
         mStateCustom1.mTrackPosition = 1;
-        mStateCustom1.mRepeatState = 0;
-        mStateCustom1.mRandomState = 1;
+    mStateCustom1.mRepeatState = PlaybackService.REPEATSTATE.REPEAT_OFF;
+        mStateCustom1.mRandomState = PlaybackService.RANDOMSTATE.RANDOM_ON;
 
         mStateCustom2 = new OdysseyServiceState();
         mStateCustom2.mTrackNumber = 2;
         mStateCustom2.mTrackPosition = 2;
-        mStateCustom2.mRepeatState = 1;
-        mStateCustom2.mRandomState = 0;
+        mStateCustom2.mRepeatState = PlaybackService.REPEATSTATE.REPEAT_ALL;
+        mStateCustom2.mRandomState = PlaybackService.RANDOMSTATE.RANDOM_OFF;
 
         mStateAuto = new OdysseyServiceState();
         mStateAuto.mTrackNumber = 3;
         mStateAuto.mTrackPosition = 3;
-        mStateAuto.mRepeatState = 2;
-        mStateAuto.mRandomState = 1;
+        mStateAuto.mRepeatState = PlaybackService.REPEATSTATE.REPEAT_ALL;
+        mStateAuto.mRandomState = PlaybackService.RANDOMSTATE.RANDOM_ON;
     }
 
     @Test
@@ -125,8 +126,8 @@ public class OdysseyDatabaseManagerTest {
 
             int number = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
             int position = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
-            int random = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE));
-            int repeat = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE));
+            PlaybackService.RANDOMSTATE random = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE))];
+            PlaybackService.REPEATSTATE repeat = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE))];
 
             int tracks = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKS));
             int auto = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_AUTOSAVE));
@@ -335,8 +336,8 @@ public class OdysseyDatabaseManagerTest {
 
         assertThat(state.mTrackNumber, is(-1));
         assertThat(state.mTrackPosition, is(-1));
-        assertThat(state.mRandomState, is(-1));
-        assertThat(state.mRepeatState, is(-1));
+        assertThat(state.mRandomState, is(PlaybackService.RANDOMSTATE.RANDOM_OFF));
+        assertThat(state.mRepeatState, is(PlaybackService.REPEATSTATE.REPEAT_OFF));
 
         List<TrackModel> playlist = mDatabaseManager.readPlaylist(mTimeStampCustom1);
 

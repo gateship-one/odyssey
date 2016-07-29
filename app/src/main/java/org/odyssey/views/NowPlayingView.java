@@ -696,9 +696,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             @Override
             public void onClick(View arg0) {
                 try {
-                    int repeat = (mServiceConnection.getPBS().getRepeat() == PlaybackService.REPEATSTATE.REPEAT_ALL.ordinal()) ? PlaybackService.REPEATSTATE.REPEAT_OFF.ordinal() : PlaybackService.REPEATSTATE.REPEAT_ALL.ordinal();
-
-                    mServiceConnection.getPBS().setRepeat(repeat);
+                    mServiceConnection.getPBS().toggleRepeat();
                 } catch (RemoteException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -750,9 +748,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             @Override
             public void onClick(View arg0) {
                 try {
-                    int random = (mServiceConnection.getPBS().getRandom() == PlaybackService.RANDOMSTATE.RANDOM_ON.ordinal()) ? PlaybackService.RANDOMSTATE.RANDOM_OFF.ordinal() : PlaybackService.RANDOMSTATE.RANDOM_ON.ordinal();
-
-                    mServiceConnection.getPBS().setRandom(random);
+                    mServiceConnection.getPBS().toggleRandom();
                 } catch (RemoteException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -921,8 +917,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         // update repeat button
-        // FIXME make repeat enum
-        if (info.getRepeat() == 1) {
+        if (info.getRepeat() == PlaybackService.REPEATSTATE.REPEAT_ALL) {
             int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
             mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(color));
         } else {
@@ -930,8 +925,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         // update random button
-        // FIXME make random enum
-        if (info.getRandom() == 1) {
+        if (info.getRandom() == PlaybackService.RANDOMSTATE.RANDOM_ON) {
             int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
             mBottomRandomButton.setImageTintList(ColorStateList.valueOf(color));
         } else {

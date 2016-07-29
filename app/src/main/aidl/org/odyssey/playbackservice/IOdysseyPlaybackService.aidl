@@ -56,12 +56,8 @@ interface IOdysseyPlaybackService {
 	 */
 	void jumpTo(int position);
 
-	void setRandom(int random);
-	void setRepeat(int repeat);
-
-	int getRandom();
-	int getRepeat();
-	int getPlaying();
+	void toggleRandom();
+	void toggleRepeat();
 
 	// track is the full uri with "file://" !
 	void setNextTrack(String track);
