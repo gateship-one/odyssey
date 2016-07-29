@@ -34,7 +34,7 @@ public class OdysseyNotificationManager {
 
     // Notification objects
     private final android.app.NotificationManager mNotificationManager;
-    private Notification.Builder mNotificationBuilder;
+    private Notification.Builder mNotificationBuilder = null;
 
     // Notification itself
     private Notification mNotification;
@@ -45,8 +45,6 @@ public class OdysseyNotificationManager {
 
     public OdysseyNotificationManager(Context context) {
         mContext = context;
-
-        mNotificationBuilder = new Notification.Builder(mContext);
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -112,7 +110,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.setWhen(0);
 
             // Cover but only if changed
-            if (mLastTrack == null || !track.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+            if (mLastTrack == null || !track.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
                 mLastTrack = track;
                 mLastBitmap = null;
             }
@@ -151,6 +149,8 @@ public class OdysseyNotificationManager {
             }
             mNotification = null;
             mLastTrack = null;
+            mLastBitmap = null;
+            mNotificationBuilder = null;
         }
     }
 
@@ -161,9 +161,11 @@ public class OdysseyNotificationManager {
      */
     public void setNotificationImage(BitmapDrawable bm) {
         // Check if notification exists and set picture
-        mNotificationBuilder.setLargeIcon(bm.getBitmap());
         mLastBitmap = bm.getBitmap();
-        mNotification = mNotificationBuilder.build();
-        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        if ( mNotification != null ) {
+            mNotificationBuilder.setLargeIcon(bm.getBitmap());
+            mNotification = mNotificationBuilder.build();
+            mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        }
     }
 }

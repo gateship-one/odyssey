@@ -118,12 +118,8 @@ public class PlaybackServiceStatusHelper {
                 // Broadcast all the information.
                 broadcastPlaybackInformation(info);
 
-                // Only update cover image if album changed to preserve energy
-                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                    mLastTrack = info.getCurrentTrack();
-                    startCoverImageTask();
-                }
-
+                // Reset the last track
+                mLastTrack = null;
 
                 // Clear possible notifications here. This could be the case when the PBS quits itself after a certain amount of time.
                 // Depending on the situation (if the GUI is open) the service will instantly restart and go into the resume state.
