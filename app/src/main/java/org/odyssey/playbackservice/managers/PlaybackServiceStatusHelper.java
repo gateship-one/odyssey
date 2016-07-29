@@ -3,9 +3,9 @@ package org.odyssey.playbackservice.managers;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaMetadata;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
@@ -31,7 +31,7 @@ public class PlaybackServiceStatusHelper {
     private PlaybackService mPlaybackService;
 
     // MediaSession objects
-    private MediaSession mMediaSession;
+    private MediaSessionCompat mMediaSession;
 
     // Asynchronous cover fetcher
     private CoverBitmapGenerator mBitmapGenerator;
@@ -46,7 +46,7 @@ public class PlaybackServiceStatusHelper {
         mPlaybackService = playbackService;
 
         // Get MediaSession objects
-        mMediaSession = new MediaSession(mPlaybackService, "OdysseyPBS");
+        mMediaSession = new MediaSessionCompat(mPlaybackService, "OdysseyPBS");
 
         // Register the callback for the MediaSession
         mMediaSession.setCallback(new OdysseyMediaSessionCallback());
@@ -74,7 +74,7 @@ public class PlaybackServiceStatusHelper {
      */
     public void stopMediaSession() {
         // Make sure to remove the old metadata.
-        mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED, 0, 0.0f).build());
+        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_STOPPED, 0, 0.0f).build());
         // Clear last track so that covers load again when resuming.
         mLastTrack = null;
         // Actual session disable.
@@ -144,32 +144,32 @@ public class PlaybackServiceStatusHelper {
     private void updateMetadata(TrackModel track, PlaybackService.PLAYSTATE playbackState) {
         if (track != null) {
             if (playbackState == PlaybackService.PLAYSTATE.PLAYING) {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING, 0, 1.0f)
-                        .setActions(PlaybackState.ACTION_SKIP_TO_NEXT + PlaybackState.ACTION_PAUSE +
-                                PlaybackState.ACTION_PLAY + PlaybackState.ACTION_SKIP_TO_PREVIOUS +
-                                PlaybackState.ACTION_STOP + PlaybackState.ACTION_SEEK_TO).build());
+                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f)
+                        .setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT + PlaybackStateCompat.ACTION_PAUSE +
+                                PlaybackStateCompat.ACTION_PLAY + PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS +
+                                PlaybackStateCompat.ACTION_STOP + PlaybackStateCompat.ACTION_SEEK_TO).build());
             } else {
-                mMediaSession.setPlaybackState(new PlaybackState.Builder().
-                        setState(PlaybackState.STATE_PAUSED, 0, 1.0f).setActions(PlaybackState.ACTION_SKIP_TO_NEXT +
-                        PlaybackState.ACTION_PAUSE + PlaybackState.ACTION_PLAY +
-                        PlaybackState.ACTION_SKIP_TO_PREVIOUS + PlaybackState.ACTION_STOP +
-                        PlaybackState.ACTION_SEEK_TO).build());
+                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().
+                        setState(PlaybackStateCompat.STATE_PAUSED, 0, 1.0f).setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT +
+                        PlaybackStateCompat.ACTION_PAUSE + PlaybackStateCompat.ACTION_PLAY +
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS + PlaybackStateCompat.ACTION_STOP +
+                        PlaybackStateCompat.ACTION_SEEK_TO).build());
             }
             // Try to get old metadata to save image retrieval.
-            MediaMetadata oldData = mMediaSession.getController().getMetadata();
-            MediaMetadata.Builder metaDataBuilder;
+            MediaMetadataCompat oldData = mMediaSession.getController().getMetadata();
+            MediaMetadataCompat.Builder metaDataBuilder;
             if (oldData == null) {
-                metaDataBuilder = new MediaMetadata.Builder();
+                metaDataBuilder = new MediaMetadataCompat.Builder();
             } else {
-                metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
+                metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
             }
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, track.getTrackName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, track.getTrackAlbumName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, track.getTrackArtistName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
-            metaDataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
-            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
-            metaDataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION, track.getTrackDuration());
+            metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, track.getTrackName());
+            metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, track.getTrackAlbumName());
+            metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, track.getTrackArtistName());
+            metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, track.getTrackArtistName());
+            metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
+            metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
+            metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, track.getTrackDuration());
 
             mMediaSession.setMetadata(metaDataBuilder.build());
         }
@@ -242,15 +242,15 @@ public class PlaybackServiceStatusHelper {
      */
     private void startCoverImageTask() {
         // Try to get old metadata to save image retrieval.
-        MediaMetadata oldData = mMediaSession.getController().getMetadata();
-        MediaMetadata.Builder metaDataBuilder;
+        MediaMetadataCompat oldData = mMediaSession.getController().getMetadata();
+        MediaMetadataCompat.Builder metaDataBuilder;
         if (oldData == null) {
-            metaDataBuilder = new MediaMetadata.Builder();
+            metaDataBuilder = new MediaMetadataCompat.Builder();
         } else {
-            metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
+            metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
         }
         // Reset metadata image in case covergenerator fails
-        metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, null);
+        metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
@@ -261,7 +261,7 @@ public class PlaybackServiceStatusHelper {
      * Callback class for MediaControls controlled by android system like BT remotes, etc and
      * Volume keys on some android versions.
      */
-    private class OdysseyMediaSessionCallback extends MediaSession.Callback {
+    private class OdysseyMediaSessionCallback extends MediaSessionCompat.Callback {
 
         @Override
         public void onPlay() {
@@ -311,9 +311,9 @@ public class PlaybackServiceStatusHelper {
         public void receiveBitmap(BitmapDrawable bm) {
             if (bm != null) {
                 // Try to get old metadata to save image retrieval.
-                MediaMetadata.Builder metaDataBuilder;
-                metaDataBuilder = new MediaMetadata.Builder(mMediaSession.getController().getMetadata());
-                metaDataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bm.getBitmap());
+                MediaMetadataCompat.Builder metaDataBuilder;
+                metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm.getBitmap());
                 mMediaSession.setMetadata(metaDataBuilder.build());
                 mNotificationManager.setNotificationImage(bm);
             }

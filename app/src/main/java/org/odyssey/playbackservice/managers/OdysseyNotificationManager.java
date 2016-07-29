@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.session.MediaSession;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v7.app.NotificationCompat;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
@@ -34,7 +35,7 @@ public class OdysseyNotificationManager {
 
     // Notification objects
     private final android.app.NotificationManager mNotificationManager;
-    private Notification.Builder mNotificationBuilder = null;
+    private NotificationCompat.Builder mNotificationBuilder = null;
 
     // Notification itself
     private Notification mNotification;
@@ -53,9 +54,9 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSession.Token mediaSessionToken) {
+    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
         if (track != null) {
-            mNotificationBuilder = new Notification.Builder(mContext);
+            mNotificationBuilder = new NotificationCompat.Builder(mContext);
 
             // Open application intent
             Intent contentIntent = new Intent(mContext, OdysseyMainActivity.class);
@@ -68,7 +69,7 @@ public class OdysseyNotificationManager {
             // Previous song action
             Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
             PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action prevAction = new Notification.Action.Builder(R.drawable.ic_skip_previous_48dp, "Previous", prevPendingIntent).build();
+            NotificationCompat.Action prevAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_previous_48dp, "Previous", prevPendingIntent).build();
 
             // Pause/Play action
             PendingIntent playPauseIntent;
@@ -82,24 +83,24 @@ public class OdysseyNotificationManager {
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 playPauseIcon = R.drawable.ic_play_arrow_48dp;
             }
-            Notification.Action playPauseAction = new Notification.Action.Builder(playPauseIcon, "PlayPause", playPauseIntent).build();
+            NotificationCompat.Action playPauseAction = new NotificationCompat.Action.Builder(playPauseIcon, "PlayPause", playPauseIntent).build();
 
             // Next song action
             Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Action nextAction = new Notification.Action.Builder(R.drawable.ic_skip_next_48dp, "Next", nextPendingIntent).build();
+            NotificationCompat.Action nextAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_next_48dp, "Next", nextPendingIntent).build();
 
             // Quit action
             Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);
             PendingIntent quitPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mNotificationBuilder.setDeleteIntent(quitPendingIntent);
 
-            mNotificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            mNotificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
             mNotificationBuilder.setSmallIcon(R.drawable.odyssey_notification);
             mNotificationBuilder.addAction(prevAction);
             mNotificationBuilder.addAction(playPauseAction);
             mNotificationBuilder.addAction(nextAction);
-            Notification.MediaStyle notificationStyle = new Notification.MediaStyle();
+            NotificationCompat.MediaStyle notificationStyle = new NotificationCompat.MediaStyle();
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
