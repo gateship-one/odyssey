@@ -86,24 +86,26 @@ public class PlaybackServiceStatusHelper {
      * current state of PlaybackService and so on.
      */
     public synchronized void updateStatus() {
-        TrackModel currentTrack = mPlaybackService.getCurrentTrack();
-        PlaybackService.PLAYSTATE playbackState = mPlaybackService.getPlaybackState();
+        NowPlayingInformation info = mPlaybackService.getNowPlayingInformation();
+        TrackModel currentTrack = info.getCurrentTrack();
+        PlaybackService.PLAYSTATE currentState = info.getPlayState();
+
         // Ask playback service for its state
-        switch (playbackState) {
+        switch (currentState) {
             case PLAYING:
             case PAUSE:
                 // Call the notification manager, it handles the rest.
-                mNotificationManager.updateNotification(currentTrack, playbackState, mMediaSession.getSessionToken());
+                mNotificationManager.updateNotification(currentTrack, currentState, mMediaSession.getSessionToken());
 
                 // Update MediaSession metadata.
-                updateMetadata(currentTrack, playbackState);
+                updateMetadata(currentTrack, currentState);
 
                 // Broadcast all the information.
-                broadcastPlaybackInformation(currentTrack, playbackState);
+                broadcastPlaybackInformation(info);
 
                 // Only update cover image if album changed to preserve energy
-                if (mLastTrack == null || !currentTrack.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                    mLastTrack = currentTrack;
+                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                    mLastTrack = info.getCurrentTrack();
                     startCoverImageTask();
                 }
                 break;
@@ -111,14 +113,14 @@ public class PlaybackServiceStatusHelper {
                 // In this state all broadcast listeners should be informed already.
                 // Notification should NOT be created in this state, so skip it in contrast to state PAUSE
                 // Update MediaSession metadata.
-                updateMetadata(currentTrack, playbackState);
+                updateMetadata(currentTrack, currentState);
 
                 // Broadcast all the information.
-                broadcastPlaybackInformation(currentTrack, playbackState);
+                broadcastPlaybackInformation(info);
 
                 // Only update cover image if album changed to preserve energy
-                if (mLastTrack == null || !currentTrack.getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
-                    mLastTrack = currentTrack;
+                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                    mLastTrack = info.getCurrentTrack();
                     startCoverImageTask();
                 }
 
@@ -129,7 +131,7 @@ public class PlaybackServiceStatusHelper {
                 break;
             case STOPPED:
                 stopMediaSession();
-                broadcastPlaybackInformation(currentTrack, PlaybackService.PLAYSTATE.STOPPED);
+                broadcastPlaybackInformation(info);
                 mNotificationManager.clearNotification();
                 break;
         }
@@ -181,38 +183,18 @@ public class PlaybackServiceStatusHelper {
      * Broadcasts the new NowPlayingInformation which is received by multiple instances.
      * NowPlayingView in the GUI, Widget for example receives it.
      *
-     * @param track Currently played track.
-     * @param state State of the PlaybackService
+     * @param info The current NowPlayingInformation
      */
-    private void broadcastPlaybackInformation(TrackModel track, PlaybackService.PLAYSTATE state) {
-        PlaybackService.REPEATSTATE repeat = mPlaybackService.getRepeat();
-        PlaybackService.RANDOMSTATE random = mPlaybackService.getRandom();
-        int playlistLength = mPlaybackService.getPlaylistSize();
-        if (track != null) {
-            // Create the broadcast intent
-            Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
+    private void broadcastPlaybackInformation(NowPlayingInformation info) {
 
-            // Create NowPlayingInfo for parcel
-            int playingIndex = mPlaybackService.getCurrentIndex();
+        // Create the broadcast intent
+        Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
 
-            NowPlayingInformation info = new NowPlayingInformation(state, playingIndex, repeat, random, playlistLength, track);
+        // Add nowplayingInfo to parcel
+        broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
 
-            // Add nowplayingInfo to parcel
-            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
-
-            // We're good to go, send it away
-            mPlaybackService.sendBroadcast(broadcastIntent);
-        } else {
-            // Send empty broadcast with stopped information
-            Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
-
-            NowPlayingInformation info = new NowPlayingInformation();
-            // Add nowplayingInfo to parcel
-            broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
-
-            // We're good to go, send it away
-            mPlaybackService.sendBroadcast(broadcastIntent);
-        }
+        // We're good to go, send it away
+        mPlaybackService.sendBroadcast(broadcastIntent);
     }
 
     /**

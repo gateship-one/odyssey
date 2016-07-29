@@ -864,14 +864,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * Return the current nowplaying information including the current track.
-     * This method will return null if state is stopped.
      */
     public NowPlayingInformation getNowPlayingInformation() {
 
         PLAYSTATE state = getPlaybackState();
 
         if (state == PLAYSTATE.STOPPED) {
-            return null;
+            return new NowPlayingInformation();
         } else {
             TrackModel currentTrack = mCurrentList.get(mCurrentPlayingIndex);
 

@@ -862,10 +862,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 info = mServiceConnection.getPBS().getNowPlayingInformation();
             } catch (RemoteException e) {
                 e.printStackTrace();
-            }
 
-            // If still no information is available. Setup an empty nowplayinformation object to clear the view.
-            if (info == null) {
+                // an error occured so create a default instance to clear the view
                 info = new NowPlayingInformation();
             }
         }
