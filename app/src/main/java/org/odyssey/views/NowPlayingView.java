@@ -144,39 +144,43 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Top buttons in the draggable header part.
      */
-    ImageButton mTopPlayPauseButton;
-    ImageButton mTopPlaylistButton;
-    ImageButton mTopMenuButton;
+    private ImageButton mTopPlayPauseButton;
+    private ImageButton mTopPlaylistButton;
+    private ImageButton mTopMenuButton;
 
     /**
      * Buttons in the bottom part of the view
      */
-    ImageButton mBottomRepeatButton;
-    ImageButton mBottomPreviousButton;
-    ImageButton mBottomPlayPauseButton;
-    ImageButton mBottomNextButton;
-    ImageButton mBottomRandomButton;
+    private ImageButton mBottomRepeatButton;
+    private ImageButton mBottomPreviousButton;
+    private ImageButton mBottomPlayPauseButton;
+    private ImageButton mBottomNextButton;
+    private ImageButton mBottomRandomButton;
 
     /**
      * Seekbar used for seeking and informing the user of the current playback position.
      */
-    SeekBar mPositionSeekbar;
+    private SeekBar mPositionSeekbar;
 
     /**
      * Various textviews for track information
      */
-    TextView mTrackName;
-    TextView mTrackArtistName;
-    TextView mTrackAlbumName;
-    TextView mElapsedTime;
-    TextView mDuration;
-
+    private TextView mTrackName;
+    private TextView mTrackArtistName;
+    private TextView mTrackAlbumName;
+    private TextView mElapsedTime;
+    private TextView mDuration;
 
     /**
      * Name of the last played album. This is used for a optimization of cover fetching. If album
      * did not change with a track, there is no need to refetch the cover.
      */
     private String mLastAlbumKey;
+
+    /**
+     * The state of the playbackservice.
+     */
+    private PlaybackService.PLAYSTATE mPlaybackServiceState;
 
     public NowPlayingView(Context context) {
         this(context, null, 0);
@@ -189,6 +193,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public NowPlayingView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDragHelper = ViewDragHelper.create(this, 1f, new BottomDragCallbackHelper());
+        mPlaybackServiceState = PlaybackService.PLAYSTATE.STOPPED;
     }
 
     /**
@@ -197,7 +202,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public void maximize() {
         smoothSlideTo(0f);
     }
-
 
     /**
      * Minimizes the view with an animation.
@@ -400,7 +404,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          */
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return child == mHeaderView;
+            if (child == mHeaderView) {
+                // start the refresh task if state is playing
+                if (mPlaybackServiceState == PlaybackService.PLAYSTATE.PLAYING) {
+                    startRefreshTask();
+                }
+
+                return true;
+            } else {
+                return false;
+            }
         }
 
         /**
@@ -509,6 +522,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
                     }
+
+                    // stop refresh task
+                    stopRefreshTask();
                 }
             } else {
                 /*
@@ -917,19 +933,32 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update seekbar and elapsedview
         updateTrackPosition();
 
+        // save the state
+        mPlaybackServiceState = info.getPlayState();
+
         // update buttons
 
         // update play buttons
-        switch (info.getPlayState()) {
+        switch (mPlaybackServiceState) {
             case PLAYING:
                 mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
                 mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
+
+                // start refresh task if view is visible
+                if (mDragOffset == 0.0f) {
+                    startRefreshTask();
+                }
+
                 break;
             case PAUSE:
             case RESUMED:
             case STOPPED:
                 mTopPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_48dp);
                 mBottomPlayPauseButton.setImageResource(R.drawable.ic_play_circle_fill_48dp);
+
+                // stop refresh task
+                stopRefreshTask();
+
                 break;
         }
 
@@ -976,6 +1005,30 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mPositionSeekbar.setProgress(trackPosition);
         // update the elapsed view
         mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(trackPosition));
+    }
+
+    /**
+     * Stop the refresh task if one exists.
+     */
+    private void stopRefreshTask() {
+        if (mRefreshTimer != null) {
+            mRefreshTimer.cancel();
+            mRefreshTimer.purge();
+            mRefreshTimer = null;
+        }
+    }
+
+    /**
+     * Start a periodically time to update the seekbar. If one is already existing overwrite it.
+     */
+    private void startRefreshTask() {
+        if (mRefreshTimer != null) {
+            mRefreshTimer.cancel();
+            mRefreshTimer.purge();
+            mRefreshTimer = null;
+        }
+        mRefreshTimer = new Timer();
+        mRefreshTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
     }
 
     /**
@@ -1056,15 +1109,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
             // Already running in main UI thread handler here. No need for runOnUIThread
             updateStatus(null);
-
-            // Start a periodically time to update the seekbar. If one is already existing overwrite it.
-            if (mRefreshTimer != null) {
-                mRefreshTimer.cancel();
-                mRefreshTimer.purge();
-                mRefreshTimer = null;
-            }
-            mRefreshTimer = new Timer();
-            mRefreshTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
         }
 
         /**
