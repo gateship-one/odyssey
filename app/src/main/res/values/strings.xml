@@ -55,10 +55,12 @@
     <string name="dialog_action_cancel">Cancel</string>
     <string name="dialog_action_save">Save</string>
     <string name="dialog_choose_storage_volume_title">Choose storage volume</string>
+    <string name="dialog_choose_bookmark">Choose bookmark</string>
 
-    <!-- dialog default filenames  -->
+    <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
     <string name="default_bookmark_title">New Bookmark</string>
+    <string name="create_new_bookmark">Create new bookmark</string>
 
     <!-- actions -->
     <string name="action_add_album">Add Album</string>

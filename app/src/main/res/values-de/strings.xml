@@ -89,4 +89,6 @@
     <string name="preference_theme_item_light_green">Helles Grün</string>
     <string name="action_add_directory">Verzeichnis hinzufügen</string>
     <string name="popup_menu_action_startequalizer">Öffne Equalizer</string>
+    <string name="create_new_bookmark">Erstelle neues Lesezeichen</string>
+    <string name="dialog_choose_bookmark">Wähle Lesezeichen</string>
 </resources>

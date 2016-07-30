@@ -53,19 +53,32 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         String bookmarkTitle = bookmark.getTitle();
 
         // number of tracks
-        String numberOfTracks = Integer.toString(bookmark.getNumberOfTracks()) + " " + mContext.getString(R.string.fragment_bookmarks_tracks);
+        int numberOfTracks = bookmark.getNumberOfTracks();
+
+        String numberOfTracksString = "";
+
+        if (numberOfTracks > 0) {
+            // set number of tracks only if this bookmark contains tracks
+            numberOfTracksString = Integer.toString(bookmark.getNumberOfTracks()) + " " + mContext.getString(R.string.fragment_bookmarks_tracks);
+        }
 
         // get date string
-        String dateString = FormatHelper.formatTimeStampToString(bookmark.getId());
+        long id = bookmark.getId();
+
+        String dateString = "";
+        if (id > 0) {
+            // set date string only if id of this bookmark is valid
+            dateString = FormatHelper.formatTimeStampToString(bookmark.getId());
+        }
 
         if (convertView != null) {
             BookmarksListViewItem bookmarksListViewItem = (BookmarksListViewItem) convertView;
 
             bookmarksListViewItem.setTitle(bookmarkTitle);
-            bookmarksListViewItem.setNumberOfTracks(numberOfTracks);
+            bookmarksListViewItem.setNumberOfTracks(numberOfTracksString);
             bookmarksListViewItem.setDate(dateString);
         } else {
-            convertView = new BookmarksListViewItem(mContext, bookmarkTitle, numberOfTracks, dateString);
+            convertView = new BookmarksListViewItem(mContext, bookmarkTitle, numberOfTracksString, dateString);
         }
 
         return convertView;

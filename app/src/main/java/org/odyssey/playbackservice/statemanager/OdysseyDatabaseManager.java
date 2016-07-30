@@ -93,6 +93,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         if (autosave) {
             // delete previous auto saved states if this save is an auto generated save
             clearAutoSaveState();
+        } else {
+            // delete the state with the same name from the database if exists
+            clearDuplicateState(title);
         }
 
         long timeStamp = System.currentTimeMillis();
@@ -385,6 +388,33 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 // delete state
                 odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
             } while (stateCursor.moveToNext());
+        }
+
+        stateCursor.close();
+
+        odysseyStateDB.close();
+    }
+
+    /**
+     * Search the database for a state with the given title and remove that state, including the related tracks.
+     *
+     * @param title The title of the state
+     */
+    private void clearDuplicateState(String title) {
+
+        SQLiteDatabase odysseyStateDB = getWritableDatabase();
+
+        Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE}, StateTable.COLUMN_TITLE + "=?", new String[]{title},
+                "", "", "");
+
+        if (stateCursor.moveToFirst()) {
+            long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+
+            // delete playlist
+            odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+
+            // delete state
+            odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
         }
 
         stateCursor.close();

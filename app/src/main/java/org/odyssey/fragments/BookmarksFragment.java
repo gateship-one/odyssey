@@ -105,7 +105,7 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
      */
     @Override
     public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
-        return new BookmarkLoader(getActivity());
+        return new BookmarkLoader(getActivity(), false);
     }
 
     /**

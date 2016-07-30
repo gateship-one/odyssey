@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
+import org.odyssey.fragments.ChooseBookmarkDialog;
 import org.odyssey.fragments.SaveDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
@@ -339,11 +340,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 return true;
             case R.id.view_nowplaying_action_createbookmark:
                 // open dialog in order to save the current playlist as a bookmark in the odyssey db
-                saveDialog = new SaveDialog();
-                arguments = new Bundle();
-                arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.BOOKMARK);
-                saveDialog.setArguments(arguments);
-                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                ChooseBookmarkDialog dlg = new ChooseBookmarkDialog();
+                dlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseBookmarkDialog");
                 return true;
             case R.id.view_nowplaying_action_startequalizer:
                 // start the audio equalizer
@@ -924,7 +922,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update buttons
 
         // update play buttons
-        switch(info.getPlayState()) {
+        switch (info.getPlayState()) {
             case PLAYING:
                 mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
                 mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
