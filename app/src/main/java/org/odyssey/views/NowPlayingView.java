@@ -46,6 +46,7 @@ import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
 import org.odyssey.fragments.ChooseBookmarkDialog;
+import org.odyssey.fragments.ChoosePlaylistDialog;
 import org.odyssey.fragments.SaveDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
@@ -331,17 +332,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
                 return true;
             case R.id.view_nowplaying_action_saveplaylist:
-                // open dialog in order to save the current playlist as a playlist in the media db
-                SaveDialog saveDialog = new SaveDialog();
-                Bundle arguments = new Bundle();
-                arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.PLAYLIST);
-                saveDialog.setArguments(arguments);
-                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                // open dialog in order to save the current playlist as a playlist in the mediastore
+                ChoosePlaylistDialog choosePlaylistDialog = new ChoosePlaylistDialog();
+                choosePlaylistDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChoosePlaylistDialog");
                 return true;
             case R.id.view_nowplaying_action_createbookmark:
                 // open dialog in order to save the current playlist as a bookmark in the odyssey db
-                ChooseBookmarkDialog dlg = new ChooseBookmarkDialog();
-                dlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseBookmarkDialog");
+                ChooseBookmarkDialog chooseBookmarkDialog = new ChooseBookmarkDialog();
+                chooseBookmarkDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseBookmarkDialog");
                 return true;
             case R.id.view_nowplaying_action_startequalizer:
                 // start the audio equalizer

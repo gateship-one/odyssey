@@ -23,6 +23,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import org.odyssey.R;
+import org.odyssey.models.BookmarkModel;
 import org.odyssey.models.PlaylistModel;
 import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
@@ -34,23 +36,32 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
 
     private final Context mContext;
 
-    public PlaylistLoader(Context context) {
+    /**
+     * Flag if a header element should be inserted.
+     */
+    private final boolean mAddHeader;
+
+    public PlaylistLoader(Context context, boolean addHeader) {
         super(context);
 
         mContext = context;
+        mAddHeader = addHeader;
     }
 
-    /*
-     * Creates an list of all albums on this device and caches them inside the
-     * memory(non-Javadoc)
-     *
-     * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
+    /**
+     * Load all playlists from the mediastore.
      */
     @Override
     public List<PlaylistModel> loadInBackground() {
-        Cursor playlistCursor =  PermissionHelper.query(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
+        Cursor playlistCursor = PermissionHelper.query(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
 
         ArrayList<PlaylistModel> playlists = new ArrayList<>();
+
+        if (mAddHeader) {
+            // add a dummy playlist for the choose playlist dialog
+            // this playlist represents the action to create a new playlist in the dialog
+            playlists.add(new PlaylistModel(mContext.getString(R.string.create_new_playlist), -1));
+        }
 
         if (playlistCursor != null) {
             int playlistTitleColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);

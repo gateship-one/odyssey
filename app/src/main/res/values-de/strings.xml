@@ -91,4 +91,6 @@
     <string name="popup_menu_action_startequalizer">Öffne Equalizer</string>
     <string name="create_new_bookmark">Erstelle neues Lesezeichen</string>
     <string name="dialog_choose_bookmark">Wähle Lesezeichen</string>
+    <string name="create_new_playlist">Erstelle neue Playlist</string>
+    <string name="dialog_choose_playlist">Wähle Playlist</string>
 </resources>

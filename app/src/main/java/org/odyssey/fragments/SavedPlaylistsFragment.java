@@ -19,7 +19,6 @@
 package org.odyssey.fragments;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.os.Bundle;
@@ -40,25 +39,37 @@ import org.odyssey.adapter.SavedPlaylistListViewAdapter;
 import org.odyssey.listener.OnPlaylistSelectedListener;
 import org.odyssey.loaders.PlaylistLoader;
 import org.odyssey.models.PlaylistModel;
-import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
-import org.odyssey.utils.MusicLibraryHelper;
 import org.odyssey.utils.PermissionHelper;
 
 import java.util.List;
 
 public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<PlaylistModel>> {
 
-    private OnPlaylistSelectedListener mPlaylistSelectedCallback;
-
+    /**
+     * ListView adapter object used for this ListView
+     */
     private SavedPlaylistListViewAdapter mSavedPlaylistListViewAdapter;
 
-    private PlaybackServiceConnection mServiceConnection;
+    /**
+     * Listener to open a playlist
+     */
+    private OnPlaylistSelectedListener mPlaylistSelectedCallback;
 
-    // Save the last scroll position to resume there
+    /**
+     * Save the root ListView for later usage.
+     */
+    private ListView mRootListView;
+
+    /**
+     * Save the last scroll position to resume there
+     */
     private int mLastPosition;
 
-    private ListView mListView;
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,25 +78,22 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
+        mRootListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
         mSavedPlaylistListViewAdapter = new SavedPlaylistListViewAdapter(getActivity());
 
-        mListView.setAdapter(mSavedPlaylistListViewAdapter);
+        mRootListView.setAdapter(mSavedPlaylistListViewAdapter);
+        mRootListView.setOnItemClickListener(this);
 
-        mListView.setOnItemClickListener(this);
-
-        registerForContextMenu(mListView);
-
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
-
-        activity.setUpPlayButton(null);
+        // register for context menu
+        registerForContextMenu(mRootListView);
 
         return rootView;
     }
 
+    /**
+     * Called when the fragment is first attached to its context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -99,6 +107,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         }
     }
 
+    /**
+     * Called when the fragment resumes.
+     * Reload the data and create the PBS connection.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -118,6 +130,50 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
     }
 
     @Override
+    public Loader<List<PlaylistModel>> onCreateLoader(int arg0, Bundle bundle) {
+        return new PlaylistLoader(getActivity(), false);
+    }
+
+    /**
+     * Called when the loader finished loading its data.
+     *
+     * @param loader The used loader itself
+     * @param data   Data of the loader
+     */
+    @Override
+    public void onLoadFinished(Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
+        mSavedPlaylistListViewAdapter.swapModel(data);
+
+        // Reset old scroll position
+        if (mLastPosition >= 0) {
+            mRootListView.setSelection(mLastPosition);
+            mLastPosition = -1;
+        }
+    }
+
+    /**
+     * If a loader is reset the model data should be cleared.
+     *
+     * @param loader Loader that was resetted.
+     */
+    @Override
+    public void onLoaderReset(Loader<List<PlaylistModel>> loader) {
+        mSavedPlaylistListViewAdapter.swapModel(null);
+    }
+
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
+    @Override
+    public void refresh() {
+        // reload data
+        getLoaderManager().restartLoader(0, getArguments(), this);
+    }
+
+    /**
+     * Callback when an item in the ListView was clicked.
+     */
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         // Save scroll position
@@ -133,6 +189,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         mPlaylistSelectedCallback.onPlaylistSelected(playlistName, playlistID);
     }
 
+    /**
+     * Create the context menu.
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -140,6 +199,12 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         inflater.inflate(R.menu.context_menu_saved_playlists_fragment, menu);
     }
 
+    /**
+     * Hook called when an menu item in the context menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -160,6 +225,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         }
     }
 
+    /**
+     * Call the PBS to play the selected playlist.
+     * @param position the position of the selected playlist in the adapter
+     */
     private void playPlaylist(int position) {
         // identify current playlist
         PlaylistModel clickedPlaylist = (PlaylistModel) mSavedPlaylistListViewAdapter.getItem(position);
@@ -179,6 +248,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
         }
     }
 
+    /**
+     * Remove the selected playlist from the mediastore.
+     * @param position the position of the selected playlist in the adapter
+     */
     private void deletePlaylist(int position) {
         // identify current playlist
         PlaylistModel clickedPlaylist = (PlaylistModel) mSavedPlaylistListViewAdapter.getItem(position);
@@ -189,33 +262,6 @@ public class SavedPlaylistsFragment extends OdysseyFragment implements AdapterVi
 
         PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
 
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
-    }
-
-    @Override
-    public Loader<List<PlaylistModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new PlaylistLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<PlaylistModel>> arg0, List<PlaylistModel> model) {
-        mSavedPlaylistListViewAdapter.swapModel(model);
-
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mListView.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<PlaylistModel>> arg0) {
-        mSavedPlaylistListViewAdapter.swapModel(null);
-    }
-
-    @Override
-    public void refresh() {
         // reload data
         getLoaderManager().restartLoader(0, getArguments(), this);
     }
