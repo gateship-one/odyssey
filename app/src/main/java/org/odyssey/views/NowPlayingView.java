@@ -19,6 +19,7 @@
 package org.odyssey.views;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -350,7 +351,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                    activity.startActivityForResult(startEqualizerIntent, 0);
+
+                    try {
+                        activity.startActivityForResult(startEqualizerIntent, 0);
+                    } catch (ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return true;
             default:
@@ -375,7 +381,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Saves the current state as a bookmar. This just calls the PBS and asks him to save the state.
+     * Saves the current state as a bookmark. This just calls the PBS and asks him to save the state.
      *
      * @param bookmarkTitle Name of the bookmark to store.
      */

@@ -18,6 +18,7 @@
 
 package org.odyssey.fragments;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
@@ -40,7 +41,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             public boolean onPreferenceClick(Preference preference) {
                 // start the audio equalizer
                 Intent viewIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                getActivity().startActivity(viewIntent);
+
+                try {
+                    getActivity().startActivity(viewIntent);
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                }
 
                 return true;
             }
