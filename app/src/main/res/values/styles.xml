@@ -102,7 +102,8 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/colorBackground</item>
-        <item name="android:alertDialogTheme">@android:style/Theme.Material.Dialog.Alert</item>
+        <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
+        <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:textColorPrimary">@color/colorTextLight</item>
         <item name="android:textColorPrimaryInverse">@color/colorTextLight</item>
         <item name="android:textColor">@color/colorTextLight</item>
@@ -123,13 +124,7 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
 
-    <style name="AppTheme.Preference" parent="PreferenceThemeOverlay.v14.Material">
-        <item name="android:colorAccent">?attr/colorAccent</item>
-        <item name="android:textColorPrimary">@color/colorTextLight</item>
-        <item name="android:textColorSecondary">@color/colorTextLightSecondary</item>
-        <item name="android:dialogTheme">@android:style/Theme.Material.Dialog</item>
-    </style>
-
+    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"></style>
 
     <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
@@ -138,6 +133,12 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="android:listDividerAlertDialog">@color/colorDivider</item>
+        <item name="android:dividerHeight">1sp</item>
     </style>
 
 </resources>
