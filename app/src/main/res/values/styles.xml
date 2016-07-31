@@ -99,11 +99,13 @@
         <item name="android:textColorSecondary">@color/secondaryLightText_lightGreen</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
+        <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
+        <item name="dialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:textColorPrimary">@color/colorTextLight</item>
         <item name="android:textColorPrimaryInverse">@color/colorTextLight</item>
         <item name="android:textColor">@color/colorTextLight</item>
@@ -114,19 +116,21 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat">
+        <item name="android:textColorSecondary">@color/colorTextLight</item>
+    </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">
         <item name="android:textColor">@color/colorTextDark</item>
     </style>
 
-    <style name="AppTheme.NavDrawer" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.NavDrawer" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
 
     <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"></style>
 
-    <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
     </style>
