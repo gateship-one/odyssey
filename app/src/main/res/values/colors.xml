@@ -24,20 +24,20 @@
     <color name="primaryLightText_indigo">#FFFFFF</color>
     <color name="secondaryLightText_indigo">#BBBBBB</color>
 
-    <color name="colorPrimary_orange">#ff9800</color>
-    <color name="colorPrimaryDark_orange">#f57c00</color>
+    <color name="colorPrimary_orange">#f57c00</color>
+    <color name="colorPrimaryDark_orange">#e65100</color>
     <color name="colorAccent_orange">#2979ff</color>
     <color name="primaryLightText_orange">#FFFFFF</color>
     <color name="secondaryLightText_orange">#BBBBBB</color>
 
-    <color name="colorPrimary_deepOrange">#ff5722</color>
-    <color name="colorPrimaryDark_deepOrange">#e64a19</color>
+    <color name="colorPrimary_deepOrange">#e64a19</color>
+    <color name="colorPrimaryDark_deepOrange">#bf360c</color>
     <color name="colorAccent_deepOrange">#2979ff</color>
     <color name="primaryLightText_deepOrange">#FFFFFF</color>
     <color name="secondaryLightText_deepOrange">#BBBBBB</color>
 
-    <color name="colorPrimary_blue">#2196f3</color>
-    <color name="colorPrimaryDark_blue">#1976d2</color>
+    <color name="colorPrimary_blue">#1976d2</color>
+    <color name="colorPrimaryDark_blue">#0d47a1</color>
     <color name="colorAccent_blue">#f50057</color>
     <color name="primaryLightText_blue">#FFFFFF</color>
     <color name="secondaryLightText_blue">#BBBBBB</color>
@@ -54,9 +54,9 @@
     <color name="primaryLightText_brown">#FFFFFF</color>
     <color name="secondaryLightText_brown">#BBBBBB</color>
 
-    <color name="colorPrimary_lightGreen">#8bc34a</color>
-    <color name="colorPrimaryDark_lightGreen">#689f38</color>
-    <color name="colorAccent_lightGreen">#d50000</color>
+    <color name="colorPrimary_lightGreen">#689f38</color>
+    <color name="colorPrimaryDark_lightGreen">#33691e</color>
+    <color name="colorAccent_lightGreen">#ff5252</color>
     <color name="primaryLightText_lightGreen">#FFFFFF</color>
     <color name="secondaryLightText_lightGreen">#DDDDDD</color>
 
