@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:id="@+id/now_playing_trackArtistAlbumSeparator"
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:text="@string/separator" />
 
                     <TextView
@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:fontFamily="sans-serif-regular"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:textColor="?android:attr/textColorPrimary" />
                 </LinearLayout>
 
             </LinearLayout>
