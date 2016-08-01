@@ -291,6 +291,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         } else if (mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
             if (nowPlayingView != null) {
+                View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                coordinatorLayout.setVisibility(View.VISIBLE);
                 nowPlayingView.minimize();
             }
         } else if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
@@ -372,6 +374,9 @@ public class OdysseyMainActivity extends AppCompatActivity
                     String albumKey = currentPlaylistView.getAlbumKey(info.position);
                     ArrayList<String> albumInformations = MusicLibraryHelper.getAlbumInformationFromKey(albumKey, this);
                     if (albumInformations.size() == 3) {
+                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                        coordinatorLayout.setVisibility(View.VISIBLE);
+
                         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
                         if (nowPlayingView != null) {
                             nowPlayingView.minimize();
@@ -382,6 +387,10 @@ public class OdysseyMainActivity extends AppCompatActivity
                 case R.id.view_current_playlist_action_showartist:
                     String artistTitle = currentPlaylistView.getArtistTitle(info.position);
                     long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+
+                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                    coordinatorLayout.setVisibility(View.VISIBLE);
+
                     NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
                     if (nowPlayingView != null) {
                         nowPlayingView.minimize();
@@ -400,6 +409,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+        coordinatorLayout.setVisibility(View.VISIBLE);
 
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
