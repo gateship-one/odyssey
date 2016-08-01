@@ -27,7 +27,6 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
-import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -48,7 +47,6 @@ import android.widget.ViewSwitcher;
 import org.odyssey.R;
 import org.odyssey.fragments.ChooseBookmarkDialog;
 import org.odyssey.fragments.ChoosePlaylistDialog;
-import org.odyssey.fragments.SaveDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
@@ -167,8 +165,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * Various textviews for track information
      */
     private TextView mTrackName;
-    private TextView mTrackArtistName;
-    private TextView mTrackAlbumName;
+    private TextView mTrackAdditionalInfo;
     private TextView mElapsedTime;
     private TextView mDuration;
 
@@ -656,8 +653,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // textviews
         mTrackName = (TextView) findViewById(R.id.now_playing_trackName);
-        mTrackAlbumName = (TextView) findViewById(R.id.now_playing_trackAlbum);
-        mTrackArtistName = (TextView) findViewById(R.id.now_playing_trackArtist);
+        // For marquee scrolling the TextView need selected == true
+        mTrackName.setSelected(true);
+        mTrackAdditionalInfo = (TextView) findViewById(R.id.now_playing_track_additional_info);
+        // For marquee scrolling the TextView need selected == true
+        mTrackAdditionalInfo.setSelected(true);
 
         // Textviews directly under the seekbar
         mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
@@ -913,7 +913,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // set tracktitle, album, artist and albumcover
         mTrackName.setText(currentTrack.getTrackName());
 
-        mTrackAlbumName.setText(currentTrack.getTrackAlbumName());
 
         // Check if the album title changed. If true, start the cover generator thread.
         if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
@@ -928,7 +927,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mLastAlbumKey = currentTrack.getTrackAlbumKey();
 
         // Set the artist of the track
-        mTrackArtistName.setText(currentTrack.getTrackArtistName());
+        mTrackAdditionalInfo.setText(currentTrack.getTrackArtistName() + getResources().getString(R.string.separator) + currentTrack.getTrackAlbumName());
 
         // Set the track duration
         mDuration.setText(FormatHelper.formatTracktimeFromMS(currentTrack.getTrackDuration()));
