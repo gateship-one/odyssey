@@ -629,12 +629,30 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    public void enqueueTracks(ArrayList<TrackModel> tracklist) {
-        // Check if current song is old last one, if so set next song to MP for
-        // gapless playback
+    /**
+     * Enqueue all given tracks.
+     * Prepare the next track for playback if needed.
+     */
+    public void enqueueTracks(List<TrackModel> tracklist) {
+
         Log.v(TAG, "Enqueing " + tracklist.size() + "tracks");
 
+        int oldSize = mCurrentList.size();
+
         mCurrentList.addAll(tracklist);
+
+        /*
+         * If currently playing and playing is the last one in old playlist set
+         * enqueued one to next one for gapless mediaplayback
+         */
+        if (mCurrentPlayingIndex == (oldSize - 1) && (mCurrentPlayingIndex >= 0)) {
+            // Next song for MP has to be set for gapless mediaplayback
+            mNextPlayingIndex = mCurrentPlayingIndex + 1;
+            setNextTrackForMP();
+        }
+
+        // Send new NowPlaying because playlist changed
+        mPlaybackServiceStatusHelper.updateStatus();
     }
 
     /**
@@ -648,11 +666,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // get all tracks for the current albumkey from mediastore
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
 
-        // add all retrieved tracks
-        mCurrentList.addAll(tracks);
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
+        // add tracks to current playlist
+        enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
@@ -668,11 +683,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // get all tracks for the current artistId from mediastore
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, getApplicationContext());
 
-        // add all retrieved tracks
-        mCurrentList.addAll(tracks);
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
+        // add tracks to current playlist
+        enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
@@ -781,7 +793,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // If it is still running stop playback.
         PLAYSTATE state = getPlaybackState();
-        if (state == PLAYSTATE.PLAYING  || state == PLAYSTATE.PAUSE) {
+        if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
             mPlayer.stop();
         }
 
@@ -938,10 +950,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // get playlist from mediastore
         List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
 
-        mCurrentList.addAll(playlistTracks);
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
+        // add tracks to current playlist
+        enqueueTracks(playlistTracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
@@ -1053,10 +1063,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         List<TrackModel> tracks = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelsForFolder(currentDirectory);
 
-        mCurrentList.addAll(tracks);
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
+        // add tracks to current playlist
+        enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
