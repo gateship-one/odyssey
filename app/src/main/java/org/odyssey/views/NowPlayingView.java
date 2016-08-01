@@ -279,6 +279,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
         mDragOffset = offset;
 
+        invalidate();   
         requestLayout();
 
 
@@ -624,7 +625,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Calculate the margin to smoothly resize text field
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
-        layoutParams.setMarginEnd((int) (mTopPlaylistButton.getWidth() * (1.0 - mDragOffset)));
+        layoutParams.setMarginEnd((int) (mTopPlaylistButton.getMeasuredHeight() * (1.0 - mDragOffset)));
         mHeaderTextLayout.setLayoutParams(layoutParams);
     }
 
