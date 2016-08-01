@@ -161,6 +161,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     private SeekBar mPositionSeekbar;
 
+    private LinearLayout mHeaderTextLayout;
+
     /**
      * Various textviews for track information
      */
@@ -276,6 +278,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mDragOffset = 1.0f;
         }
         mDragOffset = offset;
+
         requestLayout();
 
 
@@ -285,6 +288,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDraggedDownButtons.setAlpha(mDragOffset);
         mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
 
+        // Calculate the margin to smoothly resize text field
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
+        layoutParams.setMarginEnd((int) (mTopPlaylistButton.getWidth() * (1.0 - mDragOffset)));
+        mHeaderTextLayout.setLayoutParams(layoutParams);
 
         // Notify the observers about the change
         if (mDragStatusReceiver != null) {
@@ -444,6 +451,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // are not clickable.
             mDraggedDownButtons.setAlpha(mDragOffset);
             mDraggedUpButtons.setAlpha(1.0f - mDragOffset);
+
+            // Calculate the margin to smoothly resize text field
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
+            layoutParams.setMarginEnd((int) (mTopPlaylistButton.getWidth() * (1.0 - mDragOffset)));
+            mHeaderTextLayout.setLayoutParams(layoutParams);
 
             if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onDragPositionChanged(mDragOffset);
@@ -609,6 +621,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, 0),
                 resolveSizeAndState(maxHeight, heightMeasureSpec, 0));
+
+        // Calculate the margin to smoothly resize text field
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
+        layoutParams.setMarginEnd((int) (mTopPlaylistButton.getWidth() * (1.0 - mDragOffset)));
+        mHeaderTextLayout.setLayoutParams(layoutParams);
     }
 
     /**
@@ -662,6 +679,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Textviews directly under the seekbar
         mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
         mDuration = (TextView) findViewById(R.id.now_playing_duration);
+
+        mHeaderTextLayout = (LinearLayout) findViewById(R.id.now_playing_header_textLayout);
 
         // seekbar (position)
         mPositionSeekbar = (SeekBar) findViewById(R.id.now_playing_seekBar);
@@ -809,6 +828,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Open the menu itself
         menu.show();
     }
+
 
     /**
      * Called when a layout is requested from the graphics system.
