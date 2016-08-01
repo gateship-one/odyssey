@@ -301,7 +301,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         mPlayer.stop();
-        mCurrentPlayingIndex = -1;
+        mCurrentPlayingIndex = 0;
+        mLastPosition = 0;
 
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
