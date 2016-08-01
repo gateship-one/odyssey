@@ -340,7 +340,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         cancelQuitAlert();
 
 //        // Check if mediaplayer needs preparing
-        if (!mPlayer.isPrepared() && (mLastPosition != 0) && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
+        if (!mPlayer.isPrepared() && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
             jumpToIndex(mCurrentPlayingIndex, mLastPosition);
             Log.v(TAG, "Resuming position before playback to: " + mLastPosition);
             return;
