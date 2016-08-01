@@ -147,6 +147,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private ImageButton mTopPlaylistButton;
     private ImageButton mTopMenuButton;
 
+    private int mTopPlaylistButtonHeight;
+
     /**
      * Buttons in the bottom part of the view
      */
@@ -162,6 +164,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private SeekBar mPositionSeekbar;
 
     private LinearLayout mHeaderTextLayout;
+    private RelativeLayout.LayoutParams mHeaderTextLayoutParams;
+
 
     /**
      * Various textviews for track information
@@ -279,7 +283,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
         mDragOffset = offset;
 
-        invalidate();   
+        invalidate();
         requestLayout();
 
 
@@ -420,7 +424,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mPlaybackServiceState == PlaybackService.PLAYSTATE.PLAYING) {
                     startRefreshTask();
                 }
-
+                // report the change of the view
+                if (mDragStatusReceiver != null) {
+                    mDragStatusReceiver.onStartDrag();
+                }
                 return true;
             } else {
                 return false;
@@ -813,6 +820,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         mCoverGenerator = new CoverBitmapGenerator(getContext(), new CoverReceiverClass());
+
+        invalidate();
     }
 
     /**
@@ -903,6 +912,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
+        invalidate();
     }
 
     /**
@@ -1255,5 +1265,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Called when the view switcher switches between cover and playlist view
         void onSwitchedViews(VIEW_SWITCHER_STATUS view);
+
+        // Called when the user starts the drag
+        void onStartDrag();
     }
 }

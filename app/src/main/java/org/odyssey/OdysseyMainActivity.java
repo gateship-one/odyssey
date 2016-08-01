@@ -103,6 +103,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     public ProgressDialog mProgressDialog;
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -596,6 +597,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     /**
      * Method to retrieve the height of the statusbar to compensate in non-transparent cases.
+     *
      * @return The Dimension of the statusbar. Used to compensate the padding.
      */
     private int getStatusBarHeight() {
@@ -638,6 +640,10 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
+        if (status == DRAG_STATUS.DRAGGED_UP) {
+            View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+            coordinatorLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -645,9 +651,16 @@ public class OdysseyMainActivity extends AppCompatActivity
         mNowPlayingViewSwitcherStatus = view;
     }
 
+    @Override
+    public void onStartDrag() {
+        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+        coordinatorLayout.setVisibility(View.VISIBLE);
+    }
+
     /**
      * This method smoothly fades out the alpha value of the statusbar to give
      * a transition if the user pulls up the NowPlayingView.
+     *
      * @param pos
      */
     @Override
@@ -657,7 +670,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // Calculate the offset depending on the floating point position (0.0-1.0 of the view)
         // Shift by 24 bit to set it as the A from ARGB and set all remaining 24 bits to 1 to
-        int alphaOffset = (((255 - (int)(255.0 * pos)) << 24) | 0xFFFFFF);
+        int alphaOffset = (((255 - (int) (255.0 * pos)) << 24) | 0xFFFFFF);
         // and with this mask to set the new alpha value.
         newColor &= (alphaOffset);
         getWindow().setStatusBarColor(newColor);
