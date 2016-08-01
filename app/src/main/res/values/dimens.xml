@@ -53,6 +53,8 @@
     <dimen name="material_content_spacing">8dp</dimen>
     <dimen name="material_standard_horizontal_spacing">16dp</dimen>
 
+    <!-- divider size -->
+    <dimen name="list_divider_size">1dp</dimen>
 
     <!-- Font size -->
     <dimen name="material_font_style_size_headline">24sp</dimen>

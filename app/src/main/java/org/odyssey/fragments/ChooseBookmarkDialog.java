@@ -22,10 +22,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
@@ -134,6 +136,11 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
         // Prepare loader ( start new one or reuse old )
         getLoaderManager().initLoader(0, getArguments(), this);
 
-        return builder.create();
+        // set divider
+        AlertDialog dlg = builder.create();
+        dlg.getListView().setDivider(new ColorDrawable(ContextCompat.getColor(getContext(), R.color.colorDivider)));
+        dlg.getListView().setDividerHeight(getResources().getDimensionPixelSize(R.dimen.list_divider_size));
+
+        return dlg;
     }
 }

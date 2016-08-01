@@ -141,8 +141,6 @@
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorAccent">?attr/odyssey_color_accent</item>
-        <item name="android:listDividerAlertDialog">@color/colorDivider</item>
-        <item name="android:dividerHeight">1sp</item>
     </style>
 
 </resources>

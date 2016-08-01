@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@color/colorDivider"
-        android:dividerHeight="1sp"
+        android:dividerHeight="@dimen/list_divider_size"
         android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
