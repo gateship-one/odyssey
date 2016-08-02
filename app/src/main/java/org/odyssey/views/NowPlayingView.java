@@ -912,6 +912,16 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
+
+        // Reenable scrolling views after resuming
+        if ( mTrackName != null ) {
+            mTrackName.setSelected(true);
+        }
+
+        if ( mTrackAdditionalInfo != null ) {
+            mTrackAdditionalInfo.setSelected(true);
+        }
+
         invalidate();
     }
 
