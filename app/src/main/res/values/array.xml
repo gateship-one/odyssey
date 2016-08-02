@@ -32,4 +32,13 @@
         <item>name</item>
         <item>year</item>
     </string-array>
+
+    <string-array name="preference_album_sort_views_values">
+        <item>my_music_artists</item>
+        <item>my_music_albums</item>
+        <item>my_music_tracks</item>
+        <item>playlists</item>
+        <item>bookmarks</item>
+        <item>files</item>
+    </string-array>
 </resources>

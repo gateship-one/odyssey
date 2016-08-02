@@ -41,6 +41,12 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
     private PlaybackServiceConnection mServiceConnection;
 
+    public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
+
+    public enum DEFAULTTAB {
+        ARTISTS, ALBUMS, TRACKS
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true,false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
 
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
@@ -61,19 +67,19 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         Drawable drawable = res.getDrawable(R.drawable.ic_recent_actors_24dp, null);
         if (drawable != null) {
             Drawable icon = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(icon,tabColors);
+            DrawableCompat.setTintList(icon, tabColors);
             tabLayout.addTab(tabLayout.newTab().setIcon(icon));
         }
         drawable = res.getDrawable(R.drawable.ic_album_24dp, null);
         if (drawable != null) {
             Drawable icon = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(icon,tabColors);
+            DrawableCompat.setTintList(icon, tabColors);
             tabLayout.addTab(tabLayout.newTab().setIcon(icon));
         }
         drawable = res.getDrawable(R.drawable.ic_my_library_music_24dp, null);
         if (drawable != null) {
             Drawable icon = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(icon,tabColors);
+            DrawableCompat.setTintList(icon, tabColors);
             tabLayout.addTab(tabLayout.newTab().setIcon(icon));
         }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -84,8 +90,26 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         myMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
-        // set start page to albums
-        myMusicViewPager.setCurrentItem(1);
+        // set start page
+        Bundle args = getArguments();
+
+        DEFAULTTAB tab = DEFAULTTAB.ALBUMS;
+
+        if (args != null) {
+            tab = DEFAULTTAB.values()[args.getInt(MY_MUSIC_REQUESTED_TAB)];
+        }
+
+        switch (tab) {
+            case ARTISTS:
+                myMusicViewPager.setCurrentItem(0);
+                break;
+            case ALBUMS:
+                myMusicViewPager.setCurrentItem(1);
+                break;
+            case TRACKS:
+                myMusicViewPager.setCurrentItem(2);
+                break;
+        }
 
         // set up play button
         activity.setUpPlayButton(null);
@@ -101,13 +125,13 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         View view = this.getView();
 
-        if(view != null) {
+        if (view != null) {
             ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
             myMusicViewPager.setCurrentItem(tab.getPosition());
 
             View.OnClickListener listener = null;
 
-            switch(tab.getPosition()) {
+            switch (tab.getPosition()) {
                 case 0:
                     break;
                 case 1:
@@ -172,7 +196,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
                 case 0:
                     return new ArtistsFragment();
                 case 1:
-                     return new AlbumsFragment();
+                    return new AlbumsFragment();
                 case 2:
                     return new AllTracksFragment();
                 default:

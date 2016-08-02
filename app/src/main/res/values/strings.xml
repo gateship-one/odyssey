@@ -138,6 +138,26 @@
         <item>@string/preference_album_sort_order_year</item>
     </string-array>
 
+    <string name="preference_default_view_title">Default view</string>
+    <string name="preference_default_view_message">Select default view</string>
+    <string name="preference_default_view_summary">Select the default view of the application.</string>
+
+    <string name="preference_default_view_my_music_artists">Artists</string>
+    <string name="preference_default_view_my_music_albums">Albums</string>
+    <string name="preference_default_view_my_music_tracks">All tracks</string>
+    <string name="preference_default_view_my_music_playlists">Playlists</string>
+    <string name="preference_default_view_my_music_bookmarks">Bookmarks</string>
+    <string name="preference_default_view_my_music_files">Files</string>
+
+    <string-array name="preference_default_views">
+        <item>@string/preference_default_view_my_music_artists</item>
+        <item>@string/preference_default_view_my_music_albums</item>
+        <item>@string/preference_default_view_my_music_tracks</item>
+        <item>@string/preference_default_view_my_music_playlists</item>
+        <item>@string/preference_default_view_my_music_bookmarks</item>
+        <item>@string/preference_default_view_my_music_files</item>
+    </string-array>
+
     <!-- About activity -->
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/android-odyssey/odyssey</string>

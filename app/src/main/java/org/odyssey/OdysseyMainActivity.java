@@ -103,7 +103,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     public ProgressDialog mProgressDialog;
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -141,6 +140,34 @@ public class OdysseyMainActivity extends AppCompatActivity
                 break;
         }
 
+        // Read default view preference
+        String defaultView = sharedPref.getString("pref_default_view", "my_music_albums");
+
+        // the default tab for mymusic
+        MyMusicFragment.DEFAULTTAB defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
+        // the nav ressource id to mark the right item in the nav drawer
+        int navId = R.id.nav_my_music;
+
+        switch (defaultView) {
+            case "my_music_artists":
+                defaultTab = MyMusicFragment.DEFAULTTAB.ARTISTS;
+                break;
+            case "my_music_albums":
+                break;
+            case "my_music_tracks":
+                defaultTab = MyMusicFragment.DEFAULTTAB.TRACKS;
+                break;
+            case "playlists":
+                navId = R.id.nav_saved_playlists;
+                break;
+            case "bookmarks":
+                navId = R.id.nav_bookmarks;
+                break;
+            case "files":
+                navId = R.id.nav_files;
+                break;
+        }
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_odyssey_main);
@@ -173,7 +200,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
-            navigationView.setCheckedItem(R.id.nav_my_music);
+            navigationView.setCheckedItem(navId);
         }
 
         // register context menu for currentPlaylistListView
@@ -185,12 +212,41 @@ public class OdysseyMainActivity extends AppCompatActivity
                 return;
             }
 
-            Fragment myMusicFragment = new MyMusicFragment();
+            Fragment fragment = null;
 
-            myMusicFragment.setArguments(getIntent().getExtras());
+            if (navId == R.id.nav_my_music) {
+                fragment = new MyMusicFragment();
+
+                Bundle args = new Bundle();
+                args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
+
+                fragment.setArguments(args);
+            } else if (navId == R.id.nav_saved_playlists) {
+                fragment = new SavedPlaylistsFragment();
+            } else if (navId == R.id.nav_bookmarks) {
+                fragment = new BookmarksFragment();
+            } else if (navId == R.id.nav_files) {
+                fragment = new FilesFragment();
+
+                // open the default directory
+                List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
+
+                String defaultDirectory = "/";
+
+                if (!storageVolumesList.isEmpty()) {
+                    // choose the latest used storage volume as default
+                    defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
+                }
+
+                Bundle args = new Bundle();
+                args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
+                args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
+
+                fragment.setArguments(args);
+            }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, myMusicFragment);
+            transaction.replace(R.id.fragment_container, fragment);
             transaction.commit();
         }
 
