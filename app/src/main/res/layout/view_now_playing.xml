@@ -100,43 +100,42 @@
 
                     <ImageButton
                         android:id="@+id/now_playing_topPlaylistButton"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:adjustViewBounds="false"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="?android:selectableItemBackground"
                         android:baselineAlignBottom="false"
-                        android:cropToPadding="false"
+                        android:scaleType="centerInside"
                         android:src="@drawable/ic_queue_music_24dp"
-                        android:tint="@color/colorTextLight" />
+                        android:tint="@color/colorTextLight"
+                        android:layout_gravity="center"/>
 
                     <ImageButton
                         android:id="@+id/now_playing_topMenuButton"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:adjustViewBounds="false"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="?android:selectableItemBackground"
-                        android:baselineAlignBottom="false"
-                        android:cropToPadding="false"
+                        android:scaleType="centerInside"
                         android:src="@drawable/ic_more_vert_24dp"
-                        android:tint="@color/colorTextLight" />
+                        android:tint="@color/colorTextLight"
+                        android:layout_gravity="center"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/now_playing_layout_dragged_down"
-                    android:layout_width="?attr/actionBarSize"
+                    android:layout_width="48dp"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
 
                     <ImageButton
                         android:id="@+id/now_playing_topPlayPauseButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="false"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="?android:selectableItemBackground"
                         android:baselineAlignBottom="false"
-                        android:cropToPadding="false"
+                        android:scaleType="centerInside"
                         android:src="@drawable/ic_play_arrow_48dp"
-                        android:tint="@color/colorTextLight" />
+                        android:tint="@color/colorTextLight"
+                        android:layout_gravity="center"/>
                 </LinearLayout>
 
         </RelativeLayout>
