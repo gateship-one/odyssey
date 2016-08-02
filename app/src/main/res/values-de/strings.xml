@@ -93,4 +93,5 @@
     <string name="dialog_choose_bookmark">Wähle Lesezeichen</string>
     <string name="create_new_playlist">Erstelle neue Playlist</string>
     <string name="dialog_choose_playlist">Wähle Playlist</string>
+    <string name="sources_text">Der Quellcode ist auf GitHub verfügbar:\nhttps://github.com/android-odyssey/odyssey</string>
 </resources>
