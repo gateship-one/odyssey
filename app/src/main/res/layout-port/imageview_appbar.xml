@@ -36,7 +36,7 @@
     <View
         android:id="@+id/collapsing_image_gradient"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="128dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/grid_item_gradient"
         android:visibility="gone" />
