@@ -710,7 +710,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         mNowPlayingDragStatus = status;
         if (status == DRAG_STATUS.DRAGGED_UP) {
             View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-            coordinatorLayout.setVisibility(View.INVISIBLE);
+            coordinatorLayout.setVisibility(View.GONE);
         }
     }
 
