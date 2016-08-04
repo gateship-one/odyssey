@@ -31,7 +31,6 @@ import android.os.RemoteException;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -923,11 +922,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mServiceConnection.openConnection();
 
         // Reenable scrolling views after resuming
-        if ( mTrackName != null ) {
+        if (mTrackName != null) {
             mTrackName.setSelected(true);
         }
 
-        if ( mTrackAdditionalInfo != null ) {
+        if (mTrackAdditionalInfo != null) {
             mTrackAdditionalInfo.setSelected(true);
         }
 
