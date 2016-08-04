@@ -38,7 +38,7 @@
         android:layout_width="fill_parent"
         android:layout_height="128dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/grid_item_gradient"
+        android:background="@drawable/album_imagebar_gradient"
         android:visibility="gone" />
 
 </RelativeLayout>
