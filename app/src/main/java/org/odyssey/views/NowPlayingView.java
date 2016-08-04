@@ -31,6 +31,7 @@ import android.os.RemoteException;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -426,6 +427,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
                 // report the change of the view
                 if (mDragStatusReceiver != null) {
+                    // Disable scrolling of the text views
+                    mTrackName.setSelected(false);
+                    mTrackAdditionalInfo.setSelected(false);
+
                     mDragStatusReceiver.onStartDrag();
                 }
                 return true;
@@ -531,6 +536,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
             // Check if the new state is the idle state. If then notify the observer (if one is registered)
             if (state == ViewDragHelper.STATE_IDLE) {
+                // Enable scrolling of the text views
+                mTrackName.setSelected(true);
+                mTrackAdditionalInfo.setSelected(true);
+
                 if (mDragOffset == 0.0f) {
                     // Called when dragged up
                     mDraggedDownButtons.setVisibility(INVISIBLE);
