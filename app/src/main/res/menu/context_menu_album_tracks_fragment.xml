@@ -22,24 +22,18 @@
     <item
         android:id="@+id/fragment_album_tracks_action_enqueue"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueue"/>
+        android:title="@string/context_menu_action_enqueue"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_album_tracks_action_enqueueasnext"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueueasnext"/>
-
-    <item
-        android:id="@+id/fragment_album_tracks_action_play"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_playsong"/>
+        android:title="@string/context_menu_action_enqueueasnext"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_album_tracks_action_showartist"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_showartist"/>
+        android:title="@string/context_menu_action_showartist"
+        app:showAsAction="never" />
 </menu>

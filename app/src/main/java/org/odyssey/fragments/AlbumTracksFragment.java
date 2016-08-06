@@ -23,7 +23,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -243,9 +242,6 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
                 return true;
             case R.id.fragment_album_tracks_action_enqueueasnext:
                 enqueueTrack(info.position, true);
-                return true;
-            case R.id.fragment_album_tracks_action_play:
-                playAlbum(info.position);
                 return true;
             case R.id.fragment_album_tracks_action_showartist:
                 showArtist(info.position);
