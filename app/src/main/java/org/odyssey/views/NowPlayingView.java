@@ -978,6 +978,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Set the artist of the track
         mTrackAdditionalInfo.setText(currentTrack.getTrackArtistName() + getResources().getString(R.string.separator) + currentTrack.getTrackAlbumName());
 
+        // Calculate the margin to avoid cut off textviews
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
+        layoutParams.setMarginEnd((int) (mTopPlaylistButton.getWidth() * (1.0 - mDragOffset)));
+        mHeaderTextLayout.setLayoutParams(layoutParams);
+
         // Set the track duration
         mDuration.setText(FormatHelper.formatTracktimeFromMS(currentTrack.getTrackDuration()));
 
