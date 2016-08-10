@@ -28,18 +28,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -612,14 +612,17 @@ public class OdysseyMainActivity extends AppCompatActivity
 
 
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        View collapsingImageGradient = findViewById(R.id.collapsing_image_gradient);
-        if (collapsingImage != null && collapsingImageGradient != null) {
+        View collapsingImageGradientTop = findViewById(R.id.collapsing_image_gradient_top);
+        View collapsingImageGradientBottom = findViewById(R.id.collapsing_image_gradient_bottom);
+        if (collapsingImage != null && collapsingImageGradientTop != null && collapsingImageGradientBottom != null) {
             if (showImage) {
                 collapsingImage.setVisibility(View.VISIBLE);
-                collapsingImageGradient.setVisibility(View.VISIBLE);
+                collapsingImageGradientTop.setVisibility(View.VISIBLE);
+                collapsingImageGradientBottom.setVisibility(View.VISIBLE);
             } else {
                 collapsingImage.setVisibility(View.GONE);
-                collapsingImageGradient.setVisibility(View.GONE);
+                collapsingImageGradientTop.setVisibility(View.GONE);
+                collapsingImageGradientBottom.setVisibility(View.GONE);
             }
         }
         // set scrolling behaviour
@@ -710,6 +713,10 @@ public class OdysseyMainActivity extends AppCompatActivity
         mNowPlayingDragStatus = status;
         if (status == DRAG_STATUS.DRAGGED_UP) {
             View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+            /**
+             * Use View.GONE instead INVISIBLE to hide view behind NowPlayingView,
+             * fixes overlaying Fragments on FragmentTransaction combined with minimizing the NPV in one action
+             */
             coordinatorLayout.setVisibility(View.GONE);
         }
     }
