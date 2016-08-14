@@ -33,7 +33,7 @@
         <item>year</item>
     </string-array>
 
-    <string-array name="preference_album_sort_views_values" translatable="false">
+    <string-array name="preference_default_view_values" translatable="false">
         <item>my_music_artists</item>
         <item>my_music_albums</item>
         <item>my_music_tracks</item>

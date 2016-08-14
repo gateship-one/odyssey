@@ -45,7 +45,7 @@
         android:defaultValue="my_music_albums"
         android:dialogTitle="@string/preference_default_view_message"
         android:entries="@array/preference_default_views"
-        android:entryValues="@array/preference_album_sort_views_values"
+        android:entryValues="@array/preference_default_view_values"
         android:key="pref_default_view"
         android:persistent="true"
         android:summary="@string/preference_default_view_summary"
