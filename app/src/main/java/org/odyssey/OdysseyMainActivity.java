@@ -46,10 +46,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -537,11 +534,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         newFragment.setArguments(args);
 
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // set enter and exit transitions
-        newFragment.setEnterTransition(new Fade());
-        newFragment.setExitTransition(new Fade());
-
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         // Replace whatever is in the fragment_container view with this
         // fragment,
         // and add the transaction to the back stack so the user can navigate
@@ -566,11 +559,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         newFragment.setArguments(args);
 
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // set enter and exit transitions
-        newFragment.setEnterTransition(new Fade());
-        newFragment.setExitTransition(new Fade());
-
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         // Replace whatever is in the fragment_container view with this
         // fragment,
         // and add the transaction to the back stack so the user can navigate
@@ -606,11 +595,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             sharedPrefEditor.apply();
         } else {
             // no root directory so add fragment to the backstack
-
-            // set enter and exit transitions
-            newFragment.setEnterTransition(new Slide(Gravity.START));
-            newFragment.setExitTransition(new Slide(Gravity.END));
-
+            transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             transaction.addToBackStack("FilesFragment");
         }
 
@@ -777,11 +762,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         newFragment.setArguments(args);
 
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // set enter and exit transitions
-        newFragment.setEnterTransition(new Slide(Gravity.START));
-        newFragment.setExitTransition(new Slide(Gravity.END));
-
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         // Replace whatever is in the fragment_container view with this
         // fragment,
         // and add the transaction to the back stack so the user can navigate
