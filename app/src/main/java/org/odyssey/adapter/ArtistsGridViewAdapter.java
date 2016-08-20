@@ -51,7 +51,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArtistModel artist = mModelData.get(position);
+        ArtistModel artist = getModelData().get(position);
         String label = artist.getArtistName();
         String imageURL = artist.getArtistURL();
 

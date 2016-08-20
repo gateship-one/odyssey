@@ -29,17 +29,24 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.odyssey.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
+import org.odyssey.utils.ThemeUtils;
 
 public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabSelectedListener {
 
     private PlaybackServiceConnection mServiceConnection;
+
+    private ViewPager mMyMusicViewPager;
 
     public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
 
@@ -53,10 +60,6 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
-
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
 
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
@@ -84,10 +87,10 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        ViewPager myMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
+        mMyMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
         MyMusicPagerAdapter adapterViewPager = new MyMusicPagerAdapter(getChildFragmentManager());
-        myMusicViewPager.setAdapter(adapterViewPager);
-        myMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mMyMusicViewPager.setAdapter(adapterViewPager);
+        mMyMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
         // set start page
@@ -101,16 +104,21 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         switch (tab) {
             case ARTISTS:
-                myMusicViewPager.setCurrentItem(0);
+                mMyMusicViewPager.setCurrentItem(0);
                 break;
             case ALBUMS:
-                myMusicViewPager.setCurrentItem(1);
+                mMyMusicViewPager.setCurrentItem(1);
                 break;
             case TRACKS:
-                myMusicViewPager.setCurrentItem(2);
+                mMyMusicViewPager.setCurrentItem(2);
                 break;
         }
 
+        setHasOptionsMenu(true);
+
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
         // set up play button
         activity.setUpPlayButton(null);
 
@@ -178,11 +186,57 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         }
     }
 
-    public static class MyMusicPagerAdapter extends FragmentStatePagerAdapter {
+    /**
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
+     *
+     * @param menu         The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.options_menu_my_music, menu);
+
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+
+        Drawable drawable = menu.findItem(R.id.action_search).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+        menu.findItem(R.id.action_search).setIcon(drawable);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchTextObserver());
+
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    /**
+     * Custom pager adapter to retrieve already registered fragments.
+     */
+    private class MyMusicPagerAdapter extends FragmentStatePagerAdapter {
         static final int NUMBER_OF_PAGES = 3;
+
+        private SparseArray<OdysseyFragment> mRegisteredFragments;
 
         public MyMusicPagerAdapter(FragmentManager fm) {
             super(fm);
+            mRegisteredFragments = new SparseArray<>();
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            OdysseyFragment fragment = (OdysseyFragment) super.instantiateItem(container, position);
+            mRegisteredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            mRegisteredFragments.remove(position);
+            super.destroyItem(container, position, object);
         }
 
         @Override
@@ -208,6 +262,42 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         public int getCount() {
             // this is done in order to reload all tabs
             return NUMBER_OF_PAGES;
+        }
+
+        public OdysseyFragment getRegisteredFragment(int position) {
+            return mRegisteredFragments.get(position);
+        }
+    }
+
+    /**
+     * Observer class to apply a filter to the current fragment in the viewpager.
+     */
+    private class SearchTextObserver implements SearchView.OnQueryTextListener {
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            OdysseyFragment fragment = ((MyMusicPagerAdapter) mMyMusicViewPager.getAdapter()).getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+
+            if (query.isEmpty()) {
+                fragment.removeFilter();
+            } else {
+                fragment.applyFilter(query);
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            OdysseyFragment fragment = ((MyMusicPagerAdapter) mMyMusicViewPager.getAdapter()).getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+
+            if (newText.isEmpty()) {
+                fragment.removeFilter();
+            } else {
+                fragment.applyFilter(newText);
+            }
+
+            return false;
         }
     }
 }

@@ -247,6 +247,22 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     }
 
     /**
+     * Apply the given filter to the model of the adapter.
+     */
+    @Override
+    public void applyFilter(String filter) {
+        mTracksListViewAdapter.applyFilter(filter);
+    }
+
+    /**
+     * Remove a previous set filter.
+     */
+    @Override
+    public void removeFilter() {
+        mTracksListViewAdapter.removeFilter();
+    }
+
+    /**
      * Callback to open a view for the artist of the selected track.
      *
      * @param position the position of the selected track in the adapter
