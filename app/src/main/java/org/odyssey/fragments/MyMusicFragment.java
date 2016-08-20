@@ -48,6 +48,12 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
     private ViewPager mMyMusicViewPager;
 
+    private MyMusicPagerAdapter mMyMusicPagerAdapter;
+
+    private SearchView mSearchView;
+
+    private Menu mOptionMenu;
+
     public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
 
     public enum DEFAULTTAB {
@@ -88,8 +94,8 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mMyMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
-        MyMusicPagerAdapter adapterViewPager = new MyMusicPagerAdapter(getChildFragmentManager());
-        mMyMusicViewPager.setAdapter(adapterViewPager);
+        mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
+        mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
         mMyMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
@@ -134,6 +140,9 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         View view = this.getView();
 
         if (view != null) {
+            mSearchView.setIconified(true);
+            mOptionMenu.findItem(R.id.action_search).collapseActionView();
+
             ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
             myMusicViewPager.setCurrentItem(tab.getPosition());
 
@@ -198,17 +207,28 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_my_music, menu);
 
+        mOptionMenu = menu;
+
         // get tint color
         int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
 
         Drawable drawable = menu.findItem(R.id.action_search).getIcon();
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, tintColor);
-        menu.findItem(R.id.action_search).setIcon(drawable);
+        mOptionMenu.findItem(R.id.action_search).setIcon(drawable);
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
-        searchView.setOnQueryTextListener(new SearchTextObserver());
+        mSearchView.setOnQueryTextListener(new SearchTextObserver());
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+                fragment.removeFilter();
+
+                return false;
+            }
+        });
 
         super.onCreateOptionsMenu(menu, menuInflater);
     }
@@ -276,28 +296,26 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         @Override
         public boolean onQueryTextSubmit(String query) {
-            OdysseyFragment fragment = ((MyMusicPagerAdapter) mMyMusicViewPager.getAdapter()).getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+            applyFilter(query);
 
-            if (query.isEmpty()) {
-                fragment.removeFilter();
-            } else {
-                fragment.applyFilter(query);
-            }
-
-            return true;
+            return false;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            OdysseyFragment fragment = ((MyMusicPagerAdapter) mMyMusicViewPager.getAdapter()).getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
-
-            if (newText.isEmpty()) {
-                fragment.removeFilter();
-            } else {
-                fragment.applyFilter(newText);
-            }
+            applyFilter(newText);
 
             return true;
+        }
+
+        private void applyFilter(String filter) {
+            OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+
+            if (filter.isEmpty()) {
+                fragment.removeFilter();
+            } else {
+                fragment.applyFilter(filter);
+            }
         }
     }
 }
