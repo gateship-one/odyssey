@@ -20,7 +20,6 @@ package org.odyssey;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.TextView;
@@ -55,13 +54,7 @@ public class OdysseyAboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_about);
 
-        String versionName = "BLA";
-        // get version from manifest
-        try {
-            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        String versionName = BuildConfig.VERSION_NAME;
 
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
     }

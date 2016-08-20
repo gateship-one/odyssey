@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.odyssey.BuildConfig;
 import org.odyssey.models.BookmarkModel;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.OdysseyServiceState;
@@ -40,10 +41,11 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      * The name of the database
      */
     private static final String DATABASE_NAME = "OdysseyStatesDB";
+
     /**
      * The version of the database
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
 
     /**
      * Array of returned columns from the StateTracks table
