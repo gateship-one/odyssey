@@ -19,22 +19,44 @@
 package org.odyssey.models;
 
 public class PlaylistModel implements GenericModel {
+
+    /**
+     * The name of the playlist
+     */
     private final String mPlaylistName;
+
+    /**
+     * Unique id to identify the playlist in the mediastore
+     */
     private final long mPlaylistID;
 
+    /**
+     * Constructs a PlaylistModel instance with the given parameters.
+     */
     public PlaylistModel(String playlistName, long playlistID) {
         mPlaylistName = playlistName;
         mPlaylistID = playlistID;
     }
 
+    /**
+     * Return the name of the playlist
+     */
     public String getPlaylistName() {
         return mPlaylistName;
     }
 
+    /**
+     * Return the id of the playlist
+     */
     public long getPlaylistID() {
         return mPlaylistID;
     }
 
+    /**
+     * Return the section title for the PlaylistModel
+     * <p/>
+     * The section title is the name of the playlist.
+     */
     @Override
     public String getSectionTitle() {
         return mPlaylistName;

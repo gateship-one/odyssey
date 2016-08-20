@@ -20,39 +20,64 @@ package org.odyssey.models;
 
 public class ArtistModel implements GenericModel {
 
+    /**
+     * The name of the artist
+     */
     private final String mArtistName;
+
+    /**
+     * The url for the artist cover
+     */
     private final String mArtistURL;
-    private final String mArtistKey;
+
+    /**
+     * Unique id to identify the artist in the mediastore
+     */
     private final long mArtistID;
 
-    public ArtistModel(String name, String artURL, String artistKey, long artistID) {
+    /**
+     * Constructs a ArtistModel instance with the given parameters.
+     */
+    public ArtistModel(String name, String artURL, long artistID) {
         mArtistName = name;
         mArtistURL = artURL;
-        mArtistKey = artistKey;
         mArtistID = artistID;
     }
 
+    /**
+     * Return the url for the artist cover
+     */
     public String getArtistURL() {
         return mArtistURL;
     }
 
+    /**
+     * Return the name of the artist
+     */
     public String getArtistName() {
         return mArtistName;
     }
 
-    public String getArtistKey() {
-        return mArtistKey;
-    }
-
+    /**
+     * Return the unique artist id
+     */
     public long getArtistID() {
         return mArtistID;
     }
 
+    /**
+     * Return the ArtistModel as a String for debugging purposes.
+     */
     @Override
     public String toString() {
         return "Artist: " + getArtistName();
     }
 
+    /**
+     * Return the section title for the ArtistModel
+     * <p/>
+     * The section title is the name of the artist.
+     */
     @Override
     public String getSectionTitle() {
         return mArtistName;

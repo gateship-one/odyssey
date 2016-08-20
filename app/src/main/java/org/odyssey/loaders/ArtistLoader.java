@@ -72,7 +72,6 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                 long artistID;
 
                 int artistTitleColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
-                int artistKeyColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY);
                 int artistIDColumnIndex = cursorArtists.getColumnIndex(MediaStore.Audio.Artists._ID);
 
                 int albumArtistTitleColumnIndex = cursorAlbumArt.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
@@ -85,7 +84,6 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                     cursorArtists.moveToPosition(i);
 
                     artist = cursorArtists.getString(artistTitleColumnIndex);
-                    artistKey = cursorArtists.getString(artistKeyColumnIndex);
                     artistID = cursorArtists.getLong(artistIDColumnIndex);
 
                     if (cursorAlbumArt.getString(albumArtistTitleColumnIndex).equals(cursorArtists.getString(artistTitleColumnIndex))) {
@@ -98,7 +96,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                         coverPath = null;
                     }
 
-                    artists.add(new ArtistModel(artist, coverPath, artistKey, artistID));
+                    artists.add(new ArtistModel(artist, coverPath, artistID));
 
                 }
 
@@ -121,7 +119,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                     artist = cursorAlbumArt.getString(albumArtistTitleColumnIndex);
                     coverPath = cursorAlbumArt.getString(albumCoverPathColumnIndex);
 
-                    artists.add(new ArtistModel(artist, coverPath, "", -1));
+                    artists.add(new ArtistModel(artist, coverPath, -1));
                 }
                 cursorAlbumArt.close();
             }

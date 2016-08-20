@@ -20,39 +20,77 @@ package org.odyssey.models;
 
 public class AlbumModel implements GenericModel {
 
+    /**
+     * The name of the album
+     */
     private final String mAlbumName;
+
+    /**
+     * The url for the album cover
+     */
     private final String mAlbumArtURL;
+
+    /**
+     * The name of the artist for the current album
+     */
     private final String mArtistName;
+
+    /**
+     * Unique key to identify the album in the mediastore
+     */
     private final String mAlbumKey;
 
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey ) {
+    /**
+     * Constructs a AlbumModel instance with the given parameters.
+     */
+    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey) {
         mAlbumName = name;
         mAlbumArtURL = albumArtURL;
         mArtistName = artistName;
         mAlbumKey = albumKey;
     }
 
+    /**
+     * Return the name of the album
+     */
     public String getAlbumName() {
         return mAlbumName;
     }
 
+    /**
+     * Return the url for the album cover
+     */
     public String getAlbumArtURL() {
         return mAlbumArtURL;
     }
 
+    /**
+     * Return the name of the related artist
+     */
     public String getArtistName() {
         return mArtistName;
     }
 
+    /**
+     * Return the unique album key
+     */
     public String getAlbumKey() {
         return mAlbumKey;
     }
 
+    /**
+     * Return the AlbumModel as a String for debugging purposes.
+     */
     @Override
     public String toString() {
         return "Album: " + getAlbumName() + " from: " + getArtistName();
     }
 
+    /**
+     * Return the section title for the AlbumModel
+     * <p/>
+     * The section title is the name of the album.
+     */
     @Override
     public String getSectionTitle() {
         return mAlbumName;

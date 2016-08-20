@@ -69,42 +69,42 @@ public class FileModel implements GenericModel {
     }
 
     /**
-     * return the lastModified value of the file object
+     * Return the lastModified value of the file object
      */
     public long getLastModified() {
         return mFile.lastModified();
     }
 
     /**
-     * return the name of the file object
+     * Return the name of the file object
      */
     public String getName() {
         return mFile.getName();
     }
 
     /**
-     * return the path of the file object
+     * Return the path of the file object
      */
     public String getPath() {
         return mFile.getPath();
     }
 
     /**
-     * return the path of the file object as an url string
+     * Return the path of the file object as an url string
      */
     public String getURLString() {
         return mFile.getPath();
     }
 
     /**
-     * return if the file object is a directory
+     * Return if the file object is a directory
      */
     public boolean isDirectory() {
         return mFile.isDirectory();
     }
 
     /**
-     * return if the file object is a file
+     * Return if the file object is a file
      */
     public boolean isFile() {
         return mFile.isFile();

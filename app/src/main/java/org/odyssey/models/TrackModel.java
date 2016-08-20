@@ -23,15 +23,49 @@ import android.os.Parcelable;
 
 public class TrackModel implements GenericModel, Parcelable {
 
+    /**
+     * The name of the track
+     */
     private final String mTrackName;
+
+    /**
+     * The name of the artist of the track
+     */
     private final String mTrackArtistName;
+
+    /**
+     * The name of the album of the track
+     */
     private final String mTrackAlbumName;
+
+    /**
+     * The unique key of the album of the track
+     */
     private final String mTrackAlbumKey;
+
+    /**
+     * The url path to the related media file
+     */
     private final String mTrackURL;
+
+    /**
+     * The duration of the track in ms
+     */
     private final long mTrackDuration;
+
+    /**
+     * The number of the track (combined cd and tracknumber)
+     */
     private final int mTrackNumber;
+
+    /**
+     * The unique id of the track in the mediastore
+     */
     private final long mTrackId;
 
+    /**
+     * Constructs a TrackModel instance with the given parameters.
+     */
     public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
         mTrackName = name;
         mTrackArtistName = artistName;
@@ -43,6 +77,9 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackId = trackId;
     }
 
+    /**
+     * Constructs a TrackModel with default values
+     */
     public TrackModel() {
         mTrackName = "";
         mTrackArtistName = "";
@@ -54,46 +91,109 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackId = -1;
     }
 
+    /**
+     * Return the name of the track
+     */
     public String getTrackName() {
         return mTrackName;
     }
 
+    /**
+     * Return the name of the artist
+     */
     public String getTrackArtistName() {
         return mTrackArtistName;
     }
 
+    /**
+     * Return the name of the album
+     */
     public String getTrackAlbumName() {
         return mTrackAlbumName;
     }
 
+    /**
+     * Return the unique album key
+     */
     public String getTrackAlbumKey() {
         return mTrackAlbumKey;
     }
 
+    /**
+     * Return the duration of the track
+     */
     public long getTrackDuration() {
         return mTrackDuration;
     }
 
+    /**
+     * Return the number of the track
+     */
     public int getTrackNumber() {
         return mTrackNumber;
     }
 
-    public String getTrackURL() { return mTrackURL; }
+    /**
+     * Return the url of the track
+     */
+    public String getTrackURL() {
+        return mTrackURL;
+    }
 
+    /**
+     * Return the unique id of the track
+     */
     public long getTrackId() {
         return mTrackId;
     }
 
+    /**
+     * Return the section title for the TrackModel
+     * <p/>
+     * The section title is the name of the track.
+     */
     @Override
     public String getSectionTitle() {
         return mTrackName;
     }
 
+    /**
+     * Equals method for the TrackModel
+     * <p/>
+     * TrackModel instances are equal if they have the same id
+     */
+    @Override
+    public boolean equals(Object model) {
+        if (model == null) {
+            return false;
+        }
+        if (model == this) {
+            return true;
+        }
+        if (!(model instanceof TrackModel)) {
+            return false;
+        }
+        TrackModel track = (TrackModel) model;
+
+        return (this.mTrackId == track.mTrackId);
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     * <p/>
+     * see {@link Parcelable}
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mTrackName);
@@ -106,22 +206,11 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeLong(mTrackId);
     }
 
-    @Override
-    public boolean equals(Object model) {
-        if (model == null) {
-            return false;
-        }
-        if (model == this) {
-            return true;
-        }
-        if (!(model instanceof TrackModel)) {
-            return false;
-        }
-        TrackModel track = (TrackModel)model;
-
-        return (this.mTrackId == track.mTrackId);
-    }
-
+    /**
+     * Provide CREATOR field that generates a TrackModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
     public static Parcelable.Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
 
         @Override
@@ -140,8 +229,7 @@ public class TrackModel implements GenericModel, Parcelable {
             String albumKey = source.readString();
             long trackId = source.readLong();
 
-            TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, trackId);
-            return item;
+            return new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, trackId);
         }
     };
 }
