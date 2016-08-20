@@ -33,6 +33,9 @@ public class FilesListViewItem extends RelativeLayout {
     TextView mLastModifiedDateView;
     ImageView mIconView;
 
+    /**
+     * Constructor that only initialize the layout.
+     */
     public FilesListViewItem(Context context) {
         super(context);
 
@@ -40,12 +43,13 @@ public class FilesListViewItem extends RelativeLayout {
         inflater.inflate(R.layout.listview_item_files, this, true);
 
         mTitleView = (TextView) findViewById(R.id.item_files_title);
-
         mLastModifiedDateView = (TextView) findViewById(R.id.item_files_lastModifiedDate);
-
         mIconView = (ImageView) findViewById(R.id.item_files_icon);
     }
 
+    /**
+     * Constructor that already sets the values for each view.
+     */
     public FilesListViewItem(Context context, String title, String lastModifiedDate, Drawable icon) {
         this(context);
 
@@ -54,14 +58,23 @@ public class FilesListViewItem extends RelativeLayout {
         mIconView.setImageDrawable(icon);
     }
 
+    /**
+     * Sets the title for the filemodel.
+     */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }
 
+    /**
+     * Sets the last modified date for the filemodel.
+     */
     public void setModifiedDate(String dateString) {
         mLastModifiedDateView.setText(dateString);
     }
 
+    /**
+     * Sets the icon for the filemodel.
+     */
     public void setIcon(Drawable icon) {
         mIconView.setImageDrawable(icon);
     }

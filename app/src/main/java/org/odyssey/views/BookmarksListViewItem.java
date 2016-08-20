@@ -31,30 +31,48 @@ public class BookmarksListViewItem extends LinearLayout {
     TextView mNumberOfTracksView;
     TextView mDateStringView;
 
-    public BookmarksListViewItem(Context context, String title, String numberOfTracks, String dateString) {
+    /**
+     * Constructor that only initialize the layout.
+     */
+    public BookmarksListViewItem(Context context) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.listview_item_bookmarks, this, true);
 
         mTitleView = (TextView) findViewById(R.id.item_bookmarks_title);
-        mTitleView.setText(title);
-
         mNumberOfTracksView = (TextView) findViewById(R.id.item_bookmarks_numberOfTracks);
-        mNumberOfTracksView.setText(numberOfTracks);
-
         mDateStringView = (TextView) findViewById(R.id.item_bookmarks_date);
+    }
+
+    /**
+     * Constructor that only initialize the layout.
+     */
+    public BookmarksListViewItem(Context context, String title, String numberOfTracks, String dateString) {
+        this(context);
+
+        mTitleView.setText(title);
+        mNumberOfTracksView.setText(numberOfTracks);
         mDateStringView.setText(dateString);
     }
 
+    /**
+     * Sets the title for the bookmark.
+     */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }
 
+    /**
+     * Sets the number of tracks in the bookmark.
+     */
     public void setNumberOfTracks(String numberOfTracks) {
         mNumberOfTracksView.setText(numberOfTracks);
     }
 
+    /**
+     * Sets the date of the bookmark.
+     */
     public void setDate(String dateString) {
         mDateStringView.setText(dateString);
     }

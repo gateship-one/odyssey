@@ -29,16 +29,30 @@ public class PlaylistsListViewItem extends LinearLayout{
 
     private final TextView mTitleView;
 
-    public PlaylistsListViewItem(Context context, String title) {
+    /**
+     * Constructor that only initialize the layout.
+     */
+    public PlaylistsListViewItem(Context context) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.listview_item_playlists, this, true);
 
         mTitleView = (TextView) findViewById(R.id.item_playlists_title);
+    }
+
+    /**
+     * Constructor that already sets the values for each view.
+     */
+    public PlaylistsListViewItem(Context context, String title) {
+        this(context);
+
         mTitleView.setText(title);
     }
 
+    /**
+     * Sets the title for the Playlist.
+     */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }

@@ -60,29 +60,29 @@ public class TracksListViewItem extends LinearLayout {
     }
 
     /**
-     * Sets the title for the ListItem.
+     * Sets the title for the track.
      */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }
 
     /**
-     * Sets the number text for the ListItem.
+     * Sets the number text for the track.
      */
     public void setNumber(String number) {
         mNumberView.setText(number);
     }
 
     /**
-     * Sets the additional information text for the ListItem.
-     * For example a combination text of artist and album for the representing track.
+     * Sets the additional information text for the track.
+     * For example a combination text of artist and album.
      */
     public void setAdditionalInformation(String information) {
         mInformationView.setText(information);
     }
 
     /**
-     * Sets the duration text for the ListItem.
+     * Sets the duration text for the track.
      */
     public void setDuration(String duration) {
         mDurationView.setText(duration);
