@@ -284,7 +284,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
                 fragment.applyFilter(query);
             }
 
-            return false;
+            return true;
         }
 
         @Override
@@ -297,7 +297,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
                 fragment.applyFilter(newText);
             }
 
-            return false;
+            return true;
         }
     }
 }
