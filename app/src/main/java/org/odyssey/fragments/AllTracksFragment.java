@@ -154,7 +154,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), "", -1);
+        return new TrackLoader(getActivity());
     }
 
     /**

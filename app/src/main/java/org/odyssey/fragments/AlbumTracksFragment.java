@@ -171,7 +171,7 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mAlbumKey, -1);
+        return new TrackLoader(getActivity(), mAlbumKey);
     }
 
     /**

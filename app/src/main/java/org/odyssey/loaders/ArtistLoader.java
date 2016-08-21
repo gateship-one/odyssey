@@ -32,34 +32,33 @@ import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.preference.PreferenceManager;
 
-/*
- * Custom Loader for ARTIST with ALBUM_ART
- */
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
-    private final boolean mShowAlbumArtistsOnly;
-
     private final Context mContext;
+
+    /**
+     * Flag if only album artists should be loaded.
+     */
+    private final boolean mShowAlbumArtistsOnly;
 
     public ArtistLoader(Context context) {
         super(context);
         this.mContext = context;
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mShowAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only",true);
+        mShowAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only", true);
     }
 
-    /*
-     * Creates an list of all artists on this device and caches them inside the
-     * memory(non-Javadoc)
-     *
-     * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
+    /**
+     * Load all artists from the mediastore.
      */
     @Override
     public List<ArtistModel> loadInBackground() {
         ArrayList<ArtistModel> artists = new ArrayList<>();
-        String artist, artistKey, coverPath;
-        if ( !mShowAlbumArtistsOnly ) {
+        String artist, coverPath;
+        if (!mShowAlbumArtistsOnly) {
+            // load all artists
+
             // get all album covers
             Cursor cursorAlbumArt = PermissionHelper.query(mContext, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM}, MediaStore.Audio.Albums.ALBUM_ART + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null,
                     MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");
@@ -67,7 +66,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
             // get all artists
             Cursor cursorArtists = PermissionHelper.query(mContext, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null, MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
 
-            if( cursorAlbumArt != null && cursorArtists != null) {
+            if (cursorAlbumArt != null && cursorArtists != null) {
                 // join both cursor if match is found
                 long artistID;
 
@@ -97,7 +96,6 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                     }
 
                     artists.add(new ArtistModel(artist, coverPath, artistID));
-
                 }
 
                 // return new custom cursor
@@ -105,6 +103,8 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                 cursorArtists.close();
             }
         } else {
+            // load only artist which has an album entry
+
             // get all album covers
             Cursor cursorAlbumArt = PermissionHelper.query(mContext, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM}, MediaStore.Audio.Albums.ARTIST + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null,
                     MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");

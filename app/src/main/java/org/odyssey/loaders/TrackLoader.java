@@ -33,21 +33,40 @@ import java.util.List;
 public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
     private final Context mContext;
+
+    /**
+     * The album key if tracks of a specific album should be loaded.
+     */
     private final String mAlbumKey;
+
+    /**
+     * The playlist id if tracks of a specific playlist should be loaded.
+     */
     private final long mPlaylistID;
 
-    public TrackLoader(Context context, String albumKey, long playlistID) {
+    public TrackLoader(Context context) {
+        super(context);
+        mContext = context;
+        mAlbumKey = "";
+        mPlaylistID = -1;
+    }
+
+    public TrackLoader(Context context, String albumKey) {
         super(context);
         mContext = context;
         mAlbumKey = albumKey;
+        mPlaylistID = -1;
+    }
+
+    public TrackLoader(Context context, long playlistID) {
+        super(context);
+        mContext = context;
+        mAlbumKey = "";
         mPlaylistID = playlistID;
     }
 
-    /*
-     * Creates an list of all albums on this device and caches them inside the
-     * memory(non-Javadoc)
-     *
-     * @see android.support.v4.content.AsyncTaskLoader#loadInBackground()
+    /**
+     * Load all tracks from the mediastore or a subset if a filter is set.
      */
     @Override
     public List<TrackModel> loadInBackground() {
@@ -63,11 +82,11 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
         int trackAlbumKeyColumnIndex = -1;
         int trackIdColumnIndex = -1;
 
-        if(mPlaylistID != -1) {
+        if (mPlaylistID != -1) {
             // load playlist tracks
             trackCursor = PermissionHelper.query(mContext, MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
 
-            if(trackCursor != null) {
+            if (trackCursor != null) {
                 trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TITLE);
                 trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.DURATION);
                 trackNumberColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members.TRACK);
@@ -92,7 +111,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
                 trackCursor = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
             }
 
-            if(trackCursor != null) {
+            if (trackCursor != null) {
                 trackTitleColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
                 trackDurationColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
                 trackNumberColumnIndex = trackCursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
@@ -106,7 +125,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
         ArrayList<TrackModel> tracks = new ArrayList<>();
 
-        if(trackCursor != null) {
+        if (trackCursor != null) {
             for (int i = 0; i < trackCursor.getCount(); i++) {
                 trackCursor.moveToPosition(i);
 

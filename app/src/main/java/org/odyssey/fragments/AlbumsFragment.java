@@ -79,7 +79,7 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
         // all albums
-        return new AlbumLoader(getActivity(), -1);
+        return new AlbumLoader(getActivity());
     }
 
     /**

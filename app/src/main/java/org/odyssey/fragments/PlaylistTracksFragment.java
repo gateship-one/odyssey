@@ -156,7 +156,7 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), "", mPlaylistID);
+        return new TrackLoader(getActivity(), mPlaylistID);
     }
 
     /**

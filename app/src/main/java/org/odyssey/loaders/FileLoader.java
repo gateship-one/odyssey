@@ -27,6 +27,9 @@ import java.util.List;
 
 public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
 
+    /**
+     * The parent directory.
+     */
     private final FileModel mCurrentDirectory;
 
     public FileLoader(Context context, FileModel directory) {
