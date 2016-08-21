@@ -29,7 +29,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.NotificationCompat;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.PlaybackService;

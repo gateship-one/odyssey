@@ -16,7 +16,7 @@
  *
  */
 
-package org.odyssey;
+package org.odyssey.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -57,6 +57,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import org.odyssey.R;
 import org.odyssey.fragments.AlbumTracksFragment;
 import org.odyssey.fragments.ArtistAlbumsFragment;
 import org.odyssey.fragments.BookmarksFragment;
@@ -64,7 +65,7 @@ import org.odyssey.fragments.FilesFragment;
 import org.odyssey.fragments.MyMusicFragment;
 import org.odyssey.fragments.OdysseyFragment;
 import org.odyssey.fragments.PlaylistTracksFragment;
-import org.odyssey.fragments.SaveDialog;
+import org.odyssey.dialogs.SaveDialog;
 import org.odyssey.fragments.SavedPlaylistsFragment;
 import org.odyssey.fragments.SettingsFragment;
 import org.odyssey.listener.OnAlbumSelectedListener;

@@ -27,7 +27,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {

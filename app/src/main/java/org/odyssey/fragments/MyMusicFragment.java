@@ -37,7 +37,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.utils.ThemeUtils;

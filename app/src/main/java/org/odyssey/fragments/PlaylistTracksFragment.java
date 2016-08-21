@@ -34,7 +34,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.adapter.TracksListViewAdapter;
 import org.odyssey.loaders.TrackLoader;

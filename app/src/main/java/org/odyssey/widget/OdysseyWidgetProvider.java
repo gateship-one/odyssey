@@ -28,8 +28,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 
-import org.odyssey.OdysseyMainActivity;
-import org.odyssey.OdysseySplashActivity;
+import org.odyssey.activities.OdysseyMainActivity;
+import org.odyssey.activities.OdysseySplashActivity;
 import org.odyssey.R;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;

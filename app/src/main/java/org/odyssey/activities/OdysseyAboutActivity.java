@@ -16,13 +16,16 @@
  *
  */
 
-package org.odyssey;
+package org.odyssey.activities;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.TextView;
+
+import org.odyssey.BuildConfig;
+import org.odyssey.R;
 
 public class OdysseyAboutActivity extends Activity {
     @Override

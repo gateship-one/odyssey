@@ -45,8 +45,8 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.odyssey.R;
-import org.odyssey.fragments.ChooseBookmarkDialog;
-import org.odyssey.fragments.ChoosePlaylistDialog;
+import org.odyssey.dialogs.ChooseBookmarkDialog;
+import org.odyssey.dialogs.ChoosePlaylistDialog;
 import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;

@@ -37,9 +37,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.adapter.FilesListViewAdapter;
+import org.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.odyssey.listener.OnDirectorySelectedListener;
 import org.odyssey.loaders.FileLoader;
 import org.odyssey.models.FileModel;

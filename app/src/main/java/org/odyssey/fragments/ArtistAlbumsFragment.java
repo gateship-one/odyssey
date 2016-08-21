@@ -21,7 +21,6 @@ package org.odyssey.fragments;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -33,7 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import org.odyssey.OdysseyMainActivity;
+import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 import org.odyssey.loaders.AlbumLoader;
 import org.odyssey.models.AlbumModel;
