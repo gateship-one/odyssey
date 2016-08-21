@@ -29,7 +29,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.RemoteControlReceiver;
-import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.CoverBitmapLoader;
 
 public class PlaybackServiceStatusHelper {
     public enum SLS_STATES {SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE}
@@ -52,7 +52,7 @@ public class PlaybackServiceStatusHelper {
     private MediaSessionCompat mMediaSession;
 
     // Asynchronous cover fetcher
-    private CoverBitmapGenerator mBitmapGenerator;
+    private CoverBitmapLoader mCoverLoader;
 
     // Save last track to update cover art only if needed
     private TrackModel mLastTrack = null;
@@ -69,7 +69,7 @@ public class PlaybackServiceStatusHelper {
         // Register the callback for the MediaSession
         mMediaSession.setCallback(new OdysseyMediaSessionCallback());
 
-        mBitmapGenerator = new CoverBitmapGenerator(mPlaybackService, new BitmapCoverListener());
+        mCoverLoader = new CoverBitmapLoader(mPlaybackService, new BitmapCoverListener());
 
         // Register the button receiver
         PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService, 0, new Intent(mPlaybackService, RemoteControlReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -272,7 +272,7 @@ public class PlaybackServiceStatusHelper {
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
-        mBitmapGenerator.getImage(mLastTrack);
+        mCoverLoader.getImage(mLastTrack);
     }
 
     /**
@@ -323,7 +323,7 @@ public class PlaybackServiceStatusHelper {
      * lockscreen controls. Also sets the title/artist/album again otherwise
      * android would sometimes set it to the track before
      */
-    private class BitmapCoverListener implements CoverBitmapGenerator.CoverBitmapListener {
+    private class BitmapCoverListener implements CoverBitmapLoader.CoverBitmapListener {
 
         @Override
         public void receiveBitmap(BitmapDrawable bm) {

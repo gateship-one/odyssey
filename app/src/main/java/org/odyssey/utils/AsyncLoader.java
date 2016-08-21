@@ -27,25 +27,21 @@ import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
-/*
- * Loaderclass for covers
+/**
+ * Loader class for covers
  */
 public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bitmap> {
 
     private CoverViewHolder mCover;
-    private static boolean mIsScaled;
-    private static final String TAG = "OdysseyAsyncLoader";
 
-    /*
-     * Wrapperclass for covers
+    /**
+     * Wrapper class for covers
      */
     public static class CoverViewHolder {
         public String imagePath;
-        // public String labelText;
         public WeakReference<ImageView> coverViewReference;
         public WeakReference<ViewSwitcher> coverViewSwitcher;
         public AsyncLoader task;
-        //public WeakReference<LruCache<String, Bitmap>> cache;
         public Pair<Integer,Integer> imageDimension;
     }
 
@@ -59,7 +55,10 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         return null;
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(String pathName, int reqWidth, int reqHeight) {
+    /**
+     * Resize retrieved bitmap if necessary
+     */
+    private Bitmap decodeSampledBitmapFromResource(String pathName, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -70,10 +69,8 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         if (reqWidth == 0 && reqHeight == 0) {
             // check if the layout of the view already set
             options.inSampleSize = 1;
-            mIsScaled = false;
         } else {
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-            mIsScaled = true;
         }
 
         // Decode bitmap with inSampleSize set
@@ -81,7 +78,10 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         return BitmapFactory.decodeFile(pathName, options);
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    /**
+     * Calculate sample size to resize the bitmap
+     */
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -93,8 +93,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             final int halfWidth = width / 2;
 
             // Calculate the largest inSampleSize value that is a power of 2 and
-            // keeps both
-            // height and width larger than the requested height and width.
+            // keeps both height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
             }
@@ -110,11 +109,6 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
         // set mCover if exists
         if (mCover.coverViewReference.get() != null && result != null) {
-            // FIXME Disable cache for now because it is never checked, just stored
-//            if (mCover.cache != null && mIsScaled) {
-//                // only use cache if image was scaled
-//                mCover.cache.get().put(mCover.imagePath, result);
-//            }
             mCover.coverViewReference.get().setImageBitmap(result);
             mCover.coverViewSwitcher.get().setDisplayedChild(1);
         }

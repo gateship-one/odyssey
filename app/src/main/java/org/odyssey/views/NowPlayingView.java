@@ -52,7 +52,7 @@ import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.PlaybackServiceConnection;
 import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
-import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.CoverBitmapLoader;
 import org.odyssey.utils.FormatHelper;
 import org.odyssey.utils.ThemeUtils;
 
@@ -124,9 +124,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private NowPlayingReceiver mNowPlayingReceiver = null;
 
     /**
-     * Asynchronous generator for coverimages for TrackItems.
+     * Asynchronous loader for coverimages for TrackItems.
      */
-    private CoverBitmapGenerator mCoverGenerator = null;
+    private CoverBitmapLoader mCoverLoader = null;
 
     /**
      * Timer that periodically updates the state of the view (seekbar)
@@ -827,7 +827,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
         });
 
-        mCoverGenerator = new CoverBitmapGenerator(getContext(), new CoverReceiverClass());
+        mCoverLoader = new CoverBitmapLoader(getContext(), new CoverReceiverClass());
 
         invalidate();
     }
@@ -969,8 +969,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mCoverImage.setImageResource(R.drawable.cover_placeholder);
             // The same for the small header image
             mTopCoverImage.setImageResource(R.drawable.cover_placeholder_96dp);
-            // Start the cover generator
-            mCoverGenerator.getImage(currentTrack);
+            // Start the cover loader
+            mCoverLoader.getImage(currentTrack);
         }
         // Save the name of the album for rechecking later
         mLastAlbumKey = currentTrack.getTrackAlbumKey();
@@ -1217,7 +1217,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Private class that handles when the CoverGenerator finishes its fetching of cover images.
      */
-    private class CoverReceiverClass implements CoverBitmapGenerator.CoverBitmapListener {
+    private class CoverReceiverClass implements CoverBitmapLoader.CoverBitmapListener {
 
         /**
          * Called when a bitmap is created

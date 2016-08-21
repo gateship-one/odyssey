@@ -25,8 +25,10 @@ import android.widget.GridView;
 import org.odyssey.adapter.ScrollSpeedAdapter;
 import org.odyssey.views.GridViewItem;
 
+/**
+ * Listener to control image loading while scrolling
+ */
 public class ScrollSpeedListener implements AbsListView.OnScrollListener {
-    private static String TAG = "ScrollSpeedListener";
 
     private long mLastTime = 0;
     private int mLastFirstVisibleItem = 0;
@@ -41,8 +43,13 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
         mAdapter = adapter;
     }
 
+    /**
+     * Callback method to be invoked while the list view or grid view is being scrolled.
+     */
+    @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            // if idle load images for all visible items
             mScrollSpeed = 0;
             mAdapter.setScrollSpeed(0);
             for (int i = 0; i <= mRootGrid.getLastVisiblePosition() - mRootGrid.getFirstVisiblePosition(); i++) {
@@ -52,8 +59,15 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
         }
     }
 
+    /**
+     * Callback method to be invoked when the list or grid has been scrolled.
+     */
+    @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         if (firstVisibleItem != mLastFirstVisibleItem) {
+            // view has changed so check if images should be loaded
+
+            // compute scroll speed since last scroll event
             long currentTime = System.currentTimeMillis();
             if (currentTime == mLastTime) {
                 return;
@@ -65,6 +79,7 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             mLastFirstVisibleItem = firstVisibleItem;
             mLastTime = currentTime;
 
+            // load images only if scroll speed is low
             if (mScrollSpeed < visibleItemCount) {
                 for (int i = 0; i < visibleItemCount; i++) {
                     GridViewItem gridItem = (GridViewItem) mRootGrid.getChildAt(i);

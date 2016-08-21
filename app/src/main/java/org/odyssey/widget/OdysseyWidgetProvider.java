@@ -35,7 +35,7 @@ import org.odyssey.models.TrackModel;
 import org.odyssey.playbackservice.NowPlayingInformation;
 import org.odyssey.playbackservice.PlaybackService;
 import org.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
-import org.odyssey.utils.CoverBitmapGenerator;
+import org.odyssey.utils.CoverBitmapLoader;
 
 public class
 OdysseyWidgetProvider extends AppWidgetProvider {
@@ -92,8 +92,8 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
                     if (mLastTrack == null || !mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
                         views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
-                        CoverBitmapGenerator mCoverGenerator = new CoverBitmapGenerator(context, new CoverReceiver());
-                        mCoverGenerator.getImage(item);
+                        CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver());
+                        coverLoader.getImage(item);
                         mLastCover = null;
                     } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null) {
                         views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
@@ -149,7 +149,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         mAppWidgetManager.updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views);
     }
 
-    private class CoverReceiver implements CoverBitmapGenerator.CoverBitmapListener {
+    private class CoverReceiver implements CoverBitmapLoader.CoverBitmapListener {
 
         public CoverReceiver() {
         }

@@ -25,28 +25,33 @@ import android.provider.MediaStore;
 
 import org.odyssey.models.TrackModel;
 
-public class CoverBitmapGenerator {
+public class CoverBitmapLoader {
     private final CoverBitmapListener mListener;
     private final Context mContext;
     private TrackModel mTrack;
-    private Thread mGeneratorThread;
 
-    public CoverBitmapGenerator(Context context, CoverBitmapListener listener) {
+    public CoverBitmapLoader(Context context, CoverBitmapListener listener) {
         mContext = context;
         mListener = listener;
     }
 
+    /**
+     * Load the image for the given track from the mediastore.
+     */
     public void getImage(TrackModel track) {
         if (track != null) {
             mTrack = track;
-            // Create generator thread
-            mGeneratorThread = new Thread(new DownloadRunner());
-            mGeneratorThread.start();
+            // start the loader thread to load the image async
+            Thread loaderThread = new Thread(new DownloadRunner());
+            loaderThread.start();
         }
     }
 
     private class DownloadRunner implements Runnable {
 
+        /**
+         * Load the image for the given track from the mediastore.
+         */
         @Override
         public void run() {
             String where = android.provider.MediaStore.Audio.Albums.ALBUM_KEY + "=?";
@@ -70,6 +75,9 @@ public class CoverBitmapGenerator {
         }
     }
 
+    /**
+     * Callback if image was loaded.
+     */
     public interface CoverBitmapListener {
         void receiveBitmap(BitmapDrawable bm);
     }
