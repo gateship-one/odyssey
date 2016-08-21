@@ -121,6 +121,22 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     }
 
     /**
+     * Apply the given filter to the model of the adapter.
+     */
+    @Override
+    public void applyFilter(String filter) {
+        mAlbumsGridViewAdapter.applyFilter(filter);
+    }
+
+    /**
+     * Remove a previous set filter.
+     */
+    @Override
+    public void removeFilter() {
+        mAlbumsGridViewAdapter.removeFilter();
+    }
+
+    /**
      * Open a fragment for the artist of the selected album.
      * @param position the position of the selected album in the adapter
      */

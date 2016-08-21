@@ -79,7 +79,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
             }
         } else {
 
-            if (mAlbumKey.equals("")) {
+            if (mAlbumKey.isEmpty()) {
                 // load all tracks
                 trackCursor = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, "", null, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
             } else {

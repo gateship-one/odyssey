@@ -260,6 +260,22 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     }
 
     /**
+     * Apply the given filter to the model of the adapter.
+     */
+    @Override
+    public void applyFilter(String filter) {
+        mArtistsGridViewAdapter.applyFilter(filter);
+    }
+
+    /**
+     * Remove a previous set filter.
+     */
+    @Override
+    public void removeFilter() {
+        mArtistsGridViewAdapter.removeFilter();
+    }
+
+    /**
      * Call the PBS to enqueue the selected artist
      *
      * @param position the position of the selected artist in the adapter

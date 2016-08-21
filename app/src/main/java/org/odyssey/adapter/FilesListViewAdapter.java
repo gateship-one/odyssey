@@ -51,7 +51,7 @@ public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        FileModel file = mModelData.get(position);
+        FileModel file = getModelData().get(position);
 
         // title
         String title = file.getName();
