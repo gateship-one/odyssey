@@ -140,8 +140,10 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         View view = this.getView();
 
         if (view != null) {
-            mSearchView.setIconified(true);
-            mOptionMenu.findItem(R.id.action_search).collapseActionView();
+            if (!mSearchView.isIconified()) {
+                mSearchView.setIconified(true);
+                mOptionMenu.findItem(R.id.action_search).collapseActionView();
+            }
 
             ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
             myMusicViewPager.setCurrentItem(tab.getPosition());
@@ -224,8 +226,9 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
             @Override
             public boolean onClose() {
                 OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
-                fragment.removeFilter();
-
+                if (fragment != null) {
+                    fragment.removeFilter();
+                }
                 return false;
             }
         });
