@@ -44,33 +44,60 @@ import org.odyssey.utils.ThemeUtils;
 
 public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabSelectedListener {
 
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
     private PlaybackServiceConnection mServiceConnection;
 
+    /**
+     * Save the viewpager for later usage
+     */
     private ViewPager mMyMusicViewPager;
 
+    /**
+     * Save the pageradapter for later usage
+     */
     private MyMusicPagerAdapter mMyMusicPagerAdapter;
 
+    /**
+     * Save the searchview for later usage
+     */
     private SearchView mSearchView;
 
+    /**
+     * Save the optionsmenu for later usage
+     */
     private Menu mOptionMenu;
 
+    /**
+     * key value for arguments of the fragment
+     */
     public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
 
+    /**
+     * enum for the default tab
+     */
     public enum DEFAULTTAB {
         ARTISTS, ALBUMS, TRACKS
     }
 
+    /**
+     * Called to create instantiate the UI of the fragment.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
+
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
 
-        // Icons
+        // setup icons for tabs
         final ColorStateList tabColors = tabLayout.getTabTextColors();
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.ic_recent_actors_24dp, null);
@@ -93,6 +120,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        // setup viewpager
         mMyMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
         mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
@@ -120,34 +148,38 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
                 break;
         }
 
+        // activate options menu in toolbar
         setHasOptionsMenu(true);
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
-        // set up play button
-        activity.setUpPlayButton(null);
-
+        // set up pbs connection
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
         return rootView;
     }
 
+    /**
+     * Called when a tab enters the selected state.
+     *
+     * This method will take care of dismissing the searchview and showing the fab.
+     */
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
 
         View view = this.getView();
 
         if (view != null) {
+            // dismiss searchview
             if (!mSearchView.isIconified()) {
                 mSearchView.setIconified(true);
                 mOptionMenu.findItem(R.id.action_search).collapseActionView();
             }
 
+            // set viewpager to current page
             ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
             myMusicViewPager.setCurrentItem(tab.getPosition());
 
+            // show fab only for AllTracksFragment
             View.OnClickListener listener = null;
 
             switch (tab.getPosition()) {
@@ -186,6 +218,9 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
     }
 
+    /**
+     * generic method to reload the dataset displayed by the fragment
+     */
     @Override
     public void refresh() {
         // reload tabs
