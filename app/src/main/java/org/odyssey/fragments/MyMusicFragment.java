@@ -90,10 +90,6 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
-
         // create tabs
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
 
@@ -148,6 +144,11 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
                 break;
         }
 
+        // set toolbar behaviour and title
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
+        activity.setUpPlayButton(getPlayButtonListener(tab.ordinal()));
+
         // activate options menu in toolbar
         setHasOptionsMenu(true);
 
@@ -158,9 +159,32 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         return rootView;
     }
 
+    private View.OnClickListener getPlayButtonListener(int id) {
+        switch (id) {
+            case 0:
+            case 1:
+                return null;
+            case 2:
+                return new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // play all tracks on device
+                        try {
+                            mServiceConnection.getPBS().playAllTracksShuffled();
+                        } catch (RemoteException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                };
+            default:
+                return null;
+        }
+    }
+
     /**
      * Called when a tab enters the selected state.
-     *
+     * <p/>
      * This method will take care of dismissing the searchview and showing the fab.
      */
     @Override
@@ -180,28 +204,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
             myMusicViewPager.setCurrentItem(tab.getPosition());
 
             // show fab only for AllTracksFragment
-            View.OnClickListener listener = null;
-
-            switch (tab.getPosition()) {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    listener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // play all tracks on device
-                            try {
-                                mServiceConnection.getPBS().playAllTracksShuffled();
-                            } catch (RemoteException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    break;
-            }
+            View.OnClickListener listener = getPlayButtonListener(tab.getPosition());
 
             OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
             activity.setUpPlayButton(listener);
