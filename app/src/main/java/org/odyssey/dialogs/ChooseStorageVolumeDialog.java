@@ -35,7 +35,14 @@ import java.util.List;
 
 public class ChooseStorageVolumeDialog extends DialogFragment {
 
+    /**
+     * Listener to choose the storage volume
+     */
     private OnDirectorySelectedListener mDirectorySelectedCallback;
+
+    /**
+     * Adapter used for the list of available storage volumes
+     */
     private ArrayAdapter<String> mStorageVolumesAdapter;
 
     @Override
@@ -51,6 +58,9 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Create the dialog to choose the current visible storage volume in the FilesFragment.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

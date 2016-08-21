@@ -34,10 +34,16 @@ public class SaveDialog extends DialogFragment {
 
     public final static String ARG_OBJECTTYPE = "objecttype";
 
+    /**
+     * ENUM to determine the object type
+     */
     public enum OBJECTTYPE {
         PLAYLIST, BOOKMARK
     }
 
+    /**
+     * Listener to save the object of the current type
+     */
     OnSaveDialogListener mSaveCallback;
 
     public void onAttach(Activity activity) {
@@ -52,6 +58,9 @@ public class SaveDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Create the dialog to save an object of the current type.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -66,6 +75,7 @@ public class SaveDialog extends DialogFragment {
         String editTextDefaultTitle = "";
 
         if (type != null) {
+            // set textfield titles according to type
             switch (type) {
                 case PLAYLIST:
                     dialogTitle = getString(R.string.dialog_save_playlist);
