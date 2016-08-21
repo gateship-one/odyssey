@@ -31,10 +31,17 @@ import org.odyssey.activities.OdysseyMainActivity;
 import org.odyssey.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    /**
+     * Called to do initial creation of a fragment.
+     *
+     * This method will setup a listener to start the system audio equalizer.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // add listener to open equalizer
         Preference openEqualizer = findPreference("pref_key_open_equalizer");
         openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
@@ -53,11 +60,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         });
     }
 
+    /**
+     * Called when the fragment resumes.
+     * <p/>
+     * Register listener and setup the toolbar.
+     */
     @Override
     public void onResume() {
         super.onResume();
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
@@ -65,20 +76,31 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         activity.setUpPlayButton(null);
     }
 
+    /**
+     * Called when the Fragment is no longer resumed.
+     * <p/>
+     * Unregister listener.
+     */
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * Create the preferences from an xml resource file
+     */
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.odyssey_main_settings);
         PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_main_settings, false);
     }
 
+    /**
+     * Called when a shared preference is changed, added, or removed.
+     *
+     * This method will restart the activity if the theme was changed.
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("pref_theme")) {
