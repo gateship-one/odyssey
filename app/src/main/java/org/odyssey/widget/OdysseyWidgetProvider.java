@@ -64,6 +64,8 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             mAppWidgetManager = appWidgetManager;
             if (null != mViews) {
                 appWidgetManager.updateAppWidget(appWidgetId, mViews);
+            } else {
+                setWidgetContent(null);
             }
         }
     }
