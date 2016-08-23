@@ -62,4 +62,6 @@
     <dimen name="material_font_style_size_subheading">16sp</dimen>
     <dimen name="material_font_style_size_body_2">14sp</dimen>
     <dimen name="material_font_style_size_body_1">14sp</dimen>
+    <dimen name="material_font_style_size_caption">12sp</dimen>
+
 </resources>

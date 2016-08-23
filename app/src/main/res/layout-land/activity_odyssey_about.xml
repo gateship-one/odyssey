@@ -19,6 +19,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="@dimen/material_screen_edge_spacing"
+    android:paddingEnd="@dimen/material_screen_edge_spacing"
     android:orientation="vertical">
 
     <ImageView
@@ -100,13 +102,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
             android:layout_marginBottom="@dimen/material_content_spacing"
-            android:gravity="center"
             android:autoLink="all"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
             android:linksClickable="true"
-            android:text="@string/sources_text"
-            android:textSize="@dimen/notification_font_size_small"/>
+            android:textSize="@dimen/material_font_style_size_caption"
+            android:text="@string/sources_text" />
 
         <TextView
             android:layout_width="match_parent"
@@ -114,7 +116,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text="@string/license_text"
-            android:textSize="@dimen/notification_font_size_small" />
+            android:textSize="@dimen/material_font_style_size_caption" />
     </LinearLayout>
 
 </RelativeLayout>
