@@ -56,7 +56,7 @@
     <Preference android:title="@string/preference_launch_about">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="org.odyssey.activities.OdysseyAboutActivity"
-            android:targetPackage="org.odyssey" />
+            android:targetClass="org.gateshipone.odyssey.activities.OdysseyAboutActivity"
+            android:targetPackage="org.gateshipone.odyssey" />
     </Preference>
 </PreferenceScreen>

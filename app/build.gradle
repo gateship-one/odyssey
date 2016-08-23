@@ -22,7 +22,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
     defaultConfig {
-        applicationId "org.odyssey"
+        applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1

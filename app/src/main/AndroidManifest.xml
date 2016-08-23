@@ -17,7 +17,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.odyssey">
+    package="org.gateshipone.odyssey">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -57,13 +57,13 @@
             android:label="OdysseyPlaybackService"
             android:process=":serviceProcess">
             <intent-filter>
-                <action android:name="org.odyssey.playbackservice.IOdysseyPlaybackService" />
+                <action android:name="org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
-                <action android:name="org.odyssey.newtrackinfo" />
-                <action android:name="org.odyssey.togglepause" />
-                <action android:name="org.odyssey.stop" />
-                <action android:name="org.odyssey.previous" />
-                <action android:name="org.odyssey.next" />
+                <action android:name="org.gateshipone.odyssey.newtrackinfo" />
+                <action android:name="org.gateshipone.odyssey.togglepause" />
+                <action android:name="org.gateshipone.odyssey.stop" />
+                <action android:name="org.gateshipone.odyssey.previous" />
+                <action android:name="org.gateshipone.odyssey.next" />
             </intent-filter>
         </service>
 
@@ -75,11 +75,11 @@
         <receiver android:name=".widget.OdysseyWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="org.odyssey.newtrackinfo" />
-                <action android:name="org.odyssey.togglepause" />
-                <action android:name="org.odyssey.stop" />
-                <action android:name="org.odyssey.previous" />
-                <action android:name="org.odyssey.next" />
+                <action android:name="org.gateshipone.odyssey.newtrackinfo" />
+                <action android:name="org.gateshipone.odyssey.togglepause" />
+                <action android:name="org.gateshipone.odyssey.stop" />
+                <action android:name="org.gateshipone.odyssey.previous" />
+                <action android:name="org.gateshipone.odyssey.next" />
             </intent-filter>
 
             <meta-data
