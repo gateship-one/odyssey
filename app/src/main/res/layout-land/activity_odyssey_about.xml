@@ -73,10 +73,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_content_spacing"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text="@string/authors"
             android:textSize="@dimen/notification_font_size_medium" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_content_spacing"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/team"
+            android:textSize="@dimen/notification_font_size_big" />
     </LinearLayout>
 
     <LinearLayout
@@ -95,7 +105,8 @@
             android:gravity="center"
             android:autoLink="all"
             android:linksClickable="true"
-            android:text="@string/sources_text"/>
+            android:text="@string/sources_text"
+            android:textSize="@dimen/notification_font_size_small"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -103,7 +114,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text="@string/license_text"
-            android:textSize="@dimen/notification_font_size_medium" />
+            android:textSize="@dimen/notification_font_size_small" />
     </LinearLayout>
 
 </RelativeLayout>

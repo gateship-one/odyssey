@@ -93,7 +93,7 @@
     <string name="dialog_choose_bookmark">Wähle Lesezeichen</string>
     <string name="create_new_playlist">Erstelle neue Playlist</string>
     <string name="dialog_choose_playlist">Wähle Playlist</string>
-    <string name="sources_text">Der Quellcode ist auf GitHub verfügbar:\nhttps://github.com/android-odyssey/odyssey</string>
+    <string name="sources_text">Der Quellcode ist auf GitHub verfügbar:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="preference_default_view_my_music_albums">Alben</string>
     <string name="preference_default_view_my_music_artists">Interpreten</string>
     <string name="preference_default_view_my_music_bookmarks">Lesezeichen</string>

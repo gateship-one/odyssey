@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -73,10 +74,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_content_spacing"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text="@string/authors"
             android:textSize="@dimen/notification_font_size_medium" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_content_spacing"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/team"
+            android:textSize="@dimen/notification_font_size_big" />
     </LinearLayout>
 
     <LinearLayout
@@ -90,12 +101,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
             android:layout_marginBottom="@dimen/material_content_spacing"
-            android:gravity="center"
             android:autoLink="all"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
             android:linksClickable="true"
-            android:text="@string/sources_text"/>
+            android:text="@string/sources_text" />
 
         <TextView
             android:layout_width="match_parent"
