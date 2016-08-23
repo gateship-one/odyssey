@@ -194,7 +194,7 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
         if (view != null) {
             // dismiss searchview
-            if (!mSearchView.isIconified()) {
+            if (mSearchView != null && mOptionMenu != null && !mSearchView.isIconified()) {
                 mSearchView.setIconified(true);
                 mOptionMenu.findItem(R.id.action_search).collapseActionView();
             }
