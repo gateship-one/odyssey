@@ -18,11 +18,9 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.TimerTask;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -68,6 +66,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         REPEAT_TRACK
     }
 
+    /**
+     * PlaybackState enum for the PlaybackService
+     */
     public enum PLAYSTATE {
         // If a song is actual playing
         PLAYING,
@@ -80,15 +81,26 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         STOPPED
     }
 
+    /**
+     * Idle state of this service. Used for notifying the user in the GUI about long running activites
+     */
     public enum PLAYBACKSERVICESTATE {
-        // If the serivce is performing an operation
+        // If the service is performing an operation
         WORKING,
         // If the service is finished with the operation
         IDLE
     }
 
-    public static final String TAG = "OdysseyPlaybackService";
+    /**
+     * Tag used for debugging
+     */
+    private static final String TAG = "OdysseyPlaybackService";
 
+    private static final String HANDLER_THREAD_NAME = "OdysseyPBSHandler";
+
+    /**
+     * Constants for Intent actions
+     */
     public static final String ACTION_PLAY = "org.gateshipone.odyssey.play";
     public static final String ACTION_PAUSE = "org.gateshipone.odyssey.pause";
     public static final String ACTION_NEXT = "org.gateshipone.odyssey.next";
@@ -99,29 +111,88 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public static final String ACTION_TOGGLEPAUSE = "org.gateshipone.odyssey.togglepause";
 
 
-    private static final int TIMEOUT_INTENT_QUIT = 5;
+    /**
+     * Request code for the timeout intent when the PlaybackService is waiting to quit
+     */
+    private static final int TIMEOUT_INTENT_QUIT_REQUEST_CODE = 5;
 
-    private final static int SERVICE_CANCEL_TIME = 60 * 5 * 1000;
+    /**
+     * Timeout time that the PlaybackService waits until it stops itself in milliseconds. (5 Minutes)
+     */
+    private final static int SERVICE_CANCEL_TIME = 5 * 60 * 1000;
 
+    /**
+     * Defines how often the random generator should retry to get a random number if it always
+     * hits the currently running track
+     */
+    private final static int RANDOM_RETRIES = 20;
+
+    /**
+     * Thread in which messages are handled
+     */
     private HandlerThread mHandlerThread;
+
+    /**
+     * Handler that executes action requested by a message
+     */
     private PlaybackServiceHandler mHandler;
 
+    /**
+     * Saves if the audiofocus was lost for some reason. If it is set the playback will resume,
+     * when the audiofocus gets back to this class.
+     */
     private boolean mLostAudioFocus = false;
 
     /**
-     * Mediaplayback stuff
+     * GaplessPlayer object that handles all the MediaPlayer objects and encapsulates the gapless
+     * functions of android.
      */
     private GaplessPlayer mPlayer;
+
+    /**
+     * Currently active playlist.
+     */
     private List<TrackModel> mCurrentList;
+
+    /**
+     * Index of the currently active track.
+     */
     private int mCurrentPlayingIndex;
+
+    /**
+     * Index of the track that is played next. Does not necessarily be the mCurrentPlayingIndex + 1
+     * because random could be activated.
+     */
     private int mNextPlayingIndex;
+
+    /**
+     * Saves the index of the track that was played before the current one.
+     */
     private int mLastPlayingIndex;
+
+    /**
+     * Saves if the volume is temporarily reduced because of a notification (for example)
+     */
     private boolean mIsDucked = false;
-    private boolean mIsPaused = false;
+
+    /**
+     * Saves the time (in milliseconds) of the last playback.
+     */
     private int mLastPosition = 0;
+
+    /**
+     * Random generator used to find a random position when random playback is active.
+     */
     private Random mRandomGenerator;
 
+    /**
+     * Saves if random playback is active
+     */
     private RANDOMSTATE mRandom = RANDOMSTATE.RANDOM_OFF;
+
+    /**
+     * Saves if repeat is active
+     */
     private REPEATSTATE mRepeat = REPEATSTATE.REPEAT_OFF;
 
     /**
@@ -134,71 +205,92 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Without it, some android devices go to sleep and don't start
      * the next song.
      */
-    private WakeLock mTempWakelock = null;
+    private WakeLock mSongTransitionWakelock = null;
 
     /**
      * Databasemanager for saving and restoring states including their playlist
      */
     private OdysseyDatabaseManager mDatabaseManager = null;
 
+    /**
+     * BroadcastReceiver that handles all control intents
+     */
+    private BroadcastControlReceiver mBroadcastControlReceiver = null;
 
+
+    /**
+     * Called when the PlaybackService is bound by an activity.
+     *
+     * @param intent Intent used for binding.
+     * @return The Interface used for the service connection.
+     */
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "Bind:" + intent.getType());
         return new OdysseyPlaybackServiceInterface(this);
     }
 
+    /**
+     * Called when an activity unbounds from this service.
+     *
+     * @param intent Intent used for unbinding
+     * @return True if unbound successfully
+     */
     @Override
     public boolean onUnbind(final Intent intent) {
         super.onUnbind(intent);
-        Log.v(TAG, "Unbind");
         return true;
     }
 
+    /**
+     * Called when the service is created because it is requested by an activity
+     */
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v(TAG, "Odyssey PlaybackService onCreate");
-        Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
 
-        // Start Handlerthread
-        mHandlerThread = new HandlerThread("OdysseyHandlerThread", Process.THREAD_PRIORITY_DEFAULT);
+        // Start Handlerthread which is used for the asynchronous handler.
+        mHandlerThread = new HandlerThread(HANDLER_THREAD_NAME, Process.THREAD_PRIORITY_DEFAULT);
         mHandlerThread.start();
         mHandler = new PlaybackServiceHandler(mHandlerThread.getLooper(), this);
 
-        // Create MediaPlayer
+        // Create MediaPlayer object used throughout the complete runtime of this service
         mPlayer = new GaplessPlayer(this);
-        Log.v(TAG, "Service created");
 
-        // Set listeners
+        // Register listeners with the GaplessPlayer
         mPlayer.setOnTrackStartListener(new PlaybackStartListener());
         mPlayer.setOnTrackFinishedListener(new PlaybackFinishListener());
         // Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-        // set up playlistmanager
+        // set up the OdysseyDatabaseManager
         mDatabaseManager = new OdysseyDatabaseManager(getApplicationContext());
 
-        // read playlist from database
+        // read a possible saved playlist from the database
         mCurrentList = mDatabaseManager.readPlaylist();
 
-        // read state from database
+        // read a possible saved state from database
         OdysseyServiceState state = mDatabaseManager.getState();
+
+        // Resume the loaded state to internal variables
         mCurrentPlayingIndex = state.mTrackNumber;
         mLastPosition = state.mTrackPosition;
         mRandom = state.mRandomState;
         mRepeat = state.mRepeatState;
 
+        // Check if saved state is within bounds of resumed playlist
         if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
             mCurrentPlayingIndex = -1;
         }
 
+        // Internal state initialization
         mLastPlayingIndex = -1;
         mNextPlayingIndex = -1;
 
+        // Create a new BroadcastControlReceiver that handles all control broadcasts sent to the PlaybackService
+        if (mBroadcastControlReceiver == null) {
+            // Create a new instance if not already done, FIXME is this actual possible?
+            mBroadcastControlReceiver = new BroadcastControlReceiver();
 
-        if (mNoisyReceiver == null) {
-            mNoisyReceiver = new BroadcastControlReceiver();
-
+            // Create a filter to only handle certain actions
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY);
             intentFilter.addAction(ACTION_PREVIOUS);
@@ -209,13 +301,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             intentFilter.addAction(ACTION_STOP);
             intentFilter.addAction(ACTION_QUIT);
 
-            registerReceiver(mNoisyReceiver, intentFilter);
+            // Register the receiver within the system
+            registerReceiver(mBroadcastControlReceiver, intentFilter);
         }
 
+        // Request the powermanager to initialize the transition wakelock
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mTempWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 
-        // set up random generator
+        // Initialize the transition wake lock (see above for the reason)
+        mSongTransitionWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+
+        // set up random generator used for random playback
         mRandomGenerator = new Random();
 
 
@@ -223,15 +319,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);
     }
 
+    /**
+     * Called when an intent is used to start the service (e.g. from the widget)
+     *
+     * @param intent  Intent used for starting the PlaybackService
+     * @param flags   Some flags (not used)
+     * @param startId Id (not used)
+     * @return
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.v(TAG, "PBS onStartCommand");
         if (intent.getExtras() != null) {
             String action = intent.getExtras().getString("action");
 
             if (action != null) {
-                Log.v(TAG, "Action requested: " + action);
                 switch (action) {
                     case ACTION_TOGGLEPAUSE:
                         togglePause();
@@ -253,21 +355,27 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         break;
                 }
             }
+        } else {
+            return START_NOT_STICKY;
         }
-        Log.v(TAG, "onStartCommand");
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
+    /**
+     * Called when the system wants to get rid of Odyssey :(. Clean up and unregister BroadcastReceivers
+     */
     @Override
     public void onDestroy() {
-        Log.v(TAG, "Service destroyed");
-
+        // Cancel any pending quit alerts
         cancelQuitAlert();
 
-        if (mNoisyReceiver != null) {
-            unregisterReceiver(mNoisyReceiver);
-            mNoisyReceiver = null;
+        // Unregister a existing broadcastreceiver
+        if (mBroadcastControlReceiver != null) {
+            unregisterReceiver(mBroadcastControlReceiver);
+            mBroadcastControlReceiver = null;
         }
+
+        // Stop myself
         stopSelf();
 
     }
@@ -282,75 +390,88 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         jumpToIndex(0);
     }
 
+    /**
+     * Cancels possible outstanding alerts registered within the AlarmManager to quit this service.
+     */
     public synchronized void cancelQuitAlert() {
-        Log.v(TAG, "Cancelling quit alert in alertmanager");
+        // Request the alarm manager and quit the alert with the given TIMEOUT_INTENT_QUIT_REQUEST_CODE
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent quitIntent = new Intent(ACTION_QUIT);
-        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.cancel(quitPI);
     }
 
     /**
-     * Stops all playback
+     * Stops all playback and the service afterwards, because it usually is not required afterwards
      */
     public void stop() {
-        Log.v(TAG, "PBS stop()");
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-            // Notify simple last.fm scrobbler
+            // Notify simple last.fm scrobbler about playback stop
             mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_COMPLETE);
         }
 
+        // Request the GaplessPlayer to stop its playback.
         mPlayer.stop();
+
+        // Reset the interal state variables
         mCurrentPlayingIndex = 0;
         mLastPosition = 0;
 
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
 
+        // Request to stop the service
         stopService();
     }
 
+    /**
+     * Pauses playback (if one is running) otherwise is doing nothing.
+     */
     public void pause() {
-        Log.v(TAG, "PBS pause");
-
+        // Check if GaplessPlayer is playing something
         if (mPlayer.isRunning()) {
-            mLastPosition = mPlayer.getPosition();
+            // Pause the playback before saving the position
             mPlayer.pause();
 
+            // Save the position because it is later used to save the state in the database
+            mLastPosition = mPlayer.getPosition();
+
+            // Start an alert within the AlarmManager to quit this service after a timeout (defined in SERVICE_CANCEL_TIME)
             AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             Intent quitIntent = new Intent(ACTION_QUIT);
-            PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             am.set(AlarmManager.RTC, System.currentTimeMillis() + SERVICE_CANCEL_TIME, quitPI);
 
-            // Broadcast simple.last.fm.scrobble broadcast
+            // Broadcast simple.last.fm.scrobble broadcast to inform about pause state
             if (mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
                 TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-                Log.v(TAG, "Send to SLS: " + item);
-
             }
-
-            mIsPaused = true;
         }
 
+        // Distribute the new status to everything (Notification, widget, ...)
         mPlaybackServiceStatusHelper.updateStatus();
-
     }
 
+    /**
+     * Resumes playback of a previously paused playback. If called first after starting the service,
+     * this will resume the last state (loaded from the database)
+     */
     public void resume() {
         cancelQuitAlert();
 
-//        // Check if mediaplayer needs preparing
+        // Check if mediaplayer needs preparing because we are resuming an state from the database or stopped state
         if (!mPlayer.isPrepared() && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
             jumpToIndex(mCurrentPlayingIndex, mLastPosition);
-            Log.v(TAG, "Resuming position before playback to: " + mLastPosition);
             return;
         }
 
+        // Check if no mCurrentPlayingIndex is available which means that we should start playing position 0 (if available).
         if (mCurrentPlayingIndex < 0 && mCurrentList.size() > 0) {
-            // Songs existing so start playback of playlist begin
+            // Songs exist, so start playback of playlist begin
             jumpToIndex(0);
         } else if (mCurrentPlayingIndex < 0 && mCurrentList.size() == 0) {
-            mPlaybackServiceStatusHelper.updateStatus();
+            // If no songs are enqueued to the playlist just do nothing here. FIXME is this update necessary? (no change in state)
+            // mPlaybackServiceStatusHelper.updateStatus();
         } else if (mCurrentPlayingIndex < mCurrentList.size()) {
 
             /*
@@ -365,24 +486,30 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Abort command
+                // Abort command if we don't acquired the audio focus
                 return;
             }
 
+            // Notify the helper class to start a media session
             mPlaybackServiceStatusHelper.startMediaSession();
 
+            // This will instruct the GaplessPlayer to actually start playing
             mPlayer.resume();
 
-            // Notify simple last.fm scrobbler
+            // Notify simple last.fm scrobbler about the playback resume
             mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_RESUME);
 
-            mIsPaused = false;
+            // Reset the time position because it is invalid now
             mLastPosition = 0;
 
+            // Notify the helper class, that the state has changed
             mPlaybackServiceStatusHelper.updateStatus();
         }
     }
 
+    /**
+     * Toggles between playing & paused
+     */
     public void togglePause() {
         // Toggles playback state
         if (mPlayer.isRunning()) {
@@ -393,31 +520,30 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * add all tracks to playlist and play
+     * Add all tracks to the playlist and start playing them
      */
     public void playAllTracks() {
-
+        // Notify the user about the possible long running operation
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
-        // clear playlist
+        // clear the playlist before adding all tracks
         clearPlaylist();
 
-        // stop service
-        stop();
 
-        // get all tracks
+        // Get a list of all available tracks from the MusicLibraryHelper
         List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(getApplicationContext());
 
         mCurrentList.addAll(allTracks);
 
-        // start playing
+        // Start playing the first item in the list
         jumpToIndex(0);
 
+        // Notify the user that the operation is now finished
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
     }
 
     /**
-     * add all tracks to playlist, shuffle and play
+     * Adds all tracks to playlist, play and then shuffle
      */
     public void playAllTracksShuffled() {
         playAllTracks();
@@ -425,17 +551,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * shuffle the current playlist
+     * Shuffles the current playlist
      */
     public void shufflePlaylist() {
-
-        // save currentindex
-        int index = mCurrentPlayingIndex;
-
-        if (mCurrentList.size() > 0 && index >= 0 && (index < mCurrentList.size())) {
+        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // get the current TrackModel and remove it from playlist
-            TrackModel currentItem = mCurrentList.get(index);
-            mCurrentList.remove(index);
+            TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
+            mCurrentList.remove(mCurrentPlayingIndex);
 
             // shuffle playlist and set currentitem as first element
             Collections.shuffle(mCurrentList);
@@ -446,14 +568,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             mPlaybackServiceStatusHelper.updateStatus();
 
-            // set next track for gapless
-
+            // set next track for the GaplessPlayer which has now changed
             try {
                 mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
             } catch (GaplessPlayer.PlaybackException e) {
                 handlePlaybackException(e);
             }
-        } else if (mCurrentList.size() > 0 && index < 0) {
+        } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
             // service stopped just shuffle playlist
             Collections.shuffle(mCurrentList);
 
@@ -463,13 +584,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Sets nextplayback track to following on in playlist
+     * Jumps to the next song that is set in mNextPlayingIndex
      */
     public void setNextTrack() {
-        // Needs to set gaplessplayer next object and reorganize playlist
         // Keep device at least for 5 seconds turned on
-        mTempWakelock.acquire(5000);
+        mSongTransitionWakelock.acquire(5000);
+
+        // Save the last playing index, to allow the user to jump back
         mLastPlayingIndex = mCurrentPlayingIndex;
+
+        // Jump to the mNextPlayingIndex
         jumpToIndex(mNextPlayingIndex);
     }
 
@@ -477,55 +601,76 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Sets nextplayback track to preceding on in playlist
      */
     public void setPreviousTrack() {
-        // Needs to set gaplessplayer next object and reorganize playlist
-        // Get wakelock otherwise device could go to deepsleep until new song
-        // starts playing
-
         // Keep device at least for 5 seconds turned on
-        mTempWakelock.acquire(5000);
+        mSongTransitionWakelock.acquire(5000);
 
+        // Logic to restart the song if playback is not progressed beyond 2000ms.
+        // This enables the behavior of CD-players which a user is used to.
         if (getTrackPosition() > 2000) {
             // Check if current song should be restarted
             jumpToIndex(mCurrentPlayingIndex);
         } else if (mRandom == RANDOMSTATE.RANDOM_ON) {
             // handle random mode
             if (mLastPlayingIndex == -1) {
-                // if no lastindex reuse currentindex
+                // if no mLastPlayingIndex reuse mCurrentPlayingIndex and restart the song
                 jumpToIndex(mCurrentPlayingIndex);
             } else if (mLastPlayingIndex >= 0 && mLastPlayingIndex < mCurrentList.size()) {
-                Log.v(TAG, "Found old track index");
+                // If a song was played before this one, jump back to it
                 jumpToIndex(mLastPlayingIndex);
             }
         } else {
+            // Check if the repeat track mode is activated which means that the user is stuck to the current song
             if (mRepeat == REPEATSTATE.REPEAT_TRACK) {
                 // repeat the current track again
                 jumpToIndex(mCurrentPlayingIndex);
             } else {
-                // Check if start is reached
+                // Check if the first playlist element is reached
                 if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
+                    // Jump to the previous song (sequential back jump)
                     jumpToIndex(mCurrentPlayingIndex - 1);
                 } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
                     // In repeat mode next track is last track of playlist
                     jumpToIndex(mCurrentList.size() - 1);
                 } else {
+                    // If repeat all is not activated just stop playback if we try to move to position -1
                     stop();
                 }
             }
         }
     }
 
+
+    /**
+     * Getter for the handler used by the service interface
+     *
+     * @return The handler of this service
+     */
     protected PlaybackServiceHandler getHandler() {
         return mHandler;
     }
 
+    /**
+     * Returns a reference to the playlist. DO NOT MODIFY THE LIST!!!
+     *
+     * @return Reference to mCurrentList
+     */
     public List<TrackModel> getCurrentList() {
         return mCurrentList;
     }
 
+    /**
+     * @return Size of the playlist
+     */
     public int getPlaylistSize() {
         return mCurrentList.size();
     }
 
+    /**
+     * Getter to retrieve TrackModel items from the playlist
+     *
+     * @param index Position of the track to return
+     * @return Valid track if position within bounds, empty track otherwise
+     */
     public TrackModel getPlaylistTrack(int index) {
         if ((index >= 0) && (index < mCurrentList.size())) {
             return mCurrentList.get(index);
@@ -533,8 +678,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return new TrackModel();
     }
 
+    /**
+     * Clears the current playlist and stops playback afterwards. Also resets repeat, random state
+     */
     public void clearPlaylist() {
-        Log.v(TAG, "Clearing Playlist");
         // Clear the list
         mCurrentList.clear();
         // reset random and repeat state
@@ -544,26 +691,37 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         stop();
     }
 
+    /**
+     * Jumps playback to the given index
+     *
+     * @param index Position of song to play
+     */
     public void jumpToIndex(int index) {
         jumpToIndex(index, 0);
     }
 
+    /**
+     * Jumps playback to the given index and position inside the song (in milliseconds)
+     *
+     * @param index    Position of the song to play
+     * @param jumpTime Position inside the song (milliseconds)
+     */
     public void jumpToIndex(int index, int jumpTime) {
-        Log.v(TAG, "Playback of index: " + index + " requested");
-        Log.v(TAG, "Playlist size: " + mCurrentList.size());
 
+        // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
         while (mPlayer.getActive()) {
-            // Wait until the GaplessPlayer is not ready anymore
+            // Wait until the GaplessPlayer is not active anymore
         }
 
+        // Cancel possible alerts registered within the AlarmManager
         cancelQuitAlert();
 
-        // Stop playback
+        // Stop playback before starting a new song. This ensures state safety
         mPlayer.stop();
-        // Set currentindex to new song
+
+        // Set mCurrentPlayingIndex to new song after checking the bounds
         if (index < mCurrentList.size() && index >= 0) {
             mCurrentPlayingIndex = index;
-            Log.v(TAG, "Start playback of: " + mCurrentList.get(mCurrentPlayingIndex));
 
             /*
              * Make sure service is "started" so android doesn't handle it as a
@@ -573,46 +731,60 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             serviceStartIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
             startService(serviceStartIntent);
 
+            // Get the item that is requested to be played.
             TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
+
             // Request audio focus before doing anything
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Abort command
+                // Abort command if audio focus was not granted
                 return;
             }
 
-            // Start media session
+            // Notify the PlaybackServiceStatusHelper that a new media session is started
             mPlaybackServiceStatusHelper.startMediaSession();
 
-            mIsPaused = false;
-
+            // Try to start playback of the track url.
             try {
                 mPlayer.play(item.getTrackURL(), jumpTime);
             } catch (GaplessPlayer.PlaybackException e) {
+                // Handle an error of the play commant
                 handlePlaybackException(e);
             }
 
-            // Check if another song follows current one for gapless
-            // playback
+            // Sets the mNextPlayingIndex to the index just startet, because the PlaybackStartListener will
+            // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
+            // is necessary to handle playback start
             mNextPlayingIndex = index;
-        } else if (index == -1) {
+        } else if (index < 0) {
+            // If index < 0 is requested for whatever reason stop the playback
             stop();
         }
 
     }
 
+    /**
+     * Seeks the GaplessPlayer to the given position, but only if it is playing.
+     *
+     * @param position Position in milliseconds to seek to
+     */
     public void seekTo(int position) {
         if (mPlayer.isRunning()) {
             mPlayer.seekTo(position);
         }
     }
 
+    /**
+     * Returns the playback position of the GaplessPlayer
+     *
+     * @return Playback position if playing/paused or 0 if stopped
+     */
     public int getTrackPosition() {
         switch (getPlaybackState()) {
             case PLAYING:
-                return mPlayer.getPosition();
             case PAUSE:
+                return mPlayer.getPosition();
             case RESUMED:
                 return mLastPosition;
             case STOPPED:
@@ -621,12 +793,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return 0;
     }
 
+    /**
+     * @return Returns the duration of the active track or 0 if no active track
+     */
     public int getTrackDuration() {
-        if (mPlayer.isPrepared() || mPlayer.isRunning()) {
-            return mPlayer.getDuration();
-        } else {
-            return 0;
-        }
+        return mPlayer.getDuration();
     }
 
     /**
@@ -634,11 +805,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Prepare the next track for playback if needed.
      */
     public void enqueueTracks(List<TrackModel> tracklist) {
-
-        Log.v(TAG, "Enqueing " + tracklist.size() + "tracks");
-
+        // Saved to check if we played the last song of the list
         int oldSize = mCurrentList.size();
 
+        // Add the tracks to the actual list
         mCurrentList.addAll(tracklist);
 
         /*
@@ -651,7 +821,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             setNextTrackForMP();
         }
 
-        // Send new NowPlaying because playlist changed
+        // Inform the helper that the state has changed
         mPlaybackServiceStatusHelper.updateStatus();
     }
 
@@ -709,8 +879,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueTrack(TrackModel track) {
-
-        Log.v(TAG, "Enqueing track: " + track.getTrackName());
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();
@@ -719,7 +887,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
          */
-        if (mCurrentPlayingIndex == (oldSize - 1) && (mCurrentPlayingIndex >= 0)) {
+        if (mCurrentPlayingIndex == (oldSize - 1) && (oldSize != 0)) {
             // Next song for MP has to be set for gapless mediaplayback
             mNextPlayingIndex = mCurrentPlayingIndex + 1;
             setNextTrackForMP();
@@ -735,7 +903,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private void enqueueAsNextTrack(TrackModel track) {
 
-        // Check if currently playing, than enqueue after current song
+        // Check if currently playing index is set to a valid value
         if (mCurrentPlayingIndex >= 0) {
             // Enqueue in list structure
             mCurrentList.add(mCurrentPlayingIndex + 1, track);
@@ -753,6 +921,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.updateStatus();
     }
 
+    /**
+     * Dequeues a track from the playlist
+     *
+     * @param index Position if the track to remove
+     */
     public void dequeueTrack(int index) {
         // Check if track is currently playing, if so stop it
         if (mCurrentPlayingIndex == index) {
@@ -761,7 +934,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Delete song at index
             mCurrentList.remove(index);
             // Jump to next song which should be at index now
-            // Jump is safe about playlist length so no need for extra safety
+            // Jump is secured to check playlist bounds
             jumpToIndex(index);
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
@@ -784,11 +957,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * any ongoing notification.
      */
     public void stopService() {
-        Log.v(TAG, "Stopping service");
-
-        // Cancel possible cancel timers ( yeah, very funny )
+        // Cancel possible cancel timers
         cancelQuitAlert();
 
+        // Save the current playback position
         mLastPosition = getTrackPosition();
 
         // If it is still running stop playback.
@@ -797,7 +969,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlayer.stop();
         }
 
-        Log.v(TAG, "Stopping service and saving playlist with size: " + mCurrentList.size() + " and currentplaying: " + mCurrentPlayingIndex + " at position: " + mLastPosition);
 
         // Save the state of the PBS at once
         if (mCurrentList.size() > 0) {
@@ -810,16 +981,23 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
         }
 
+        // Final status update
         mPlaybackServiceStatusHelper.updateStatus();
 
         // Stops the service itself.
         stopSelf();
     }
 
+    /**
+     * @return The current random state of this service
+     */
     public RANDOMSTATE getRandom() {
         return mRandom;
     }
 
+    /**
+     * @return The current repeat state of this service
+     */
     public REPEATSTATE getRepeat() {
         return mRepeat;
     }
@@ -960,9 +1138,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Resume the bookmark with the given timestamp
      */
     public void resumeBookmark(long timestamp) {
-
-        Log.v(TAG, "resume bookmark: " + timestamp);
-
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         // clear current playlist
@@ -974,11 +1149,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // get state from database
         OdysseyServiceState state = mDatabaseManager.getState(timestamp);
 
+        // Copy the loaded state to internal state
         mCurrentPlayingIndex = state.mTrackNumber;
         mLastPosition = state.mTrackPosition;
         mRandom = state.mRandomState;
         mRepeat = state.mRepeatState;
 
+        // Check if playlist bounds match loaded indices
         if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
             mCurrentPlayingIndex = -1;
         }
@@ -996,9 +1173,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Delete the bookmark with the given timestamp from the database.
      */
     public void deleteBookmark(long timestamp) {
-
-        Log.v(TAG, "delete bookmark: " + timestamp);
-
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         // delete wont affect current playback
@@ -1012,14 +1186,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Create a bookmark with the given title and save it in the database.
      */
     public void createBookmark(String bookmarkTitle) {
-
-        Log.v(TAG, "create bookmark: " + bookmarkTitle);
-
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         // grab the current state and playlist and save this as a new bookmark with the given title
         OdysseyServiceState serviceState = new OdysseyServiceState();
 
+        // Move internal state to the new created state object
         serviceState.mTrackNumber = mCurrentPlayingIndex;
         serviceState.mTrackPosition = getTrackPosition();
         serviceState.mRandomState = mRandom;
@@ -1106,7 +1278,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Sets the index of the track to play next to a random generated one.
+     * Sets the index, of the track to play next,to a random generated one.
      */
     private void randomizeNextTrack() {
         // Set next index to random one
@@ -1114,10 +1286,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
 
             // if next index equal to current index create a new random
-            // index but just trying 20 times
+            // index but just trying RANDOM_RETRIES times
             int counter = 0;
-            while (mNextPlayingIndex == mCurrentPlayingIndex && counter < 20) {
-                mCurrentPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
+            while (mNextPlayingIndex == mCurrentPlayingIndex && counter < RANDOM_RETRIES) {
+                mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
                 counter++;
             }
         }
@@ -1161,18 +1333,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private class PlaybackStartListener implements GaplessPlayer.OnTrackStartedListener {
         @Override
         public void onTrackStarted(String URI) {
+            // Move the index to the next one
             mCurrentPlayingIndex = mNextPlayingIndex;
-            Log.v(TAG, "track started: " + URI + " PL index: " + mCurrentPlayingIndex);
 
             if (mCurrentPlayingIndex >= 0 && mCurrentPlayingIndex < mCurrentList.size()) {
-                // Broadcast simple.last.fm.scrobble broadcast
+                // Broadcast simple.last.fm.scrobble broadcast about the started track
                 TrackModel newTrackModel = mCurrentList.get(mCurrentPlayingIndex);
                 mPlaybackServiceStatusHelper.notifyLastFM(newTrackModel, PlaybackServiceStatusHelper.SLS_STATES.SLS_START);
             }
             // Notify all the things
             mPlaybackServiceStatusHelper.updateStatus();
             if (mRandom == RANDOMSTATE.RANDOM_OFF) {
-                // Random off
+                // Check the repeat state
 
                 switch (mRepeat) {
                     case REPEAT_OFF:
@@ -1188,6 +1360,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         // reached
                         if (mCurrentList.size() > 0 && mCurrentPlayingIndex + 1 == mCurrentList.size()) {
                             mNextPlayingIndex = 0;
+                        } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                            // If the end of the playlist was not reached move to the next track
+                            mNextPlayingIndex = mCurrentPlayingIndex + 1;
                         }
                         break;
                     case REPEAT_TRACK:
@@ -1203,9 +1378,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Sets the next track for gapless playing
             setNextTrackForMP();
 
-            if (mTempWakelock.isHeld()) {
-                // we could release wakelock here already
-                mTempWakelock.release();
+            // Check if temporary wakelock is held to prevent device from shutting down during
+            // the short transition
+            if (mSongTransitionWakelock.isHeld()) {
+                // we could release wakelock here again, because the GaplessPlayer is now wakelocking again
+                mSongTransitionWakelock.release();
             }
         }
     }
@@ -1220,11 +1397,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         @Override
         public void onTrackFinished() {
-            Log.v(TAG, "Playback of index: " + mCurrentPlayingIndex + " finished ");
             // Remember the last track index for moving backwards in the queue.
             mLastPlayingIndex = mCurrentPlayingIndex;
             if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-                // Broadcast simple.last.fm.scrobble broadcast
+                // Broadcast simple.last.fm.scrobble broadcast about the track finish
                 TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
                 mPlaybackServiceStatusHelper.notifyLastFM(item, PlaybackServiceStatusHelper.SLS_STATES.SLS_COMPLETE);
             }
@@ -1232,7 +1408,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // No more tracks
             if (mNextPlayingIndex == -1) {
                 stop();
-                mPlaybackServiceStatusHelper.updateStatus();
             }
         }
     }
@@ -1244,35 +1419,33 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     @Override
     public void onAudioFocusChange(int focusChange) {
-        Log.v(TAG, "Audiofocus changed");
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
-                Log.v(TAG, "Gained audiofocus");
+                // If we are ducked at the moment, return volume to full output
                 if (mIsDucked) {
                     mPlayer.setVolume(1.0f, 1.0f);
                     mIsDucked = false;
                 } else if (mLostAudioFocus) {
+                    // If we temporarily lost the audio focus we can resume playback here
                     resume();
                     mLostAudioFocus = false;
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
-                Log.v(TAG, "Lost audiofocus");
-                // Stop playback service
+                // Pause playback here, because we lost audio focus (not temporarily)
                 if (mPlayer.isRunning()) {
                     pause();
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                Log.v(TAG, "Lost audiofocus temporarily");
-                // Pause audio for the moment of focus loss
+                // Pause audio for the moment of focus loss, will be resumed.
                 if (mPlayer.isRunning()) {
                     pause();
                     mLostAudioFocus = true;
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                Log.v(TAG, "Lost audiofocus temporarily duckable");
+                // We only need to duck our volume, so set it to 10%? and save that we ducked for resuming
                 if (mPlayer.isRunning()) {
                     mPlayer.setVolume(0.1f, 0.1f);
                     mIsDucked = true;
@@ -1284,8 +1457,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     }
 
-    private BroadcastControlReceiver mNoisyReceiver = null;
-
     /**
      * Receiver class for all the different broadcasts which are able to control
      * the PlaybackService. Also the receiver for the noisy event (e.x.
@@ -1295,16 +1466,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v(TAG, "Broadcast received: " + intent.getAction());
             if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                /* Check if audio focus is currently lost. For example an incoming call
-                and now the user disconnects it headphone. The music should not resume when the call
+                /* Check if audio focus is currently lost. For example an incoming call gets picked up
+                and now the user disconnects the headphone. The music should not resume when the call
                 is finished and the audio focus is regained.
                  */
                 if (mLostAudioFocus) {
                     mLostAudioFocus = false;
                 }
-                Log.v(TAG, "NOISY AUDIO! CANCEL MUSIC");
                 pause();
             } else if (intent.getAction().equals(ACTION_PLAY)) {
                 resume();
