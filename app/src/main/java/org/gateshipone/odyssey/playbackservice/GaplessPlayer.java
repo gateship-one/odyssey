@@ -30,6 +30,14 @@ import android.media.audiofx.AudioEffect;
 import android.os.PowerManager;
 import android.util.Log;
 
+/**
+ * This class provides an easy to use interface for the android provided
+ * mediaplayer class. It handles the transition between songs so the playback
+ * appears to be gapless.
+ * <p>
+ * This does not work on all devices as some devices have a gap during song transition
+ * because of hardware decoders that don't handle transitions gapless.
+ */
 public class GaplessPlayer {
     private final static String TAG = "OdysseyGaplessPlayer";
 
@@ -37,31 +45,86 @@ public class GaplessPlayer {
         IOError, SecurityError, StateError, ArgumentError
     }
 
+    /**
+     * MediaPlayer of the currently playing track (if any)
+     */
     private MediaPlayer mCurrentMediaPlayer = null;
-    private boolean mCurrentPrepared = false;
-    private boolean mSecondPrepared = false;
-    private boolean mSecondPreparing = false;
+
+    /**
+     * MediaPlayer of the next track to play. This can be null if no next player is set.
+     */
     private MediaPlayer mNextMediaPlayer = null;
 
+    /**
+     * Saves if the player for the current track is prepared or not.
+     */
+    private boolean mCurrentPrepared = false;
+
+    /**
+     * Saves if the second player is finished with preparing.
+     */
+    private boolean mSecondPrepared = false;
+
+    /**
+     * Saves if the second player is currently preparing to play (buffering,opening codec, opening hw decoder,...)
+     */
+    private boolean mSecondPreparing = false;
+
+    /**
+     * URL of the currently playing song (if any)
+     */
     private String mPrimarySource = null;
+
+    /**
+     * URL of the next song to play.
+     */
     private String mSecondarySource = null;
 
+    /**
+     * Time value to seek to after preparing the current song. This is used for resuming playback
+     * at a specific position.
+     */
     private int mPrepareTime = 0;
 
+    /**
+     * PlaybackService using this class. This required as a context for wakelocks, callbacks,...
+     */
     private PlaybackService mPlaybackService;
 
-    private Semaphore mSecondPreparingStart;
+    /**
+     * Lock to synchronize access to the boolean variable mSecondPreparing
+     */
+    private Semaphore mSecondPreparingLock;
 
-    private int mAudioSessionID;
+    /**
+     * Registered listeners for track finish callbacks
+     */
+    private ArrayList<OnTrackFinishedListener> mTrackFinishedListeners;
 
+    /**
+     * Registered listeners for track start callbacks
+     */
+    private ArrayList<OnTrackStartedListener> mTrackStartListeners;
+
+    /**
+     * Public constructor.
+     *
+     * @param service PlaybackService to use as context and for callbacks.
+     */
     public GaplessPlayer(PlaybackService service) {
         this.mTrackFinishedListeners = new ArrayList<>();
         this.mTrackStartListeners = new ArrayList<>();
         mPlaybackService = service;
-        mSecondPreparingStart = new Semaphore(1);
+        mSecondPreparingLock = new Semaphore(1);
         Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
     }
 
+    /**
+     * This method will prepare the song with the URL to play and after preparing starts playing it.
+     *
+     * @param uri URL of the ressource to play.
+     * @throws PlaybackException In case of error the Exception is thrown
+     */
     public void play(String uri) throws PlaybackException {
         play(uri, 0);
     }
@@ -70,27 +133,28 @@ public class GaplessPlayer {
      * Initializes the first mediaplayers with uri and prepares it so it can get
      * started
      *
-     * @param uri
-     *            - Path to media file
+     * @param uri - Path to media file
      * @throws IllegalArgumentException
      * @throws SecurityException
      * @throws IllegalStateException
      * @throws IOException
      */
     public void play(String uri, int jumpTime) throws PlaybackException {
-        Log.v(TAG, "play(): " + jumpTime);
-        // save play decision
-
-        // Another player currently exists try reusing
+        // Another player currently exists, remove it.
         if (mCurrentMediaPlayer != null) {
             mCurrentMediaPlayer.reset();
             mCurrentMediaPlayer.release();
             mCurrentMediaPlayer = null;
         }
+
+        // Create new MediaPlayer object.
         mCurrentMediaPlayer = new MediaPlayer();
         mCurrentPrepared = false;
+
+        // Set the type of the stream to music.
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
+            // Set the datasource of the player to the provider URI
             mCurrentMediaPlayer.setDataSource(uri);
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError);
@@ -102,10 +166,20 @@ public class GaplessPlayer {
             throw new PlaybackException(REASON.IOError);
         }
 
+        // Save parameters for later usage
         mPrimarySource = uri;
+
+        // Set a listener for completion of playback
         mCurrentMediaPlayer.setOnCompletionListener(new TrackCompletionListener());
+
+        // Set a listener for the prepare complete event. This can then start the playback.
         mCurrentMediaPlayer.setOnPreparedListener(mPrimaryPreparedListener);
+
+        // Save the requested seek time
         mPrepareTime = jumpTime;
+
+        // Start the prepare procedure of the MediaPlayer. This happens asynchronously so a the callback
+        // above is required.
         mCurrentMediaPlayer.prepareAsync();
     }
 
@@ -114,11 +188,15 @@ public class GaplessPlayer {
      * the playback
      */
     public void togglePause() {
-        // Check if Mediaplayer is running
+        // Check if a Mediaplayer exits and if it is actual plaiyng
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
+            // In this case pause the playback
             mCurrentMediaPlayer.pause();
         } else if (mCurrentMediaPlayer != null && mCurrentPrepared) {
+            // If a MediaPlayer exists and is also prepared the toggle command should start playback.
             mCurrentMediaPlayer.start();
+
+            // Enable wakelock during playback.
             mCurrentMediaPlayer.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         }
 
@@ -128,6 +206,7 @@ public class GaplessPlayer {
      * Just pauses currently running player
      */
     public void pause() {
+        // Check if a Mediaplayer exits and if it is actual plaiyng
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             mCurrentMediaPlayer.pause();
         }
@@ -137,8 +216,8 @@ public class GaplessPlayer {
      * Resumes playback
      */
     public void resume() {
-        // FIXME Catch illegal state exception
-        if (mCurrentMediaPlayer != null) {
+        // If a MediaPlayer exists and is also prepared this command should start playback.
+        if (mCurrentMediaPlayer != null && mCurrentPrepared) {
             mCurrentMediaPlayer.start();
         }
     }
@@ -147,98 +226,160 @@ public class GaplessPlayer {
      * Stops mediaplayback
      */
     public void stop() {
+        // Check if a player exists otherwise there is nothing to do.
         if (mCurrentMediaPlayer != null) {
+            // Check if the player for the next song exists already
             if (mNextMediaPlayer != null) {
+                // Remove the next player from the currently playing one.
                 mCurrentMediaPlayer.setNextMediaPlayer(null);
-                mNextMediaPlayer.reset();
+                // Release the MediaPlayer, not usable after this command
                 mNextMediaPlayer.release();
+
+                // Reset variables to clean internal state
                 mNextMediaPlayer = null;
                 mSecondPrepared = false;
                 mSecondPreparing = false;
             }
 
+            // Check if the currently active player is ready
             if (mCurrentPrepared) {
-            /*
-             * Signal android desire to close audio effect session
-             */
+                /*
+                 * Signal android desire to close audio effect session
+                 */
                 Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
             }
-            mCurrentMediaPlayer.reset();
+            // Release the current player
             mCurrentMediaPlayer.release();
+
+            // Reset variables to clean internal state
             mCurrentMediaPlayer = null;
             mCurrentPrepared = false;
-            Log.v(TAG, "Player stopped");
         }
     }
 
+    /**
+     * Seeks the currently playing track to the requested position. Bounds/state check are done.
+     * @param position Position in milliseconds to seek to.
+     */
     public void seekTo(int position) {
         try {
+            // Check if the MediaPlayer is in a valid state to seek and the requested position is within bounds
             if (mCurrentMediaPlayer != null && mCurrentPrepared && position < mCurrentMediaPlayer.getDuration()) {
-                Log.v(TAG, "Seeking to: " + position);
                 mCurrentMediaPlayer.seekTo(position);
-            } else {
-                Log.v(TAG, "Not seeking to: " + position);
             }
         } catch (IllegalStateException exception) {
-            Log.v(TAG, "Illegal state during seekTo");
+            Log.e(TAG, "Illegal state during seekTo");
         }
     }
 
+    /**
+     * Returns the position of the currently playing track in milliseconds.
+     * @return Position of the currently playing track in milliseconds. 0 if not playing.
+     */
     public int getPosition() {
         try {
-            if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
+            // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
+            if (mCurrentMediaPlayer != null && mCurrentPrepared) {
                 return mCurrentMediaPlayer.getCurrentPosition();
             }
         } catch (IllegalStateException exception) {
-            Log.v(TAG, "Illegal state during CurrentPositon");
-            return 0;
-        }
-        return 0;
-    }
-
-    public int getDuration() {
-        try {
-            if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
-                return mCurrentMediaPlayer.getDuration();
-            }
-        } catch (IllegalStateException exception) {
-            Log.v(TAG, "Illegal state during CurrentPositon");
+            Log.e(TAG, "Illegal state during CurrentPositon");
             return 0;
         }
         return 0;
     }
 
     /**
-     * Sets next mediaplayer to uri and start preparing it. if next mediaplayer
-     * was already initialized it gets resetted
+     * Returns the duration of the current track
+     * @return Duration of the currently playing track in milliseconds. 0 if not playing.
+     */
+    public int getDuration() {
+        try {
+            // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
+            if (mCurrentMediaPlayer != null && mCurrentPrepared) {
+                return mCurrentMediaPlayer.getDuration();
+            }
+        } catch (IllegalStateException exception) {
+            Log.e(TAG, "Illegal state during CurrentPositon");
+            return 0;
+        }
+        return 0;
+    }
+
+    /**
+     * Checks if this player is currently running
+     * @return True if the player actually plays a track, false otherwise.
+     */
+    public boolean isRunning() {
+        if (mCurrentMediaPlayer != null) {
+            return mCurrentMediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the first player is prepared.
+     * @return True if prepared and ready to play, false otherwise.
+     */
+    public boolean isPrepared() {
+        return mCurrentMediaPlayer != null && mCurrentPrepared;
+    }
+
+    /**
+     * Sets the volume of the currently playing MediaPlayer
+     * @param leftChannel Volume from 0.0 - 1.0 for left playback channel
+     * @param rightChannel Volume from 0.0 - 1.0 for right playback channel
+     */
+    public void setVolume(float leftChannel, float rightChannel) {
+        if (mCurrentMediaPlayer != null) {
+            mCurrentMediaPlayer.setVolume(leftChannel, rightChannel);
+        }
+    }
+
+    /**
+     * Sets next MediaPlayer to uri and start preparing it. If next MediaPlayer
+     * was already initialized it gets reset
      *
-     * @param uri
+     * @param uri URI of the next song to play.
      */
     public void setNextTrack(String uri) throws PlaybackException {
+        // Reset the prepared state of the second mediaplayer
         mSecondPrepared = false;
+
+        // If the current MediaPlayer is not already set, this should not be called. Wait for
+        // prepare finish then.
         if (mCurrentMediaPlayer == null) {
             // This call makes absolutely no sense at this point so abort
             throw new PlaybackException(REASON.StateError);
         }
-        // Next mediaplayer already set, reset
+        // Next mediaplayer already set, clear it first.
         if (mNextMediaPlayer != null) {
+            // Remove this player from the currently active one as a next one
             mCurrentMediaPlayer.setNextMediaPlayer(null);
-            mNextMediaPlayer.reset();
+            // Release the player that is not needed anylonger
             mNextMediaPlayer.release();
+
+            // Reset internal state variables
             mNextMediaPlayer = null;
             mSecondPrepared = false;
             mSecondPreparing = false;
-            Log.v(TAG, "Clear next Player");
         }
-        if (uri != null) {
+
+        // Check if the uri contains something
+        if (uri != null && !uri.isEmpty()) {
+            // Create a new MediaPlayer to prepare as next song playback
             mNextMediaPlayer = new MediaPlayer();
+
+            // Set the prepare finished listener
             mNextMediaPlayer.setOnPreparedListener(mSecondaryPreparedListener);
-            Log.v(TAG, "Set next track to: " + uri);
+
+            // Set the playback type to music again
             mNextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             try {
+                // Try setting the data source
                 mNextMediaPlayer.setDataSource(uri);
             } catch (IllegalArgumentException e) {
                 throw new PlaybackException(REASON.ArgumentError);
@@ -249,20 +390,24 @@ public class GaplessPlayer {
             } catch (IOException e) {
                 throw new PlaybackException(REASON.IOError);
             }
+
+            // Save the uri for latter usage
             mSecondarySource = uri;
-            // Check if primary is prepared before preparing the second one
+
+            // Check if primary is prepared before preparing the second one.
             try {
-                mSecondPreparingStart.acquire();
+                mSecondPreparingLock.acquire();
             } catch (InterruptedException e) {
-                // FIXME new reason
                 throw new PlaybackException(REASON.StateError);
             }
-            if (mCurrentPrepared && !mSecondPreparing) {
-                Log.v(TAG, "Start preparing second");
+
+            // If the first MediaPlayer is prepared already just start the second prepare here.
+            // FIXME check remove !mSecondPreparing
+            if (mCurrentPrepared ) {
                 mSecondPreparing = true;
                 mNextMediaPlayer.prepareAsync();
             }
-            mSecondPreparingStart.release();
+            mSecondPreparingLock.release();
         }
     }
 
@@ -270,7 +415,6 @@ public class GaplessPlayer {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
-            Log.v(TAG, "Primary MP prepared: " + mp);
             // If mp equals currentMediaPlayback it should start playing
             mCurrentPrepared = true;
 
@@ -278,7 +422,6 @@ public class GaplessPlayer {
 
             // Check if an immediate jump is requested
             if (mPrepareTime > 0) {
-                Log.v(TAG, "Jumping to requested time before playing");
                 mp.seekTo(mPrepareTime);
                 mPrepareTime = 0;
             }
@@ -301,19 +444,19 @@ public class GaplessPlayer {
             }
 
             try {
-                mSecondPreparingStart.acquire();
+                mSecondPreparingLock.acquire();
             } catch (InterruptedException e) {
-                // FIXME new reason
-
+                // FIXME some handling? Not sure if necessary
             }
+
+            // If second MediaPlayer exists and is not already prepared and not already preparing
+            // Starte preparing the second MP here.
             if (mSecondPrepared == false && mNextMediaPlayer != null && !mSecondPreparing) {
                 mSecondPreparing = true;
                 // Delayed initialization second mediaplayer
-                Log.v(TAG, "start preparing second MP delayed");
                 mNextMediaPlayer.prepareAsync();
             }
-            mSecondPreparingStart.release();
-            Log.v(TAG, "Primary fully prepareD");
+            mSecondPreparingLock.release();
         }
     };
 
@@ -321,14 +464,18 @@ public class GaplessPlayer {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
+            // Second MediaPlayer is now ready to be used and can be set as a next MediaPlayer to the current one
             mSecondPreparing = false;
-            Log.v(TAG, "Second MP prepared: " + mp);
+
             // If it is nextMediaPlayer it should be set for currentMP
             mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+            // Set the internal state
             mSecondPrepared = true;
+
+            // Set this now prepared MediaPlayer as the next one
             mCurrentMediaPlayer.setNextMediaPlayer(mp);
 
-            Log.v(TAG, "Set Next MP");
         }
     };
 
@@ -341,59 +488,52 @@ public class GaplessPlayer {
         void onTrackStarted(String URI);
     }
 
-    // Track finish notification
-    private ArrayList<OnTrackFinishedListener> mTrackFinishedListeners;
 
+    /**
+     * Registers a listener to this class to be notified when a track finishes playback
+     * @param listener Listener to register
+     */
     public void setOnTrackFinishedListener(OnTrackFinishedListener listener) {
         mTrackFinishedListeners.add(listener);
     }
 
+    /**
+     * Removes a track finish listener from this class.
+     * @param listener Listener to remove from list
+     */
     public void removeOnTrackFinishedListener(OnTrackFinishedListener listener) {
         mTrackFinishedListeners.remove(listener);
     }
 
-    // Track start notification
-    private ArrayList<OnTrackStartedListener> mTrackStartListeners;
 
+    /**
+     * Registers a track start listener to this class (Called when a MediaPlayer is prepared and started)
+     * @param listener Listener to register
+     */
     public void setOnTrackStartListener(OnTrackStartedListener listener) {
         mTrackStartListeners.add(listener);
     }
 
+    /**
+     * Removes a track start listener from this class.
+     * @param listener Listener to remove from list
+     */
     public void removeOnTrackStartListener(OnTrackStartedListener listener) {
         mTrackStartListeners.remove(listener);
     }
 
-    public boolean isRunning() {
-        if (mCurrentMediaPlayer != null) {
-            return mCurrentMediaPlayer.isPlaying();
-        }
-        return false;
-    }
 
-    public boolean isPaused() {
-        return mCurrentMediaPlayer != null && !mCurrentMediaPlayer.isPlaying() && mCurrentPrepared;
-    }
-
-    boolean isPrepared() {
-        return mCurrentMediaPlayer != null && mCurrentPrepared;
-    }
-
-    public void setVolume(float leftChannel, float rightChannel) {
-        if (mCurrentMediaPlayer != null) {
-            mCurrentMediaPlayer.setVolume(leftChannel, rightChannel);
-        }
-    }
-
+    /**
+     * This listener will handle callbacks when a track finishes playback
+     */
     private class TrackCompletionListener implements MediaPlayer.OnCompletionListener {
 
         @Override
         public void onCompletion(MediaPlayer mp) {
-            Log.v(TAG, "Track playback completed");
-            // notify connected services
-
-            // Cleanup old MP
+            // Get audio session id to close the audioFX session
             int audioSessionID = mp.getAudioSessionId();
 
+            // Reset the current MediaPlayer variable
             mCurrentMediaPlayer = null;
             /*
              * Signal android desire to close audio effect session
@@ -402,20 +542,24 @@ public class GaplessPlayer {
             audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
             audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
             mPlaybackService.sendBroadcast(audioEffectIntent);
-            Log.v(TAG,"Close audio effects for previous player");
 
+            // Notify connected listeners that the last track is now finished
             for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
                 listener.onTrackFinished();
             }
 
-            // mCurrentMediaPlayer = null;
-            // Set current MP to next MP
+            // Set current MP to next MP if one is ready
             if (mNextMediaPlayer != null && mSecondPrepared) {
-                Log.v(TAG, "set next as current MP");
+                // Next media player should now be playing already, so make this the current one.
                 mCurrentMediaPlayer = mNextMediaPlayer;
+                // Register this listener to the now playing MediaPlayer also
                 mCurrentMediaPlayer.setOnCompletionListener(new TrackCompletionListener());
+
+                // Move the second to primary source (URI)
                 mPrimarySource = mSecondarySource;
-                mSecondarySource = "";
+
+                // Reset the now obsolete second MediaPlayer state variables
+                mSecondarySource = null;
                 mNextMediaPlayer = null;
 
                 /*
@@ -426,35 +570,21 @@ public class GaplessPlayer {
                 audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 mPlaybackService.sendBroadcast(audioEffectOpenIntent);
                 mp.setAuxEffectSendLevel(1.0f);
-                Log.v(TAG, "Opened audio effects for new player");
 
-                // Notify connected listeners
+                // Notify connected listeners that playback has started
                 for (OnTrackStartedListener listener : mTrackStartListeners) {
                     listener.onTrackStarted(mPrimarySource);
                 }
             }
 
-            Log.v(TAG, "Releasing old MP");
             mp.release();
         }
     }
 
-    private class MediaPlayerErrorListner implements MediaPlayer.OnErrorListener {
 
-        @Override
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            if (mp.equals(mCurrentMediaPlayer)) {
-                // FIXME notify PBS
-                // Signal PlaybackService to continue with next song
-                mPlaybackService.setNextTrack();
-            } else {
-                // FIXME Probably second media player so ignore for now
-            }
-            return false;
-        }
-
-    }
-
+    /**
+     * Exception class used to signal playback errors
+     */
     public class PlaybackException extends Exception {
 
         REASON mReason;
@@ -470,15 +600,13 @@ public class GaplessPlayer {
 
     /**
      * Returns whether Gaplessplayer is active or inactive so it can receive commands
-     * @return
+     *
+     * @return True if this class is busy and false if it is not doing important work.
      */
-    public boolean getActive()
-    {
-        if ( mSecondPreparing ) {
-            Log.v(TAG,"Seconded player is preparing");
+    public boolean getActive() {
+        if (mSecondPreparing) {
             return true;
-        } else if ( !mCurrentPrepared && (mCurrentMediaPlayer != null) ) {
-            Log.v(TAG,"It seems like the first player is preparing");
+        } else if (!mCurrentPrepared && (mCurrentMediaPlayer != null)) {
             return true;
         }
 

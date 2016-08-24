@@ -552,9 +552,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG, "Playback of index: " + index + " requested");
         Log.v(TAG, "Playlist size: " + mCurrentList.size());
 
-        if (mPlayer.getActive()) {
-            Log.v(TAG, "Ignoring command because gapless player is active");
-            return;
+        while (mPlayer.getActive()) {
+            // Wait until the GaplessPlayer is not ready anymore
         }
 
         cancelQuitAlert();
