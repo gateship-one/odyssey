@@ -29,9 +29,20 @@ import android.util.Log;
 public class PlaybackServiceConnection implements ServiceConnection {
 
     private static final String TAG = "ServiceConnection";
+
+    /**
+     * The service interface that is created when the connection is established.
+     */
     private IOdysseyPlaybackService mPlaybackService;
 
+    /**
+     * Context used for binding to the service
+     */
     private Context mContext;
+
+    /**
+     * Callback handler for connection state changes
+     */
     private ConnectionNotifier mNotifier;
 
     public PlaybackServiceConnection(Context context) {
@@ -39,23 +50,27 @@ public class PlaybackServiceConnection implements ServiceConnection {
         mPlaybackService = null;
     }
 
+    /**
+     * Called when the connection is established successfully
+     * @param name Name of the connected component
+     * @param service Service that the connection was established to
+     */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.v(TAG, "Service connection created");
         mPlaybackService = IOdysseyPlaybackService.Stub.asInterface(service);
         if (mPlaybackService != null) {
-            Log.v(TAG, "Got interface");
-        } else {
-            Log.v(TAG, "No interface -_-");
         }
         if (mNotifier != null) {
             mNotifier.onConnect();
         }
     }
 
+    /**
+     * Called when the service connection was disconnected for some reason (crash?)
+     * @param name Name of the closed component
+     */
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.v(TAG, "Service disconnected");
         mPlaybackService = null;
         if (mNotifier != null) {
             mNotifier.onDisconnect();
@@ -63,11 +78,17 @@ public class PlaybackServiceConnection implements ServiceConnection {
         openConnection();
     }
 
+    /**
+     * This initiates the connection to the PlaybackService by binding to it
+     */
     public void openConnection() {
         Intent serviceStartIntent = new Intent(mContext, PlaybackService.class);
         mContext.bindService(serviceStartIntent, this, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Disconnects the connection by unbinding from the service (not needed anymore)
+     */
     public void closeConnection() {
         mContext.unbindService(this);
     }
@@ -81,6 +102,10 @@ public class PlaybackServiceConnection implements ServiceConnection {
 
     }
 
+    /**
+     * Sets an callback handler
+     * @param notifier Callback handler for connection state changes
+     */
     public void setNotifier(ConnectionNotifier notifier) {
         mNotifier = notifier;
     }
