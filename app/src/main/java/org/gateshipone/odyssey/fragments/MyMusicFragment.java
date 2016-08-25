@@ -159,8 +159,11 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         return rootView;
     }
 
-    private View.OnClickListener getPlayButtonListener(int id) {
-        switch (id) {
+    /**
+     * Create a ClickListener for the play button if needed.
+     */
+    private View.OnClickListener getPlayButtonListener(int tab) {
+        switch (tab) {
             case 0:
             case 1:
                 return null;
@@ -184,36 +187,40 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
 
     /**
      * Called when a tab enters the selected state.
-     * <p/>
-     * This method will take care of dismissing the searchview and showing the fab.
      */
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
 
-        View view = this.getView();
+        // set viewpager to current page
+        mMyMusicViewPager.setCurrentItem(tab.getPosition());
 
-        if (view != null) {
-            // dismiss searchview
-            if (mSearchView != null && mOptionMenu != null && !mSearchView.isIconified()) {
-                mSearchView.setIconified(true);
-                mOptionMenu.findItem(R.id.action_search).collapseActionView();
-            }
+        // show fab only for AllTracksFragment
+        View.OnClickListener listener = getPlayButtonListener(tab.getPosition());
 
-            // set viewpager to current page
-            ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
-            myMusicViewPager.setCurrentItem(tab.getPosition());
-
-            // show fab only for AllTracksFragment
-            View.OnClickListener listener = getPlayButtonListener(tab.getPosition());
-
-            OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-            activity.setUpPlayButton(listener);
-        }
+        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+        activity.setUpPlayButton(listener);
     }
 
+    /**
+     * Called when a tab leaves the selected state.
+     * <p/>
+     * This method will take care of dismissing the searchview and showing the fab.
+     */
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
+        // dismiss searchview
+        if (mSearchView != null && mOptionMenu != null && !mSearchView.isIconified()) {
+            if (mSearchView.getQuery().length() > 0) {
+                // clear filter only if searchview contains text
+                OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
+                if (fragment != null) {
+                    fragment.removeFilter();
+                }
+            }
 
+            mSearchView.setIconified(true);
+            mOptionMenu.findItem(R.id.action_search).collapseActionView();
+        }
     }
 
     @Override
@@ -260,16 +267,6 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         mSearchView.setOnQueryTextListener(new SearchTextObserver());
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
-                if (fragment != null) {
-                    fragment.removeFilter();
-                }
-                return false;
-            }
-        });
 
         super.onCreateOptionsMenu(menu, menuInflater);
     }
