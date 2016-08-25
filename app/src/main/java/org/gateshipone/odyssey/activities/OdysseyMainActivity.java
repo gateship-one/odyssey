@@ -63,6 +63,7 @@ import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
 import org.gateshipone.odyssey.fragments.BookmarksFragment;
 import org.gateshipone.odyssey.fragments.FilesFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
+import org.gateshipone.odyssey.fragments.OdysseyFragment;
 import org.gateshipone.odyssey.fragments.PlaylistTracksFragment;
 import org.gateshipone.odyssey.dialogs.SaveDialog;
 import org.gateshipone.odyssey.fragments.SavedPlaylistsFragment;
@@ -856,6 +857,8 @@ public class OdysseyMainActivity extends AppCompatActivity
 
                     if (fragment instanceof MyMusicFragment) {
                         ((MyMusicFragment) fragment).refresh();
+                    } else if (fragment instanceof OdysseyFragment) {
+                        ((OdysseyFragment) fragment).refreshContent();
                     }
                 }
                 break;

@@ -74,7 +74,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     /**
      * Method to reload the data and start the refresh indicator if a refreshlayout exists.
      */
-    protected void refreshContent() {
+    public void refreshContent() {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.post(new Runnable() {
                 @Override
