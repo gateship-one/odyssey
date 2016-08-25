@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
@@ -39,29 +38,13 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class PlaylistTracksFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
-
-    /**
-     * Adapter used for the ListView
-     */
-    private TracksListViewAdapter mTracksListViewAdapter;
-
-    /**
-     * Save the swipe layout for later usage
-     */
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
+public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Key values for arguments of the fragment
@@ -97,13 +80,13 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
 
             @Override
             public void onRefresh() {
-                refresh();
+                refreshContent();
             }
         });
 
-        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksListViewAdapter(getActivity());
 
-        playlistTracksListView.setAdapter(mTracksListViewAdapter);
+        playlistTracksListView.setAdapter(mAdapter);
 
         playlistTracksListView.setOnItemClickListener(this);
 
@@ -136,15 +119,6 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
                 playPlaylist(0);
             }
         });
-
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(true);
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
     }
 
     /**
@@ -157,39 +131,6 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         return new TrackLoader(getActivity(), mPlaylistID);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        mTracksListViewAdapter.swapModel(data);
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<TrackModel>> loader) {
-        mTracksListViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -269,7 +210,7 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      */
     private void enqueueTrack(int position) {
 
-        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, false);
@@ -286,7 +227,7 @@ public class PlaylistTracksFragment extends OdysseyFragment implements LoaderMan
      */
     private void enqueueTrackAsNext(int position) {
 
-        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, true);

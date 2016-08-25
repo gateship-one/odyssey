@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -44,32 +43,16 @@ import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.models.FileModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class FilesFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<FileModel>>, AdapterView.OnItemClickListener {
-
-    /**
-     * Adapter used for the ListView
-     */
-    private FilesListViewAdapter mFilesListViewAdapter;
+public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Listener to open a child directory
      */
     private OnDirectorySelectedListener mOnDirectorySelectedCallback;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
-
-    /**
-     * Save the swipe layout for later usage
-     */
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * the current directory that is displayed by the fragment
@@ -85,8 +68,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      */
     public final static String ARG_DIRECTORYPATH = "directory_path";
     public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
-
-    private final static String TAG = "OdysseyFilesFragment";
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -110,13 +91,13 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
 
             @Override
             public void onRefresh() {
-                refresh();
+                refreshContent();
             }
         });
 
-        mFilesListViewAdapter = new FilesListViewAdapter(getActivity());
+        mAdapter = new FilesListViewAdapter(getActivity());
 
-        filesListView.setAdapter(mFilesListViewAdapter);
+        filesListView.setAdapter(mAdapter);
         filesListView.setOnItemClickListener(this);
 
         // register listview for a context menu
@@ -179,24 +160,6 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
                 playCurrentFolder();
             }
         });
-
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(true);
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -212,34 +175,11 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
     }
 
     /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<FileModel>> loader, List<FileModel> model) {
-        mFilesListViewAdapter.swapModel(model);
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<FileModel>> loader) {
-        mFilesListViewAdapter.swapModel(null);
-    }
-
-    /**
      * Callback when an item in the ListView was clicked.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FileModel selectedFile = (FileModel) mFilesListViewAdapter.getItem(position);
+        FileModel selectedFile = (FileModel) mAdapter.getItem(position);
 
         // if file is directory open new fragment
         if (selectedFile.isDirectory()) {
@@ -256,7 +196,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
         MenuInflater inflater = getActivity().getMenuInflater();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        FileModel currentFile = (FileModel) mFilesListViewAdapter.getItem(info.position);
+        FileModel currentFile = (FileModel) mAdapter.getItem(info.position);
 
         if (currentFile.isFile()) {
             // show context menu for files
@@ -379,7 +319,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      */
     private void enqueueFile(int position, boolean asNext) {
 
-        FileModel currentFile = (FileModel) mFilesListViewAdapter.getItem(position);
+        FileModel currentFile = (FileModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), asNext);
@@ -414,7 +354,7 @@ public class FilesFragment extends OdysseyFragment implements LoaderManager.Load
      */
     private void enqueueFolder(int position) {
 
-        FileModel currentFolder = (FileModel) mFilesListViewAdapter.getItem(position);
+        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueDirectory(currentFolder.getPath());

@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -41,18 +40,12 @@ import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
-
-    /**
-     * ListView adapter object used for this ListView
-     */
-    private TracksListViewAdapter mTracksListViewAdapter;
+public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Listener to open an artist
@@ -77,11 +70,6 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
     private String mAlbumKey = "";
 
     /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
-
-    /**
      * Called to create instantiate the UI of the fragment.
      */
     @Override
@@ -92,9 +80,9 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
         // get listview
         ListView albumTracksListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
-        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksListViewAdapter(getActivity());
 
-        albumTracksListView.setAdapter(mTracksListViewAdapter);
+        albumTracksListView.setAdapter(mAdapter);
 
         albumTracksListView.setOnItemClickListener(this);
 
@@ -131,7 +119,8 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
 
     /**
      * Called when the fragment resumes.
-     * Reload the data, setup the toolbar and create the PBS connection.
+     * <p/>
+     * Set up toolbar and play button.
      */
     @Override
     public void onResume() {
@@ -153,13 +142,6 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
                 playAlbum(0);
             }
         });
-
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
     }
 
     /**
@@ -172,36 +154,6 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         return new TrackLoader(getActivity(), mAlbumKey);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        mTracksListViewAdapter.swapModel(data);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<TrackModel>> loader) {
-        mTracksListViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -299,7 +251,7 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
@@ -316,7 +268,7 @@ public class AlbumTracksFragment extends OdysseyFragment implements LoaderManage
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, asNext);

@@ -40,12 +40,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public abstract class GenericAlbumsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<AlbumModel>>, AdapterView.OnItemClickListener {
-
-    /**
-     * GridView adapter object used for this GridView
-     */
-    protected AlbumsGridViewAdapter mAlbumsGridViewAdapter;
+public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Listener to open an album
@@ -58,19 +53,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     protected GridView mRootGrid;
 
     /**
-     * Save the swipe layout for later usage
-     */
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
      * Save the last scroll position to resume there
      */
     protected int mLastPosition;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    protected PlaybackServiceConnection mServiceConnection;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -94,14 +79,14 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
 
             @Override
             public void onRefresh() {
-                refresh();
+                refreshContent();
             }
         });
 
-        mAlbumsGridViewAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
+        mAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
 
-        mRootGrid.setAdapter(mAlbumsGridViewAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAlbumsGridViewAdapter, mRootGrid));
+        mRootGrid.setAdapter(mAdapter);
+        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
         mRootGrid.setOnItemClickListener(this);
 
         // register for context menu
@@ -127,23 +112,6 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     }
 
     /**
-     * Called when the fragment resumes.
-     * Reload the data and create the PBS connection.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(true);
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
-
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-    }
-
-    /**
      * Called when the loader finished loading its data.
      *
      * @param loader The used loader itself
@@ -151,34 +119,13 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
      */
     @Override
     public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
-        mAlbumsGridViewAdapter.swapModel(data);
+        super.onLoadFinished(loader, data);
+
         // Reset old scroll position
         if (mLastPosition >= 0) {
             mRootGrid.setSelection(mLastPosition);
             mLastPosition = -1;
         }
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<AlbumModel>> loader) {
-        mAlbumsGridViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -190,7 +137,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
         mLastPosition = position;
 
         // identify current album
-        AlbumModel currentAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
+        AlbumModel currentAlbum = (AlbumModel) mAdapter.getItem(position);
 
         String albumKey = currentAlbum.getAlbumKey();
         String albumTitle = currentAlbum.getAlbumName();
@@ -209,7 +156,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment implements L
     protected void enqueueAlbum(int position) {
         // identify current album
 
-        AlbumModel clickedAlbum = (AlbumModel) mAlbumsGridViewAdapter.getItem(position);
+        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
         // enqueue album

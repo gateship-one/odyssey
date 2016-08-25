@@ -42,7 +42,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
-public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabSelectedListener {
+public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
 
     /**
      * ServiceConnection object to communicate with the PlaybackService
@@ -229,17 +229,11 @@ public class MyMusicFragment extends OdysseyFragment implements TabLayout.OnTabS
     }
 
     /**
-     * generic method to reload the dataset displayed by the fragment
+     * Method to reload the fragments.
      */
-    @Override
     public void refresh() {
         // reload tabs
-        View view = this.getView();
-
-        if (view != null) {
-            ViewPager myMusicViewPager = (ViewPager) view.findViewById(R.id.my_music_viewpager);
-            myMusicViewPager.getAdapter().notifyDataSetChanged();
-        }
+        mMyMusicPagerAdapter.notifyDataSetChanged();
     }
 
     /**

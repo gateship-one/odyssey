@@ -19,26 +19,118 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 
-abstract public class OdysseyFragment extends Fragment {
+import org.gateshipone.odyssey.adapter.GenericViewAdapter;
+import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
-    abstract public void refresh();
+import java.util.List;
+
+abstract public class OdysseyFragment<T extends GenericModel> extends Fragment implements LoaderManager.LoaderCallbacks<List<T>> {
+
+    /**
+     * The reference to the possible refresh layout
+     */
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
+
+    /**
+     * ServiceConnection object to communicate with the PlaybackService
+     */
+    protected PlaybackServiceConnection mServiceConnection;
+
+    /**
+     * The generic adapter for the view model
+     */
+    protected GenericViewAdapter<T> mAdapter;
+
+    /**
+     * Called when the fragment resumes.
+     * <p/>
+     * Create the PBS connection, reload the data and start the refresh indicator if a refreshlayout exists.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
+
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
+
+        // Prepare loader ( start new one or reuse old )
+        getLoaderManager().initLoader(0, getArguments(), this);
+    }
+
+    /**
+     * Method to reload the data and start the refresh indicator if a refreshlayout exists.
+     */
+    protected void refreshContent() {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
+
+        getLoaderManager().restartLoader(0, getArguments(), this);
+    }
+
+    /**
+     * Called when the loader finished loading its data.
+     * <p/>
+     * The refresh indicator will be stopped if a refreshlayout exists.
+     *
+     * @param loader The used loader itself
+     * @param model  Data of the loader
+     */
+    @Override
+    public void onLoadFinished(Loader<List<T>> loader, List<T> model) {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+
+        mAdapter.swapModel(model);
+    }
+
+    /**
+     * If the loader is reset, the model data should be cleared.
+     *
+     * @param loader Loader that was resetted.
+     */
+    @Override
+    public void onLoaderReset(Loader<List<T>> loader) {
+        // Clear the model data of the adapter.
+        mAdapter.swapModel(null);
+    }
 
     /**
      * Method to apply a filter to the view model of the fragment.
-     *
-     * This method must be overridden by the subclass.
      */
     public void applyFilter(String filter) {
-        throw new IllegalStateException("filterView hasn't been implemented in the subclass");
+        mAdapter.applyFilter(filter);
     }
 
     /**
      * Method to remove a previous set filter.
-     *
-     * This method must be overridden by the subclass.
      */
     public void removeFilter() {
-        throw new IllegalStateException("removeFilter hasn't been implemented in the subclass");
+        mAdapter.removeFilter();
     }
 }

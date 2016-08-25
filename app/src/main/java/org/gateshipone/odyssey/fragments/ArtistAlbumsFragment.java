@@ -80,7 +80,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * Called when the fragment resumes.
-     * Reload the data, setup the toolbar and create the PBS connection.
+     * <p/>
+     * Set up toolbar and play button.
      */
     @Override
     public void onResume() {

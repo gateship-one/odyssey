@@ -21,7 +21,6 @@ package org.gateshipone.odyssey.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
@@ -38,18 +37,12 @@ import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AllTracksFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<TrackModel>>, AdapterView.OnItemClickListener {
-
-    /**
-     * Adapter used for the ListView
-     */
-    private TracksListViewAdapter mTracksListViewAdapter;
+public class AllTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Listener to open an artist
@@ -62,19 +55,9 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     private ListView mRootList;
 
     /**
-     * Save the swipe layout for later usage
-     */
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
      * Save the last scroll position to resume there
      */
     private int mLastPosition;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -98,13 +81,13 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
 
             @Override
             public void onRefresh() {
-                refresh();
+                refreshContent();
             }
         });
 
-        mTracksListViewAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksListViewAdapter(getActivity());
 
-        mRootList.setAdapter(mTracksListViewAdapter);
+        mRootList.setAdapter(mAdapter);
         mRootList.setOnItemClickListener(this);
 
         registerForContextMenu(mRootList);
@@ -129,23 +112,6 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     }
 
     /**
-     * Called when the fragment resumes.
-     * Reload the data and create the PBS connection.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(true);
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
-
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-    }
-
-    /**
      * This method creates a new loader for this fragment.
      *
      * @param id     The id of the loader
@@ -165,34 +131,13 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
      */
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        mTracksListViewAdapter.swapModel(data);
+        super.onLoadFinished(loader, data);
+
         // Reset old scroll position
         if (mLastPosition >= 0) {
             mRootList.setSelection(mLastPosition);
             mLastPosition = -1;
         }
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<TrackModel>> loader) {
-        mTracksListViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -247,22 +192,6 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     }
 
     /**
-     * Apply the given filter to the model of the adapter.
-     */
-    @Override
-    public void applyFilter(String filter) {
-        mTracksListViewAdapter.applyFilter(filter);
-    }
-
-    /**
-     * Remove a previous set filter.
-     */
-    @Override
-    public void removeFilter() {
-        mTracksListViewAdapter.removeFilter();
-    }
-
-    /**
      * Callback to open a view for the artist of the selected track.
      *
      * @param position the position of the selected track in the adapter
@@ -270,7 +199,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
@@ -306,7 +235,7 @@ public class AllTracksFragment extends OdysseyFragment implements LoaderManager.
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mTracksListViewAdapter.getItem(position);
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, asNext);

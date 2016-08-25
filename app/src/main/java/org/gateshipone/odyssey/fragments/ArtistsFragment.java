@@ -20,7 +20,6 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,18 +37,13 @@ import org.gateshipone.odyssey.adapter.ArtistsGridViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.ArtistLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class ArtistsFragment extends OdysseyFragment implements LoaderManager.LoaderCallbacks<List<ArtistModel>>, AdapterView.OnItemClickListener {
-    /**
-     * GridView adapter object used for this GridView
-     */
-    private ArtistsGridViewAdapter mArtistsGridViewAdapter;
+public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Listener to open an artist
@@ -62,19 +56,9 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     private GridView mRootGrid;
 
     /**
-     * Save the swipe layout for later usage
-     */
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
      * Save the last scroll position to resume there
      */
     private int mLastPosition;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -98,14 +82,14 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
 
             @Override
             public void onRefresh() {
-                refresh();
+                refreshContent();
             }
         });
 
-        mArtistsGridViewAdapter = new ArtistsGridViewAdapter(getActivity(), mRootGrid);
+        mAdapter = new ArtistsGridViewAdapter(getActivity(), mRootGrid);
 
-        mRootGrid.setAdapter(mArtistsGridViewAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mArtistsGridViewAdapter, mRootGrid));
+        mRootGrid.setAdapter(mAdapter);
+        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
         mRootGrid.setOnItemClickListener(this);
 
         // register for context menu
@@ -131,23 +115,6 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     }
 
     /**
-     * Called when the fragment resumes.
-     * Reload the data and create the PBS connection.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(true);
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
-
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-    }
-
-    /**
      * This method creates a new loader for this fragment.
      *
      * @param id     The id of the loader
@@ -167,37 +134,13 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
      */
     @Override
     public void onLoadFinished(Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
-        // Set the actual data to the adapter.
-        mArtistsGridViewAdapter.swapModel(model);
+        super.onLoadFinished(loader, model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
             mRootGrid.setSelection(mLastPosition);
             mLastPosition = -1;
         }
-
-        // change refresh state
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<ArtistModel>> loader) {
-        // Clear the model data of the adapter.
-        mArtistsGridViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -209,7 +152,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
         mLastPosition = position;
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mArtistsGridViewAdapter.getItem(position);
+        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -260,22 +203,6 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     }
 
     /**
-     * Apply the given filter to the model of the adapter.
-     */
-    @Override
-    public void applyFilter(String filter) {
-        mArtistsGridViewAdapter.applyFilter(filter);
-    }
-
-    /**
-     * Remove a previous set filter.
-     */
-    @Override
-    public void removeFilter() {
-        mArtistsGridViewAdapter.removeFilter();
-    }
-
-    /**
      * Call the PBS to enqueue the selected artist
      *
      * @param position the position of the selected artist in the adapter
@@ -283,7 +210,7 @@ public class ArtistsFragment extends OdysseyFragment implements LoaderManager.Lo
     private void enqueueArtist(int position) {
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mArtistsGridViewAdapter.getItem(position);
+        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();

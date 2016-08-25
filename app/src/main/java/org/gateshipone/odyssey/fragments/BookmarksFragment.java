@@ -20,7 +20,6 @@ package org.gateshipone.odyssey.fragments;
 
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -36,21 +35,10 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.BookmarksListViewAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import java.util.List;
 
-public class BookmarksFragment extends OdysseyFragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<List<BookmarkModel>> {
-
-    /**
-     * Adapter used for the ListView
-     */
-    private BookmarksListViewAdapter mBookmarksListViewAdapter;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
+public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -63,9 +51,9 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         // get listview
         ListView listView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
-        mBookmarksListViewAdapter = new BookmarksListViewAdapter(getActivity());
+        mAdapter = new BookmarksListViewAdapter(getActivity());
 
-        listView.setAdapter(mBookmarksListViewAdapter);
+        listView.setAdapter(mAdapter);
 
         listView.setOnItemClickListener(this);
 
@@ -87,13 +75,6 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
         activity.setUpToolbar(getResources().getString(R.string.fragment_title_bookmarks), false, true, false);
 
         activity.setUpPlayButton(null);
-
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
-
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
     }
 
     /**
@@ -106,36 +87,6 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
     @Override
     public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
         return new BookmarkLoader(getActivity(), false);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<BookmarkModel>> loader, List<BookmarkModel> data) {
-        mBookmarksListViewAdapter.swapModel(data);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<BookmarkModel>> loader) {
-        mBookmarksListViewAdapter.swapModel(null);
-    }
-
-    /**
-     * generic method to reload the dataset displayed by the fragment
-     */
-    @Override
-    public void refresh() {
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
     }
 
     /**
@@ -190,7 +141,7 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
      */
     private void resumeBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);
+        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
 
         // resume state
         try {
@@ -208,13 +159,13 @@ public class BookmarksFragment extends OdysseyFragment implements AdapterView.On
      */
     private void deleteBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(position);
+        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
 
         // delete state
         try {
             mServiceConnection.getPBS().deleteBookmark(bookmark.getId());
 
-            refresh();
+            refreshContent();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -63,7 +63,6 @@ import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
 import org.gateshipone.odyssey.fragments.BookmarksFragment;
 import org.gateshipone.odyssey.fragments.FilesFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
-import org.gateshipone.odyssey.fragments.OdysseyFragment;
 import org.gateshipone.odyssey.fragments.PlaylistTracksFragment;
 import org.gateshipone.odyssey.dialogs.SaveDialog;
 import org.gateshipone.odyssey.fragments.SavedPlaylistsFragment;
@@ -150,7 +149,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         // the default tab for mymusic
         MyMusicFragment.DEFAULTTAB defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
         // the nav ressource id to mark the right item in the nav drawer
-        int navId = R.id.nav_my_music;
+        int navId = -1;
 
         switch (defaultView) {
             case "my_music_artists":
@@ -170,6 +169,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             case "files":
                 navId = R.id.nav_files;
                 break;
+            default:
+                navId = R.id.nav_my_music;
         }
 
         super.onCreate(savedInstanceState);
@@ -216,37 +217,49 @@ public class OdysseyMainActivity extends AppCompatActivity
                 return;
             }
 
-            Fragment fragment = null;
+            Fragment fragment;
 
-            if (navId == R.id.nav_my_music) {
-                fragment = new MyMusicFragment();
+            switch (navId) {
+                case R.id.nav_my_music:
+                    fragment = new MyMusicFragment();
 
-                Bundle args = new Bundle();
-                args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
+                    Bundle args = new Bundle();
+                    args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
 
-                fragment.setArguments(args);
-            } else if (navId == R.id.nav_saved_playlists) {
-                fragment = new SavedPlaylistsFragment();
-            } else if (navId == R.id.nav_bookmarks) {
-                fragment = new BookmarksFragment();
-            } else if (navId == R.id.nav_files) {
-                fragment = new FilesFragment();
+                    fragment.setArguments(args);
+                    break;
+                case R.id.nav_saved_playlists:
+                    fragment = new SavedPlaylistsFragment();
+                    break;
+                case R.id.nav_bookmarks:
+                    fragment = new BookmarksFragment();
+                    break;
+                case R.id.nav_files:
+                    fragment = new FilesFragment();
 
-                // open the default directory
-                List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
+                    // open the default directory
+                    List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
 
-                String defaultDirectory = "/";
+                    String defaultDirectory = "/";
 
-                if (!storageVolumesList.isEmpty()) {
-                    // choose the latest used storage volume as default
-                    defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
-                }
+                    if (!storageVolumesList.isEmpty()) {
+                        // choose the latest used storage volume as default
+                        defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
+                    }
 
-                Bundle args = new Bundle();
-                args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
-                args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
+                    args = new Bundle();
+                    args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
+                    args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
 
-                fragment.setArguments(args);
+                    fragment.setArguments(args);
+                    break;
+                default:
+                    fragment = new MyMusicFragment();
+
+                    args = new Bundle();
+                    args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
+
+                    fragment.setArguments(args);
             }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -839,10 +852,10 @@ public class OdysseyMainActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay!
-                    OdysseyFragment fragment = (OdysseyFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-                    if (fragment != null) {
-                        fragment.refresh();
+                    if (fragment instanceof MyMusicFragment) {
+                        ((MyMusicFragment) fragment).refresh();
                     }
                 }
                 break;
