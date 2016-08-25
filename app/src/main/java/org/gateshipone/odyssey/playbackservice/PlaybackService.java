@@ -709,8 +709,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void jumpToIndex(int index, int jumpTime) {
 
         // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
-        while (mPlayer.getActive()) {
-            // Wait until the GaplessPlayer is not active anymore
+        if ( mPlayer.getActive() ) {
+            // Abort here if the player is still active
+            return;
         }
 
         // Cancel possible alerts registered within the AlarmManager
@@ -783,8 +784,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public int getTrackPosition() {
         switch (getPlaybackState()) {
             case PLAYING:
-            case PAUSE:
                 return mPlayer.getPosition();
+            case PAUSE:
             case RESUMED:
                 return mLastPosition;
             case STOPPED:
