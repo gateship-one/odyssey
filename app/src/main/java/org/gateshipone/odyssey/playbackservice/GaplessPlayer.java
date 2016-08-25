@@ -139,7 +139,7 @@ public class GaplessPlayer {
      * @throws IllegalStateException
      * @throws IOException
      */
-    public void play(String uri, int jumpTime) throws PlaybackException {
+    public synchronized void play(String uri, int jumpTime) throws PlaybackException {
         // Another player currently exists, remove it.
         if (mCurrentMediaPlayer != null) {
             mCurrentMediaPlayer.reset();
@@ -187,7 +187,7 @@ public class GaplessPlayer {
      * Pauses the currently running mediaplayer If already paused it continues
      * the playback
      */
-    public void togglePause() {
+    public synchronized void togglePause() {
         // Check if a Mediaplayer exits and if it is actual plaiyng
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             // In this case pause the playback
@@ -205,7 +205,7 @@ public class GaplessPlayer {
     /**
      * Just pauses currently running player
      */
-    public void pause() {
+    public synchronized void pause() {
         // Check if a Mediaplayer exits and if it is actual plaiyng
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             mCurrentMediaPlayer.pause();
@@ -215,7 +215,7 @@ public class GaplessPlayer {
     /**
      * Resumes playback
      */
-    public void resume() {
+    public synchronized void resume() {
         // If a MediaPlayer exists and is also prepared this command should start playback.
         if (mCurrentMediaPlayer != null && mCurrentPrepared) {
             mCurrentMediaPlayer.start();
@@ -225,7 +225,7 @@ public class GaplessPlayer {
     /**
      * Stops mediaplayback
      */
-    public void stop() {
+    public synchronized void stop() {
         // Check if a player exists otherwise there is nothing to do.
         if (mCurrentMediaPlayer != null) {
             // Check if the player for the next song exists already
@@ -264,7 +264,7 @@ public class GaplessPlayer {
      * Seeks the currently playing track to the requested position. Bounds/state check are done.
      * @param position Position in milliseconds to seek to.
      */
-    public void seekTo(int position) {
+    public synchronized void seekTo(int position) {
         try {
             // Check if the MediaPlayer is in a valid state to seek and the requested position is within bounds
             if (mCurrentMediaPlayer != null && mCurrentPrepared && position < mCurrentMediaPlayer.getDuration()) {
@@ -279,7 +279,7 @@ public class GaplessPlayer {
      * Returns the position of the currently playing track in milliseconds.
      * @return Position of the currently playing track in milliseconds. 0 if not playing.
      */
-    public int getPosition() {
+    public synchronized int getPosition() {
         try {
             // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
             if (mCurrentMediaPlayer != null && mCurrentPrepared) {
@@ -296,7 +296,7 @@ public class GaplessPlayer {
      * Returns the duration of the current track
      * @return Duration of the currently playing track in milliseconds. 0 if not playing.
      */
-    public int getDuration() {
+    public synchronized int getDuration() {
         try {
             // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
             if (mCurrentMediaPlayer != null && mCurrentPrepared) {
@@ -313,7 +313,7 @@ public class GaplessPlayer {
      * Checks if this player is currently running
      * @return True if the player actually plays a track, false otherwise.
      */
-    public boolean isRunning() {
+    public synchronized boolean isRunning() {
         if (mCurrentMediaPlayer != null) {
             return mCurrentMediaPlayer.isPlaying();
         }
@@ -324,7 +324,7 @@ public class GaplessPlayer {
      * Checks if the first player is prepared.
      * @return True if prepared and ready to play, false otherwise.
      */
-    public boolean isPrepared() {
+    public synchronized boolean isPrepared() {
         return mCurrentMediaPlayer != null && mCurrentPrepared;
     }
 
@@ -333,7 +333,7 @@ public class GaplessPlayer {
      * @param leftChannel Volume from 0.0 - 1.0 for left playback channel
      * @param rightChannel Volume from 0.0 - 1.0 for right playback channel
      */
-    public void setVolume(float leftChannel, float rightChannel) {
+    public synchronized void setVolume(float leftChannel, float rightChannel) {
         if (mCurrentMediaPlayer != null) {
             mCurrentMediaPlayer.setVolume(leftChannel, rightChannel);
         }
@@ -345,7 +345,7 @@ public class GaplessPlayer {
      *
      * @param uri URI of the next song to play.
      */
-    public void setNextTrack(String uri) throws PlaybackException {
+    public synchronized void setNextTrack(String uri) throws PlaybackException {
         // Reset the prepared state of the second mediaplayer
         mSecondPrepared = false;
 
@@ -603,7 +603,7 @@ public class GaplessPlayer {
      *
      * @return True if this class is busy and false if it is not doing important work.
      */
-    public boolean getActive() {
+    public synchronized boolean getActive() {
         if (mSecondPreparing) {
             return true;
         } else if (!mCurrentPrepared && (mCurrentMediaPlayer != null)) {
