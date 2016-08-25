@@ -26,6 +26,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 
+import org.gateshipone.odyssey.models.FileModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class PermissionHelper {
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
@@ -82,5 +87,15 @@ public class PermissionHelper {
         }
 
         return rows;
+    }
+
+    public static List<FileModel> getFilesForDirectory(Context context, FileModel directory) {
+        List<FileModel> files = new ArrayList<>();
+
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            files = directory.listFilesSorted();
+        }
+
+        return files;
     }
 }

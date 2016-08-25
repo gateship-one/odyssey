@@ -22,10 +22,14 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
+
+    private final Context mContext;
 
     /**
      * The parent directory.
@@ -35,6 +39,7 @@ public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
     public FileLoader(Context context, FileModel directory) {
         super(context);
 
+        mContext = context;
         mCurrentDirectory = directory;
     }
 
@@ -44,7 +49,7 @@ public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
     @Override
     public List<FileModel> loadInBackground() {
 
-        return mCurrentDirectory.listFilesSorted();
+        return PermissionHelper.getFilesForDirectory(mContext, mCurrentDirectory);
     }
 
     /**
