@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
 
-    <ImageView
+    <org.gateshipone.odyssey.views.SquareImageView
         android:id="@+id/collapsing_image"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:src="@drawable/cover_placeholder"
-        android:fitsSystemWindows="true"
+        android:background="@android:color/black"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:background="@android:color/black">
-    </ImageView>
+        android:src="@drawable/cover_placeholder"
+        android:visibility="gone" />
 
     <View
-        android:id="@+id/collapsing_image_gradient"
+        android:id="@+id/collapsing_image_gradient_top"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="128dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/album_imagebar_gradient_top"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/collapsing_image_gradient_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="128dp"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        android:background="@drawable/gradient_gridview_item" />
+        android:background="@drawable/album_imagebar_gradient_bottom"
+        android:visibility="gone" />
 
 </RelativeLayout>

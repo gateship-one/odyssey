@@ -1,32 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <color name="colorPrimary_indigo">#3F51B5</color>
     <color name="colorPrimaryDark_indigo">#303F9F</color>
     <color name="colorAccent_indigo">#FF1744</color>
+    <color name="primaryLightText_indigo">#FFFFFF</color>
+    <color name="secondaryLightText_indigo">#BBBBBB</color>
 
-    <color name="colorPrimary_orange">#ff9800</color>
-    <color name="colorPrimaryDark_orange">#f57c00</color>
+    <color name="colorPrimary_orange">#f57c00</color>
+    <color name="colorPrimaryDark_orange">#e65100</color>
     <color name="colorAccent_orange">#2979ff</color>
+    <color name="primaryLightText_orange">#FFFFFF</color>
+    <color name="secondaryLightText_orange">#BBBBBB</color>
 
-    <color name="colorPrimary_deepOrange">#ff5722</color>
-    <color name="colorPrimaryDark_deepOrange">#e64a19</color>
+    <color name="colorPrimary_deepOrange">#e64a19</color>
+    <color name="colorPrimaryDark_deepOrange">#bf360c</color>
     <color name="colorAccent_deepOrange">#2979ff</color>
+    <color name="primaryLightText_deepOrange">#FFFFFF</color>
+    <color name="secondaryLightText_deepOrange">#BBBBBB</color>
 
-    <color name="colorPrimary_blue">#2196f3</color>
-    <color name="colorPrimaryDark_blue">#1976d2</color>
+    <color name="colorPrimary_blue">#1976d2</color>
+    <color name="colorPrimaryDark_blue">#0d47a1</color>
     <color name="colorAccent_blue">#f50057</color>
+    <color name="primaryLightText_blue">#FFFFFF</color>
+    <color name="secondaryLightText_blue">#BBBBBB</color>
 
     <color name="colorPrimary_darkGrey">#323232</color>
     <color name="colorPrimaryDark_darkGrey">#212121</color>
     <color name="colorAccent_darkGrey">#2962ff</color>
+    <color name="primaryLightText_darkGrey">#FFFFFF</color>
+    <color name="secondaryLightText_darkGrey">#BBBBBB</color>
 
     <color name="colorPrimary_brown">#795548</color>
     <color name="colorPrimaryDark_brown">#5d4037</color>
     <color name="colorAccent_brown">#ff6d00</color>
+    <color name="primaryLightText_brown">#FFFFFF</color>
+    <color name="secondaryLightText_brown">#BBBBBB</color>
 
+    <color name="colorPrimary_lightGreen">#689f38</color>
+    <color name="colorPrimaryDark_lightGreen">#33691e</color>
+    <color name="colorAccent_lightGreen">#ff5252</color>
+    <color name="primaryLightText_lightGreen">#FFFFFF</color>
+    <color name="secondaryLightText_lightGreen">#DDDDDD</color>
+
+    <!-- Deprecate those with theme values -->
+    <color name="colorDivider">#626262</color>
     <color name="colorBackground">#424242</color>
     <color name="colorBackgroundDark">#212121</color>
     <color name="colorTextLight">#FFFFFF</color>
-    <color name="colorTextLightSecondary">#666666</color>
+    <color name="colorTextLightSecondary">#888888</color>
     <color name="colorTextDark">#000000</color>
 </resources>

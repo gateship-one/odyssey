@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
-    <string-array name="preference_style_values">
+    <string-array name="preference_style_values" translatable="false">
         <item>indigo</item>
         <item>orange</item>
         <item>deeporange</item>
         <item>blue</item>
         <item>darkgrey</item>
         <item>brown</item>
+        <item>lightgreen</item>
     </string-array>
 
-    <string-array name="preference_album_sort_orders_values">
+    <string-array name="preference_album_sort_orders_values" translatable="false">
         <item>name</item>
         <item>year</item>
+    </string-array>
+
+    <string-array name="preference_default_view_values" translatable="false">
+        <item>my_music_artists</item>
+        <item>my_music_albums</item>
+        <item>my_music_tracks</item>
+        <item>playlists</item>
+        <item>bookmarks</item>
+        <item>files</item>
     </string-array>
 </resources>

@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/fragment_album_tracks_action_enqueue"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueue"/>
+        android:title="@string/context_menu_action_enqueue"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_album_tracks_action_enqueueasnext"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueueasnext"/>
-
-    <item
-        android:id="@+id/fragment_album_tracks_action_play"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_playsong"/>
+        android:title="@string/context_menu_action_enqueueasnext"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_album_tracks_action_showartist"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_showartist"/>
+        android:title="@string/context_menu_action_showartist"
+        app:showAsAction="never" />
 </menu>
