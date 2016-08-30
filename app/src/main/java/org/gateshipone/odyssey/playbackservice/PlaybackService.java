@@ -330,7 +330,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        if (intent.getExtras() != null) {
+        if (null != intent && intent.getExtras() != null) {
             String action = intent.getExtras().getString("action");
 
             if (action != null) {
