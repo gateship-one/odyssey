@@ -10,3 +10,4 @@
 /build
 /captures
 Thumbs.db
+/app/*.apk
