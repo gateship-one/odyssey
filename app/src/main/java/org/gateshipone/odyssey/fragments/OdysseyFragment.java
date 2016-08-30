@@ -18,6 +18,9 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.ComponentCallbacks2;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -30,7 +33,6 @@ import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import java.util.List;
 
 abstract public class OdysseyFragment<T extends GenericModel> extends Fragment implements LoaderManager.LoaderCallbacks<List<T>> {
-
     /**
      * The reference to the possible refresh layout
      */
@@ -46,6 +48,37 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      */
     protected GenericViewAdapter<T> mAdapter;
 
+    private OdysseyComponentCallback mComponentCallback;
+
+    /**
+     * Holds if data is ready of has to be refetched (e.g. after memory trimming)
+     */
+    private boolean mDataReady;
+
+    /**
+     * Holds if trimming for this Fragment is currently allowed or not.
+     */
+    private boolean mTrimmingEnabled;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if ( null == mComponentCallback ) {
+            mComponentCallback = new OdysseyComponentCallback();
+        }
+
+        // Register the memory trim callback with the system.
+        context.registerComponentCallbacks(mComponentCallback);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        // Unregister the memory trim callback with the system.
+        getActivity().getApplicationContext().unregisterComponentCallbacks(mComponentCallback);
+    }
     /**
      * Called when the fragment resumes.
      * <p/>
@@ -58,17 +91,15 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
-        }
+        getContent();
 
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
+        mTrimmingEnabled = false;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTrimmingEnabled = true;
     }
 
     /**
@@ -84,7 +115,31 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
             });
         }
 
+        mDataReady = false;
         getLoaderManager().restartLoader(0, getArguments(), this);
+    }
+
+    /**
+     * Checks if data is available or not. If not it will start getting the data.
+     * This method should be called from onResume and if the fragment is part of an view pager,
+     * every time the View is activated because the underlying data could be cleaned because
+     * of memory pressure.
+     */
+    public void getContent() {
+        // Check if data was fetched already or not (or removed because of trimming)
+        if ( !mDataReady) {
+            if (mSwipeRefreshLayout != null) {
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+            }
+
+            // Prepare loader ( start new one or reuse old )
+            getLoaderManager().initLoader(0, getArguments(), this);
+        }
     }
 
     /**
@@ -106,7 +161,20 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
             });
         }
 
+        // Indicate that the data is ready now.
+        mDataReady = true;
+
+        // Transfer the data to the adapter so that the views can use it
         mAdapter.swapModel(model);
+    }
+
+    /**
+     * This method can be used to prevent one fragment from triming its necessary data (e.g. active in a pager)
+     *
+     * @param enabled Enable the memory trimming
+     */
+    public void enableMemoryTrimming(boolean enabled) {
+        mTrimmingEnabled = enabled;
     }
 
     /**
@@ -132,5 +200,29 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      */
     public void removeFilter() {
         mAdapter.removeFilter();
+    }
+
+    /**
+     * Private callback class used to monitor the memory situation of the system.
+     * If memory reaches a certain point, we will relinquish our data.
+     */
+    private class OdysseyComponentCallback implements ComponentCallbacks2 {
+
+        @Override
+        public void onTrimMemory(int level) {
+            if ( mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW ) {
+                getLoaderManager().destroyLoader(0);
+                mDataReady = false;
+            }
+        }
+
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+
+        }
+
+        @Override
+        public void onLowMemory() {
+        }
     }
 }
