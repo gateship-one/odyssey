@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.views.GridViewItem;
 
@@ -36,15 +35,11 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
      */
     private final Context mContext;
 
-    private ArtworkManager mArtworkManager;
-
     public ArtistsGridViewAdapter(Context context, GridView rootGrid) {
         super();
 
         mContext = context;
         mRootGrid = rootGrid;
-
-        mArtworkManager = new ArtworkManager(context);
     }
 
     /**
@@ -72,8 +67,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
 
             gridItem.setTitle(label);
             gridItem.setImageURL(imageURL);
-
-            mArtworkManager.getArtistImage(artist);
         } else {
             // Create new view if no reusable is available
             convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
