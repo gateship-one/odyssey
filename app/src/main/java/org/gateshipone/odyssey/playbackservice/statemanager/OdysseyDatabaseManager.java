@@ -78,6 +78,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // FIXME if database schema change provide update path here
     }
 
     /**
