@@ -121,7 +121,9 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
         mMyMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mMyMusicViewPager.setOffscreenPageLimit(2);
         tabLayout.setOnTabSelectedListener(this);
+
 
         // set start page
         Bundle args = getArguments();
@@ -199,6 +201,15 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpPlayButton(listener);
+
+        OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
+        if (fragment != null) {
+            fragment.getContent();
+
+            // Disable memory trimming to prevent removing the shown data
+            fragment.enableMemoryTrimming(false);
+
+        }
     }
 
     /**
@@ -208,11 +219,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      */
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
+        OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
+
         // dismiss searchview
         if (mSearchView != null && mOptionMenu != null && !mSearchView.isIconified()) {
             if (mSearchView.getQuery().length() > 0) {
                 // clear filter only if searchview contains text
-                OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
                 if (fragment != null) {
                     fragment.removeFilter();
                 }
@@ -221,7 +233,13 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             mSearchView.setIconified(true);
             mOptionMenu.findItem(R.id.action_search).collapseActionView();
         }
+
+        if (null != fragment) {
+            // Reenable memory trimming now, because the Fragment is hidden
+            fragment.enableMemoryTrimming(true);
+        }
     }
+
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
