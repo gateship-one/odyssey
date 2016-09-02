@@ -40,14 +40,17 @@ public class AlbumModel implements GenericModel {
      */
     private final String mAlbumKey;
 
+    private final long mAlbumID;
+
     /**
      * Constructs a AlbumModel instance with the given parameters.
      */
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey) {
+    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
         mAlbumName = name;
         mAlbumArtURL = albumArtURL;
         mArtistName = artistName;
         mAlbumKey = albumKey;
+        mAlbumID = albumID;
     }
 
     /**
@@ -76,6 +79,10 @@ public class AlbumModel implements GenericModel {
      */
     public String getAlbumKey() {
         return mAlbumKey;
+    }
+
+    public long getAlbumID() {
+        return mAlbumID;
     }
 
     /**

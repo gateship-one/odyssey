@@ -109,6 +109,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
             int albumTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
             int imagePathColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
             int artistTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+            int albumIDColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID);
 
             for (int i = 0; i < albumCursor.getCount(); i++) {
                 albumCursor.moveToPosition(i);
@@ -116,7 +117,8 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
                 String albumTitle = albumCursor.getString(albumTitleColumnIndex);
                 String imagePath = albumCursor.getString(imagePathColumnIndex);
                 String artistTitle = albumCursor.getString(artistTitleColumnIndex);
-                AlbumModel album = new AlbumModel(albumTitle, imagePath, artistTitle, albumKey);
+                long albumID = albumCursor.getLong(albumIDColumnIndex);
+                AlbumModel album = new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID);
                 albums.add(album);
 
             }
