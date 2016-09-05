@@ -124,19 +124,7 @@ public class GridViewItem extends RelativeLayout {
 
     public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
         if ( modelItem != mHolder.modelItem || !mCoverDone) {
-            // Cancel old task
-            if (mLoaderTask != null) {
-                mLoaderTask.cancel(true);
-                mLoaderTask = null;
-            }
-
-            mCoverDone = false;
-            mSwitcher.setOutAnimation(null);
-            mSwitcher.setInAnimation(null);
-            mImageView.setImageDrawable(null);
-            mSwitcher.setDisplayedChild(0);
-            mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-            mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+            setImage(null);
         }
         mHolder.artworkManager = artworkManager;
         mHolder.modelItem = modelItem;
