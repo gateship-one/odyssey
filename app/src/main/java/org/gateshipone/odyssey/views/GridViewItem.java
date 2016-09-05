@@ -19,6 +19,7 @@
 package org.gateshipone.odyssey.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
 
 import java.lang.ref.WeakReference;
@@ -86,7 +89,7 @@ public class GridViewItem extends RelativeLayout {
      * Starts the image retrieval task
      */
     public void startCoverImageTask() {
-        if (mHolder.imagePath != null && mHolder.task == null && !mCoverDone) {
+        if (((mHolder.imagePath != null && mHolder.task == null) || (mHolder.artworkManager != null && mHolder.modelItem != null) ) && !mCoverDone) {
             mCoverDone = true;
             mHolder.task = new AsyncLoader();
             mHolder.task.execute(mHolder);
@@ -118,6 +121,11 @@ public class GridViewItem extends RelativeLayout {
         }
     }
 
+    public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
+        mHolder.artworkManager = artworkManager;
+        mHolder.modelItem = modelItem;
+    }
+
     /**
      * If this GridItem gets detached from the parent it makes no sense to let
      * the task for image retrieval runnig. (non-Javadoc)
@@ -131,6 +139,11 @@ public class GridViewItem extends RelativeLayout {
             mHolder.task.cancel(true);
             mHolder.task = null;
         }
+    }
+
+    public void setImage(Bitmap image) {
+        mImageView.setImageBitmap(image);
+        mSwitcher.setDisplayedChild(1);
     }
 
 }

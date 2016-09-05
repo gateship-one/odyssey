@@ -18,28 +18,14 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
+
+import android.util.Pair;
+
 import com.android.volley.Response;
 
-public class ByteRequest extends Request<byte[]> {
+import org.gateshipone.odyssey.models.ArtistModel;
 
-    private final Response.Listener<byte[]> mListener;
+public interface ArtistImageProvider {
 
-
-    public ByteRequest(String url, Response.Listener<byte[]> listener, Response.ErrorListener errorListener) {
-        super(Method.GET, url, errorListener);
-
-        mListener = listener;
-    }
-
-    @Override
-    protected Response<byte[]> parseNetworkResponse(NetworkResponse response) {
-        return Response.success(response.data, null);
-    }
-
-    @Override
-    protected void deliverResponse(byte[] response) {
-        mListener.onResponse(response);
-    }
+    void fetchImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener);
 }

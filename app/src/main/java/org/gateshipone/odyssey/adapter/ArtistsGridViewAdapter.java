@@ -19,6 +19,8 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -27,8 +29,8 @@ import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.views.GridViewItem;
 
-public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
-
+public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
+    private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();
     private final GridView mRootGrid;
 
     /**
@@ -45,6 +47,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
         mRootGrid = rootGrid;
 
         mArtworkManager = new ArtworkManager(context);
+        mArtworkManager.registerOnNewArtistImageListener(this);
     }
 
     /**
@@ -58,7 +61,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ArtistModel artist = getModelData().get(position);
         String label = artist.getArtistName();
-        String imageURL = artist.getArtistURL();
+
 
         // Check if a view can be recycled
         if (convertView != null) {
@@ -71,18 +74,27 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            gridItem.setImageURL(imageURL);
+            gridItem.setImageURL(null);
 
-            mArtworkManager.getArtistImage(artist);
+
         } else {
             // Create new view if no reusable is available
-            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, null, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+
         }
+
+        ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, artist);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
             ((GridViewItem) convertView).startCoverImageTask();
         }
         return convertView;
+    }
+
+    @Override
+    public void newArtistImage(ArtistModel artist) {
+        Log.v(TAG,"NEw images ready");
+        notifyDataSetChanged();
     }
 }

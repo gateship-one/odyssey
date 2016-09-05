@@ -18,6 +18,10 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.graphics.Bitmap;
+
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+
 public class ArtistModel implements GenericModel {
 
     /**
@@ -35,6 +39,10 @@ public class ArtistModel implements GenericModel {
      */
     private final long mArtistID;
 
+    private String mMBID;
+
+    private boolean mImageFetching;
+
     /**
      * Constructs a ArtistModel instance with the given parameters.
      */
@@ -42,6 +50,13 @@ public class ArtistModel implements GenericModel {
         mArtistName = name;
         mArtistURL = artURL;
         mArtistID = artistID;
+    }
+
+    public ArtistModel(ArtistModel artist) {
+        mArtistName  = artist.mArtistName;
+        mArtistURL = artist.mArtistURL;
+        mArtistID = artist.mArtistID;
+
     }
 
     /**
@@ -73,6 +88,14 @@ public class ArtistModel implements GenericModel {
         return "Artist: " + getArtistName();
     }
 
+    public void setMBID(String mbid) {
+        mMBID = mbid;
+    }
+
+    public String getMBID() {
+        return mMBID;
+    }
+
     /**
      * Return the section title for the ArtistModel
      * <p/>
@@ -82,4 +105,13 @@ public class ArtistModel implements GenericModel {
     public String getSectionTitle() {
         return mArtistName;
     }
+
+    public synchronized void setFetching(boolean fetching) {
+        mImageFetching = fetching;
+    }
+
+    public synchronized boolean getFetching() {
+        return mImageFetching;
+    }
+
 }

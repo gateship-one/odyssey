@@ -18,12 +18,15 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.gateshipone.odyssey.BuildConfig;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
@@ -37,8 +40,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      */
     private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
 
+    private Context mContext;
+
     public ArtworkDatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
 
@@ -53,7 +59,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         //FIXME
     }
 
-    public byte[] getAlbumImage(long id) {
+    public synchronized byte[] getAlbumImage(long id) {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
@@ -75,7 +81,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         return null;
     }
 
-    public byte[] getArtistImage(long id) {
+    public synchronized byte[] getArtistImage(long id) {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
@@ -95,6 +101,50 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         requestCursor.close();
         database.close();
         return null;
+    }
+
+    public synchronized byte[] getArtistImage(String artistName) {
+        SQLiteDatabase database = getReadableDatabase();
+
+        String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
+
+
+        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_DATA},
+                selection, new String[]{artistName}, null, null, null);
+
+        if (requestCursor.moveToFirst()) {
+            byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_DATA));
+
+            requestCursor.close();
+            database.close();
+            return imageData;
+        }
+
+        requestCursor.close();
+        database.close();
+        return null;
+    }
+
+    public synchronized void insertArtistImage(ArtistModel artist, byte[] image) {
+        SQLiteDatabase database = getWritableDatabase();
+
+        long artistID = artist.getArtistID();
+
+        if (artistID == -1) {
+            // Try to get the artistID manually because it seems to be missing
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mContext );
+        }
+
+        ContentValues values = new ContentValues();
+
+        values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistID);
+        values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artist.getMBID());
+        values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artist.getArtistName());
+        values.put(ArtistArtTable.COLUMN_IMAGE_DATA, image);
+
+        database.replace(ArtistArtTable.TABLE_NAME,"", values);
+
+        database.close();
     }
 
 }

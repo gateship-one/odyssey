@@ -27,6 +27,10 @@ import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.GenericModel;
+
 /**
  * Loader class for covers
  */
@@ -42,7 +46,9 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         public WeakReference<ImageView> coverViewReference;
         public WeakReference<ViewSwitcher> coverViewSwitcher;
         public AsyncLoader task;
-        public Pair<Integer,Integer> imageDimension;
+        public Pair<Integer, Integer> imageDimension;
+        public ArtworkManager artworkManager;
+        public GenericModel modelItem;
     }
 
     @Override
@@ -50,6 +56,17 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         mCover = params[0];
         if (mCover.imagePath != null) {
             return decodeSampledBitmapFromResource(mCover.imagePath, mCover.imageDimension.first, mCover.imageDimension.second);
+        } else if (mCover.modelItem instanceof ArtistModel) {
+            Bitmap image = null;
+            try {
+                image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
+            } catch (ArtworkManager.ImageNotInDatabaseException e) {
+                if ( !((ArtistModel)mCover.modelItem).getFetching() )
+                mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
+                ((ArtistModel)mCover.modelItem).setFetching(true);
+            }
+
+            return image;
         }
 
         return null;
@@ -62,19 +79,18 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(pathName, options);
-
-        // Calculate inSampleSize
-        if (reqWidth == 0 && reqHeight == 0) {
-            // check if the layout of the view already set
-            options.inSampleSize = 1;
-        } else {
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-        }
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
+//        options.inJustDecodeBounds = true;
+//
+//        // Calculate inSampleSize
+//        if (reqWidth == 0 && reqHeight == 0) {
+//            // check if the layout of the view already set
+//            options.inSampleSize = 1;
+//        } else {
+//            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+//        }
+//
+//        // Decode bitmap with inSampleSize set
+//        options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(pathName, options);
     }
 

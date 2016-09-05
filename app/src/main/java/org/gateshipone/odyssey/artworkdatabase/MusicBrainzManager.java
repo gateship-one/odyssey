@@ -151,8 +151,8 @@ public class MusicBrainzManager {
     private void getImage(String url, Response.Listener<byte[]> listener, Response.ErrorListener errorListener) {
         Log.v(MusicBrainzManager.class.getSimpleName(), url);
 
-        Request<byte[]> byteResponse = new ByteRequest(url, listener, errorListener);
+//        Request<byte[]> byteResponse = new ArtistImageByteRequest(url, listener, errorListener);
 
-        addToRequestQueue(byteResponse);
+//        addToRequestQueue(byteResponse);
     }
 }
