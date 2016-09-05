@@ -50,4 +50,5 @@ dependencies {
     compile 'com.android.support:support-v4:23.+'
     compile 'com.android.support:design:23.+'
     compile 'com.android.support:preference-v14:23.+'
+    compile 'com.android.volley:volley:1.0.0'
 }
