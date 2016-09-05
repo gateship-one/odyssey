@@ -63,10 +63,11 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
                 image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
             } catch (ArtworkManager.ImageNotInDatabaseException e) {
-                if ( !((ArtistModel)mCover.modelItem).getFetching() )
-                Log.v(TAG,"Fetch get in thread: " + Thread.currentThread().getId());
-                mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
-                ((ArtistModel)mCover.modelItem).setFetching(true);
+                if ( !((ArtistModel)mCover.modelItem).getFetching() ) {
+                    Log.v(TAG, "Fetch get in thread: " + Thread.currentThread().getId());
+                    mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
+                    ((ArtistModel) mCover.modelItem).setFetching(true);
+                }
             }
             return image;
         }

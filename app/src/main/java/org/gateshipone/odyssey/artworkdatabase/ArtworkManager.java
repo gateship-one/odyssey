@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
@@ -43,12 +44,15 @@ public class ArtworkManager implements ArtistFetchError{
     private ArrayList<onNewArtistImageListener> mArtistListeners;
 
     private static ArtworkManager mInstance;
+    private Context mContext;
 
     private ArtworkManager(Context context) {
 
         mDBManager = ArtworkDatabaseManager.getInstance(context);
 
         mArtistListeners = new ArrayList<>();
+
+        mContext = context;
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -87,6 +91,15 @@ public class ArtworkManager implements ArtistFetchError{
     }
 
     public void fetchArtistImage(final ArtistModel artist) {
+        ConnectivityManager cm =
+                (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+
+        if ( !isWifi ) {
+            return;
+        }
+
         LastFMManager.getInstance().fetchImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
             @Override
             public void onResponse(Pair<byte[], ArtistModel> response) {
