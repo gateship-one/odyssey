@@ -29,7 +29,7 @@ import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.views.GridViewItem;
 
-public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
+public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  implements ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();
     private final GridView mRootGrid;
 
@@ -46,7 +46,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
         mContext = context;
         mRootGrid = rootGrid;
 
-        mArtworkManager = new ArtworkManager(context);
+        mArtworkManager = ArtworkManager.getInstance(context);
         mArtworkManager.registerOnNewArtistImageListener(this);
     }
 
@@ -61,6 +61,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
     public View getView(int position, View convertView, ViewGroup parent) {
         ArtistModel artist = getModelData().get(position);
         String label = artist.getArtistName();
+        Log.v(TAG,"Drawing in thread: " + Thread.currentThread().getId());
 
 
         // Check if a view can be recycled
@@ -74,8 +75,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            gridItem.setImageURL(null);
-
 
         } else {
             // Create new view if no reusable is available
@@ -94,7 +93,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
 
     @Override
     public void newArtistImage(ArtistModel artist) {
-        Log.v(TAG,"NEw images ready");
+        Log.v(TAG,"New images");
         notifyDataSetChanged();
     }
 }

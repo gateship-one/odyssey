@@ -23,6 +23,7 @@ import java.lang.ref.WeakReference;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
@@ -30,12 +31,13 @@ import android.widget.ViewSwitcher;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.views.GridViewItem;
 
 /**
  * Loader class for covers
  */
 public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bitmap> {
-
+    private static final String TAG = AsyncLoader.class.getSimpleName();
     private CoverViewHolder mCover;
 
     /**
@@ -43,10 +45,8 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
      */
     public static class CoverViewHolder {
         public String imagePath;
-        public WeakReference<ImageView> coverViewReference;
-        public WeakReference<ViewSwitcher> coverViewSwitcher;
-        public AsyncLoader task;
         public Pair<Integer, Integer> imageDimension;
+        public GridViewItem gridItem;
         public ArtworkManager artworkManager;
         public GenericModel modelItem;
     }
@@ -59,13 +59,15 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         } else if (mCover.modelItem instanceof ArtistModel) {
             Bitmap image = null;
             try {
+                Log.v(TAG,"Asyncloader get in thread: " + Thread.currentThread().getId());
+
                 image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
             } catch (ArtworkManager.ImageNotInDatabaseException e) {
                 if ( !((ArtistModel)mCover.modelItem).getFetching() )
+                Log.v(TAG,"Fetch get in thread: " + Thread.currentThread().getId());
                 mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
                 ((ArtistModel)mCover.modelItem).setFetching(true);
             }
-
             return image;
         }
 
@@ -124,9 +126,8 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         super.onPostExecute(result);
 
         // set mCover if exists
-        if (mCover.coverViewReference.get() != null && result != null) {
-            mCover.coverViewReference.get().setImageBitmap(result);
-            mCover.coverViewSwitcher.get().setDisplayedChild(1);
+        if ( null != result ) {
+            mCover.gridItem.setImage(result);
         }
     }
 }

@@ -40,6 +40,9 @@ import java.lang.ref.WeakReference;
 public class GridViewItem extends RelativeLayout {
 
     private final AsyncLoader.CoverViewHolder mHolder;
+
+    private AsyncLoader mLoaderTask;
+
     private final ImageView mImageView;
     private final TextView mTitleView;
     private final ViewSwitcher mSwitcher;
@@ -62,8 +65,7 @@ public class GridViewItem extends RelativeLayout {
         mSwitcher = (ViewSwitcher) findViewById(R.id.grid_item_view_switcher);
 
         mHolder = new AsyncLoader.CoverViewHolder();
-        mHolder.coverViewReference = new WeakReference<>(mImageView);
-        mHolder.coverViewSwitcher = new WeakReference<>(mSwitcher);
+        mHolder.gridItem = this;
         mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
 
         mCoverDone = false;
@@ -89,10 +91,9 @@ public class GridViewItem extends RelativeLayout {
      * Starts the image retrieval task
      */
     public void startCoverImageTask() {
-        if (((mHolder.imagePath != null && mHolder.task == null) || (mHolder.artworkManager != null && mHolder.modelItem != null) ) && !mCoverDone) {
-            mCoverDone = true;
-            mHolder.task = new AsyncLoader();
-            mHolder.task.execute(mHolder);
+        if (((mHolder.imagePath != null && mLoaderTask == null) || (mHolder.artworkManager != null && mHolder.modelItem != null) ) && !mCoverDone) {
+            mLoaderTask = new AsyncLoader();
+            mLoaderTask.execute(mHolder);
         }
     }
 
@@ -105,9 +106,9 @@ public class GridViewItem extends RelativeLayout {
         // Check if image url has actually changed, otherwise there is no need to redo the image.
         if ((mHolder.imagePath == null) || (!mHolder.imagePath.equals(url))) {
             // Cancel old task
-            if (mHolder.task != null) {
-                mHolder.task.cancel(true);
-                mHolder.task = null;
+            if (mLoaderTask != null) {
+                mLoaderTask.cancel(true);
+                mLoaderTask = null;
             }
 
             mCoverDone = false;
@@ -122,8 +123,24 @@ public class GridViewItem extends RelativeLayout {
     }
 
     public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
+        if ( modelItem != mHolder.modelItem || !mCoverDone) {
+            // Cancel old task
+            if (mLoaderTask != null) {
+                mLoaderTask.cancel(true);
+                mLoaderTask = null;
+            }
+
+            mCoverDone = false;
+            mSwitcher.setOutAnimation(null);
+            mSwitcher.setInAnimation(null);
+            mImageView.setImageDrawable(null);
+            mSwitcher.setDisplayedChild(0);
+            mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+            mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+        }
         mHolder.artworkManager = artworkManager;
         mHolder.modelItem = modelItem;
+
     }
 
     /**
@@ -135,15 +152,33 @@ public class GridViewItem extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mHolder.task != null) {
-            mHolder.task.cancel(true);
-            mHolder.task = null;
+        if (mLoaderTask != null) {
+            mLoaderTask.cancel(true);
+            mLoaderTask = null;
         }
     }
 
     public void setImage(Bitmap image) {
-        mImageView.setImageBitmap(image);
-        mSwitcher.setDisplayedChild(1);
+        if ( null != image ) {
+            mCoverDone = true;
+
+            mImageView.setImageBitmap(image);
+            mSwitcher.setDisplayedChild(1);
+        } else {
+            // Cancel old task
+            if (mLoaderTask != null) {
+                mLoaderTask.cancel(true);
+                mLoaderTask = null;
+            }
+
+            mCoverDone = false;
+            mSwitcher.setOutAnimation(null);
+            mSwitcher.setInAnimation(null);
+            mImageView.setImageDrawable(null);
+            mSwitcher.setDisplayedChild(0);
+            mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+            mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+        }
     }
 
 }
