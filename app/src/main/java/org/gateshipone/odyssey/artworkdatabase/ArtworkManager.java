@@ -18,10 +18,12 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
 
@@ -38,22 +40,30 @@ public class ArtworkManager implements ArtistFetchError{
     private static final String TAG = ArtworkManager.class.getSimpleName();
 
     private ArtworkDatabaseManager mDBManager;
-
-    private Context mContext;
-
     private ArrayList<onNewArtistImageListener> mArtistListeners;
 
-    public ArtworkManager(Context context) {
-        mContext = context;
-        mDBManager = new ArtworkDatabaseManager(context);
+    private static ArtworkManager mInstance;
+
+    private ArtworkManager(Context context) {
+
+        mDBManager = ArtworkDatabaseManager.getInstance(context);
 
         mArtistListeners = new ArrayList<>();
+    }
+
+    public static synchronized ArtworkManager getInstance(Context context) {
+        if ( null == mInstance ) {
+            mInstance = new ArtworkManager(context);
+        }
+        return mInstance;
     }
 
     public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotInDatabaseException  {
         if ( null == artist ) {
             return null;
         }
+
+        Log.v(TAG,"Requested in thread: " + Thread.currentThread().getId());
 
         long artistID = artist.getArtistID();
 
@@ -77,24 +87,10 @@ public class ArtworkManager implements ArtistFetchError{
     }
 
     public void fetchArtistImage(final ArtistModel artist) {
-        FanartTVManager.getInstance(mContext).fetchImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+        LastFMManager.getInstance().fetchImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
             @Override
             public void onResponse(Pair<byte[], ArtistModel> response) {
-                Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " +  response.second.getArtistName() +
-                        " with MBID: " + response.second.getMBID());
-
-                Bitmap bm = BitmapFactory.decodeByteArray(response.first,0,response.first.length);
-
-                // Scale down the bitmap
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bm = bm.createScaledBitmap(bm, 400,400,true);
-                bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-
-                mDBManager.insertArtistImage(response.second, stream.toByteArray());
-
-                for ( onNewArtistImageListener artistListener: mArtistListeners) {
-                    artistListener.newArtistImage(response.second);
-                }
+                new InsertArtistImageTask().execute(response);
             }
         }, this);
     }
@@ -132,7 +128,7 @@ public class ArtworkManager implements ArtistFetchError{
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
         // FIXME check if retrying again and again is a problem
-        mDBManager.insertArtistImage(artist, new byte[0]);
+//        mDBManager.insertArtistImage(artist, new byte[0]);
     }
 
     public interface onNewArtistImageListener {
@@ -140,6 +136,38 @@ public class ArtworkManager implements ArtistFetchError{
     }
 
     public class ImageNotInDatabaseException extends Exception {
+
+    }
+
+    private class InsertArtistImageTask extends AsyncTask<Pair<byte[], ArtistModel>, Object, ArtistModel> {
+
+        @Override
+        protected ArtistModel doInBackground(Pair<byte[], ArtistModel>... params) {
+            Pair<byte[], ArtistModel> response = params[0];
+
+            Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " +  response.second.getArtistName() +
+                    " with MBID: " + response.second.getMBID());
+
+            Log.v(TAG,"Inserting in thread: " + Thread.currentThread().getId());
+            Bitmap bm = BitmapFactory.decodeByteArray(response.first,0,response.first.length);
+
+            // Scale down the bitmap
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bm = bm.createScaledBitmap(bm, 400,400,true);
+            bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+
+            mDBManager.insertArtistImage(response.second, stream.toByteArray());
+
+
+
+            return response.second;
+        }
+
+        protected void onPostExecute(ArtistModel result) {
+            for ( onNewArtistImageListener artistListener: mArtistListeners) {
+                artistListener.newArtistImage(result);
+            }
+        }
 
     }
 

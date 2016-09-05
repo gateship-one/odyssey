@@ -50,22 +50,19 @@ public class FanartTVManager implements ArtistImageProvider {
 
     private RequestQueue mRequestQueue;
 
-    private Context mContext;
-
     private static FanartTVManager mInstance;
 
     private static final String MUSICBRAINZ_FORMAT_JSON = "&fmt=json";
 
-    private static final String API_KEY = "ENTER_API_KEY_HERE";
+    private static final String API_KEY = "API_KEY_MISSING";
 
-    private FanartTVManager(Context context) {
-        mContext = context;
+    private FanartTVManager() {
         mRequestQueue = getRequestQueue();
     }
 
-    public static synchronized FanartTVManager getInstance(Context context) {
+    public static synchronized FanartTVManager getInstance() {
         if (mInstance == null) {
-            mInstance = new FanartTVManager(context);
+            mInstance = new FanartTVManager();
         }
         return mInstance;
     }

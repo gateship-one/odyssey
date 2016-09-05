@@ -42,9 +42,18 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     private Context mContext;
 
-    public ArtworkDatabaseManager(Context context) {
+    private static ArtworkDatabaseManager mInstance;
+
+    private ArtworkDatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mContext = context;
+    }
+
+    public static synchronized ArtworkDatabaseManager getInstance(Context context) {
+        if ( null == mInstance ) {
+            mInstance = new ArtworkDatabaseManager(context);
+            ArtworkDatabaseManager.mInstance.mContext = context;
+        }
+        return mInstance;
     }
 
 
