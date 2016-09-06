@@ -242,4 +242,15 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         Log.v(TAG,"Get image: " + url);
         addToRequestQueue(byteResponse);
     }
+
+    @Override
+    public void cancelAll() {
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
+    }
+
 }

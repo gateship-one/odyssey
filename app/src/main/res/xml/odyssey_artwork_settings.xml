@@ -36,6 +36,13 @@
         android:persistent="true"
         android:summary="@string/preference_artwork_artist_provider_summary"
         android:title="@string/preference_artwork_artist_provider_title" />
+    <CheckBoxPreference
+        android:title="@string/preference_artwork_wifi_only_title"
+        android:summary="@string/preference_artwork_wifi_only_text"
+        android:persistent="true"
+        android:defaultValue="true"
+        android:key="pref_download_wifi_only"
+        />
     <Preference
         android:key="pref_clear_artist"
         android:title="@string/preference_artwork_clear_artist" />

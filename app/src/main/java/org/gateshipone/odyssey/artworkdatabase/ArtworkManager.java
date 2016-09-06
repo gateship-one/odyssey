@@ -18,12 +18,16 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -56,6 +60,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         mAlbumListeners = new ArrayList<>();
 
         mContext = context;
+
+        ConnectionStateReceiver receiver = new ConnectionStateReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        mContext.registerReceiver(receiver, filter);
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -127,17 +136,19 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param artist Artist to fetch an image for.
      */
     public void fetchArtistImage(final ArtistModel artist) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String artistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
+
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+        boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
 
-        if (!isWifi) {
+        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
+
+        if (wifiOnly && !isWifi) {
             return;
         }
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String artistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
 
         if (artistProvider.equals("last_fm")) {
             LastFMManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
@@ -162,17 +173,19 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param album Album to fetch an image for.
      */
     public void fetchAlbumImage(final AlbumModel album) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
+
+        boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
 
-        if (!isWifi) {
+        if (wifiOnly && !isWifi) {
             return;
         }
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
 
         if (albumProvider.equals("musicbrainz")) {
             MusicBrainzManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
@@ -181,7 +194,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                     new InsertAlbumImageTask().execute(response);
                 }
             }, this);
-        } else if ( albumProvider.equals("last_fm")) {
+        } else if (albumProvider.equals("last_fm")) {
             LastFMManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
                 @Override
                 public void onResponse(Pair<byte[], AlbumModel> response) {
@@ -352,5 +365,50 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      */
     public interface onNewAlbumImageListener {
         void newAlbumImage(AlbumModel album);
+    }
+
+    private class ConnectionStateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+            ConnectivityManager cm =
+                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if ( null == netInfo) {
+                return;
+            }
+            boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+            boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
+
+            if ( wifiOnly && !isWifi)  {
+                // Cancel all downloads
+                Log.v(TAG,"Cancel all downloads because of connection change");
+                cancelAllRequests();
+            }
+
+        }
+    }
+
+    public void cancelAllRequests() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String artistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
+        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
+
+
+        if (artistProvider.equals("last_fm")) {
+            LastFMManager.getInstance().cancelAll();
+        } else if (artistProvider.equals("fanart_tv")) {
+            FanartTVManager.getInstance().cancelAll();
+        }
+
+        if (albumProvider.equals("musicbrainz")) {
+            MusicBrainzManager.getInstance().cancelAll();
+        } else if (albumProvider.equals("last_fm")) {
+            LastFMManager.getInstance().cancelAll();
+        }
+
     }
 }

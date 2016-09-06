@@ -188,6 +188,9 @@
     <string name="preference_artwork_clear_artist">Clear artist images</string>
     <string name="preference_artwork_clear_album">Clear album images</string>
 
+    <string name="preference_artwork_wifi_only_title">Only use WIFI for downloading</string>
+    <string name="preference_artwork_wifi_only_text">Artwork downloading will only take place if the device is connected via WIFI.</string>
+
     <!-- About activity -->
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/gateship-one/odyssey</string>

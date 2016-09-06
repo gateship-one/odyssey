@@ -30,6 +30,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -105,7 +106,9 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+        if (key.equals("pref_album_provider")|| key.equals("pref_artist_provider")) {
+            ArtworkManager.getInstance(getContext()).cancelAllRequests();
+        }
     }
 
 }

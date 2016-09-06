@@ -28,4 +28,5 @@ import org.gateshipone.odyssey.models.AlbumModel;
 public interface AlbumImageProvider {
 
     void fetchAlbumImage(final AlbumModel album, final Response.Listener<Pair<byte[], AlbumModel>> listener, final AlbumFetchError errorListener);
+    void cancelAll();
 }

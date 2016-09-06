@@ -42,7 +42,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
     private static final String TAG = LastFMManager.class.getSimpleName();
 
     private static final String LAST_FM_API_URL = "http://ws.audioscrobbler.com/2.0/?method=";
-    private static final String API_KEY = "API_KEY_MISSING";
+    private static final String API_KEY = "8de46d96e49e78234f206fd9f21712de";
 
     private static final String LAST_FM_FORMAT_JSON = "&format=json";
 
@@ -116,6 +116,16 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
             }
         });
 
+    }
+
+    @Override
+    public void cancelAll() {
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
     }
 
 

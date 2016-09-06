@@ -173,4 +173,15 @@ public class FanartTVManager implements ArtistImageProvider {
 
         addToRequestQueue(byteResponse);
     }
+
+    @Override
+    public void cancelAll() {
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
+    }
+
 }
