@@ -24,7 +24,6 @@ import android.util.Pair;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -96,7 +95,7 @@ public class LastFMManager implements ArtistImageProvider {
                     for ( int i = 0; i < images.length(); i++ ) {
                         JSONObject image = images.getJSONObject(i);
                         if ( image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
-                            getImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
+                            getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     error.printStackTrace();
@@ -132,7 +131,7 @@ public class LastFMManager implements ArtistImageProvider {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
         Log.v(LastFMManager.class.getSimpleName(), url);
 
         Request<Pair<byte[], ArtistModel>> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);

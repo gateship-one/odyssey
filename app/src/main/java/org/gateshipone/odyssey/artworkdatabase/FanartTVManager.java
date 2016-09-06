@@ -18,7 +18,6 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
@@ -32,9 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NoCache;
-import com.android.volley.toolbox.Volley;
 
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
@@ -106,7 +103,7 @@ public class FanartTVManager implements ArtistImageProvider {
 
                                     JSONObject firstThumbImage = thumbImages.getJSONObject(0);
                                     artist.setMBID(artistMBID);
-                                    getImage(firstThumbImage.getString("url"), artist, listener, new Response.ErrorListener() {
+                                    getArtistImage(firstThumbImage.getString("url"), artist, listener, new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             errorListener.fetchError(artist);
@@ -165,7 +162,7 @@ public class FanartTVManager implements ArtistImageProvider {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
         Log.v(FanartTVManager.class.getSimpleName(), url);
 
         Request<Pair<byte[], ArtistModel>> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);

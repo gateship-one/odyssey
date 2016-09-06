@@ -21,6 +21,7 @@ package org.gateshipone.odyssey.artworkdatabase;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,11 +30,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MusicBrainzManager {
+public class MusicBrainzManager implements ArtistImageProvider {
 
     private static final String mApiURL = "http://musicbrainz.org/ws/2";
 
@@ -68,9 +70,9 @@ public class MusicBrainzManager {
         getRequestQueue().add(req);
     }
 
-    public void fetchImage(String artistName, final Response.Listener<byte[]> listener) {
+    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
 
-        String artistURLName = Uri.encode(artistName);
+        String artistURLName = Uri.encode(artist.getArtistName());
 
         getArtists(artistURLName, new Response.Listener<JSONObject>() {
             @Override
@@ -95,7 +97,7 @@ public class MusicBrainzManager {
                                         if (obj.getString("type").equals("image")) {
                                             JSONObject url = obj.getJSONObject("url");
 
-                                            getImage(url.getString("resource"), listener, new Response.ErrorListener() {
+                                            getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
                                                     // FIXME error handling
@@ -148,7 +150,7 @@ public class MusicBrainzManager {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getImage(String url, Response.Listener<byte[]> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, Response.Listener<Pair<byte[], ArtistModel>> listener, Response.ErrorListener errorListener) {
         Log.v(MusicBrainzManager.class.getSimpleName(), url);
 
 //        Request<byte[]> byteResponse = new ArtistImageByteRequest(url, listener, errorListener);
