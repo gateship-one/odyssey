@@ -174,6 +174,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }, this);
     }
 
+    /**
+     * Registers a listener that gets notified when a new artist image was added to the dataset.
+     * @param listener Listener to register
+     */
     public void  registerOnNewArtistImageListener(onNewArtistImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
@@ -182,6 +186,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
     }
 
+    /**
+     * Unregisters a listener that got notified when a new artist image was added to the dataset.
+     * @param listener Listener to unregister
+     */
     public void unregisterOnNewArtistImageListener(onNewArtistImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
@@ -190,6 +198,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
     }
 
+    /**
+     * Registers a listener that gets notified when a new album image was added to the dataset.
+     * @param listener Listener to register
+     */
     public void  registerOnNewAlbumImageListener(onNewAlbumImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
@@ -198,6 +210,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
     }
 
+    /**
+     * Unregisters a listener that got notified when a new album image was added to the dataset.
+     * @param listener Listener to unregister
+     */
     public void unregisterOnNewAlbumImageListener(onNewAlbumImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
@@ -206,6 +222,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
     }
 
+    /**
+     * Interface implementation to handle errors during fetching of artist images
+     * @param artist Artist that resulted in a fetch error
+     */
     @Override
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
@@ -213,19 +233,32 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 //        mDBManager.insertArtistImage(artist, new byte[0]);
     }
 
+    /**
+     * Interface implementation to handle errors during fetching of album images
+     * @param album Album that resulted in a fetch error
+     */
     @Override
     public void fetchError(AlbumModel album) {
         Log.e(TAG,"Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
     }
 
 
+    /**
+     * Exception class that is used to signal missing images
+     */
+    public class ImageNotInDatabaseException extends Exception {}
 
-    public class ImageNotInDatabaseException extends Exception {
-
-    }
-
+    /**
+     * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
+     * is handled in the UI thread.
+     */
     private class InsertArtistImageTask extends AsyncTask<Pair<byte[], ArtistModel>, Object, ArtistModel> {
 
+        /**
+         * Inserts the image to the database.
+         * @param params Pair of byte[] (containing the image itself) and ArtistModel for which the image is for
+         * @return the artist model that was inserted to the database.
+         */
         @Override
         protected ArtistModel doInBackground(Pair<byte[], ArtistModel>... params) {
             Pair<byte[], ArtistModel> response = params[0];
@@ -239,6 +272,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return response.second;
         }
 
+        /**
+         * Notifies the listeners about a change in the image dataset. Called in the UI thread.
+         * @param result Artist that was inserted in the database
+         */
         protected void onPostExecute(ArtistModel result) {
             synchronized (mArtistListeners) {
                 for (onNewArtistImageListener artistListener : mArtistListeners) {
@@ -249,8 +286,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     }
 
+    /**
+     * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
+     * is handled in the UI thread.
+     */
     private class InsertAlbumImageTask extends AsyncTask<Pair<byte[], AlbumModel>, Object, AlbumModel> {
 
+        /**
+         * Inserts the image to the database.
+         * @param params Pair of byte[] (containing the image itself) and AlbumModel for which the image is for
+         * @return the album model that was inserted to the database.
+         */
         @Override
         protected AlbumModel doInBackground(Pair<byte[], AlbumModel>... params) {
             Pair<byte[], AlbumModel> response = params[0];
@@ -264,6 +310,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return response.second;
         }
 
+        /**
+         * Notifies the listeners about a change in the image dataset. Called in the UI thread.
+         * @param result Album that was inserted in the database
+         */
         protected void onPostExecute(AlbumModel result) {
             synchronized (mAlbumListeners) {
                 for (onNewAlbumImageListener albumListener : mAlbumListeners) {
