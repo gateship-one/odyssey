@@ -173,6 +173,7 @@
 
     <string-array name="preference_artwork_album_provider_entries">
         <item>@string/musicbrainz</item>
+        <item>@string/last_fm</item>
     </string-array>
 
     <string name="preference_artwork_artist_provider_title">Artist image provider</string>

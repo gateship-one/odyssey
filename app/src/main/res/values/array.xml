@@ -44,6 +44,7 @@
 
     <string-array name="preference_artwork_album_provider_values" translatable="false">
         <item>musicbrainz</item>
+        <item>last_fm</item>
     </string-array>
 
     <string-array name="preference_artwork_artist_provider_values" translatable="false">

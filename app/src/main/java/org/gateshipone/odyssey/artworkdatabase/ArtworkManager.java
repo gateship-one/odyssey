@@ -181,6 +181,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                     new InsertAlbumImageTask().execute(response);
                 }
             }, this);
+        } else if ( albumProvider.equals("last_fm")) {
+            LastFMManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+                @Override
+                public void onResponse(Pair<byte[], AlbumModel> response) {
+                    new InsertAlbumImageTask().execute(response);
+                }
+            }, this);
         }
     }
 

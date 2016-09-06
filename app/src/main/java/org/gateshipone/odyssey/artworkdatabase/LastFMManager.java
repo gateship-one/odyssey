@@ -32,12 +32,13 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LastFMManager implements ArtistImageProvider {
+public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
     private static final String TAG = LastFMManager.class.getSimpleName();
 
     private static final String LAST_FM_API_URL = "http://ws.audioscrobbler.com/2.0/?method=";
@@ -87,10 +88,8 @@ public class LastFMManager implements ArtistImageProvider {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject artistObj = response.getJSONObject("artist");
-
+                    // FIXME optionally get mbid here without aborting the image fetch
                     JSONArray images = artistObj.getJSONArray("image");
-                    String mbid = artistObj.getString("mbid");
-                    artist.setMBID(mbid);
                     Log.v(TAG,"Found: " + images.length() + "images");
                     for ( int i = 0; i < images.length(); i++ ) {
                         JSONObject image = images.getJSONObject(i);
@@ -135,6 +134,61 @@ public class LastFMManager implements ArtistImageProvider {
         Log.v(LastFMManager.class.getSimpleName(), url);
 
         Request<Pair<byte[], ArtistModel>> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
+
+        addToRequestQueue(byteResponse);
+    }
+
+
+    @Override
+    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<Pair<byte[], AlbumModel>> listener, final AlbumFetchError errorListener) {
+        getAlbumImageURL(album, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject albumObj = response.getJSONObject("album");
+                    JSONArray images = albumObj.getJSONArray("image");
+                    // FIXME optionally get mbid here without aborting the image fetch
+                    Log.v(TAG,"Found: " + images.length() + "images");
+                    for ( int i = 0; i < images.length(); i++ ) {
+                        JSONObject image = images.getJSONObject(i);
+                        if ( image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
+                            getAlbumImage(image.getString("#text"), album, listener, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    error.printStackTrace();
+                                    errorListener.fetchError(album);
+                                }
+                            });
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
+    private void getAlbumImageURL(AlbumModel album, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String albumName = Uri.encode(album.getAlbumName());
+        String artistName = Uri.encode(album.getArtistName());
+
+        String url = LAST_FM_API_URL + "album.getinfo&album=" + albumName + "&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
+        Log.v(TAG,url);
+
+        OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
+
+        addToRequestQueue(jsonObjectRequest);
+    }
+
+    private void getAlbumImage(String url, AlbumModel album, Response.Listener<Pair<byte[],AlbumModel>> listener, Response.ErrorListener errorListener) {
+        Log.v(LastFMManager.class.getSimpleName(), url);
+
+        Request<Pair<byte[], AlbumModel>> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
 
         addToRequestQueue(byteResponse);
     }
