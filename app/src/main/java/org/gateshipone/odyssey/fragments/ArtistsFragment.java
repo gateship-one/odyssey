@@ -33,7 +33,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.adapter.AlbumsGridViewAdapter;
 import org.gateshipone.odyssey.adapter.ArtistsGridViewAdapter;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.ArtistLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
@@ -96,6 +98,20 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         registerForContextMenu(mRootGrid);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
     }
 
     /**

@@ -45,7 +45,6 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
         mRootGrid = rootGrid;
 
         mArtworkManager = ArtworkManager.getInstance(context);
-        mArtworkManager.registerOnNewAlbumImageListener(this);
     }
 
     /**

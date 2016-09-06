@@ -48,7 +48,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
         mRootGrid = rootGrid;
 
         mArtworkManager = ArtworkManager.getInstance(context);
-        mArtworkManager.registerOnNewArtistImageListener(this);
     }
 
     /**

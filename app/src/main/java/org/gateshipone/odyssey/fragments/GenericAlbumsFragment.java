@@ -32,6 +32,7 @@ import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.AlbumsGridViewAdapter;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -93,6 +94,20 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         registerForContextMenu(mRootGrid);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
     }
 
     /**
