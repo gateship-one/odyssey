@@ -61,8 +61,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
     public View getView(int position, View convertView, ViewGroup parent) {
         ArtistModel artist = getModelData().get(position);
         String label = artist.getArtistName();
-        Log.v(TAG,"Drawing in thread: " + Thread.currentThread().getId());
-
 
         // Check if a view can be recycled
         if (convertView != null) {
@@ -82,6 +80,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
 
         }
 
+        // This will prepare the view for fetching the image from the internet if not already saved in local database.
         ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, artist);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
@@ -93,7 +92,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
 
     @Override
     public void newArtistImage(ArtistModel artist) {
-        Log.v(TAG,"New images");
         notifyDataSetChanged();
     }
 }

@@ -39,9 +39,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
 
     private ArtworkDatabaseManager mDBManager;
-    private ArrayList<onNewArtistImageListener> mArtistListeners;
+    private final ArrayList<onNewArtistImageListener> mArtistListeners;
 
-    private ArrayList<onNewAlbumImageListener> mAlbumListeners;
+    private final ArrayList<onNewAlbumImageListener> mAlbumListeners;
 
     private static ArtworkManager mInstance;
     private Context mContext;
@@ -68,24 +68,29 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
-        Log.v(TAG, "Requested in thread: " + Thread.currentThread().getId());
-
         long artistID = artist.getArtistID();
 
         byte[] image;
 
+        /**
+         * If no artist id is set for the album (possible with data set of Odyssey) check
+         * the artist with name instead of id.
+         */
         if (artistID == -1) {
-            Log.v(TAG, "SLOW RESOLVING");
             image = mDBManager.getArtistImage(artist.getArtistName());
         } else {
             image = mDBManager.getArtistImage(artistID);
         }
 
+        // Checks if the database has an image for the requested artist
         if (null != image) {
+            // If image is existing or blocked for the artist. (blocked: not found before)
             if (image.length != 0) {
+                // Create a bitmap from the data blob in the database
                 return BitmapFactory.decodeByteArray(image, 0, image.length);
             }
         } else {
+            // Image not in database throw exception
             throw new ImageNotInDatabaseException();
         }
         return null;
@@ -96,29 +101,39 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
-        Log.v(TAG, "Requested in thread: " + Thread.currentThread().getId());
-
+        // Get the id for the album, used to check in database
         long albumID = album.getAlbumID();
 
         byte[] image;
 
         if (albumID == -1) {
-            Log.v(TAG, "SLOW RESOLVING");
+            // Check if ID is available (should be the case). If not use the album name for
+            // lookup.
+            // FIXME use artistname also
             image = mDBManager.getAlbumImage(album.getAlbumName());
         } else {
+            // If id is available use it.
             image = mDBManager.getAlbumImage(album.getAlbumID());
         }
 
+        // Checks if the database has an image for the requested album
         if (null != image) {
+            // If image is existing or blocked for the artist. (blocked: not found before)
             if (image.length != 0) {
+                // Create a bitmap from the data blob in the database
                 return BitmapFactory.decodeByteArray(image, 0, image.length);
             }
         } else {
+            // Image not in database throw exception
             throw new ImageNotInDatabaseException();
         }
         return null;
     }
 
+    /**
+     * Starts an asynchronous fetch for the image of the given artist.
+     * @param artist Artist to fetch an image for.
+     */
     public void fetchArtistImage(final ArtistModel artist) {
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -137,6 +152,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }, this);
     }
 
+    /**
+     * Starts an asynchronous fetch for the image of the given album
+     * @param album Album to fetch an image for.
+     */
     public void fetchAlbumImage(final AlbumModel album) {
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -199,13 +218,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         Log.e(TAG,"Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
     }
 
-    public interface onNewArtistImageListener {
-        void newArtistImage(ArtistModel artist);
-    }
 
-    public interface onNewAlbumImageListener {
-        void newAlbumImage(AlbumModel album);
-    }
 
     public class ImageNotInDatabaseException extends Exception {
 
@@ -220,23 +233,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " + response.second.getArtistName() +
                     " with MBID: " + response.second.getMBID());
 
-            Log.v(TAG, "Inserting in thread: " + Thread.currentThread().getId());
-            Bitmap bm = BitmapFactory.decodeByteArray(response.first, 0, response.first.length);
-
-            // Scale down the bitmap
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bm = bm.createScaledBitmap(bm, 400, 400, true);
-            bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-
-            mDBManager.insertArtistImage(response.second, stream.toByteArray());
+            mDBManager.insertArtistImage(response.second, response.first);
 
 
             return response.second;
         }
 
         protected void onPostExecute(ArtistModel result) {
-            for (onNewArtistImageListener artistListener : mArtistListeners) {
-                artistListener.newArtistImage(result);
+            synchronized (mArtistListeners) {
+                for (onNewArtistImageListener artistListener : mArtistListeners) {
+                    artistListener.newArtistImage(result);
+                }
             }
         }
 
@@ -251,14 +258,6 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             Log.v(TAG, "Received image with: " + response.first.length + "bytes for album: " + response.second.getAlbumName() +
                     " with MBID: " + response.second.getMBID());
 
-            Log.v(TAG, "Inserting in thread: " + Thread.currentThread().getId());
-//            Bitmap bm = BitmapFactory.decodeByteArray(response.first,0,response.first.length);
-
-//            // Scale down the bitmap
-//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            bm = bm.createScaledBitmap(bm, 400,400,true);
-//            bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-
             mDBManager.insertAlbumImage(response.second, response.first);
 
 
@@ -266,10 +265,26 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         protected void onPostExecute(AlbumModel result) {
-            for (onNewAlbumImageListener albumListener : mAlbumListeners) {
-                albumListener.newAlbumImage(result);
+            synchronized (mAlbumListeners) {
+                for (onNewAlbumImageListener albumListener : mAlbumListeners) {
+                    albumListener.newAlbumImage(result);
+                }
             }
         }
 
+    }
+
+    /**
+     * Interface used for adapters to be notified about data set changes
+     */
+    public interface onNewArtistImageListener {
+        void newArtistImage(ArtistModel artist);
+    }
+
+    /**
+     * Interface used for adapters to be notified about data set changes
+     */
+    public interface onNewAlbumImageListener {
+        void newAlbumImage(AlbumModel album);
     }
 }

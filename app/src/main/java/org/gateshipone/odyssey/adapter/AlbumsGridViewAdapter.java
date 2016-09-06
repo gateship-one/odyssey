@@ -75,6 +75,7 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
             convertView = new GridViewItem(mContext, label, null, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
         }
 
+        // This will prepare the view for fetching the image from the internet if not already saved in local database.
         ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, album);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
