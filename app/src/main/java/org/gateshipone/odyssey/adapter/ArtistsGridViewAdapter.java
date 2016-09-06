@@ -33,6 +33,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
     private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();
     private final GridView mRootGrid;
 
+
     /**
      * The parent grid to adjust the layoutparams.
      */

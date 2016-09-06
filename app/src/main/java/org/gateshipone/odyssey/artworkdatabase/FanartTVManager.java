@@ -51,6 +51,10 @@ public class FanartTVManager implements ArtistImageProvider {
 
     private static final String MUSICBRAINZ_FORMAT_JSON = "&fmt=json";
 
+    private static final int MUSICBRAINZ_LIMIT_RESULT_COUNT = 1;
+    private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + String.valueOf(MUSICBRAINZ_LIMIT_RESULT_COUNT);
+
+
     private static final String API_KEY = "API_KEY_MISSING";
 
     private FanartTVManager() {
@@ -144,7 +148,7 @@ public class FanartTVManager implements ArtistImageProvider {
 
         Log.v(FanartTVManager.class.getSimpleName(), artistName);
 
-        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_FORMAT_JSON;
+        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 

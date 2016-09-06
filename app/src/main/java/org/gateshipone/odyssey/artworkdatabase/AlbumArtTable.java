@@ -24,6 +24,7 @@ public class AlbumArtTable {
     public static final String TABLE_NAME = "odyssey_album_artwork_items";
 
     public static final String COLUMN_ALBUM_NAME = "album_name";
+    public static final String COLUMN_ARTIST_NAME = "artist_name";
 
     public static final String COLUMN_ALBUM_MBID = "album_mbid";
 
@@ -32,7 +33,8 @@ public class AlbumArtTable {
     public static final String COLUMN_IMAGE_DATA = "album_image";
 
     private static final String DATABASE_CREATE = "CREATE TABLE if not exists " + TABLE_NAME + " (" +
-            COLUMN_ALBUM_NAME + " text," + COLUMN_ALBUM_MBID + " text," + COLUMN_ALBUM_ID + " integer primary key," +
+            COLUMN_ALBUM_NAME + " text," + COLUMN_ARTIST_NAME + " text," +
+            COLUMN_ALBUM_MBID + " text," + COLUMN_ALBUM_ID + " integer primary key," +
             COLUMN_IMAGE_DATA + " blob" +");";
 
     public static void createTable(SQLiteDatabase database) {

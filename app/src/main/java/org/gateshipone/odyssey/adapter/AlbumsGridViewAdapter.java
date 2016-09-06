@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.adapter;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.views.GridViewItem;
 
@@ -26,7 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
+public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implements ArtworkManager.onNewAlbumImageListener {
 
     private final Context mContext;
 
@@ -35,11 +36,16 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
      */
     private final GridView mRootGrid;
 
+    private ArtworkManager mArtworkManager;
+
     public AlbumsGridViewAdapter(Context context, GridView rootGrid) {
         super();
 
         mContext = context;
         mRootGrid = rootGrid;
+
+        mArtworkManager = ArtworkManager.getInstance(context);
+        mArtworkManager.registerOnNewAlbumImageListener(this);
     }
 
     /**
@@ -65,15 +71,22 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> {
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            gridItem.setImageURL(imageURL);
+            //gridItem.setImageURL(imageURL);
         } else {
-            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, null, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
         }
+
+        ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, album);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
             ((GridViewItem) convertView).startCoverImageTask();
         }
         return convertView;
+    }
+
+    @Override
+    public void newAlbumImage(AlbumModel album) {
+        notifyDataSetChanged();
     }
 }

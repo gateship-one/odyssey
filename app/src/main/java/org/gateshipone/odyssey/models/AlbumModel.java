@@ -42,6 +42,11 @@ public class AlbumModel implements GenericModel {
 
     private final long mAlbumID;
 
+    private String mMBID;
+
+    private boolean mImageFetching;
+
+
     /**
      * Constructs a AlbumModel instance with the given parameters.
      */
@@ -102,4 +107,22 @@ public class AlbumModel implements GenericModel {
     public String getSectionTitle() {
         return mAlbumName;
     }
+
+    public void setMBID(String mbid) {
+        mMBID = mbid;
+    }
+
+    public String getMBID() {
+        return mMBID;
+    }
+
+    public synchronized void setFetching(boolean fetching) {
+        mImageFetching = fetching;
+    }
+
+    public synchronized boolean getFetching() {
+        return mImageFetching;
+    }
+
+
 }

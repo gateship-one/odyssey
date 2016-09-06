@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.views.GridViewItem;
@@ -59,14 +60,22 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         } else if (mCover.modelItem instanceof ArtistModel) {
             Bitmap image = null;
             try {
-                Log.v(TAG,"Asyncloader get in thread: " + Thread.currentThread().getId());
-
                 image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
             } catch (ArtworkManager.ImageNotInDatabaseException e) {
                 if ( !((ArtistModel)mCover.modelItem).getFetching() ) {
-                    Log.v(TAG, "Fetch get in thread: " + Thread.currentThread().getId());
                     mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
                     ((ArtistModel) mCover.modelItem).setFetching(true);
+                }
+            }
+            return image;
+        } else if (mCover.modelItem instanceof AlbumModel) {
+            Bitmap image = null;
+            try {
+                image = mCover.artworkManager.getAlbumImage((AlbumModel) mCover.modelItem);
+            } catch (ArtworkManager.ImageNotInDatabaseException e) {
+                if ( !((AlbumModel)mCover.modelItem).getFetching() ) {
+                    mCover.artworkManager.fetchAlbumImage((AlbumModel) mCover.modelItem);
+                    ((AlbumModel) mCover.modelItem).setFetching(true);
                 }
             }
             return image;

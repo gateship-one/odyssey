@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.gateshipone.odyssey.BuildConfig;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
@@ -152,6 +153,47 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(ArtistArtTable.COLUMN_IMAGE_DATA, image);
 
         database.replace(ArtistArtTable.TABLE_NAME,"", values);
+
+        database.close();
+    }
+
+
+    public synchronized byte[] getAlbumImage(String albumName) {
+        SQLiteDatabase database = getReadableDatabase();
+
+        String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
+
+
+        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_DATA},
+                selection, new String[]{albumName}, null, null, null);
+
+        if (requestCursor.moveToFirst()) {
+            byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_DATA));
+
+            requestCursor.close();
+            database.close();
+            return imageData;
+        }
+
+        requestCursor.close();
+        database.close();
+        return null;
+    }
+
+    public synchronized void insertAlbumImage(AlbumModel album, byte[] image) {
+        SQLiteDatabase database = getWritableDatabase();
+
+        String albumID = String.valueOf(album.getAlbumID());
+
+        ContentValues values = new ContentValues();
+
+        values.put(AlbumArtTable.COLUMN_ALBUM_ID, albumID);
+        values.put(AlbumArtTable.COLUMN_ALBUM_MBID, album.getMBID());
+        values.put(AlbumArtTable.COLUMN_ALBUM_NAME, album.getAlbumName());
+        values.put(AlbumArtTable.COLUMN_ARTIST_NAME, album.getArtistName());
+        values.put(AlbumArtTable.COLUMN_IMAGE_DATA, image);
+
+        database.replace(AlbumArtTable.TABLE_NAME,"", values);
 
         database.close();
     }

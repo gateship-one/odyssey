@@ -35,11 +35,13 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class ArtworkManager implements ArtistFetchError{
+public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
 
     private ArtworkDatabaseManager mDBManager;
     private ArrayList<onNewArtistImageListener> mArtistListeners;
+
+    private ArrayList<onNewAlbumImageListener> mAlbumListeners;
 
     private static ArtworkManager mInstance;
     private Context mContext;
@@ -49,37 +51,66 @@ public class ArtworkManager implements ArtistFetchError{
         mDBManager = ArtworkDatabaseManager.getInstance(context);
 
         mArtistListeners = new ArrayList<>();
+        mAlbumListeners = new ArrayList<>();
 
         mContext = context;
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
-        if ( null == mInstance ) {
+        if (null == mInstance) {
             mInstance = new ArtworkManager(context);
         }
         return mInstance;
     }
 
-    public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotInDatabaseException  {
-        if ( null == artist ) {
+    public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotInDatabaseException {
+        if (null == artist) {
             return null;
         }
 
-        Log.v(TAG,"Requested in thread: " + Thread.currentThread().getId());
+        Log.v(TAG, "Requested in thread: " + Thread.currentThread().getId());
 
         long artistID = artist.getArtistID();
 
         byte[] image;
 
         if (artistID == -1) {
-            Log.v(TAG,"SLOW RESOLVING");
+            Log.v(TAG, "SLOW RESOLVING");
             image = mDBManager.getArtistImage(artist.getArtistName());
         } else {
             image = mDBManager.getArtistImage(artistID);
         }
 
-        if ( null != image) {
-            if ( image.length != 0) {
+        if (null != image) {
+            if (image.length != 0) {
+                return BitmapFactory.decodeByteArray(image, 0, image.length);
+            }
+        } else {
+            throw new ImageNotInDatabaseException();
+        }
+        return null;
+    }
+
+    public Bitmap getAlbumImage(final AlbumModel album) throws ImageNotInDatabaseException {
+        if (null == album) {
+            return null;
+        }
+
+        Log.v(TAG, "Requested in thread: " + Thread.currentThread().getId());
+
+        long albumID = album.getAlbumID();
+
+        byte[] image;
+
+        if (albumID == -1) {
+            Log.v(TAG, "SLOW RESOLVING");
+            image = mDBManager.getAlbumImage(album.getAlbumName());
+        } else {
+            image = mDBManager.getAlbumImage(album.getAlbumID());
+        }
+
+        if (null != image) {
+            if (image.length != 0) {
                 return BitmapFactory.decodeByteArray(image, 0, image.length);
             }
         } else {
@@ -90,11 +121,11 @@ public class ArtworkManager implements ArtistFetchError{
 
     public void fetchArtistImage(final ArtistModel artist) {
         ConnectivityManager cm =
-                (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
 
-        if ( !isWifi ) {
+        if (!isWifi) {
             return;
         }
 
@@ -106,32 +137,53 @@ public class ArtworkManager implements ArtistFetchError{
         }, this);
     }
 
-    public Drawable getAlbumImage(AlbumModel album) {
-        if ( null == album ) {
-            return null;
+    public void fetchAlbumImage(final AlbumModel album) {
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+
+        if (!isWifi) {
+            return;
         }
-        byte[] image = mDBManager.getAlbumImage( album.getAlbumID());
-        if ( null == image ) {
-            // FIXME fetch image here
 
-
-            // FIXME insert image to database here
-
-            // FIXME return image
-        }
-        return null;
+        MusicBrainzManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+            @Override
+            public void onResponse(Pair<byte[], AlbumModel> response) {
+                new InsertAlbumImageTask().execute(response);
+            }
+        }, this);
     }
 
-
-    public void registerOnNewArtistImageListener(onNewArtistImageListener listener) {
-        if ( null != listener) {
-            mArtistListeners.add(listener);
+    public void  registerOnNewArtistImageListener(onNewArtistImageListener listener) {
+        if (null != listener) {
+            synchronized (mArtistListeners) {
+                mArtistListeners.add(listener);
+            }
         }
     }
 
     public void unregisterOnNewArtistImageListener(onNewArtistImageListener listener) {
-        if ( null != listener) {
-            mArtistListeners.remove(listener);
+        if (null != listener) {
+            synchronized (mArtistListeners) {
+                mArtistListeners.remove(listener);
+            }
+        }
+    }
+
+    public void  registerOnNewAlbumImageListener(onNewAlbumImageListener listener) {
+        if (null != listener) {
+            synchronized (mArtistListeners) {
+                mAlbumListeners.add(listener);
+            }
+        }
+    }
+
+    public void unregisterOnNewAlbumImageListener(onNewAlbumImageListener listener) {
+        if (null != listener) {
+            synchronized (mArtistListeners) {
+                mAlbumListeners.remove(listener);
+            }
         }
     }
 
@@ -142,8 +194,17 @@ public class ArtworkManager implements ArtistFetchError{
 //        mDBManager.insertArtistImage(artist, new byte[0]);
     }
 
+    @Override
+    public void fetchError(AlbumModel album) {
+        Log.e(TAG,"Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
+    }
+
     public interface onNewArtistImageListener {
         void newArtistImage(ArtistModel artist);
+    }
+
+    public interface onNewAlbumImageListener {
+        void newAlbumImage(AlbumModel album);
     }
 
     public class ImageNotInDatabaseException extends Exception {
@@ -156,30 +217,59 @@ public class ArtworkManager implements ArtistFetchError{
         protected ArtistModel doInBackground(Pair<byte[], ArtistModel>... params) {
             Pair<byte[], ArtistModel> response = params[0];
 
-            Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " +  response.second.getArtistName() +
+            Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " + response.second.getArtistName() +
                     " with MBID: " + response.second.getMBID());
 
-            Log.v(TAG,"Inserting in thread: " + Thread.currentThread().getId());
-            Bitmap bm = BitmapFactory.decodeByteArray(response.first,0,response.first.length);
+            Log.v(TAG, "Inserting in thread: " + Thread.currentThread().getId());
+            Bitmap bm = BitmapFactory.decodeByteArray(response.first, 0, response.first.length);
 
             // Scale down the bitmap
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bm = bm.createScaledBitmap(bm, 400,400,true);
+            bm = bm.createScaledBitmap(bm, 400, 400, true);
             bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
 
             mDBManager.insertArtistImage(response.second, stream.toByteArray());
-
 
 
             return response.second;
         }
 
         protected void onPostExecute(ArtistModel result) {
-            for ( onNewArtistImageListener artistListener: mArtistListeners) {
+            for (onNewArtistImageListener artistListener : mArtistListeners) {
                 artistListener.newArtistImage(result);
             }
         }
 
     }
 
+    private class InsertAlbumImageTask extends AsyncTask<Pair<byte[], AlbumModel>, Object, AlbumModel> {
+
+        @Override
+        protected AlbumModel doInBackground(Pair<byte[], AlbumModel>... params) {
+            Pair<byte[], AlbumModel> response = params[0];
+
+            Log.v(TAG, "Received image with: " + response.first.length + "bytes for album: " + response.second.getAlbumName() +
+                    " with MBID: " + response.second.getMBID());
+
+            Log.v(TAG, "Inserting in thread: " + Thread.currentThread().getId());
+//            Bitmap bm = BitmapFactory.decodeByteArray(response.first,0,response.first.length);
+
+//            // Scale down the bitmap
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            bm = bm.createScaledBitmap(bm, 400,400,true);
+//            bm.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+
+            mDBManager.insertAlbumImage(response.second, response.first);
+
+
+            return response.second;
+        }
+
+        protected void onPostExecute(AlbumModel result) {
+            for (onNewAlbumImageListener albumListener : mAlbumListeners) {
+                albumListener.newAlbumImage(result);
+            }
+        }
+
+    }
 }
