@@ -70,9 +70,9 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            //gridItem.setImageURL(imageURL);
+            gridItem.setImageURL(imageURL);
         } else {
-            convertView = new GridViewItem(mContext, label, null, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
         }
 
         // This will prepare the view for fetching the image from the internet if not already saved in local database.
