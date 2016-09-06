@@ -60,6 +60,7 @@ import android.widget.ListView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
 import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
+import org.gateshipone.odyssey.fragments.ArtworkSettingsFragment;
 import org.gateshipone.odyssey.fragments.BookmarksFragment;
 import org.gateshipone.odyssey.fragments.FilesFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
@@ -86,7 +87,7 @@ import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
-        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
+        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -880,6 +881,28 @@ public class OdysseyMainActivity extends AppCompatActivity
                     break;
             }
         }
+    }
+
+    @Override
+    public void openArtworkSettings() {
+        // Create fragment and give it an argument for the selected directory
+        ArtworkSettingsFragment newFragment = new ArtworkSettingsFragment();
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // set enter / exit animation
+        newFragment.setEnterTransition(new Slide(Gravity.START));
+        newFragment.setExitTransition(new Slide(Gravity.END));
+
+        transaction.addToBackStack("ArtworkSettingsFragment");
+
+        transaction.replace(R.id.fragment_container, newFragment);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     private class PBSOperationFinishedReceiver extends BroadcastReceiver {

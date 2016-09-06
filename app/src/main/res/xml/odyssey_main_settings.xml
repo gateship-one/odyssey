@@ -51,6 +51,9 @@
         android:summary="@string/preference_default_view_summary"
         android:title="@string/preference_default_view_title" />
     <Preference
+        android:key="pref_key_artwork_settings"
+        android:title="@string/artwork_settings" />
+    <Preference
         android:key="pref_key_open_equalizer"
         android:title="@string/popup_menu_action_startequalizer" />
     <Preference android:title="@string/preference_launch_about">

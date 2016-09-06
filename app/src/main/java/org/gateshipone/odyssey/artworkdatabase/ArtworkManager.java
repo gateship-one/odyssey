@@ -19,11 +19,13 @@
 package org.gateshipone.odyssey.artworkdatabase;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 
@@ -134,12 +136,24 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return;
         }
 
-        LastFMManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
-            @Override
-            public void onResponse(Pair<byte[], ArtistModel> response) {
-                new InsertArtistImageTask().execute(response);
-            }
-        }, this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String artistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
+
+        if (artistProvider.equals("last_fm")) {
+            LastFMManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+                @Override
+                public void onResponse(Pair<byte[], ArtistModel> response) {
+                    new InsertArtistImageTask().execute(response);
+                }
+            }, this);
+        } else if (artistProvider.equals("fanart_tv")) {
+            FanartTVManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+                @Override
+                public void onResponse(Pair<byte[], ArtistModel> response) {
+                    new InsertArtistImageTask().execute(response);
+                }
+            }, this);
+        }
     }
 
     /**
@@ -157,12 +171,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return;
         }
 
-        MusicBrainzManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
-            @Override
-            public void onResponse(Pair<byte[], AlbumModel> response) {
-                new InsertAlbumImageTask().execute(response);
-            }
-        }, this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
+
+        if (albumProvider.equals("musicbrainz")) {
+            MusicBrainzManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+                @Override
+                public void onResponse(Pair<byte[], AlbumModel> response) {
+                    new InsertAlbumImageTask().execute(response);
+                }
+            }, this);
+        }
     }
 
     /**
@@ -226,7 +245,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
         // FIXME check if retrying again and again is a problem
-        new InsertArtistImageTask().execute(new Pair<byte[], ArtistModel>(null,artist));
+        new InsertArtistImageTask().execute(new Pair<byte[], ArtistModel>(null, artist));
     }
 
     /**
@@ -237,7 +256,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     @Override
     public void fetchError(AlbumModel album) {
         Log.e(TAG, "Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
-        new InsertAlbumImageTask().execute(new Pair<byte[], AlbumModel>(null,album));
+        new InsertAlbumImageTask().execute(new Pair<byte[], AlbumModel>(null, album));
     }
 
     /**

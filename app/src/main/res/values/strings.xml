@@ -151,6 +151,8 @@
     <string name="preference_default_view_my_music_bookmarks">Bookmarks</string>
     <string name="preference_default_view_my_music_files">Files</string>
 
+    <string name="artwork_settings">Artwork settings</string>
+
     <string-array name="preference_default_views">
         <item>@string/preference_default_view_my_music_artists</item>
         <item>@string/preference_default_view_my_music_albums</item>
@@ -159,6 +161,31 @@
         <item>@string/preference_default_view_my_music_bookmarks</item>
         <item>@string/preference_default_view_my_music_files</item>
     </string-array>
+
+    <!-- artwork preferences -->
+    <string name="preference_artwork_album_provider_title">Album image provider</string>
+    <string name="preference_artwork_album_provider_summary">Select an provider for album cover images.</string>
+    <string name="preference_artwork_album_provider_message">Select an provider for album cover images.</string>
+
+    <string name="musicbrainz">MusicBrainz</string>
+    <string name="last_fm">Last.fm</string>
+    <string name="fanart_tv">Fanart.tv</string>
+
+    <string-array name="preference_artwork_album_provider_entries">
+        <item>@string/musicbrainz</item>
+    </string-array>
+
+    <string name="preference_artwork_artist_provider_title">Artist image provider</string>
+    <string name="preference_artwork_artist_provider_summary">Select an provider for artist cover images.</string>
+    <string name="preference_artwork_artist_provider_message">Select an provider for artist cover images.</string>
+
+    <string-array name="preference_artwork_artist_provider_entries">
+        <item>@string/last_fm</item>
+        <item>@string/fanart_tv</item>
+    </string-array>
+
+    <string name="preference_artwork_clear_artist">Clear artist images</string>
+    <string name="preference_artwork_clear_album">Clear album images</string>
 
     <!-- About activity -->
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>

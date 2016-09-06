@@ -50,7 +50,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     public static synchronized ArtworkDatabaseManager getInstance(Context context) {
-        if ( null == mInstance ) {
+        if (null == mInstance) {
             mInstance = new ArtworkDatabaseManager(context);
             ArtworkDatabaseManager.mInstance.mContext = context;
         }
@@ -60,6 +60,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Creates the database tables if they are not already existing
+     *
      * @param db
      */
     @Override
@@ -75,6 +76,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Tries to fetch an image for the album with the given id (android album id).
+     *
      * @param id Android MediaColumns album_id.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
@@ -91,7 +93,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if ( requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+            if (requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 return null;
             }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_DATA));
@@ -109,6 +111,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Tries to fetch an image for the artist with the given id (android artist id).
+     *
      * @param id Android MediaColumns artist_id.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
@@ -125,7 +128,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if ( requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+            if (requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 return null;
             }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_DATA));
@@ -143,6 +146,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Tries to fetch an image for the album with the given name. This is useful if artist_id is not set
+     *
      * @param artistName The name of the artist to search for.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
@@ -159,7 +163,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if ( requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+            if (requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 return null;
             }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_DATA));
@@ -177,9 +181,10 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Inserts the given byte[] image to the artists table.
+     *
      * @param artist Artist for the associated image byte[].
-     * @param image byte[] containing the raw image that was downloaded. This can be null in which case
-     *              the database entry will have the not_found flag set.
+     * @param image  byte[] containing the raw image that was downloaded. This can be null in which case
+     *               the database entry will have the not_found flag set.
      */
     public synchronized void insertArtistImage(ArtistModel artist, byte[] image) {
         SQLiteDatabase database = getWritableDatabase();
@@ -188,7 +193,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mContext );
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mContext);
         }
 
         ContentValues values = new ContentValues();
@@ -197,11 +202,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artist.getMBID());
         values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artist.getArtistName());
         values.put(ArtistArtTable.COLUMN_IMAGE_DATA, image);
-        
+
         // If null was given as byte[] set the not_found flag for this entry.
         values.put(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
 
-        database.replace(ArtistArtTable.TABLE_NAME,"", values);
+        database.replace(ArtistArtTable.TABLE_NAME, "", values);
 
         database.close();
     }
@@ -209,6 +214,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Tries to fetch an image for the album with the given name. This can result in wrong results for e.g. "Greatest Hits"
+     *
      * @param albumName The name of the album to search for.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
@@ -225,7 +231,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if ( requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+            if (requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 return null;
             }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_DATA));
@@ -243,6 +249,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Inserts the given byte[] image to the albums table.
+     *
      * @param album Album for the associated image byte[].
      * @param image byte[] containing the raw image that was downloaded. This can be null in which case
      *              the database entry will have the not_found flag set.
@@ -263,7 +270,29 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // If null was given as byte[] set the not_found flag for this entry.
         values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
 
-        database.replace(AlbumArtTable.TABLE_NAME,"", values);
+        database.replace(AlbumArtTable.TABLE_NAME, "", values);
+
+        database.close();
+    }
+
+    /**
+     * Removes all lines from the artists table
+     */
+    public synchronized void clearArtistImages() {
+        SQLiteDatabase database = getWritableDatabase();
+
+        database.delete(ArtistArtTable.TABLE_NAME, null, null);
+
+        database.close();
+    }
+
+    /**
+     * Removes all lines from the albums table
+     */
+    public synchronized void clearAlbumImages() {
+        SQLiteDatabase database = getWritableDatabase();
+
+        database.delete(AlbumArtTable.TABLE_NAME, null, null);
 
         database.close();
     }

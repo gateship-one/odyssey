@@ -19,7 +19,6 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
@@ -28,13 +27,11 @@ import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
+import org.gateshipone.odyssey.activities.OdysseyMainActivity;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private OnArtworkSettingsRequestedCallback mArtworkCallback;
+public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     /**
      * Called to do initial creation of a fragment.
@@ -45,49 +42,25 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // add listener to open equalizer
-        Preference openEqualizer = findPreference("pref_key_open_equalizer");
-        openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        // add listener to clear album data
+        Preference clearAlbums = findPreference("pref_clear_album");
+        clearAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                // start the audio equalizer
-                Intent viewIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-
-                try {
-                    getActivity().startActivity(viewIntent);
-                } catch (ActivityNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+                ArtworkDatabaseManager.getInstance(getContext()).clearAlbumImages();
                 return true;
             }
         });
 
-        // add listener to open artwork settings
-        Preference openArtwork = findPreference("pref_key_artwork_settings");
-        openArtwork.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        // add listener to clear artist data
+        Preference clearArtist = findPreference("pref_clear_artist");
+        clearArtist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                mArtworkCallback.openArtworkSettings();
+                ArtworkDatabaseManager.getInstance(getContext()).clearArtistImages();
                 return true;
             }
         });
-    }
-
-    /**
-     * Called when the fragment is first attached to its context.
-     */
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mArtworkCallback = (OnArtworkSettingsRequestedCallback) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnArtworkSettingsRequestedCallback");
-        }
     }
 
     /**
@@ -122,26 +95,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        addPreferencesFromResource(R.xml.odyssey_main_settings);
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_main_settings, false);
+        addPreferencesFromResource(R.xml.odyssey_artwork_settings);
+        PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_artwork_settings, false);
     }
 
     /**
      * Called when a shared preference is changed, added, or removed.
      *
-     * This method will restart the activity if the theme was changed.
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_theme")) {
-            Intent intent = getActivity().getIntent();
-            getActivity().finish();
-            startActivity(intent);
-        }
+
     }
 
-
-    public interface OnArtworkSettingsRequestedCallback {
-        void openArtworkSettings();
-    }
 }
