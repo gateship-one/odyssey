@@ -155,9 +155,12 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         switch (defaultView) {
             case "my_music_artists":
+                navId = R.id.nav_my_music;
                 defaultTab = MyMusicFragment.DEFAULTTAB.ARTISTS;
                 break;
             case "my_music_albums":
+                navId = R.id.nav_my_music;
+                defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
                 break;
             case "my_music_tracks":
                 defaultTab = MyMusicFragment.DEFAULTTAB.TRACKS;
