@@ -226,7 +226,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
         // FIXME check if retrying again and again is a problem
-        mDBManager.insertArtistImage(artist, null);
+        new InsertArtistImageTask().execute(new Pair<byte[], ArtistModel>(null,artist));
     }
 
     /**
@@ -237,7 +237,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     @Override
     public void fetchError(AlbumModel album) {
         Log.e(TAG, "Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
-        mDBManager.insertAlbumImage(album, null);
+        new InsertAlbumImageTask().execute(new Pair<byte[], AlbumModel>(null,album));
     }
 
     /**
@@ -255,9 +255,6 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         @Override
         protected ArtistModel doInBackground(Pair<byte[], ArtistModel>... params) {
             Pair<byte[], ArtistModel> response = params[0];
-
-            Log.v(TAG, "Received image with: " + response.first.length + "bytes for artist: " + response.second.getArtistName() +
-                    " with MBID: " + response.second.getMBID());
 
             mDBManager.insertArtistImage(response.second, response.first);
 
@@ -295,9 +292,6 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         @Override
         protected AlbumModel doInBackground(Pair<byte[], AlbumModel>... params) {
             Pair<byte[], AlbumModel> response = params[0];
-
-            Log.v(TAG, "Received image with: " + response.first.length + "bytes for album: " + response.second.getAlbumName() +
-                    " with MBID: " + response.second.getMBID());
 
             mDBManager.insertAlbumImage(response.second, response.first);
 
