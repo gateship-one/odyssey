@@ -54,6 +54,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
      */
     @Override
     public List<ArtistModel> loadInBackground() {
+        // FIXME Remove the coverPath workaround
         ArrayList<ArtistModel> artists = new ArrayList<>();
         String artist, coverPath;
         if (!mShowAlbumArtistsOnly) {
@@ -95,7 +96,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                         coverPath = null;
                     }
 
-                    artists.add(new ArtistModel(artist, coverPath, artistID));
+                    artists.add(new ArtistModel(artist, null, artistID));
                 }
 
                 // return new custom cursor
@@ -119,7 +120,7 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
                     artist = cursorAlbumArt.getString(albumArtistTitleColumnIndex);
                     coverPath = cursorAlbumArt.getString(albumCoverPathColumnIndex);
 
-                    artists.add(new ArtistModel(artist, coverPath, -1));
+                    artists.add(new ArtistModel(artist, null, -1));
                 }
                 cursorAlbumArt.close();
             }

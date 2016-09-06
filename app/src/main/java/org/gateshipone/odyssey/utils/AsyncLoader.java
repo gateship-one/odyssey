@@ -56,42 +56,48 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
     @Override
     protected Bitmap doInBackground(CoverViewHolder... params) {
         mCover = params[0];
-        // If we have an image associated with this view already (local cover images)
-        if (mCover.imagePath != null) {
-            // Return the local cover image from the android media database file.
-            return decodeSampledBitmapFromResource(mCover.imagePath, mCover.imageDimension.first, mCover.imageDimension.second);
-        } else {
             Bitmap image = null;
             // Check if model item is artist or album
             if (mCover.modelItem instanceof ArtistModel) {
+                ArtistModel artist = (ArtistModel)mCover.modelItem;
+                String artistURL = artist.getArtistURL();
+                if ( null != artistURL ) {
+                    return decodeSampledBitmapFromResource(artistURL, mCover.imageDimension.first, mCover.imageDimension.second);
+                }
+
                 try {
                     // Check if image is available. If it is not yet fetched it will throw an exception
                     // If it was already searched for and not found, this will be null.
-                    image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
+                    image = mCover.artworkManager.getArtistImage(artist);
                 } catch (ImageNotFoundException e) {
                     // Check if fetching for this item is already ongoing
-                    if (!((ArtistModel) mCover.modelItem).getFetching()) {
+                    if (!artist.getFetching()) {
                         // If not set it as ongoing and request the image fetch.
-                        mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
-                        ((ArtistModel) mCover.modelItem).setFetching(true);
+                        mCover.artworkManager.fetchArtistImage(artist);
+                        artist.setFetching(true);
                     }
                 }
             } else if (mCover.modelItem instanceof AlbumModel) {
+                AlbumModel album = (AlbumModel)mCover.modelItem;
+                String albumURL = album.getAlbumArtURL();
+                if ( null != albumURL ) {
+                    return decodeSampledBitmapFromResource(albumURL, mCover.imageDimension.first, mCover.imageDimension.second);
+                }
                 try {
                     // Check if image is available. If it is not yet fetched it will throw an exception.
                     // If it was already searched for and not found, this will be null.
-                    image = mCover.artworkManager.getAlbumImage((AlbumModel) mCover.modelItem);
+                    image = mCover.artworkManager.getAlbumImage(album);
                 } catch (ImageNotFoundException e) {
                     // Check if fetching for this item is already ongoing
-                    if (!((AlbumModel) mCover.modelItem).getFetching()) {
+                    if (!album.getFetching()) {
                         // If not set it as ongoing and request the image fetch.
-                        mCover.artworkManager.fetchAlbumImage((AlbumModel) mCover.modelItem);
-                        ((AlbumModel) mCover.modelItem).setFetching(true);
+                        mCover.artworkManager.fetchAlbumImage(album);
+                        album.setFetching(true);
                     }
                 }
             }
             return image;
-        }
+
     }
 
     /**

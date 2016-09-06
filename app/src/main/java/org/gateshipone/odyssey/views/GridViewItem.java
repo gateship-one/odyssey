@@ -20,6 +20,7 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ import org.gateshipone.odyssey.utils.AsyncLoader;
 import java.lang.ref.WeakReference;
 
 public class GridViewItem extends RelativeLayout {
-
+    private static final String TAG = GridViewItem.class.getSimpleName();
     private final AsyncLoader.CoverViewHolder mHolder;
 
     private AsyncLoader mLoaderTask;
@@ -52,7 +53,7 @@ public class GridViewItem extends RelativeLayout {
     /**
      * Constructor that already sets the values for each view.
      */
-    public GridViewItem(Context context, String title, String imageURL, ViewGroup.LayoutParams layoutParams) {
+    public GridViewItem(Context context, String title, ViewGroup.LayoutParams layoutParams) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -69,7 +70,6 @@ public class GridViewItem extends RelativeLayout {
         mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
 
         mCoverDone = false;
-        mHolder.imagePath = imageURL;
         mSwitcher.setOutAnimation(null);
         mSwitcher.setInAnimation(null);
         mImageView.setImageDrawable(null);
@@ -97,33 +97,10 @@ public class GridViewItem extends RelativeLayout {
         }
     }
 
-    /**
-     * Sets the new image url for this particular gridItem. If already an image
-     * getter task is running it will be cancelled. The image is reset to the
-     * dummy picture.
-     */
-    public void setImageURL(String url) {
-        // Check if image url has actually changed, otherwise there is no need to redo the image.
-        if ((mHolder.imagePath == null) || (!mHolder.imagePath.equals(url))) {
-            // Cancel old task
-            if (mLoaderTask != null) {
-                mLoaderTask.cancel(true);
-                mLoaderTask = null;
-            }
-
-            mCoverDone = false;
-            mHolder.imagePath = url;
-            mSwitcher.setOutAnimation(null);
-            mSwitcher.setInAnimation(null);
-            mImageView.setImageDrawable(null);
-            mSwitcher.setDisplayedChild(0);
-            mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
-            mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-        }
-    }
 
     public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
-        if ( modelItem != mHolder.modelItem || !mCoverDone) {
+        if ( !modelItem.equals(mHolder.modelItem) || !mCoverDone) {
+            Log.v(TAG,"Resetting image: " + mCoverDone + ":" + modelItem + ":" + mHolder.modelItem);
             setImage(null);
         }
         mHolder.artworkManager = artworkManager;
@@ -133,7 +110,7 @@ public class GridViewItem extends RelativeLayout {
 
     /**
      * If this GridItem gets detached from the parent it makes no sense to let
-     * the task for image retrieval runnig. (non-Javadoc)
+     * the task for image retrieval running. (non-Javadoc)
      *
      * @see android.view.View#onDetachedFromWindow()
      */
@@ -156,8 +133,8 @@ public class GridViewItem extends RelativeLayout {
             // Cancel old task
             if (mLoaderTask != null) {
                 mLoaderTask.cancel(true);
-                mLoaderTask = null;
             }
+            mLoaderTask = null;
 
             mCoverDone = false;
             mSwitcher.setOutAnimation(null);

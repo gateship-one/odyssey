@@ -76,7 +76,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
 
         } else {
             // Create new view if no reusable is available
-            convertView = new GridViewItem(mContext, label, null, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
 
         }
 

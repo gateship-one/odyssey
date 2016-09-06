@@ -98,6 +98,19 @@ public class AlbumModel implements GenericModel {
         return "Album: " + getAlbumName() + " from: " + getArtistName();
     }
 
+    @Override
+    public boolean equals(Object album) {
+        if ( null == album) {
+            return false;
+        }
+        if ( album instanceof AlbumModel) {
+            return mAlbumID == ((AlbumModel) album).mAlbumID && mAlbumName.equals(((AlbumModel) album).mAlbumName)
+                    && mArtistName.equals(((AlbumModel) album).mArtistName);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Return the section title for the AlbumModel
      * <p/>

@@ -58,7 +58,6 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
     public View getView(int position, View convertView, ViewGroup parent) {
         AlbumModel album = getModelData().get(position);
         String label = album.getAlbumName();
-        String imageURL = album.getAlbumArtURL();
 
         if (convertView != null) {
             GridViewItem gridItem = (GridViewItem) convertView;
@@ -70,9 +69,8 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            gridItem.setImageURL(imageURL);
         } else {
-            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
         }
 
         // This will prepare the view for fetching the image from the internet if not already saved in local database.
