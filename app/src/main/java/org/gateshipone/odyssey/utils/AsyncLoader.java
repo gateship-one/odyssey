@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
@@ -55,33 +56,42 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
     @Override
     protected Bitmap doInBackground(CoverViewHolder... params) {
         mCover = params[0];
+        // If we have an image associated with this view already (local cover images)
         if (mCover.imagePath != null) {
+            // Return the local cover image from the android media database file.
             return decodeSampledBitmapFromResource(mCover.imagePath, mCover.imageDimension.first, mCover.imageDimension.second);
-        } else if (mCover.modelItem instanceof ArtistModel) {
+        } else {
             Bitmap image = null;
-            try {
-                image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
-            } catch (ArtworkManager.ImageNotInDatabaseException e) {
-                if ( !((ArtistModel)mCover.modelItem).getFetching() ) {
-                    mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
-                    ((ArtistModel) mCover.modelItem).setFetching(true);
+            // Check if model item is artist or album
+            if (mCover.modelItem instanceof ArtistModel) {
+                try {
+                    // Check if image is available. If it is not yet fetched it will throw an exception
+                    // If it was already searched for and not found, this will be null.
+                    image = mCover.artworkManager.getArtistImage((ArtistModel) mCover.modelItem);
+                } catch (ImageNotFoundException e) {
+                    // Check if fetching for this item is already ongoing
+                    if (!((ArtistModel) mCover.modelItem).getFetching()) {
+                        // If not set it as ongoing and request the image fetch.
+                        mCover.artworkManager.fetchArtistImage((ArtistModel) mCover.modelItem);
+                        ((ArtistModel) mCover.modelItem).setFetching(true);
+                    }
                 }
-            }
-            return image;
-        } else if (mCover.modelItem instanceof AlbumModel) {
-            Bitmap image = null;
-            try {
-                image = mCover.artworkManager.getAlbumImage((AlbumModel) mCover.modelItem);
-            } catch (ArtworkManager.ImageNotInDatabaseException e) {
-                if ( !((AlbumModel)mCover.modelItem).getFetching() ) {
-                    mCover.artworkManager.fetchAlbumImage((AlbumModel) mCover.modelItem);
-                    ((AlbumModel) mCover.modelItem).setFetching(true);
+            } else if (mCover.modelItem instanceof AlbumModel) {
+                try {
+                    // Check if image is available. If it is not yet fetched it will throw an exception.
+                    // If it was already searched for and not found, this will be null.
+                    image = mCover.artworkManager.getAlbumImage((AlbumModel) mCover.modelItem);
+                } catch (ImageNotFoundException e) {
+                    // Check if fetching for this item is already ongoing
+                    if (!((AlbumModel) mCover.modelItem).getFetching()) {
+                        // If not set it as ongoing and request the image fetch.
+                        mCover.artworkManager.fetchAlbumImage((AlbumModel) mCover.modelItem);
+                        ((AlbumModel) mCover.modelItem).setFetching(true);
+                    }
                 }
             }
             return image;
         }
-
-        return null;
     }
 
     /**
@@ -91,18 +101,18 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inJustDecodeBounds = true;
-//
-//        // Calculate inSampleSize
-//        if (reqWidth == 0 && reqHeight == 0) {
-//            // check if the layout of the view already set
-//            options.inSampleSize = 1;
-//        } else {
-//            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-//        }
-//
-//        // Decode bitmap with inSampleSize set
-//        options.inJustDecodeBounds = false;
+        options.inJustDecodeBounds = true;
+
+        // Calculate inSampleSize
+        if (reqWidth == 0 && reqHeight == 0) {
+            // check if the layout of the view already set
+            options.inSampleSize = 1;
+        } else {
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        }
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(pathName, options);
     }
 

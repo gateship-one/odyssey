@@ -69,16 +69,19 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         //FIXME
     }
 
-    public synchronized byte[] getAlbumImage(long id) {
+    public synchronized byte[] getAlbumImage(long id) throws ImageNotFoundException {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
 
 
-        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_ID, AlbumArtTable.COLUMN_IMAGE_DATA},
+        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_ID, AlbumArtTable.COLUMN_IMAGE_DATA, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{String.valueOf(id)}, null, null, null);
 
         if (requestCursor.moveToFirst()) {
+            if ( requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+                return null;
+            }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_DATA));
 
             requestCursor.close();
@@ -88,19 +91,22 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         requestCursor.close();
         database.close();
-        return null;
+        throw new ImageNotFoundException();
     }
 
-    public synchronized byte[] getArtistImage(long id) {
+    public synchronized byte[] getArtistImage(long id) throws ImageNotFoundException {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
 
 
-        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_ID, ArtistArtTable.COLUMN_IMAGE_DATA},
+        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_ID, ArtistArtTable.COLUMN_IMAGE_DATA, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{String.valueOf(id)}, null, null, null);
 
         if (requestCursor.moveToFirst()) {
+            if ( requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+                return null;
+            }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_DATA));
 
             requestCursor.close();
@@ -110,19 +116,22 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         requestCursor.close();
         database.close();
-        return null;
+        throw new ImageNotFoundException();
     }
 
-    public synchronized byte[] getArtistImage(String artistName) {
+    public synchronized byte[] getArtistImage(String artistName) throws ImageNotFoundException {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
 
 
-        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_DATA},
+        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_DATA, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{artistName}, null, null, null);
 
         if (requestCursor.moveToFirst()) {
+            if ( requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+                return null;
+            }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_DATA));
 
             requestCursor.close();
@@ -132,7 +141,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         requestCursor.close();
         database.close();
-        return null;
+        throw new ImageNotFoundException();
     }
 
     public synchronized void insertArtistImage(ArtistModel artist, byte[] image) {
@@ -151,6 +160,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artist.getMBID());
         values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artist.getArtistName());
         values.put(ArtistArtTable.COLUMN_IMAGE_DATA, image);
+        values.put(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
 
         database.replace(ArtistArtTable.TABLE_NAME,"", values);
 
@@ -158,16 +168,19 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
 
-    public synchronized byte[] getAlbumImage(String albumName) {
+    public synchronized byte[] getAlbumImage(String albumName) throws ImageNotFoundException {
         SQLiteDatabase database = getReadableDatabase();
 
         String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
 
 
-        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_DATA},
+        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_DATA, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{albumName}, null, null, null);
 
         if (requestCursor.moveToFirst()) {
+            if ( requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1  ) {
+                return null;
+            }
             byte[] imageData = requestCursor.getBlob(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_DATA));
 
             requestCursor.close();
@@ -177,7 +190,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         requestCursor.close();
         database.close();
-        return null;
+        throw new ImageNotFoundException();
     }
 
     public synchronized void insertAlbumImage(AlbumModel album, byte[] image) {
@@ -192,6 +205,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(AlbumArtTable.COLUMN_ALBUM_NAME, album.getAlbumName());
         values.put(AlbumArtTable.COLUMN_ARTIST_NAME, album.getArtistName());
         values.put(AlbumArtTable.COLUMN_IMAGE_DATA, image);
+        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
 
         database.replace(AlbumArtTable.TABLE_NAME,"", values);
 

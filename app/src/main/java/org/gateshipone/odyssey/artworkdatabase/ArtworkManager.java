@@ -63,7 +63,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         return mInstance;
     }
 
-    public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotInDatabaseException {
+    public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotFoundException {
         if (null == artist) {
             return null;
         }
@@ -84,19 +84,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         // Checks if the database has an image for the requested artist
         if (null != image) {
-            // If image is existing or blocked for the artist. (blocked: not found before)
-            if (image.length != 0) {
-                // Create a bitmap from the data blob in the database
-                return BitmapFactory.decodeByteArray(image, 0, image.length);
-            }
-        } else {
-            // Image not in database throw exception
-            throw new ImageNotInDatabaseException();
+            // Create a bitmap from the data blob in the database
+            return BitmapFactory.decodeByteArray(image, 0, image.length);
         }
         return null;
     }
 
-    public Bitmap getAlbumImage(final AlbumModel album) throws ImageNotInDatabaseException {
+    public Bitmap getAlbumImage(final AlbumModel album) throws ImageNotFoundException {
         if (null == album) {
             return null;
         }
@@ -118,20 +112,16 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         // Checks if the database has an image for the requested album
         if (null != image) {
-            // If image is existing or blocked for the artist. (blocked: not found before)
-            if (image.length != 0) {
-                // Create a bitmap from the data blob in the database
-                return BitmapFactory.decodeByteArray(image, 0, image.length);
-            }
-        } else {
-            // Image not in database throw exception
-            throw new ImageNotInDatabaseException();
+            // Create a bitmap from the data blob in the database
+            return BitmapFactory.decodeByteArray(image, 0, image.length);
+
         }
         return null;
     }
 
     /**
      * Starts an asynchronous fetch for the image of the given artist.
+     *
      * @param artist Artist to fetch an image for.
      */
     public void fetchArtistImage(final ArtistModel artist) {
@@ -154,6 +144,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Starts an asynchronous fetch for the image of the given album
+     *
      * @param album Album to fetch an image for.
      */
     public void fetchAlbumImage(final AlbumModel album) {
@@ -176,9 +167,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Registers a listener that gets notified when a new artist image was added to the dataset.
+     *
      * @param listener Listener to register
      */
-    public void  registerOnNewArtistImageListener(onNewArtistImageListener listener) {
+    public void registerOnNewArtistImageListener(onNewArtistImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
                 mArtistListeners.add(listener);
@@ -188,6 +180,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Unregisters a listener that got notified when a new artist image was added to the dataset.
+     *
      * @param listener Listener to unregister
      */
     public void unregisterOnNewArtistImageListener(onNewArtistImageListener listener) {
@@ -200,9 +193,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Registers a listener that gets notified when a new album image was added to the dataset.
+     *
      * @param listener Listener to register
      */
-    public void  registerOnNewAlbumImageListener(onNewAlbumImageListener listener) {
+    public void registerOnNewAlbumImageListener(onNewAlbumImageListener listener) {
         if (null != listener) {
             synchronized (mArtistListeners) {
                 mAlbumListeners.add(listener);
@@ -212,6 +206,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Unregisters a listener that got notified when a new album image was added to the dataset.
+     *
      * @param listener Listener to unregister
      */
     public void unregisterOnNewAlbumImageListener(onNewAlbumImageListener listener) {
@@ -224,29 +219,26 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Interface implementation to handle errors during fetching of artist images
+     *
      * @param artist Artist that resulted in a fetch error
      */
     @Override
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
         // FIXME check if retrying again and again is a problem
-//        mDBManager.insertArtistImage(artist, new byte[0]);
+        mDBManager.insertArtistImage(artist, null);
     }
 
     /**
      * Interface implementation to handle errors during fetching of album images
+     *
      * @param album Album that resulted in a fetch error
      */
     @Override
     public void fetchError(AlbumModel album) {
-        Log.e(TAG,"Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
+        Log.e(TAG, "Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
+        mDBManager.insertAlbumImage(album, null);
     }
-
-
-    /**
-     * Exception class that is used to signal missing images
-     */
-    public class ImageNotInDatabaseException extends Exception {}
 
     /**
      * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
@@ -256,6 +248,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         /**
          * Inserts the image to the database.
+         *
          * @param params Pair of byte[] (containing the image itself) and ArtistModel for which the image is for
          * @return the artist model that was inserted to the database.
          */
@@ -274,6 +267,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         /**
          * Notifies the listeners about a change in the image dataset. Called in the UI thread.
+         *
          * @param result Artist that was inserted in the database
          */
         protected void onPostExecute(ArtistModel result) {
@@ -294,6 +288,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         /**
          * Inserts the image to the database.
+         *
          * @param params Pair of byte[] (containing the image itself) and AlbumModel for which the image is for
          * @return the album model that was inserted to the database.
          */
@@ -312,6 +307,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         /**
          * Notifies the listeners about a change in the image dataset. Called in the UI thread.
+         *
          * @param result Album that was inserted in the database
          */
         protected void onPostExecute(AlbumModel result) {

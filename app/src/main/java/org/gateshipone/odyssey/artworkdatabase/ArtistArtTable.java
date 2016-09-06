@@ -31,8 +31,11 @@ public class ArtistArtTable {
 
     public static final String COLUMN_IMAGE_DATA = "artist_image";
 
+    public static final String COLUMN_IMAGE_NOT_FOUND = "image_not_found";
+
     private static final String DATABASE_CREATE = "CREATE TABLE if not exists " + TABLE_NAME + " (" +
             COLUMN_ARTIST_NAME + " text," + COLUMN_ARTIST_MBID + " text," + COLUMN_ARTIST_ID + " integer primary key," +
+            COLUMN_IMAGE_NOT_FOUND + " integer," +
             COLUMN_IMAGE_DATA + " blob" +");";
 
     public static void createTable(SQLiteDatabase database) {
