@@ -81,7 +81,7 @@ public class FanartTVManager implements ArtistImageProvider {
         getRequestQueue().add(req);
     }
 
-    public void fetchImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
 
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));

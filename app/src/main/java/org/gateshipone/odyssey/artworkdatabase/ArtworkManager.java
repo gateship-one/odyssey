@@ -18,7 +18,6 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +31,6 @@ import com.android.volley.Response;
 
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -100,7 +98,7 @@ public class ArtworkManager implements ArtistFetchError{
             return;
         }
 
-        LastFMManager.getInstance().fetchImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+        LastFMManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
             @Override
             public void onResponse(Pair<byte[], ArtistModel> response) {
                 new InsertArtistImageTask().execute(response);

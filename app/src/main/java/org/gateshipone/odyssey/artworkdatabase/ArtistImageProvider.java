@@ -27,5 +27,5 @@ import org.gateshipone.odyssey.models.ArtistModel;
 
 public interface ArtistImageProvider {
 
-    void fetchImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener);
+    void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener);
 }
