@@ -42,12 +42,12 @@ public class CoverBitmapLoader {
         if (track != null) {
             mTrack = track;
             // start the loader thread to load the image async
-            Thread loaderThread = new Thread(new DownloadRunner());
+            Thread loaderThread = new Thread(new ImageLaoderRunnable());
             loaderThread.start();
         }
     }
 
-    private class DownloadRunner implements Runnable {
+    private class ImageLaoderRunnable implements Runnable {
 
         /**
          * Load the image for the given track from the mediastore.
