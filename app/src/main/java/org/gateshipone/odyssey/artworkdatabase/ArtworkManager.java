@@ -46,11 +46,13 @@ import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResp
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
     private static final int MAXIMUM_IMAGE_SIZE = 500;
+    private static final int IMAGE_COMPRESSION_SETTING = 80;
 
     private ArtworkDatabaseManager mDBManager;
     private final ArrayList<onNewArtistImageListener> mArtistListeners;
@@ -310,8 +312,24 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected ArtistModel doInBackground(ArtistImageResponse... params) {
             ArtistImageResponse response = params[0];
 
-            mDBManager.insertArtistImage(response.artist, response.image);
+            if ( response.image == null ){
+                mDBManager.insertArtistImage(response.artist, response.image);
+                return response.artist;
+            }
 
+            // Rescale them if to big
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
+            if ((options.outHeight > MAXIMUM_IMAGE_SIZE || options.outWidth > MAXIMUM_IMAGE_SIZE)) {
+                options.inJustDecodeBounds = false;
+                Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
+                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                bm.createScaledBitmap(bm, MAXIMUM_IMAGE_SIZE, MAXIMUM_IMAGE_SIZE, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                mDBManager.insertArtistImage(response.artist, byteStream.toByteArray());
+            } else {
+                mDBManager.insertArtistImage(response.artist, response.image);
+            }
 
             return response.artist;
         }
@@ -347,8 +365,24 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected AlbumModel doInBackground(AlbumImageResponse... params) {
             AlbumImageResponse response = params[0];
 
-            mDBManager.insertAlbumImage(response.album, response.image);
+            if ( response.image == null ){
+                mDBManager.insertAlbumImage(response.album, response.image);
+                return response.album;
+            }
 
+            // Rescale them if to big
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
+            if ((options.outHeight > MAXIMUM_IMAGE_SIZE || options.outWidth > MAXIMUM_IMAGE_SIZE)) {
+                options.inJustDecodeBounds = false;
+                Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
+                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                bm.createScaledBitmap(bm, MAXIMUM_IMAGE_SIZE, MAXIMUM_IMAGE_SIZE, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                mDBManager.insertAlbumImage(response.album, byteStream.toByteArray());
+            } else {
+                mDBManager.insertAlbumImage(response.album, response.image);
+            }
 
             return response.album;
         }
