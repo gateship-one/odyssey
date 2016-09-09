@@ -47,7 +47,7 @@ public class CoverBitmapLoader {
         }
     }
 
-    private class ImageLaoderRunnable implements Runnable {
+    private class ImageLoaderRunnable implements Runnable {
 
         /**
          * Load the image for the given track from the mediastore.
