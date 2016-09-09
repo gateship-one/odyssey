@@ -25,7 +25,7 @@ import com.android.volley.Response;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 
-public class AlbumImageByteRequest extends Request<AlbumImageResponse> {
+public class AlbumImageByteRequest extends OdysseyRequest<AlbumImageResponse> {
 
     private final Response.Listener<AlbumImageResponse> mListener;
 
