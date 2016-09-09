@@ -23,10 +23,11 @@ import android.util.Pair;
 
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 public interface ArtistImageProvider {
 
-    void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener);
+    void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener);
     void cancelAll();
 }

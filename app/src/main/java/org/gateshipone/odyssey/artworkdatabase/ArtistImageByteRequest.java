@@ -18,35 +18,40 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
-import android.util.Pair;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.ArtistModel;
 
-public class ArtistImageByteRequest extends Request<Pair<byte[], ArtistModel>> {
+public class ArtistImageByteRequest extends Request<ArtistImageResponse> {
 
-    private final Response.Listener<Pair<byte[], ArtistModel>> mListener;
+    private final Response.Listener<ArtistImageResponse> mListener;
 
     private ArtistModel mArtist;
+    private String mUrl;
 
 
-    public ArtistImageByteRequest(String url, ArtistModel artist, Response.Listener<Pair<byte[], ArtistModel>> listener, Response.ErrorListener errorListener) {
+    public ArtistImageByteRequest(String url, ArtistModel artist, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         super(Method.GET, url, errorListener);
 
         mListener = listener;
         mArtist = artist;
+        mUrl = url;
     }
 
     @Override
-    protected Response<Pair<byte[], ArtistModel>> parseNetworkResponse(NetworkResponse response) {
-        return Response.success(new Pair<byte[], ArtistModel>(response.data, mArtist), null);
+    protected Response<ArtistImageResponse> parseNetworkResponse(NetworkResponse response) {
+        ArtistImageResponse imageResponse = new ArtistImageResponse();
+        imageResponse.artist = mArtist;
+        imageResponse.url = mUrl;
+        imageResponse.image = response.data;
+        return Response.success(imageResponse, null);
     }
 
     @Override
-    protected void deliverResponse(Pair<byte[], ArtistModel> response) {
+    protected void deliverResponse(ArtistImageResponse response) {
         mListener.onResponse(response);
     }
 

@@ -34,6 +34,8 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
@@ -71,7 +73,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
@@ -133,17 +135,17 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getArtistImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, ArtistModel artist, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(LastFMManager.class.getSimpleName(), url);
 
-        Request<Pair<byte[], ArtistModel>> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
+        Request<ArtistImageResponse> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
 
         addToRequestQueue(byteResponse);
     }
 
 
     @Override
-    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<Pair<byte[], AlbumModel>> listener, final AlbumFetchError errorListener) {
+    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
         getAlbumImageURL(album, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -188,10 +190,10 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getAlbumImage(String url, AlbumModel album, Response.Listener<Pair<byte[],AlbumModel>> listener, Response.ErrorListener errorListener) {
+    private void getAlbumImage(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(LastFMManager.class.getSimpleName(), url);
 
-        Request<Pair<byte[], AlbumModel>> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
+        Request<AlbumImageResponse> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
 
         addToRequestQueue(byteResponse);
     }

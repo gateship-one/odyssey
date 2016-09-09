@@ -38,6 +38,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
+    private static final int MAXIMUM_IMAGE_SIZE = 500;
 
     private ArtworkDatabaseManager mDBManager;
     private final ArrayList<onNewArtistImageListener> mArtistListeners;
@@ -154,16 +157,16 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (artistProvider.equals("last_fm")) {
-            LastFMManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+            LastFMManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<ArtistImageResponse>() {
                 @Override
-                public void onResponse(Pair<byte[], ArtistModel> response) {
+                public void onResponse(ArtistImageResponse response) {
                     new InsertArtistImageTask().execute(response);
                 }
             }, this);
         } else if (artistProvider.equals("fanart_tv")) {
-            FanartTVManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+            FanartTVManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<ArtistImageResponse>() {
                 @Override
-                public void onResponse(Pair<byte[], ArtistModel> response) {
+                public void onResponse(ArtistImageResponse response) {
                     new InsertArtistImageTask().execute(response);
                 }
             }, this);
@@ -191,16 +194,16 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (albumProvider.equals("musicbrainz")) {
-            MusicBrainzManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+            MusicBrainzManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<AlbumImageResponse>() {
                 @Override
-                public void onResponse(Pair<byte[], AlbumModel> response) {
+                public void onResponse(AlbumImageResponse response) {
                     new InsertAlbumImageTask().execute(response);
                 }
             }, this);
         } else if (albumProvider.equals("last_fm")) {
-            LastFMManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+            LastFMManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<AlbumImageResponse>() {
                 @Override
-                public void onResponse(Pair<byte[], AlbumModel> response) {
+                public void onResponse(AlbumImageResponse response) {
                     new InsertAlbumImageTask().execute(response);
                 }
             }, this);
@@ -267,8 +270,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     @Override
     public void fetchError(ArtistModel artist) {
         Log.e(TAG, "Error fetching: " + artist.getArtistName());
-        // FIXME check if retrying again and again is a problem
-        new InsertArtistImageTask().execute(new Pair<byte[], ArtistModel>(null, artist));
+        ArtistImageResponse imageResponse = new ArtistImageResponse();
+        imageResponse.artist = artist;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertArtistImageTask().execute(imageResponse);
     }
 
     /**
@@ -279,14 +285,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     @Override
     public void fetchError(AlbumModel album) {
         Log.e(TAG, "Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
-        new InsertAlbumImageTask().execute(new Pair<byte[], AlbumModel>(null, album));
+        AlbumImageResponse imageResponse = new AlbumImageResponse();
+        imageResponse.album = album;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertAlbumImageTask().execute(imageResponse);
     }
 
     /**
      * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
      * is handled in the UI thread.
      */
-    private class InsertArtistImageTask extends AsyncTask<Pair<byte[], ArtistModel>, Object, ArtistModel> {
+    private class InsertArtistImageTask extends AsyncTask<ArtistImageResponse, Object, ArtistModel> {
 
         /**
          * Inserts the image to the database.
@@ -295,13 +305,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
          * @return the artist model that was inserted to the database.
          */
         @Override
-        protected ArtistModel doInBackground(Pair<byte[], ArtistModel>... params) {
-            Pair<byte[], ArtistModel> response = params[0];
+        protected ArtistModel doInBackground(ArtistImageResponse... params) {
+            ArtistImageResponse response = params[0];
 
-            mDBManager.insertArtistImage(response.second, response.first);
+            mDBManager.insertArtistImage(response.artist, response.image);
 
 
-            return response.second;
+            return response.artist;
         }
 
         /**
@@ -323,7 +333,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
      * is handled in the UI thread.
      */
-    private class InsertAlbumImageTask extends AsyncTask<Pair<byte[], AlbumModel>, Object, AlbumModel> {
+    private class InsertAlbumImageTask extends AsyncTask<AlbumImageResponse, Object, AlbumModel> {
 
         /**
          * Inserts the image to the database.
@@ -332,13 +342,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
          * @return the album model that was inserted to the database.
          */
         @Override
-        protected AlbumModel doInBackground(Pair<byte[], AlbumModel>... params) {
-            Pair<byte[], AlbumModel> response = params[0];
+        protected AlbumModel doInBackground(AlbumImageResponse... params) {
+            AlbumImageResponse response = params[0];
 
-            mDBManager.insertAlbumImage(response.second, response.first);
+            mDBManager.insertAlbumImage(response.album, response.image);
 
 
-            return response.second;
+            return response.album;
         }
 
         /**

@@ -16,18 +16,12 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artworkdatabase.network.responses;
 
+import org.gateshipone.odyssey.models.ArtistModel;
 
-import android.util.Pair;
-
-import com.android.volley.Response;
-
-import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
-import org.gateshipone.odyssey.models.AlbumModel;
-
-public interface AlbumImageProvider {
-
-    void fetchAlbumImage(final AlbumModel album, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener);
-    void cancelAll();
+public class ArtistImageResponse {
+    public ArtistModel artist;
+    public String url;
+    public byte[] image;
 }

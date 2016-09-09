@@ -35,6 +35,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +76,7 @@ public class FanartTVManager implements ArtistImageProvider {
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
@@ -159,10 +160,10 @@ public class FanartTVManager implements ArtistImageProvider {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getArtistImage(String url, ArtistModel artist, Response.Listener<Pair<byte[],ArtistModel>> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, ArtistModel artist, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(FanartTVManager.class.getSimpleName(), url);
 
-        Request<Pair<byte[], ArtistModel>> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
+        Request<ArtistImageResponse> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
 
         addToRequestQueue(byteResponse);
     }

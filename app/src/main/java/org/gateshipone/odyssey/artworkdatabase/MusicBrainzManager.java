@@ -34,6 +34,8 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
@@ -71,7 +73,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
         String artistURLName = Uri.encode(artist.getArtistName());
 
@@ -151,7 +153,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getArtistImage(String url, Response.Listener<Pair<byte[], ArtistModel>> listener, Response.ErrorListener errorListener) {
+    private void getArtistImage(String url, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(MusicBrainzManager.class.getSimpleName(), url);
 
 //        Request<byte[]> byteResponse = new ArtistImageByteRequest(url, listener, errorListener);
@@ -160,7 +162,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
     }
 
     @Override
-    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<Pair<byte[], AlbumModel>> listener, final AlbumFetchError errorListener) {
+    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
 
         getAlbumMBID(album, new Response.Listener<JSONObject>() {
             @Override
@@ -175,7 +177,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         });
     }
 
-    private void parseMusicBrainzReleaseJSON(final AlbumModel album, final int releaseIndex, final JSONObject response, final Response.Listener<Pair<byte[], AlbumModel>> listener, final AlbumFetchError errorListener) {
+    private void parseMusicBrainzReleaseJSON(final AlbumModel album, final int releaseIndex, final JSONObject response, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
         if (releaseIndex >= MUSICBRAINZ_LIMIT_RESULT_COUNT) {
             return;
         }
@@ -230,8 +232,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getAlbumImage(String url, AlbumModel album, Response.Listener<Pair<byte[], AlbumModel>> listener, Response.ErrorListener errorListener) {
-        Request<Pair<byte[], AlbumModel>> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
+    private void getAlbumImage(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
+        Request<AlbumImageResponse> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
         Log.v(TAG,"Get image: " + url);
         addToRequestQueue(byteResponse);
     }
