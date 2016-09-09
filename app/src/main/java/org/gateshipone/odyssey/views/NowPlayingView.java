@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
@@ -1225,7 +1226,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param bm Bitmap ready for use in the UI
          */
         @Override
-        public void receiveBitmap(final BitmapDrawable bm) {
+        public void receiveBitmap(final Bitmap bm) {
             if (bm != null) {
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
@@ -1235,9 +1236,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                         @Override
                         public void run() {
                             // Set the main cover image
-                            mCoverImage.setImageDrawable(bm);
+                            mCoverImage.setImageBitmap(bm);
                             // Set the small header image
-                            mTopCoverImage.setImageDrawable(bm);
+                            mTopCoverImage.setImageBitmap(bm);
                         }
                     });
                 }

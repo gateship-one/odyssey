@@ -178,11 +178,11 @@ public class OdysseyNotificationManager {
      * notification controls. Sets it and notifies the system that the
      * notification has changed
      */
-    public void setNotificationImage(BitmapDrawable bm) {
+    public void setNotificationImage(Bitmap bm) {
         // Check if notification exists and set picture
-        mLastBitmap = bm.getBitmap();
+        mLastBitmap = bm;
         if ( mNotification != null ) {
-            mNotificationBuilder.setLargeIcon(bm.getBitmap());
+            mNotificationBuilder.setLargeIcon(bm);
             mNotification = mNotificationBuilder.build();
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }

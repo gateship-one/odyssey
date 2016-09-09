@@ -45,6 +45,7 @@ import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchErro
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.TrackModel;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -130,6 +131,26 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             // If id is available use it.
             image = mDBManager.getAlbumImage(album.getAlbumID());
         }
+
+        // Checks if the database has an image for the requested album
+        if (null != image) {
+            // Create a bitmap from the data blob in the database
+            return BitmapFactory.decodeByteArray(image, 0, image.length);
+
+        }
+        return null;
+    }
+
+    public Bitmap getAlbumImage(final TrackModel track) throws ImageNotFoundException {
+        if (null == track) {
+            return null;
+        }
+
+
+        byte[] image;
+
+        // FIXME use album artist as well.
+        image = mDBManager.getAlbumImage(track.getTrackAlbumName());
 
         // Checks if the database has an image for the requested album
         if (null != image) {
@@ -312,7 +333,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected ArtistModel doInBackground(ArtistImageResponse... params) {
             ArtistImageResponse response = params[0];
 
-            if ( response.image == null ){
+            if (response.image == null) {
                 mDBManager.insertArtistImage(response.artist, response.image);
                 return response.artist;
             }
@@ -365,7 +386,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected AlbumModel doInBackground(AlbumImageResponse... params) {
             AlbumImageResponse response = params[0];
 
-            if ( response.image == null ){
+            if (response.image == null) {
                 mDBManager.insertAlbumImage(response.album, response.image);
                 return response.album;
             }
@@ -426,15 +447,15 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if ( null == netInfo) {
+            if (null == netInfo) {
                 return;
             }
             boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
             boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
 
-            if ( wifiOnly && !isWifi)  {
+            if (wifiOnly && !isWifi) {
                 // Cancel all downloads
-                Log.v(TAG,"Cancel all downloads because of connection change");
+                Log.v(TAG, "Cancel all downloads because of connection change");
                 cancelAllRequests();
             }
 

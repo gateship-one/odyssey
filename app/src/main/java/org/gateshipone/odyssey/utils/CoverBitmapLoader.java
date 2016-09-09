@@ -20,9 +20,13 @@ package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
 import org.gateshipone.odyssey.models.TrackModel;
 
 public class CoverBitmapLoader {
@@ -42,7 +46,7 @@ public class CoverBitmapLoader {
         if (track != null) {
             mTrack = track;
             // start the loader thread to load the image async
-            Thread loaderThread = new Thread(new ImageLaoderRunnable());
+            Thread loaderThread = new Thread(new ImageLoaderRunnable());
             loaderThread.start();
         }
     }
@@ -66,11 +70,20 @@ public class CoverBitmapLoader {
                     coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                 }
                 if (coverPath != null) {
-                    BitmapDrawable cover = (BitmapDrawable) BitmapDrawable.createFromPath(coverPath);
+                    Bitmap cover = (Bitmap) BitmapFactory.decodeFile(coverPath);
                     mListener.receiveBitmap(cover);
                 }
 
                 cursor.close();
+            }
+
+            // If we reach this, we obviously don't have a local image. Try the database of downloaded images
+            try {
+                Bitmap image = ArtworkManager.getInstance(mContext).getAlbumImage(mTrack);
+                mListener.receiveBitmap(image);
+            } catch (ImageNotFoundException e) {
+                // Try to fetch the image here
+                // FIXME fetch album image here. (Needs album id in trackmodel)
             }
         }
     }
@@ -79,6 +92,6 @@ public class CoverBitmapLoader {
      * Callback if image was loaded.
      */
     public interface CoverBitmapListener {
-        void receiveBitmap(BitmapDrawable bm);
+        void receiveBitmap(Bitmap bm);
     }
 }
