@@ -16,7 +16,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="funktionsgrafik.svg">
+   sodipodi:docname="funktionsgrafik.svg"
+   inkscape:export-filename="C:\Users\Frederik\Developer\odyssey\images\funktionsgrafik.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <linearGradient
@@ -50,7 +53,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="612.93036"
+     inkscape:cx="544.35893"
      inkscape:cy="291.44802"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -70,7 +73,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
