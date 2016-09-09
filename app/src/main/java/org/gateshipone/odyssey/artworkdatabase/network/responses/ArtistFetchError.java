@@ -16,11 +16,11 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artworkdatabase.network.responses;
 
 
-import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 
-public interface AlbumFetchError {
-    void fetchError(AlbumModel album);
+public interface ArtistFetchError {
+    void fetchError(ArtistModel artist);
 }

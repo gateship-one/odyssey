@@ -16,13 +16,12 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artworkdatabase.network.artprovider;
 
-
-import android.util.Pair;
 
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 

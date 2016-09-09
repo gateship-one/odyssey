@@ -25,25 +25,27 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.Pair;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+import org.gateshipone.odyssey.artworkdatabase.network.artprovider.FanartTVManager;
+import org.gateshipone.odyssey.artworkdatabase.network.artprovider.LastFMManager;
+import org.gateshipone.odyssey.artworkdatabase.network.artprovider.MusicBrainzManager;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {

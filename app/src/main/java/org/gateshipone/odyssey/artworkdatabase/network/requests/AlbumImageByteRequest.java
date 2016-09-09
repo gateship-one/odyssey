@@ -16,42 +16,42 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artworkdatabase.network.requests;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 
-import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
-import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.models.AlbumModel;
 
-public class ArtistImageByteRequest extends Request<ArtistImageResponse> {
+public class AlbumImageByteRequest extends Request<AlbumImageResponse> {
 
-    private final Response.Listener<ArtistImageResponse> mListener;
+    private final Response.Listener<AlbumImageResponse> mListener;
 
-    private ArtistModel mArtist;
+    private AlbumModel mAlbum;
     private String mUrl;
 
 
-    public ArtistImageByteRequest(String url, ArtistModel artist, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
+    public AlbumImageByteRequest(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
         super(Method.GET, url, errorListener);
 
         mListener = listener;
-        mArtist = artist;
+        mAlbum = album;
         mUrl = url;
     }
 
     @Override
-    protected Response<ArtistImageResponse> parseNetworkResponse(NetworkResponse response) {
-        ArtistImageResponse imageResponse = new ArtistImageResponse();
-        imageResponse.artist = mArtist;
+    protected Response<AlbumImageResponse> parseNetworkResponse(NetworkResponse response) {
+        AlbumImageResponse imageResponse = new AlbumImageResponse();
+        imageResponse.album = mAlbum;
         imageResponse.url = mUrl;
         imageResponse.image = response.data;
         return Response.success(imageResponse, null);
     }
 
     @Override
-    protected void deliverResponse(ArtistImageResponse response) {
+    protected void deliverResponse(AlbumImageResponse response) {
         mListener.onResponse(response);
     }
 

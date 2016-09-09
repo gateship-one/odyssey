@@ -16,7 +16,7 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artworkdatabase.network.requests;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
