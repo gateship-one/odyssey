@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
@@ -32,6 +33,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
+import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
@@ -53,29 +55,20 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
     private static final int MUSICBRAINZ_LIMIT_RESULT_COUNT = 10;
     private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + String.valueOf(MUSICBRAINZ_LIMIT_RESULT_COUNT);
 
-    private MusicBrainzManager() {
-        mRequestQueue = getRequestQueue();
+    private MusicBrainzManager(Context context) {
+        mRequestQueue = LimitingRequestQueue.getInstance(context);
     }
 
-    public static synchronized MusicBrainzManager getInstance() {
+    public static synchronized MusicBrainzManager getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new MusicBrainzManager();
+            mInstance = new MusicBrainzManager(context);
         }
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            Cache cache = new NoCache();
-            Network nw = new BasicNetwork(new HurlStack());
-            mRequestQueue = new RequestQueue(cache, nw, 1);
-            mRequestQueue.start();
-        }
-        return mRequestQueue;
-    }
 
     public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+        mRequestQueue.add(req);
     }
 
     public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {

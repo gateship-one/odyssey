@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 
+import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,29 +59,20 @@ public class FanartTVManager implements ArtistImageProvider {
 
     private static final String API_KEY = "API_KEY_MISSING";
 
-    private FanartTVManager() {
-        mRequestQueue = getRequestQueue();
+    private FanartTVManager(Context context) {
+        mRequestQueue = LimitingRequestQueue.getInstance(context);
     }
 
-    public static synchronized FanartTVManager getInstance() {
+    public static synchronized FanartTVManager getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new FanartTVManager();
+            mInstance = new FanartTVManager(context);
         }
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            Cache cache = new NoCache();
-            Network nw = new BasicNetwork(new HurlStack());
-            mRequestQueue = new RequestQueue(cache, nw,1);
-            mRequestQueue.start();
-        }
-        return mRequestQueue;
-    }
 
     public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+        mRequestQueue.add(req);
     }
 
     public void fetchArtistImage(final ArtistModel artist, final Response.Listener<Pair<byte[], ArtistModel>> listener, final ArtistFetchError errorListener) {

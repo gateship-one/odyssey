@@ -33,8 +33,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
@@ -151,14 +154,14 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (artistProvider.equals("last_fm")) {
-            LastFMManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+            LastFMManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
                 @Override
                 public void onResponse(Pair<byte[], ArtistModel> response) {
                     new InsertArtistImageTask().execute(response);
                 }
             }, this);
         } else if (artistProvider.equals("fanart_tv")) {
-            FanartTVManager.getInstance().fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
+            FanartTVManager.getInstance(mContext).fetchArtistImage(artist, new Response.Listener<Pair<byte[], ArtistModel>>() {
                 @Override
                 public void onResponse(Pair<byte[], ArtistModel> response) {
                     new InsertArtistImageTask().execute(response);
@@ -188,14 +191,14 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (albumProvider.equals("musicbrainz")) {
-            MusicBrainzManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+            MusicBrainzManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
                 @Override
                 public void onResponse(Pair<byte[], AlbumModel> response) {
                     new InsertAlbumImageTask().execute(response);
                 }
             }, this);
         } else if (albumProvider.equals("last_fm")) {
-            LastFMManager.getInstance().fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
+            LastFMManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<Pair<byte[], AlbumModel>>() {
                 @Override
                 public void onResponse(Pair<byte[], AlbumModel> response) {
                     new InsertAlbumImageTask().execute(response);
@@ -392,23 +395,16 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
     }
 
+    /**
+     * This will cancel the last used album/artist image providers. To make this useful on connection change
+     * it is important to cancel all requests when changing the provider in settings.
+     */
     public void cancelAllRequests() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String artistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
-        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
-
-
-        if (artistProvider.equals("last_fm")) {
-            LastFMManager.getInstance().cancelAll();
-        } else if (artistProvider.equals("fanart_tv")) {
-            FanartTVManager.getInstance().cancelAll();
-        }
-
-        if (albumProvider.equals("musicbrainz")) {
-            MusicBrainzManager.getInstance().cancelAll();
-        } else if (albumProvider.equals("last_fm")) {
-            LastFMManager.getInstance().cancelAll();
-        }
-
+        LimitingRequestQueue.getInstance(mContext).cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
     }
 }
