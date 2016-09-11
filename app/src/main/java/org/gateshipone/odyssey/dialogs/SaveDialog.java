@@ -33,7 +33,7 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 
 public class SaveDialog extends DialogFragment {
 
-    public final static String ARG_OBJECTTYPE = "objecttype";
+    private final static String ARG_OBJECTTYPE = "objecttype";
 
     /**
      * ENUM to determine the object type
@@ -51,6 +51,19 @@ public class SaveDialog extends DialogFragment {
      * Flag to remove the dialogtext on first clicking
      */
     private boolean mFirstClick;
+
+    /**
+     * Returns a new SaveDialog with the given OBJECTTYPE as argument
+     */
+    public static SaveDialog newInstance(OBJECTTYPE type) {
+
+        Bundle args = new Bundle();
+        args.putInt(SaveDialog.ARG_OBJECTTYPE, type.ordinal());
+
+        SaveDialog fragment = new SaveDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -75,7 +88,7 @@ public class SaveDialog extends DialogFragment {
 
         // read arguments to identify type of the object which should be saved
         Bundle mArgs = getArguments();
-        final OBJECTTYPE type = (OBJECTTYPE) mArgs.get(ARG_OBJECTTYPE);
+        final OBJECTTYPE type = OBJECTTYPE.values()[mArgs.getInt(ARG_OBJECTTYPE)];
 
         String dialogTitle = "";
         String editTextDefaultTitle = "";

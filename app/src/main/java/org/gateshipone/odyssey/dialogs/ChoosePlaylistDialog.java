@@ -108,16 +108,13 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
 
         mPlaylistsListViewAdapter = new SavedPlaylistListViewAdapter(getActivity());
 
-        builder.setTitle(getString(R.string.dialog_choose_playlist)).setAdapter(mPlaylistsListViewAdapter, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.dialog_choose_playlist).setAdapter(mPlaylistsListViewAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 if (which == 0) {
                     // open save dialog to create a new bookmark
-                    SaveDialog saveDialog = new SaveDialog();
-                    Bundle arguments = new Bundle();
-                    arguments.putSerializable(SaveDialog.ARG_OBJECTTYPE, SaveDialog.OBJECTTYPE.PLAYLIST);
-                    saveDialog.setArguments(arguments);
+                    SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
                     saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
                 } else {
                     // override existing bookmark
