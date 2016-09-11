@@ -104,4 +104,6 @@
     <string name="preference_default_view_title">Standardansicht</string>
     <string name="preference_default_view_message">Wähle die Standardansicht</string>
     <string name="action_search">Suche</string>
+    <string name="dialog_equalizer_not_found_title">Kein Equalizer verfügbar</string>
+    <string name="dialog_equalizer_not_found_message">Auf dem Gerät wurde kein Equalizer gefunden</string>
 </resources>

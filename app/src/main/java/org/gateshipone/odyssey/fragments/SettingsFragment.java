@@ -24,17 +24,20 @@ import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.dialogs.SaveDialog;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     /**
      * Called to do initial creation of a fragment.
-     *
+     * <p/>
      * This method will setup a listener to start the system audio equalizer.
      */
     @Override
@@ -52,7 +55,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 try {
                     getActivity().startActivity(viewIntent);
                 } catch (ActivityNotFoundException e) {
-                    e.printStackTrace();
+                    ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
+                    equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
                 }
 
                 return true;
@@ -98,7 +102,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     /**
      * Called when a shared preference is changed, added, or removed.
-     *
+     * <p/>
      * This method will restart the activity if the theme was changed.
      */
     @Override
