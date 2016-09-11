@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 import android.widget.EditText;
 
 import org.gateshipone.odyssey.R;
@@ -45,6 +46,11 @@ public class SaveDialog extends DialogFragment {
      * Listener to save the object of the current type
      */
     OnSaveDialogListener mSaveCallback;
+
+    /**
+     * Flag to remove the dialogtext on first clicking
+     */
+    private boolean mFirstClick;
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -91,6 +97,16 @@ public class SaveDialog extends DialogFragment {
         // create edit text for title
         final EditText editTextTitle = new EditText(getActivity());
         editTextTitle.setText(editTextDefaultTitle);
+        // Add a listener that just removes the text on first clicking
+        editTextTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mFirstClick) {
+                    editTextTitle.setText("");
+                    mFirstClick = true;
+                }
+            }
+        });
         builder.setView(editTextTitle);
 
         builder.setMessage(dialogTitle).setPositiveButton(R.string.dialog_action_save, new DialogInterface.OnClickListener() {
