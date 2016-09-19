@@ -37,6 +37,8 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
     private final ArrayList<Integer> mSectionPositions;
     private final HashMap<Character, Integer> mPositionSectionMap;
 
+    private FilterTask mFilterTask = null;
+
     /**
      * Abstract list with model data used for this adapter.
      */
@@ -211,7 +213,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         if (!filter.equals(mFilter)) {
             mFilter = filter;
         }
-        new FilterTask().execute(filter);
+
+        if ( mFilterTask != null ) {
+            mFilterTask.cancel(true);
+        }
+        mFilterTask = new FilterTask();
+        mFilterTask.execute(filter);
     }
 
     /**
@@ -220,8 +227,16 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
      * This method will clear the filtered model data.
      */
     public void removeFilter() {
+        if (mFilteredModelData != null ) {
+            mFilteredModelData.clear();
+        }
         mFilteredModelData = null;
         mFilter = "";
+
+        if ( mFilterTask != null ) {
+            mFilterTask.cancel(true);
+            mFilterTask = null;
+        }
 
         createSections();
 
@@ -295,6 +310,10 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
             String filter = params[0];
 
             for (T data : mModelData) {
+                // Check if task was cancelled from the outside.
+                if ( isCancelled() ) {
+                    return new Pair<>(filter, result);
+                }
                 if (data.getSectionTitle().toLowerCase().contains(filter.toLowerCase())) {
                     result.add(data);
                 }
@@ -304,12 +323,15 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         }
 
         protected void onPostExecute(Pair<String, List<T>> result) {
-            if (mFilter.equals(result.first)) {
+            if (!isCancelled() && mFilter.equals(result.first)) {
                 mFilteredModelData = result.second;
 
                 createSections();
 
                 notifyDataSetChanged();
+                if ( mFilterTask == this ) {
+                    mFilterTask = null;
+                }
             }
         }
     }
