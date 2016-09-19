@@ -87,7 +87,8 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         if (data == null) {
             mModelData.clear();
         } else {
-            mModelData = data;
+            mModelData.clear();
+            mModelData.addAll(data);
         }
         synchronized (mFilteredModelData) {
             mFilteredModelData.clear();
@@ -200,22 +201,6 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         mScrollSpeed = speed;
     }
 
-    /**
-     * Return the current applied model data.
-     * <p>
-     * This will be the filtered data if the list is not null.
-     *
-     * @return The current model
-     */
-    public List<T> getModelData() {
-        synchronized (mFilteredModelData) {
-            if (!mFilteredModelData.isEmpty()) {
-                return mFilteredModelData;
-            } else {
-                return mModelData;
-            }
-        }
-    }
 
     /**
      * Apply the given string as a filter to the model.

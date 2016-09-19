@@ -47,7 +47,7 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        BookmarkModel bookmark = getModelData().get(position);
+        BookmarkModel bookmark = (BookmarkModel)getItem(position);
 
         // title
         String bookmarkTitle = bookmark.getTitle();
