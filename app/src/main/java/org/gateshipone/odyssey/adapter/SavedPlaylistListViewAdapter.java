@@ -46,7 +46,7 @@ public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistMod
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        PlaylistModel playlist = getModelData().get(position);
+        PlaylistModel playlist = (PlaylistModel)getItem(position);
 
         // title
         String playlistTitle = playlist.getPlaylistName();

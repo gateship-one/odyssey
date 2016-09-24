@@ -56,7 +56,7 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AlbumModel album = getModelData().get(position);
+        AlbumModel album = (AlbumModel)getItem(position);
         String label = album.getAlbumName();
 
         if (convertView != null) {

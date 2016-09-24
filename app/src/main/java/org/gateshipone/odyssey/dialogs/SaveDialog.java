@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 import android.widget.EditText;
 
 import org.gateshipone.odyssey.R;
@@ -32,7 +33,7 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 
 public class SaveDialog extends DialogFragment {
 
-    public final static String ARG_OBJECTTYPE = "objecttype";
+    private final static String ARG_OBJECTTYPE = "objecttype";
 
     /**
      * ENUM to determine the object type
@@ -45,6 +46,24 @@ public class SaveDialog extends DialogFragment {
      * Listener to save the object of the current type
      */
     OnSaveDialogListener mSaveCallback;
+
+    /**
+     * Flag to remove the dialogtext on first clicking
+     */
+    private boolean mFirstClick;
+
+    /**
+     * Returns a new SaveDialog with the given OBJECTTYPE as argument
+     */
+    public static SaveDialog newInstance(OBJECTTYPE type) {
+
+        Bundle args = new Bundle();
+        args.putInt(SaveDialog.ARG_OBJECTTYPE, type.ordinal());
+
+        SaveDialog fragment = new SaveDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -69,7 +88,7 @@ public class SaveDialog extends DialogFragment {
 
         // read arguments to identify type of the object which should be saved
         Bundle mArgs = getArguments();
-        final OBJECTTYPE type = (OBJECTTYPE) mArgs.get(ARG_OBJECTTYPE);
+        final OBJECTTYPE type = OBJECTTYPE.values()[mArgs.getInt(ARG_OBJECTTYPE)];
 
         String dialogTitle = "";
         String editTextDefaultTitle = "";
@@ -91,6 +110,16 @@ public class SaveDialog extends DialogFragment {
         // create edit text for title
         final EditText editTextTitle = new EditText(getActivity());
         editTextTitle.setText(editTextDefaultTitle);
+        // Add a listener that just removes the text on first clicking
+        editTextTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mFirstClick) {
+                    editTextTitle.setText("");
+                    mFirstClick = true;
+                }
+            }
+        });
         builder.setView(editTextTitle);
 
         builder.setMessage(dialogTitle).setPositiveButton(R.string.dialog_action_save, new DialogInterface.OnClickListener() {

@@ -37,6 +37,8 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
     private final ArrayList<Integer> mSectionPositions;
     private final HashMap<Character, Integer> mPositionSectionMap;
 
+    private FilterTask mFilterTask = null;
+
     /**
      * Abstract list with model data used for this adapter.
      */
@@ -44,10 +46,10 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
     /**
      * Abstract list with filtered model data, this list is null if no filter is applied.
-     *
+     * <p>
      * If not null this list will be used as the model for the adapter.
      */
-    private List<T> mFilteredModelData;
+    private final List<T> mFilteredModelData;
 
     /**
      * The currently applied filter string.
@@ -68,6 +70,8 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
         mModelData = new ArrayList<>();
 
+        mFilteredModelData = new ArrayList<>();
+
         mFilter = "";
     }
 
@@ -83,7 +87,11 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         if (data == null) {
             mModelData.clear();
         } else {
-            mModelData = data;
+            mModelData.clear();
+            mModelData.addAll(data);
+        }
+        synchronized (mFilteredModelData) {
+            mFilteredModelData.clear();
         }
 
         createSections();
@@ -113,10 +121,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
         String sectionTitle;
 
-        if (mFilteredModelData != null) {
-            sectionTitle = mFilteredModelData.get(pos).getSectionTitle();
-        } else {
-            sectionTitle = mModelData.get(pos).getSectionTitle();
+        synchronized (mFilteredModelData) {
+            if (!mFilteredModelData.isEmpty()) {
+                sectionTitle = mFilteredModelData.get(pos).getSectionTitle();
+            } else {
+                sectionTitle = mModelData.get(pos).getSectionTitle();
+            }
         }
 
         char itemSection;
@@ -145,10 +155,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
      */
     @Override
     public int getCount() {
-        if (mFilteredModelData != null) {
-            return mFilteredModelData.size();
-        } else {
-            return mModelData.size();
+        synchronized (mFilteredModelData) {
+            if (!mFilteredModelData.isEmpty() || !mFilter.isEmpty()) {
+                return mFilteredModelData.size();
+            } else {
+                return mModelData.size();
+            }
         }
     }
 
@@ -160,10 +172,12 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
      */
     @Override
     public Object getItem(int position) {
-        if (mFilteredModelData != null) {
-            return mFilteredModelData.get(position);
-        } else {
-            return mModelData.get(position);
+        synchronized (mFilteredModelData) {
+            if (!mFilteredModelData.isEmpty() || !mFilter.isEmpty()) {
+                return mFilteredModelData.get(position);
+            } else {
+                return mModelData.get(position);
+            }
         }
     }
 
@@ -187,20 +201,6 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         mScrollSpeed = speed;
     }
 
-    /**
-     * Return the current applied model data.
-     *
-     * This will be the filtered data if the list is not null.
-     *
-     * @return The current model
-     */
-    public List<T> getModelData() {
-        if (mFilteredModelData != null) {
-            return mFilteredModelData;
-        } else {
-            return mModelData;
-        }
-    }
 
     /**
      * Apply the given string as a filter to the model.
@@ -211,17 +211,29 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         if (!filter.equals(mFilter)) {
             mFilter = filter;
         }
-        new FilterTask().execute(filter);
+
+        if (mFilterTask != null) {
+            mFilterTask.cancel(true);
+        }
+        mFilterTask = new FilterTask();
+        mFilterTask.execute(filter);
     }
 
     /**
      * Remove a previous filter.
-     *
+     * <p>
      * This method will clear the filtered model data.
      */
     public void removeFilter() {
-        mFilteredModelData = null;
+        synchronized (mFilteredModelData) {
+            mFilteredModelData.clear();
+        }
         mFilter = "";
+
+        if (mFilterTask != null) {
+            mFilterTask.cancel(true);
+            mFilterTask = null;
+        }
 
         createSections();
 
@@ -236,16 +248,8 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         mSectionPositions.clear();
         mPositionSectionMap.clear();
 
-        List<T> sectionList;
-
-        if (mFilteredModelData != null) {
-            sectionList = mFilteredModelData;
-        } else {
-            sectionList = mModelData;
-        }
-
-        if (sectionList.size() > 0) {
-            GenericModel currentModel = sectionList.get(0);
+        if (getCount() > 0) {
+            GenericModel currentModel = (GenericModel)getItem(0);
 
             char lastSection;
             if (currentModel.getSectionTitle().length() > 0) {
@@ -260,7 +264,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
             for (int i = 1; i < getCount(); i++) {
 
-                currentModel = sectionList.get(i);
+                currentModel = (GenericModel)getItem(i);
 
                 char currentSection;
                 if (currentModel.getSectionTitle().length() > 0) {
@@ -283,7 +287,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
 
     /**
      * Async task to perform the filtering of the current model data with the given filter string.
-     *
+     * <p>
      * The filter will be applied to the section title of the model data.
      */
     private class FilterTask extends AsyncTask<String, Void, Pair<String, List<T>>> {
@@ -295,6 +299,11 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
             String filter = params[0];
 
             for (T data : mModelData) {
+                // Check if task was cancelled from the outside.
+                if (isCancelled()) {
+                    result.clear();
+                    return new Pair<>(filter, result);
+                }
                 if (data.getSectionTitle().toLowerCase().contains(filter.toLowerCase())) {
                     result.add(data);
                 }
@@ -304,12 +313,17 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
         }
 
         protected void onPostExecute(Pair<String, List<T>> result) {
-            if (mFilter.equals(result.first)) {
-                mFilteredModelData = result.second;
+            if (!isCancelled() && mFilter.equals(result.first)) {
+                mFilteredModelData.clear();
+
+                mFilteredModelData.addAll(result.second);
 
                 createSections();
 
                 notifyDataSetChanged();
+                if (mFilterTask == this) {
+                    mFilterTask = null;
+                }
             }
         }
     }

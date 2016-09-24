@@ -47,7 +47,7 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = getModelData().get(position);
+        TrackModel track = (TrackModel)getItem(position);
 
         // title
         String trackTitle = track.getTrackName();

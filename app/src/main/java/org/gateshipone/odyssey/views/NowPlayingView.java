@@ -48,6 +48,7 @@ import android.widget.ViewSwitcher;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
+import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -365,7 +366,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     try {
                         activity.startActivityForResult(startEqualizerIntent, 0);
                     } catch (ActivityNotFoundException e) {
-                        e.printStackTrace();
+                        ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
+                        equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
                     }
                 }
                 return true;

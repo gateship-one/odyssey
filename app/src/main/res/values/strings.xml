@@ -58,6 +58,9 @@
     <string name="dialog_choose_storage_volume_title">Choose storage volume</string>
     <string name="dialog_choose_bookmark">Choose bookmark</string>
     <string name="dialog_choose_playlist">Choose playlist</string>
+    <string name="dialog_equalizer_not_found_title">No equalizer available</string>
+    <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer</string>
+    <string name="error_dialog_ok_action" translatable="false">Ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>

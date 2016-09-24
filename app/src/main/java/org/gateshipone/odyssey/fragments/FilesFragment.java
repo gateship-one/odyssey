@@ -181,9 +181,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         FileModel selectedFile = (FileModel) mAdapter.getItem(position);
 
-        // if file is directory open new fragment
         if (selectedFile.isDirectory()) {
+            // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
+        } else {
+            // play the clicked file
+            playFile(position);
         }
     }
 

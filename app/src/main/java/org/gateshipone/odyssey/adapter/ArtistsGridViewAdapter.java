@@ -59,7 +59,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  imp
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArtistModel artist = getModelData().get(position);
+        ArtistModel artist = (ArtistModel)getItem(position);
         String label = artist.getArtistName();
 
         // Check if a view can be recycled
