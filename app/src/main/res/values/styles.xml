@@ -128,7 +128,9 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
     </style>
 
-    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"></style>
+    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:background">@color/colorBackground</item>
+    </style>
 
     <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
