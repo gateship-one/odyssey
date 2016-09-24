@@ -22,11 +22,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 public class CoverBitmapLoader {
@@ -46,12 +48,32 @@ public class CoverBitmapLoader {
         if (track != null) {
             mTrack = track;
             // start the loader thread to load the image async
-            Thread loaderThread = new Thread(new ImageLoaderRunnable());
+            Thread loaderThread = new Thread(new TrackAlbumImageRunner());
             loaderThread.start();
         }
     }
 
-    private class ImageLoaderRunnable implements Runnable {
+    public void getArtistImage(ArtistModel artist) {
+        if ( artist == null) {
+            return;
+        }
+
+        // start the loader thread to load the image async
+        Thread loaderThread = new Thread(new ArtistImageRunner(artist));
+        loaderThread.start();
+    }
+
+    public void getAlbumImage(AlbumModel album) {
+        if ( album == null) {
+            return;
+        }
+
+        // start the loader thread to load the image async
+        Thread loaderThread = new Thread(new AlbumImageRunner(album));
+        loaderThread.start();
+    }
+
+    private class TrackAlbumImageRunner implements Runnable {
 
         /**
          * Load the image for the given track from the mediastore.
@@ -83,7 +105,61 @@ public class CoverBitmapLoader {
                 mListener.receiveBitmap(image);
             } catch (ImageNotFoundException e) {
                 // Try to fetch the image here
-                // FIXME fetch album image here. (Needs album id in trackmodel)
+                ArtworkManager.getInstance(mContext).fetchAlbumImage(mTrack);
+            }
+        }
+    }
+
+    private class ArtistImageRunner implements Runnable {
+
+        private ArtistModel mArtist;
+
+        public ArtistImageRunner(ArtistModel artist) {
+            mArtist = artist;
+        }
+
+        /**
+         * Load the image for the given artist from the mediastore.
+         */
+        @Override
+        public void run() {
+            try {
+                Bitmap artistImage = ArtworkManager.getInstance(mContext).getArtistImage(mArtist);
+                mListener.receiveBitmap(artistImage);
+            } catch (ImageNotFoundException e) {
+                ArtworkManager.getInstance(mContext).fetchArtistImage(mArtist);
+            }
+        }
+    }
+
+    private class AlbumImageRunner implements Runnable {
+
+        private AlbumModel mAlbum;
+
+        public AlbumImageRunner(AlbumModel album) {
+            mAlbum = album;
+        }
+
+        /**
+         * Load the image for the given album from the mediastore.
+         */
+        @Override
+        public void run() {
+            try {
+                // Check if local image (tagged in album) is available
+                if ( mAlbum.getAlbumArtURL() != null && !mAlbum.getAlbumArtURL().isEmpty() ) {
+                    Bitmap cover = (Bitmap) BitmapFactory.decodeFile(mAlbum.getAlbumArtURL());
+                    mListener.receiveBitmap(cover);
+                } else {
+                    if ( mAlbum.getAlbumID() == -1 ) {
+                        mAlbum.setAlbumID(MusicLibraryHelper.getAlbumIDFromKey(mAlbum.getAlbumKey(), mContext));
+                    }
+                    // No tagged album image available, check download database
+                    Bitmap artistImage = ArtworkManager.getInstance(mContext).getAlbumImage(mAlbum);
+                    mListener.receiveBitmap(artistImage);
+                }
+            } catch (ImageNotFoundException e) {
+                ArtworkManager.getInstance(mContext).fetchAlbumImage(mAlbum);
             }
         }
     }

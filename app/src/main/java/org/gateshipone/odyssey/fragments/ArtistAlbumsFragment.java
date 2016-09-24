@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -36,11 +37,13 @@ import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends GenericAlbumsFragment {
+public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener {
 
     /**
      * The name of the artist showed in the fragment.
@@ -59,6 +62,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
     public final static String ARG_ARTISTNAME = "artistname";
     public final static String ARG_ARTISTID = "artistid";
 
+    private CoverBitmapLoader mBitmapLoader;
+
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -75,6 +80,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
         setHasOptionsMenu(true);
 
+        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+
         return rootView;
     }
 
@@ -90,6 +97,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
         activity.setUpToolbar(mArtistName, false, false, false);
+
+        mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, null, mArtistID));
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
@@ -226,6 +235,20 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void receiveBitmap(final Bitmap bm) {
+        if (bm != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+                    activity.setUpToolbar(mArtistName, false, false, true);
+                    activity.setToolbarImage(bm);
+                }
+            });
         }
     }
 }

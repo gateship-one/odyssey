@@ -19,6 +19,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -39,13 +40,15 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
+public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener {
 
     /**
      * Listener to open an artist
@@ -68,6 +71,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private String mAlbumArtURL = "";
     private String mArtistName = "";
     private String mAlbumKey = "";
+
+    private CoverBitmapLoader mBitmapLoader;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -97,6 +102,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         mAlbumKey = args.getString(ARG_ALBUMKEY);
 
         setHasOptionsMenu(true);
+
+        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
         return rootView;
     }
@@ -128,12 +135,11 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        if (mAlbumArtURL != null) {
-            activity.setUpToolbar(mAlbumTitle, false, false, true);
-            activity.setToolbarImage(Drawable.createFromPath(mAlbumArtURL));
-        } else {
-            activity.setUpToolbar(mAlbumTitle, false, false, false);
-        }
+
+        activity.setUpToolbar(mAlbumTitle, false, false, false);
+
+        AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
+        mBitmapLoader.getAlbumImage(album);
 
         // set up play button
         activity.setUpPlayButton(new View.OnClickListener() {
@@ -308,6 +314,20 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+    }
+
+    @Override
+    public void receiveBitmap(final Bitmap bm) {
+        if (bm != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
+                    activity.setUpToolbar(mArtistName, false, false, true);
+                    activity.setToolbarImage(bm);
+                }
+            });
         }
     }
 }

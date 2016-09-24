@@ -27,6 +27,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.ArrayList;
@@ -110,6 +111,32 @@ public class MusicLibraryHelper {
         }
 
         return albumInformations;
+    }
+
+    /**
+     * Retrieves the album ID for the given album key
+     * @param albumKey Key to use for retrieval
+     * @param context Context used for the request
+     * @return albumID if found or -1 if not found.
+     */
+    public static long getAlbumIDFromKey(String albumKey, Context context) {
+        String whereVal[] = {albumKey};
+
+        String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
+
+        Cursor albumCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
+
+        long albumID = -1;
+
+        if (albumCursor != null) {
+            albumCursor.moveToFirst();
+
+             albumID = albumCursor.getLong(albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+
+            albumCursor.close();
+        }
+
+        return albumID;
     }
 
     /**

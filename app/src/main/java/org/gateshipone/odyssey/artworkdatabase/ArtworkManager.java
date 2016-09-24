@@ -46,6 +46,7 @@ import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResp
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -204,6 +205,47 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param album Album to fetch an image for.
      */
     public void fetchAlbumImage(final AlbumModel album) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
+
+        boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
+
+        if (wifiOnly && !isWifi) {
+            return;
+        }
+
+        if (albumProvider.equals("musicbrainz")) {
+            MusicBrainzManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<AlbumImageResponse>() {
+                @Override
+                public void onResponse(AlbumImageResponse response) {
+                    new InsertAlbumImageTask().execute(response);
+                }
+            }, this);
+        } else if (albumProvider.equals("last_fm")) {
+            LastFMManager.getInstance(mContext).fetchAlbumImage(album, new Response.Listener<AlbumImageResponse>() {
+                @Override
+                public void onResponse(AlbumImageResponse response) {
+                    new InsertAlbumImageTask().execute(response);
+                }
+            }, this);
+        }
+    }
+
+    /**
+     * Starts an asynchronous fetch for the image of the given album
+     *
+     * @param track Track to be used for image fetching
+     */
+    public void fetchAlbumImage(final TrackModel track) {
+        // Create a dummy album
+        AlbumModel album = new AlbumModel(track.getTrackAlbumName(), null, track.getTrackArtistName(),
+                track.getTrackAlbumKey(), MusicLibraryHelper.getAlbumIDFromKey(track.getTrackAlbumKey(), mContext));
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         String albumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
 

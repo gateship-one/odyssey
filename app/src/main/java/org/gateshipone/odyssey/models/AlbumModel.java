@@ -40,7 +40,7 @@ public class AlbumModel implements GenericModel {
      */
     private final String mAlbumKey;
 
-    private final long mAlbumID;
+    private long mAlbumID;
 
     private String mMBID;
 
@@ -90,6 +90,10 @@ public class AlbumModel implements GenericModel {
         return mAlbumID;
     }
 
+    public void setAlbumID(long albumID) {
+        mAlbumID = albumID;
+    }
+
     /**
      * Return the AlbumModel as a String for debugging purposes.
      */
@@ -128,6 +132,7 @@ public class AlbumModel implements GenericModel {
     public String getMBID() {
         return mMBID;
     }
+
 
     public synchronized void setFetching(boolean fetching) {
         mImageFetching = fetching;
