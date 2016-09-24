@@ -170,11 +170,13 @@
     <string name="preference_artwork_album_provider_summary">Select an provider for album cover images.</string>
     <string name="preference_artwork_album_provider_message">Select an provider for album cover images.</string>
 
+    <string name="provider_off">Off</string>
     <string name="musicbrainz">MusicBrainz</string>
     <string name="last_fm">Last.fm</string>
     <string name="fanart_tv">Fanart.tv</string>
 
     <string-array name="preference_artwork_album_provider_entries">
+        <item>@string/provider_off</item>
         <item>@string/musicbrainz</item>
         <item>@string/last_fm</item>
     </string-array>
@@ -184,6 +186,7 @@
     <string name="preference_artwork_artist_provider_message">Select an provider for artist cover images.</string>
 
     <string-array name="preference_artwork_artist_provider_entries">
+        <item>@string/provider_off</item>
         <item>@string/last_fm</item>
         <item>@string/fanart_tv</item>
     </string-array>
