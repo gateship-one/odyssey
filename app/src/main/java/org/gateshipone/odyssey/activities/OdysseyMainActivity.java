@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -73,6 +74,7 @@ import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -106,6 +108,8 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     public ProgressDialog mProgressDialog;
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
+
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,6 +332,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
             nowPlayingView.onResume();
         }
+
+        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
+        mServiceConnection.openConnection();
     }
 
     protected void onSaveInstanceState(Bundle savedInstanceState) {
@@ -426,6 +433,14 @@ public class OdysseyMainActivity extends AppCompatActivity
         if (v.getId() == R.id.current_playlist_listview) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu_current_playlist, menu);
+
+            try {
+                if (mServiceConnection.getPBS().getCurrentIndex() == ((AdapterView.AdapterContextMenuInfo)menuInfo).position) {
+                    menu.findItem(R.id.view_current_playlist_action_playnext).setVisible(false);
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
