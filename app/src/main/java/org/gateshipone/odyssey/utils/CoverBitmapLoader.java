@@ -45,7 +45,7 @@ public class CoverBitmapLoader {
      * Load the image for the given track from the mediastore.
      */
     public void getImage(TrackModel track) {
-        if (track != null) {
+        if (track != null && !track.getTrackAlbumKey().isEmpty()) {
             mTrack = track;
             // start the loader thread to load the image async
             Thread loaderThread = new Thread(new TrackAlbumImageRunner());
