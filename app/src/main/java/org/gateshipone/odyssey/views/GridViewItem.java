@@ -20,12 +20,10 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,8 +33,6 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
-
-import java.lang.ref.WeakReference;
 
 public class GridViewItem extends RelativeLayout {
     private static final String TAG = GridViewItem.class.getSimpleName();
@@ -91,7 +87,7 @@ public class GridViewItem extends RelativeLayout {
      * Starts the image retrieval task
      */
     public void startCoverImageTask() {
-        if (((mHolder.imagePath != null && mLoaderTask == null) || (mHolder.artworkManager != null && mHolder.modelItem != null) ) && !mCoverDone) {
+        if (mLoaderTask == null && mHolder.modelItem != null && !mCoverDone) {
             mLoaderTask = new AsyncLoader();
             mLoaderTask.execute(mHolder);
         }
@@ -100,7 +96,6 @@ public class GridViewItem extends RelativeLayout {
 
     public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
         if ( !modelItem.equals(mHolder.modelItem) || !mCoverDone) {
-            Log.v(TAG,"Resetting image: " + mCoverDone + ":" + modelItem + ":" + mHolder.modelItem);
             setImage(null);
         }
         mHolder.artworkManager = artworkManager;
@@ -137,6 +132,7 @@ public class GridViewItem extends RelativeLayout {
             mLoaderTask = null;
 
             mCoverDone = false;
+
             mSwitcher.setOutAnimation(null);
             mSwitcher.setInAnimation(null);
             mImageView.setImageDrawable(null);

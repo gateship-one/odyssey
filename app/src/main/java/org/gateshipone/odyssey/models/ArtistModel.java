@@ -114,4 +114,15 @@ public class ArtistModel implements GenericModel {
         return mImageFetching;
     }
 
+    @Override
+    public boolean equals(Object artist) {
+        if ( null == artist) {
+            return false;
+        }
+        if ( artist instanceof ArtistModel) {
+            return mArtistID == ((ArtistModel) artist).mArtistID && mArtistName.equals(((ArtistModel) artist).mArtistName);
+        } else {
+            return false;
+        }
+    }
 }
