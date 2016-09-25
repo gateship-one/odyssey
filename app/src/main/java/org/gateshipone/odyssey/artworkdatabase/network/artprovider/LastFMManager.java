@@ -91,21 +91,18 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                             getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    error.printStackTrace();
                                     errorListener.fetchError(artist);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
                     errorListener.fetchError(artist);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
                 errorListener.fetchError(artist);
             }
         });
@@ -159,20 +156,18 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                             getAlbumImage(image.getString("#text"), album, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    error.printStackTrace();
                                     errorListener.fetchError(album);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    errorListener.fetchError(album);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
                 errorListener.fetchError(album);
             }
         });

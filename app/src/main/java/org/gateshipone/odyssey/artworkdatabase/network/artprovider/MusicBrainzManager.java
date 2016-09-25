@@ -101,32 +101,29 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                                             getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    error.printStackTrace();
                                                     errorListener.fetchError(artist);
                                                 }
                                             });
                                         }
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    errorListener.fetchError(artist);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
                                 errorListener.fetchError(artist);
                             }
                         });
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    errorListener.fetchError(artist);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
                 errorListener.fetchError(artist);
             }
         });
@@ -173,7 +170,6 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
                 errorListener.fetchError(album);
             }
         });
@@ -201,7 +197,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                 });
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            errorListener.fetchError(album);
         }
 
     }
