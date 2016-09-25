@@ -601,17 +601,19 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             }
             mCurrentBulkAlbum = album;
 
-            // Check if image already there
-            try {
-                if (album.getAlbumID() != -1) {
-                    mDBManager.getAlbumImage(album.getAlbumID());
-                } else {
-                    mDBManager.getAlbumImage(album.getAlbumName());
+            if ( album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty() ) {
+                // Check if image already there
+                try {
+                    if (album.getAlbumID() != -1) {
+                        mDBManager.getAlbumImage(album.getAlbumID());
+                    } else {
+                        mDBManager.getAlbumImage(album.getAlbumName());
+                    }
+                    // If this does not throw the exception it already has an image.
+                } catch (ImageNotFoundException e) {
+                    fetchAlbumImage(album);
+                    return;
                 }
-                // If this does not throw the exception it already has an image.
-            } catch (ImageNotFoundException e) {
-                fetchAlbumImage(album);
-                return;
             }
 
             synchronized (mAlbumList) {
