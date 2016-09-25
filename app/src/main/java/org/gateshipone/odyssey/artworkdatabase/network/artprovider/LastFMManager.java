@@ -172,7 +172,8 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                error.printStackTrace();
+                errorListener.fetchError(album);
             }
         });
     }

@@ -219,4 +219,8 @@
 
     <!-- PBS working message -->
     <string name="playbackservice_working">Please wait</string>
+
+    <!-- Bulk downloader service -->
+    <string name="downloader_notification_title">Bulk download running</string>
+    <string name="downloader_notification_remaining_images">Downloaded images:</string>
 </resources>

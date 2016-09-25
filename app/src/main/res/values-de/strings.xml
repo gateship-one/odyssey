@@ -127,4 +127,6 @@
     <string name="preference_artwork_wifi_only_text">Bilder werden nur bei aktiver WIFI-Verbindung heruntergeladen</string>
     <string name="preference_artwork_wifi_only_title">Nur WIFI fürs Bilderrunterladen nutzen</string>
     <string name="provider_off">Aus</string>
+    <string name="downloader_notification_remaining_images">Heruntergeladene Bilder:</string>
+    <string name="downloader_notification_title">Herunterladen aktiv</string>
 </resources>

@@ -83,8 +83,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                     artists = response.getJSONArray("artists");
 
                     if (!artists.isNull(0)) {
-                        JSONObject artist = artists.getJSONObject(0);
-                        String artistMBID = artist.getString("id");
+                        JSONObject artistObj = artists.getJSONObject(0);
+                        String artistMBID = artistObj.getString("id");
 
                         getArtistImageURL(artistMBID, new Response.Listener<JSONObject>() {
                             @Override
@@ -101,7 +101,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                                             getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    // FIXME error handling
+                                                    error.printStackTrace();
+                                                    errorListener.fetchError(artist);
                                                 }
                                             });
                                         }
@@ -113,7 +114,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
+                                error.printStackTrace();
+                                errorListener.fetchError(artist);
                             }
                         });
                     }
@@ -124,7 +126,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // FIXME error handling
+                error.printStackTrace();
+                errorListener.fetchError(artist);
             }
         });
     }
@@ -170,7 +173,8 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                error.printStackTrace();
+                errorListener.fetchError(album);
             }
         });
     }

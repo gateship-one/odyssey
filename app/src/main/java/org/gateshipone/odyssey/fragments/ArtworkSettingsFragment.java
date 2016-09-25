@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -56,6 +58,35 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
             public boolean onPreferenceClick(Preference preference) {
                 ArtworkDatabaseManager.getInstance(getContext()).clearArtistImages();
+                return true;
+            }
+        });
+
+        Preference clearBlockedAlbums = findPreference("pref_clear_blocked_album");
+        clearBlockedAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                ArtworkDatabaseManager.getInstance(getContext()).clearBlockedAlbumImages();
+                return true;
+            }
+        });
+
+        Preference clearBlockedArtists = findPreference("pref_clear_blocked_artist");
+        clearBlockedArtists.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                ArtworkDatabaseManager.getInstance(getContext()).clearBlockedArtistImages();
+                return true;
+            }
+        });
+
+        Preference buldLoad = findPreference("pref_bulk_load");
+        buldLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
+                serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
+                getActivity().startService(serviceIntent);
                 return true;
             }
         });

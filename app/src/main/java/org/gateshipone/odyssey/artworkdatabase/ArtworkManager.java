@@ -50,6 +50,7 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
@@ -63,6 +64,14 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     private static ArtworkManager mInstance;
     private Context mContext;
+
+    private final List<AlbumModel> mAlbumList = new ArrayList<>();
+    private final List<ArtistModel> mArtistList = new ArrayList<>();
+
+    private AlbumModel mCurrentBulkAlbum = null;
+    private ArtistModel mCurrentBulkArtist = null;
+
+    private BulkLoadingProgressCallback mBulkProgressCallback;
 
     private ArtworkManager(Context context) {
 
@@ -375,6 +384,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected ArtistModel doInBackground(ArtistImageResponse... params) {
             ArtistImageResponse response = params[0];
 
+            if (mCurrentBulkArtist == response.artist) {
+                fetchNextBulkArtist();
+            }
             if (response.image == null) {
                 mDBManager.insertArtistImage(response.artist, response.image);
                 return response.artist;
@@ -428,6 +440,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         protected AlbumModel doInBackground(AlbumImageResponse... params) {
             AlbumImageResponse response = params[0];
 
+            if (mCurrentBulkAlbum == response.album) {
+                fetchNextBulkAlbum();
+            }
             if (response.image == null) {
                 mDBManager.insertAlbumImage(response.album, response.image);
                 return response.album;
@@ -515,5 +530,147 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 return true;
             }
         });
+    }
+
+    public void bulkLoadImages(BulkLoadingProgressCallback progressCallback) {
+        if (progressCallback == null) {
+            return;
+        }
+        mBulkProgressCallback = progressCallback;
+        Log.v(TAG, "Start bulk loading");
+        List<AlbumModel> albums = MusicLibraryHelper.getAllAlbums(mContext);
+        new ParseAlbumListTask().execute(albums);
+
+        List<ArtistModel> artits = MusicLibraryHelper.getAllArtists(mContext);
+        new ParseArtistListTask().execute(artits);
+    }
+
+    private class ParseAlbumListTask extends AsyncTask<List<AlbumModel>, Object, Object> {
+
+        @Override
+        protected Object doInBackground(List<AlbumModel>... lists) {
+            List<AlbumModel> albumList = lists[0];
+
+            mBulkProgressCallback.startAlbumLoading(albumList.size());
+
+            Log.v(TAG, "Received " + albumList.size() + " albums for bulk loading");
+            synchronized (mAlbumList) {
+                mAlbumList.clear();
+                mAlbumList.addAll(albumList);
+            }
+            if ( !mArtistList.isEmpty() ) {
+                fetchNextBulkAlbum();
+                fetchNextBulkArtist();
+            }
+            return null;
+        }
+    }
+
+    private class ParseArtistListTask extends AsyncTask<List<ArtistModel>, Object, Object> {
+
+        @Override
+        protected Object doInBackground(List<ArtistModel>... lists) {
+            List<ArtistModel> artistList = lists[0];
+
+            Log.v(TAG, "Received " + artistList.size() + " artists for bulk loading");
+            mBulkProgressCallback.startArtistLoading(artistList.size());
+            synchronized (mArtistList) {
+                mArtistList.clear();
+                mArtistList.addAll(artistList);
+            }
+            if ( !mAlbumList.isEmpty() ) {
+                fetchNextBulkAlbum();
+                fetchNextBulkArtist();
+            }
+            return null;
+        }
+    }
+
+    private void fetchNextBulkAlbum() {
+        boolean isEmpty;
+        synchronized (mAlbumList) {
+            isEmpty = mAlbumList.isEmpty();
+        }
+
+        while (!isEmpty) {
+            AlbumModel album;
+            synchronized (mAlbumList) {
+                album = mAlbumList.remove(0);
+                Log.v(TAG, "Bulk load next album: " + album.getAlbumName() + ":" + album.getArtistName() + " remaining: " + mAlbumList.size());
+                mBulkProgressCallback.albumsRemaining(mAlbumList.size());
+            }
+            mCurrentBulkAlbum = album;
+
+            // Check if image already there
+            try {
+                if (album.getAlbumID() != -1) {
+                    mDBManager.getAlbumImage(album.getAlbumID());
+                } else {
+                    mDBManager.getAlbumImage(album.getAlbumName());
+                }
+                // If this does not throw the exception it already has an image.
+            } catch (ImageNotFoundException e) {
+                fetchAlbumImage(album);
+                return;
+            }
+
+            synchronized (mAlbumList) {
+                isEmpty = mAlbumList.isEmpty();
+            }
+        }
+        if ( mArtistList.isEmpty() ) {
+            mBulkProgressCallback.finishedLoading();
+        }
+    }
+
+    private void fetchNextBulkArtist() {
+        boolean isEmpty;
+        synchronized (mArtistList) {
+            isEmpty = mArtistList.isEmpty();
+        }
+
+        while (!isEmpty) {
+            ArtistModel artist;
+            synchronized (mArtistList) {
+                artist = mArtistList.remove(0);
+                Log.v(TAG, "Bulk load next artist: " + artist.getArtistName() + " remaining: " + mArtistList.size());
+                mBulkProgressCallback.artistsRemaining(mArtistList.size());
+            }
+            mCurrentBulkArtist = artist;
+
+            // Check if image already there
+            try {
+                if (artist.getArtistID() != -1) {
+                    mDBManager.getArtistImage(artist.getArtistID());
+                } else {
+                    mDBManager.getArtistImage(artist.getArtistName());
+                }
+                // If this does not throw the exception it already has an image.
+            } catch (ImageNotFoundException e) {
+                fetchArtistImage(artist);
+                return;
+            }
+
+            synchronized (mArtistList) {
+                isEmpty = mArtistList.isEmpty();
+            }
+        }
+
+        if ( mAlbumList.isEmpty() ) {
+            mBulkProgressCallback.finishedLoading();
+        }
+    }
+
+
+    public interface BulkLoadingProgressCallback {
+        void startAlbumLoading(int albumCount);
+
+        void startArtistLoading(int artistCount);
+
+        void albumsRemaining(int remainingAlbums);
+
+        void artistsRemaining(int remainingArtists);
+
+        void finishedLoading();
     }
 }
