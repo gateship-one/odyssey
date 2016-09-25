@@ -29,11 +29,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
-import org.gateshipone.odyssey.dialogs.SaveDialog;
-import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 

@@ -18,10 +18,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
@@ -36,7 +33,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
     /**
      * Called to do initial creation of a fragment.
-     *
+     * <p>
      * This method will setup a listener to start the system audio equalizer.
      */
     @Override
@@ -102,11 +99,10 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
     /**
      * Called when a shared preference is changed, added, or removed.
-     *
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_album_provider")|| key.equals("pref_artist_provider")) {
+        if (key.equals("pref_album_provider") || key.equals("pref_artist_provider")) {
             ArtworkManager.getInstance(getContext()).cancelAllRequests();
         }
     }

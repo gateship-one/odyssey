@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -37,16 +36,30 @@
         android:summary="@string/preference_artwork_artist_provider_summary"
         android:title="@string/preference_artwork_artist_provider_title" />
     <CheckBoxPreference
-        android:title="@string/preference_artwork_wifi_only_title"
-        android:summary="@string/preference_artwork_wifi_only_text"
-        android:persistent="true"
         android:defaultValue="true"
         android:key="pref_download_wifi_only"
-        />
+        android:persistent="true"
+        android:summary="@string/preference_artwork_wifi_only_text"
+        android:title="@string/preference_artwork_wifi_only_title" />
     <Preference
         android:key="pref_clear_artist"
+        android:summary="@string/preference_artwork_clear_artist_summary"
         android:title="@string/preference_artwork_clear_artist" />
     <Preference
         android:key="pref_clear_album"
+        android:summary="@string/preference_artwork_clear_album_summary"
         android:title="@string/preference_artwork_clear_album" />
+    <Preference
+        android:key="pref_clear_blocked_artist"
+        android:summary="@string/preference_artwork_clear_blocked_artist_summary"
+        android:title="@string/preference_artwork_clear_blocked_artist" />
+    <Preference
+        android:key="pref_clear_blocked_album"
+        android:summary="@string/preference_artwork_clear_blocked_album_summary"
+        android:title="@string/preference_artwork_clear_blocked_album" />
+
+    <Preference
+        android:key="pref_bulk_load"
+        android:summary="@string/preference_artwork_bulk_load_summary"
+        android:title="@string/preference_artwork_bulk_load" />
 </PreferenceScreen>

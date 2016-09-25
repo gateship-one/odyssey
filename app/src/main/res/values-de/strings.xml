@@ -106,4 +106,25 @@
     <string name="action_search">Suche</string>
     <string name="dialog_equalizer_not_found_title">Kein Equalizer verfügbar</string>
     <string name="dialog_equalizer_not_found_message">Auf dem Gerät wurde kein Equalizer gefunden</string>
+    <string name="artwork_provided_by">Bilder bereitgestellt durch:</string>
+    <string name="artwork_settings">Bildereinstellungen</string>
+    <string name="preference_artwork_album_provider_message">Wählen Sie einen Anbieter für die Albenbilder</string>
+    <string name="preference_artwork_album_provider_summary">Wählen Sie einen Anbieter für die Albenbilder</string>
+    <string name="preference_artwork_album_provider_title">Albenbilderanbieter</string>
+    <string name="preference_artwork_artist_provider_message">Wählen Sie einen Anbieter für die Interpretenbilder</string>
+    <string name="preference_artwork_artist_provider_summary">Wählen Sie einen Anbieter für die Interpretenbilder</string>
+    <string name="preference_artwork_artist_provider_title">Interpretenbilderanbieter</string>
+    <string name="preference_artwork_bulk_load">Für alle Datenbankeinträge Bilder laden</string>
+    <string name="preference_artwork_bulk_load_summary">Diese Funktion lädt viele Bilder runter. Dies wird einige Zeit in Anspruch nehmen. Es kann passieren, dass der Anbieter die Datenrate limitiert.</string>
+    <string name="preference_artwork_clear_album">Lösche Albenbilder</string>
+    <string name="preference_artwork_clear_album_summary">Entfernt alle gespeicherten Albenbilder.</string>
+    <string name="preference_artwork_clear_artist">Lösche Interpretenbilder</string>
+    <string name="preference_artwork_clear_artist_summary">Entfernt alle gespeicherten Interpretenbilder.</string>
+    <string name="preference_artwork_clear_blocked_album">Blockierte Albenbilder zurücksetzen</string>
+    <string name="preference_artwork_clear_blocked_album_summary">Entfernt alle Einträge für Alben in der Datenbank für die einmal kein Bild gefunden wurde.</string>
+    <string name="preference_artwork_clear_blocked_artist">Blockierte Interpretenbilder zurücksetzen</string>
+    <string name="preference_artwork_clear_blocked_artist_summary">Entfernt alle Einträge für Interpreten in der Datenbank für die einmal kein Bild gefunden wurde.</string>
+    <string name="preference_artwork_wifi_only_text">Bilder werden nur bei aktiver WIFI-Verbindung heruntergeladen</string>
+    <string name="preference_artwork_wifi_only_title">Nur WIFI fürs Bilderrunterladen nutzen</string>
+    <string name="provider_off">Aus</string>
 </resources>
