@@ -104,7 +104,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
+        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, false, false);
         activity.setUpPlayButton(null);
     }
 
