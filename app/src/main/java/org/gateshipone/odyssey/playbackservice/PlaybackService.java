@@ -570,7 +570,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // set next track for the GaplessPlayer which has now changed
             try {
-                mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                    mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                } else {
+                    mPlayer.setNextTrack(null);
+                }
             } catch (GaplessPlayer.PlaybackException e) {
                 handlePlaybackException(e);
             }
