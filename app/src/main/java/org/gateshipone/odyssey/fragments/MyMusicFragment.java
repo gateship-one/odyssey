@@ -175,7 +175,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
                     public void onClick(View v) {
                         // play all tracks on device
                         try {
-                            mServiceConnection.getPBS().playAllTracksShuffled();
+                            mServiceConnection.getPBS().playAllTracks();
                         } catch (RemoteException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
