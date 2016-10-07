@@ -601,8 +601,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-        newFragment.setExitTransition(new Slide(Gravity.TOP));
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -641,8 +641,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             // no root directory so add fragment to the backstack
 
             // set enter / exit animation
-            newFragment.setEnterTransition(new Slide(Gravity.START));
-            newFragment.setExitTransition(new Slide(Gravity.END));
+            newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
+            newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
 
             transaction.addToBackStack("FilesFragment");
         }
@@ -812,8 +812,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(Gravity.START));
-        newFragment.setExitTransition(new Slide(Gravity.END));
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
