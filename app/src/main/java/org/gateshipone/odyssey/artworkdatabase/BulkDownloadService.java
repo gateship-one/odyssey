@@ -153,7 +153,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         // Cancel action
         Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL);
         PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_clear_24dp, getResources().getString(R.string.dialog_action_cancel), nextPendingIntent).build();
+        android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getResources().getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
         mBuilder.addAction(cancelAction);
 
