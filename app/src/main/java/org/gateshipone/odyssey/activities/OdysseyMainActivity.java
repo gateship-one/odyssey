@@ -601,8 +601,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        newFragment.setExitTransition(new Slide(Gravity.TOP));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
