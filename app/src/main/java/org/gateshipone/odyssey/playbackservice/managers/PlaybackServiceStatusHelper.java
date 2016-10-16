@@ -124,7 +124,7 @@ public class PlaybackServiceStatusHelper {
                 broadcastPlaybackInformation(info);
 
                 // Only update cover image if album changed to preserve energy
-                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumName().equals(mLastTrack.getTrackAlbumName())) {
+                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
                     mLastTrack = info.getCurrentTrack();
                     startCoverImageTask();
                 }

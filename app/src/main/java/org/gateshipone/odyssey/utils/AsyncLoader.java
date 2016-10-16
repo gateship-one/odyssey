@@ -18,15 +18,10 @@
 
 package org.gateshipone.odyssey.utils;
 
-import java.lang.ref.WeakReference;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.util.Pair;
-import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
@@ -108,6 +103,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(pathName, options);
 
         // Calculate inSampleSize
         if (reqWidth == 0 && reqHeight == 0) {
