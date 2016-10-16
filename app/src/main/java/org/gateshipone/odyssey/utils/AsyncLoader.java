@@ -39,8 +39,8 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
      */
     public static class CoverViewHolder {
         public String imagePath;
-        public WeakReference<ImageView> coverViewReference;
-        public WeakReference<ViewSwitcher> coverViewSwitcher;
+        public ImageView coverViewReference;
+        public ViewSwitcher coverViewSwitcher;
         public AsyncLoader task;
         public Pair<Integer,Integer> imageDimension;
     }
@@ -108,9 +108,9 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         super.onPostExecute(result);
 
         // set mCover if exists
-        if (mCover.coverViewReference.get() != null && result != null) {
-            mCover.coverViewReference.get().setImageBitmap(result);
-            mCover.coverViewSwitcher.get().setDisplayedChild(1);
+        if (mCover.coverViewReference != null && result != null) {
+            mCover.coverViewReference.setImageBitmap(result);
+            mCover.coverViewSwitcher.setDisplayedChild(1);
         }
     }
 }

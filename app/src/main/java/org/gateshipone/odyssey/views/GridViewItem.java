@@ -59,8 +59,8 @@ public class GridViewItem extends RelativeLayout {
         mSwitcher = (ViewSwitcher) findViewById(R.id.grid_item_view_switcher);
 
         mHolder = new AsyncLoader.CoverViewHolder();
-        mHolder.coverViewReference = new WeakReference<>(mImageView);
-        mHolder.coverViewSwitcher = new WeakReference<>(mSwitcher);
+        mHolder.coverViewReference = mImageView;
+        mHolder.coverViewSwitcher = mSwitcher;
         mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
 
         mCoverDone = false;
