@@ -669,6 +669,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                 collapsingImageGradientBottom.setVisibility(View.VISIBLE);
             } else {
                 collapsingImage.setVisibility(View.GONE);
+                collapsingImage.setImageDrawable(null);
                 collapsingImageGradientTop.setVisibility(View.GONE);
                 collapsingImageGradientBottom.setVisibility(View.GONE);
             }
