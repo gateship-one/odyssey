@@ -181,7 +181,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }
 
         try {
-            JSONArray releases = response.getJSONArray("releases");
+            final JSONArray releases = response.getJSONArray("releases");
             if ( releases.length() > releaseIndex) {
                 String mbid = releases.getJSONObject(releaseIndex).getString("id");
                 album.setMBID(mbid);
@@ -192,9 +192,15 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.v(TAG,"No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
-                        parseMusicBrainzReleaseJSON(album, releaseIndex+1, response, listener, errorListener);
+                        if ( releaseIndex + 1 < releases.length()) {
+                            parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, listener, errorListener);
+                        } else {
+                            errorListener.fetchError(album);
+                        }
                     }
                 });
+            } else {
+                errorListener.fetchError(album);
             }
         } catch (JSONException e) {
             errorListener.fetchError(album);
