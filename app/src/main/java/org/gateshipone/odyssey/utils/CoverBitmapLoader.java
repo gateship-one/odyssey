@@ -97,6 +97,7 @@ public class CoverBitmapLoader {
                 }
 
                 cursor.close();
+                return;
             }
 
             // If we reach this, we obviously don't have a local image. Try the database of downloaded images
