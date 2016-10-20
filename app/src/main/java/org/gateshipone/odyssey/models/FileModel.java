@@ -122,6 +122,9 @@ public class FileModel implements GenericModel {
         // get all files in the current folder
         File[] filesArray = mFile.listFiles(mFileExtensionFilter);
 
+        if ( null == filesArray ) {
+            return null;
+        }
         // create FileModel instances
         for (File file : filesArray) {
             files.add(new FileModel(file));
