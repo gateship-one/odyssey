@@ -1217,8 +1217,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         FileModel currentFile = new FileModel(filePath);
-
-        TrackModel track = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelForFile(currentFile);
+        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(),currentFile);
 
         enqueueTrack(track, asNext);
 
@@ -1238,7 +1237,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         FileModel currentDirectory = new FileModel(directoryPath);
 
-        List<TrackModel> tracks = FileExplorerHelper.getInstance(getApplicationContext()).getTrackModelsForFolder(currentDirectory);
+        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(),currentDirectory);
 
         // add tracks to current playlist
         enqueueTracks(tracks);

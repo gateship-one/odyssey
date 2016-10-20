@@ -35,32 +35,19 @@ import java.util.List;
 public class FileExplorerHelper {
 
     private static FileExplorerHelper mInstance = null;
-    private Context mContext = null;
-    private List<String> mStorageVolumesList;
     private HashMap<String, TrackModel> mTrackHash;
 
     private final static String TAG = "FileExplorerHelper";
 
-    private FileExplorerHelper(Context context) {
-        mContext = context;
-
+    private FileExplorerHelper() {
         mTrackHash = new HashMap<>();
 
-        // create storage volume list
-        mStorageVolumesList = new ArrayList<>();
 
-        File[] storageList = ContextCompat.getExternalFilesDirs(mContext, null);
-        for (File storageFile : storageList) {
-            if ( null != storageFile ) {
-                mStorageVolumesList.add(storageFile.getAbsolutePath().replaceAll("/Android/data/" + mContext.getPackageName() + "/files", ""));
-            }
-        }
-        mStorageVolumesList.add("/");
     }
 
-    public static synchronized FileExplorerHelper getInstance(Context context) {
+    public static synchronized FileExplorerHelper getInstance() {
         if (mInstance == null) {
-            mInstance = new FileExplorerHelper(context);
+            mInstance = new FileExplorerHelper();
         }
 
         return mInstance;
@@ -69,15 +56,26 @@ public class FileExplorerHelper {
     /**
      * return the list of available storage volumes
      */
-    public List<String> getStorageVolumes() {
-        return mStorageVolumesList;
+    public List<String> getStorageVolumes(Context context) {
+        // create storage volume list
+        ArrayList<String> storagePathList = new ArrayList<>();
+
+        File[] storageList = ContextCompat.getExternalFilesDirs(context, null);
+        for (File storageFile : storageList) {
+            if (null != storageFile) {
+                storagePathList.add(storageFile.getAbsolutePath().replaceAll("/Android/data/" + context.getPackageName() + "/files", ""));
+            }
+        }
+        storagePathList.add("/");
+
+        return storagePathList;
     }
 
     /**
      * create a TrackModel for the given File
      * if no entry in the mediadb is found a dummy TrackModel will be created
      */
-    public TrackModel getTrackModelForFile(FileModel file) {
+    public TrackModel getTrackModelForFile(Context context, FileModel file) {
         TrackModel track = null;
 
         String urlString = file.getURLString();
@@ -88,7 +86,7 @@ public class FileExplorerHelper {
 
             String where = MediaStore.Audio.Media.DATA + "=?";
 
-            Cursor cursor = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+            Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
 
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -123,7 +121,7 @@ public class FileExplorerHelper {
      * return a list of TrackModels created for the given folder
      * this includes all subfolders
      */
-    public List<TrackModel> getTrackModelsForFolder(FileModel folder) {
+    public List<TrackModel> getTrackModelsForFolder(Context context, FileModel folder) {
         List<TrackModel> tracks = new ArrayList<>();
 
         // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
@@ -131,11 +129,11 @@ public class FileExplorerHelper {
         mTrackHash.clear();
 
         String urlString = folder.getURLString();
-        String whereVal[] = {urlString+"%"};
+        String whereVal[] = {urlString + "%"};
 
         String where = MediaStore.Audio.Media.DATA + " LIKE ?";
 
-        Cursor cursor = PermissionHelper.query(mContext, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -152,7 +150,7 @@ public class FileExplorerHelper {
                     TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
 
                     mTrackHash.put(url, track);
-                } while(cursor.moveToNext());
+                } while (cursor.moveToNext());
             }
 
             cursor.close();
@@ -162,7 +160,7 @@ public class FileExplorerHelper {
 
         Log.v(TAG, "create track models");
         // check current folder and subfolders for music files
-        getTrackModelsForFolder(folder, tracks);
+        getTrackModelsForFolder(context, folder, tracks);
         Log.v(TAG, "create track models done");
 
         // clear the hash
@@ -174,16 +172,16 @@ public class FileExplorerHelper {
     /**
      * add TrackModel objects for the current folder and all subfolders to the tracklist
      */
-    public void getTrackModelsForFolder(FileModel folder, List<TrackModel> tracks) {
+    public void getTrackModelsForFolder(Context context, FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
-            tracks.add(getTrackModelForFile(folder));
+            tracks.add(getTrackModelForFile(context, folder));
         } else {
             List<FileModel> files = folder.listFilesSorted();
 
             for (FileModel file : files) {
                 // call method for all files found in this folder
-                getTrackModelsForFolder(file, tracks);
+                getTrackModelsForFolder(context, file, tracks);
             }
         }
     }

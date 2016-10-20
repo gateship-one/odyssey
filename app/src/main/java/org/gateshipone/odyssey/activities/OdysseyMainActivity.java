@@ -187,7 +187,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_odyssey_main);
 
         // get fileexplorerhelper
-        mFileExplorerHelper = FileExplorerHelper.getInstance(this);
+        mFileExplorerHelper = FileExplorerHelper.getInstance();
 
         // setup progressdialog
         mProgressDialog = new ProgressDialog(OdysseyMainActivity.this);
@@ -247,7 +247,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                     fragment = new FilesFragment();
 
                     // open the default directory
-                    List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
+                    List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
                     String defaultDirectory = "/";
 
@@ -528,7 +528,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             fragment = new FilesFragment();
 
             // open the default directory
-            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes();
+            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
             String defaultDirectory = "/";
 
