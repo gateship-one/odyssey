@@ -51,8 +51,11 @@ public class FileExplorerHelper {
 
         File[] storageList = ContextCompat.getExternalFilesDirs(mContext, null);
         for (File storageFile : storageList) {
-            mStorageVolumesList.add(storageFile.getAbsolutePath().replaceAll("/Android/data/" + mContext.getPackageName() + "/files", ""));
+            if ( null != storageFile ) {
+                mStorageVolumesList.add(storageFile.getAbsolutePath().replaceAll("/Android/data/" + mContext.getPackageName() + "/files", ""));
+            }
         }
+        mStorageVolumesList.add("/");
     }
 
     public static synchronized FileExplorerHelper getInstance(Context context) {
