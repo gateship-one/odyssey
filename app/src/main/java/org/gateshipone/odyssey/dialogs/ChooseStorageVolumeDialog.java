@@ -65,7 +65,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // get the list of available storage volumes
-        List<String> storageVolumes = FileExplorerHelper.getInstance(getContext()).getStorageVolumes();
+        List<String> storageVolumes = FileExplorerHelper.getInstance().getStorageVolumes(getContext());
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
