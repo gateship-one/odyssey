@@ -29,6 +29,7 @@ public class ArtistModel implements GenericModel {
      */
     private final String mArtistName;
 
+    // FIXME remove this local artwork hack
     /**
      * The url for the artist cover
      */
