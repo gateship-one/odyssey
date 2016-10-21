@@ -44,10 +44,29 @@ public class AlbumModel implements GenericModel {
      * Constructs a AlbumModel instance with the given parameters.
      */
     public AlbumModel(String name, String albumArtURL, String artistName, String albumKey) {
-        mAlbumName = name;
-        mAlbumArtURL = albumArtURL;
-        mArtistName = artistName;
-        mAlbumKey = albumKey;
+        if (name != null) {
+            mAlbumName = name;
+        } else {
+            mAlbumName = "";
+        }
+
+        if (albumArtURL != null) {
+            mAlbumArtURL = albumArtURL;
+        } else {
+            mAlbumArtURL = "";
+        }
+
+        if (artistName != null) {
+            mArtistName = artistName;
+        } else {
+            mArtistName = "";
+        }
+
+        if (albumKey != null) {
+            mAlbumKey = albumKey;
+        } else {
+            mAlbumKey = "";
+        }
     }
 
     /**

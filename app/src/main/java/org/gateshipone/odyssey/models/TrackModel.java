@@ -67,13 +67,37 @@ public class TrackModel implements GenericModel, Parcelable {
      * Constructs a TrackModel instance with the given parameters.
      */
     public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
-        mTrackName = name;
-        mTrackArtistName = artistName;
-        mTrackAlbumName = albumName;
-        mTrackAlbumKey = albumKey;
+        if (name != null) {
+            mTrackName = name;
+        } else {
+            mTrackName = "";
+        }
+
+        if (artistName != null) {
+            mTrackArtistName = artistName;
+        } else {
+            mTrackArtistName = "";
+        }
+
+        if (albumName != null) {
+            mTrackAlbumName = albumName;
+        } else {
+            mTrackAlbumName = "";
+        }
+
+        if (albumKey != null) {
+            mTrackAlbumKey = albumKey;
+        } else {
+            mTrackAlbumKey = "";
+        }
         mTrackDuration = duration;
         mTrackNumber = trackNumber;
-        mTrackURL = url;
+        if (url != null) {
+            mTrackURL = url;
+        } else {
+            mTrackURL = "";
+        }
+
         mTrackId = trackId;
     }
 

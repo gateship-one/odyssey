@@ -39,8 +39,17 @@ public class ArtistModel implements GenericModel {
      * Constructs a ArtistModel instance with the given parameters.
      */
     public ArtistModel(String name, String artURL, long artistID) {
-        mArtistName = name;
-        mArtistURL = artURL;
+        if (name != null) {
+            mArtistName = name;
+        } else {
+            mArtistName = "";
+        }
+
+        if (artURL != null) {
+            mArtistURL = artURL;
+        } else {
+            mArtistURL = "";
+        }
         mArtistID = artistID;
     }
 
