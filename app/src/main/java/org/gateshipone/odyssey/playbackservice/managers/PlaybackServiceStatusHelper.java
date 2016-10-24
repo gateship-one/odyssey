@@ -107,6 +107,12 @@ public class PlaybackServiceStatusHelper {
     public synchronized void updateStatus() {
         NowPlayingInformation info = mPlaybackService.getNowPlayingInformation();
         TrackModel currentTrack = info.getCurrentTrack();
+
+        // Get duration from PBS if no duration was set before
+        if (currentTrack.getTrackDuration() == 0) {
+            currentTrack.setTrackDuration(mPlaybackService.getTrackDuration());
+        }
+
         PlaybackService.PLAYSTATE currentState = info.getPlayState();
 
         // Ask playback service for its state
