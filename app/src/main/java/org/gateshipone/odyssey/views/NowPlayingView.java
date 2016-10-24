@@ -978,7 +978,15 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mLastAlbumKey = currentTrack.getTrackAlbumKey();
 
         // Set the artist of the track
-        mTrackAdditionalInfo.setText(currentTrack.getTrackArtistName() + getResources().getString(R.string.separator) + currentTrack.getTrackAlbumName());
+        String trackInformation = "";
+        if (!currentTrack.getTrackArtistName().isEmpty() && !currentTrack.getTrackAlbumName().isEmpty()) {
+            trackInformation = currentTrack.getTrackArtistName() + getResources().getString(R.string.separator) + currentTrack.getTrackAlbumName();
+        } else if (!currentTrack.getTrackArtistName().isEmpty()) {
+            trackInformation = currentTrack.getTrackArtistName();
+        } else if (!currentTrack.getTrackAlbumName().isEmpty()) {
+            trackInformation = currentTrack.getTrackAlbumName();
+        }
+        mTrackAdditionalInfo.setText(trackInformation);
 
         // Calculate the margin to avoid cut off textviews
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();

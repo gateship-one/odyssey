@@ -111,7 +111,7 @@ public class FileExplorerHelper {
 
         if (track == null) {
             // no entry in the media db was found so create a dummy track
-            track = new TrackModel(file.getName(), "Dummyartist", "Dummyalbum", "", 0, 1, urlString, -1);
+            track = new TrackModel(file.getName(), "", "", "", 0, 1, urlString, -1);
         }
 
         return track;
