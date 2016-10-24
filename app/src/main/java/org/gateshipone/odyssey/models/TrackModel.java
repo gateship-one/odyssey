@@ -51,7 +51,7 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * The duration of the track in ms
      */
-    private final long mTrackDuration;
+    private long mTrackDuration;
 
     /**
      * The number of the track (combined cd and tracknumber)
@@ -148,6 +148,14 @@ public class TrackModel implements GenericModel, Parcelable {
      */
     public long getTrackDuration() {
         return mTrackDuration;
+    }
+
+    /**
+     * Set the duration of the track
+     * @param trackDuration the new duration in ms
+     */
+    public void setTrackDuration(long trackDuration) {
+        mTrackDuration = trackDuration;
     }
 
     /**

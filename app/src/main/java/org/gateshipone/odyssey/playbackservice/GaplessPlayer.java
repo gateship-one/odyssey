@@ -155,6 +155,7 @@ public class GaplessPlayer {
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             // Set the datasource of the player to the provider URI
+            uri = "file://" + uri;
             mCurrentMediaPlayer.setDataSource(uri);
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError);
@@ -262,6 +263,7 @@ public class GaplessPlayer {
 
     /**
      * Seeks the currently playing track to the requested position. Bounds/state check are done.
+     *
      * @param position Position in milliseconds to seek to.
      */
     public synchronized void seekTo(int position) {
@@ -277,6 +279,7 @@ public class GaplessPlayer {
 
     /**
      * Returns the position of the currently playing track in milliseconds.
+     *
      * @return Position of the currently playing track in milliseconds. 0 if not playing.
      */
     public synchronized int getPosition() {
@@ -294,6 +297,7 @@ public class GaplessPlayer {
 
     /**
      * Returns the duration of the current track
+     *
      * @return Duration of the currently playing track in milliseconds. 0 if not playing.
      */
     public synchronized int getDuration() {
@@ -311,6 +315,7 @@ public class GaplessPlayer {
 
     /**
      * Checks if this player is currently running
+     *
      * @return True if the player actually plays a track, false otherwise.
      */
     public synchronized boolean isRunning() {
@@ -322,6 +327,7 @@ public class GaplessPlayer {
 
     /**
      * Checks if the first player is prepared.
+     *
      * @return True if prepared and ready to play, false otherwise.
      */
     public synchronized boolean isPrepared() {
@@ -330,7 +336,8 @@ public class GaplessPlayer {
 
     /**
      * Sets the volume of the currently playing MediaPlayer
-     * @param leftChannel Volume from 0.0 - 1.0 for left playback channel
+     *
+     * @param leftChannel  Volume from 0.0 - 1.0 for left playback channel
      * @param rightChannel Volume from 0.0 - 1.0 for right playback channel
      */
     public synchronized void setVolume(float leftChannel, float rightChannel) {
@@ -380,6 +387,7 @@ public class GaplessPlayer {
             mNextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             try {
                 // Try setting the data source
+                uri = "file://" + uri;
                 mNextMediaPlayer.setDataSource(uri);
             } catch (IllegalArgumentException e) {
                 throw new PlaybackException(REASON.ArgumentError);
@@ -402,8 +410,7 @@ public class GaplessPlayer {
             }
 
             // If the first MediaPlayer is prepared already just start the second prepare here.
-            // FIXME check remove !mSecondPreparing
-            if (mCurrentPrepared ) {
+            if (mCurrentPrepared) {
                 mSecondPreparing = true;
                 mNextMediaPlayer.prepareAsync();
             }
@@ -491,6 +498,7 @@ public class GaplessPlayer {
 
     /**
      * Registers a listener to this class to be notified when a track finishes playback
+     *
      * @param listener Listener to register
      */
     public void setOnTrackFinishedListener(OnTrackFinishedListener listener) {
@@ -499,6 +507,7 @@ public class GaplessPlayer {
 
     /**
      * Removes a track finish listener from this class.
+     *
      * @param listener Listener to remove from list
      */
     public void removeOnTrackFinishedListener(OnTrackFinishedListener listener) {
@@ -508,6 +517,7 @@ public class GaplessPlayer {
 
     /**
      * Registers a track start listener to this class (Called when a MediaPlayer is prepared and started)
+     *
      * @param listener Listener to register
      */
     public void setOnTrackStartListener(OnTrackStartedListener listener) {
@@ -516,6 +526,7 @@ public class GaplessPlayer {
 
     /**
      * Removes a track start listener from this class.
+     *
      * @param listener Listener to remove from list
      */
     public void removeOnTrackStartListener(OnTrackStartedListener listener) {

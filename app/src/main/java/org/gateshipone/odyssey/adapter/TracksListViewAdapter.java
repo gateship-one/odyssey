@@ -22,6 +22,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.views.TracksListViewItem;
@@ -47,13 +48,20 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = (TrackModel)getItem(position);
+        TrackModel track = (TrackModel) getItem(position);
 
         // title
         String trackTitle = track.getTrackName();
 
         // additional information (artist + album)
-        String trackInformation = track.getTrackArtistName() + " - " + track.getTrackAlbumName();
+        String trackInformation = "";
+        if (!track.getTrackArtistName().isEmpty() && !track.getTrackAlbumName().isEmpty()) {
+            trackInformation = track.getTrackArtistName() + mContext.getString(R.string.separator) + track.getTrackAlbumName();
+        } else if (!track.getTrackArtistName().isEmpty()) {
+            trackInformation = track.getTrackArtistName();
+        } else if (!track.getTrackAlbumName().isEmpty()) {
+            trackInformation = track.getTrackAlbumName();
+        }
 
         // tracknumber
         String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
