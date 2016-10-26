@@ -23,7 +23,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
@@ -91,13 +90,14 @@ public class CoverBitmapLoader {
                 if (cursor.moveToFirst()) {
                     coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                 }
-                if (coverPath != null) {
+                if (coverPath != null && !coverPath.isEmpty()) {
                     Bitmap cover = (Bitmap) BitmapFactory.decodeFile(coverPath);
                     mListener.receiveBitmap(cover);
+                    cursor.close();
+                    return;
                 }
 
                 cursor.close();
-                return;
             }
 
             // If we reach this, we obviously don't have a local image. Try the database of downloaded images
