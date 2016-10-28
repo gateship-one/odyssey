@@ -30,12 +30,20 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    /**
+     * Callback for artwork request
+     */
     private OnArtworkSettingsRequestedCallback mArtworkCallback;
+
+    /**
+     * Callback to setup toolbar and fab
+     */
+    private ToolbarAndFABCallback mToolbarAndFABCallback;
 
     /**
      * Called to do initial creation of a fragment.
@@ -90,6 +98,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtworkSettingsRequestedCallback");
         }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     /**
@@ -102,10 +116,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
-        activity.setUpPlayButton(null);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(null);
+        }
     }
 
     /**

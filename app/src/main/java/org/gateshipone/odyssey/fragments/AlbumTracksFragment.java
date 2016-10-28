@@ -35,10 +35,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -122,6 +122,12 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     /**
@@ -133,21 +139,20 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-
-        activity.setUpToolbar(mAlbumTitle, false, false, false);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playAlbum(0);
+                }
+            });
+        }
 
         AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
         mBitmapLoader.getAlbumImage(album);
-
-        // set up play button
-        activity.setUpPlayButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playAlbum(0);
-            }
-        });
     }
 
     /**
@@ -319,13 +324,14 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
     @Override
     public void receiveBitmap(final Bitmap bm) {
-        if (bm != null) {
+        if (bm != null && mToolbarAndFABCallback != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-                    activity.setUpToolbar(mArtistName, false, false, true);
-                    activity.setToolbarImage(bm);
+                    // set toolbar behaviour and title
+                    mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, true);
+                    // set toolbar image
+                    mToolbarAndFABCallback.setupToolbarImage(bm);
                 }
             });
         }

@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.SavedPlaylistListViewAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
@@ -103,11 +102,12 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
-
-        activity.setUpPlayButton(null);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(null);
+        }
     }
 
     @Override

@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
 import android.support.v4.view.ViewCompat;

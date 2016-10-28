@@ -18,10 +18,6 @@
 
 package org.gateshipone.odyssey.models;
 
-import android.graphics.Bitmap;
-
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
-
 public class ArtistModel implements GenericModel {
 
     /**

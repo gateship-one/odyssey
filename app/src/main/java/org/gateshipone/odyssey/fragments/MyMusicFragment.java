@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -37,12 +38,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+
+    /**
+     * Callback to setup toolbar and fab
+     */
+    protected ToolbarAndFABCallback mToolbarAndFABCallback;
+
 
     /**
      * ServiceConnection object to communicate with the PlaybackService
@@ -146,10 +153,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
                 break;
         }
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
-        activity.setUpPlayButton(getPlayButtonListener(tab.ordinal()));
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(getPlayButtonListener(tab.ordinal()));
+        }
 
         // activate options menu in toolbar
         setHasOptionsMenu(true);
@@ -159,6 +168,22 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mServiceConnection.openConnection();
 
         return rootView;
+    }
+
+    /**
+     * Called when the fragment is first attached to its context.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     /**
@@ -196,11 +221,13 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         // set viewpager to current page
         mMyMusicViewPager.setCurrentItem(tab.getPosition());
 
-        // show fab only for AllTracksFragment
-        View.OnClickListener listener = getPlayButtonListener(tab.getPosition());
+        if (mToolbarAndFABCallback != null) {
+            // show fab only for AllTracksFragment
+            View.OnClickListener listener = getPlayButtonListener(tab.getPosition());
 
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpPlayButton(listener);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(listener);
+        }
 
         OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
         if (fragment != null) {

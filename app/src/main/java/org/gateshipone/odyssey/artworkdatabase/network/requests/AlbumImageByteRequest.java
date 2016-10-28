@@ -19,7 +19,6 @@
 package org.gateshipone.odyssey.artworkdatabase.network.requests;
 
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.Response;
 
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;

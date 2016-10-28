@@ -33,7 +33,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.AlbumsGridViewAdapter;
 import org.gateshipone.odyssey.adapter.ArtistsGridViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;

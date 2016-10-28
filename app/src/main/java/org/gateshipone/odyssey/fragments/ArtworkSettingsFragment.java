@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,12 +27,17 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    /**
+     * Callback to setup toolbar and fab
+     */
+    private ToolbarAndFABCallback mToolbarAndFABCallback;
 
     /**
      * Called to do initial creation of a fragment.
@@ -93,6 +99,22 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
     }
 
     /**
+     * Called when the fragment is first attached to its context.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
+    }
+
+    /**
      * Called when the fragment resumes.
      * <p/>
      * Register listener and setup the toolbar.
@@ -102,10 +124,12 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, false, false);
-        activity.setUpPlayButton(null);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_settings), false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(null);
+        }
     }
 
     /**

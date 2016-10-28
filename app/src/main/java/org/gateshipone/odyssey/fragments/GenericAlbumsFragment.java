@@ -21,7 +21,6 @@ package org.gateshipone.odyssey.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -34,8 +33,8 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.AlbumsGridViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
@@ -123,6 +122,12 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
             mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnAlbumSelectedListener");
+        }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
     }
 

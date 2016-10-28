@@ -27,12 +27,19 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.gateshipone.odyssey.adapter.GenericViewAdapter;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import java.util.List;
 
 abstract public class OdysseyFragment<T extends GenericModel> extends Fragment implements LoaderManager.LoaderCallbacks<List<T>> {
+
+    /**
+     * Callback to setup toolbar and fab
+     */
+    protected ToolbarAndFABCallback mToolbarAndFABCallback;
+
     /**
      * The reference to the possible refresh layout
      */
@@ -70,6 +77,14 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         // Register the memory trim callback with the system.
         context.registerComponentCallbacks(mComponentCallback);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     @Override

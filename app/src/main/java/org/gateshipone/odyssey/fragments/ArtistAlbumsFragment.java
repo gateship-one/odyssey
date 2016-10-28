@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -94,19 +93,19 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false, false, false);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playArtist();
+                }
+            });
+        }
 
         mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, null, mArtistID));
-
-        // set up play button
-        activity.setUpPlayButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playArtist();
-            }
-        });
     }
 
     /**
@@ -240,13 +239,14 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
     @Override
     public void receiveBitmap(final Bitmap bm) {
-        if (bm != null) {
+        if (bm != null && mToolbarAndFABCallback != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-                    activity.setUpToolbar(mArtistName, false, false, true);
-                    activity.setToolbarImage(bm);
+                    // set toolbar behaviour and title
+                    mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, true);
+                    // set toolbar image
+                    mToolbarAndFABCallback.setupToolbarImage(bm);
                 }
             });
         }

@@ -24,7 +24,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileLoader extends AsyncTaskLoader<List<FileModel>> {

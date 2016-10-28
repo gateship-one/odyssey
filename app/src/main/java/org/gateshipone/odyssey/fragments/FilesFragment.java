@@ -36,7 +36,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.FilesListViewAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
@@ -145,21 +144,21 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        if (mIsRootDirectory) {
-            activity.setUpToolbar(mCurrentDirectory.getName(), false, true, false);
-        } else {
-            activity.setUpToolbar(mCurrentDirectory.getName(), false, false, false);
-        }
-
-        // set up play button
-        activity.setUpPlayButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playCurrentFolder();
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            if (mIsRootDirectory) {
+                mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, true, false);
+            } else {
+                mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, false, false);
             }
-        });
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playCurrentFolder();
+                }
+            });
+        }
     }
 
     /**

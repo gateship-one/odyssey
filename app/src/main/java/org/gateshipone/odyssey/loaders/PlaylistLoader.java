@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
