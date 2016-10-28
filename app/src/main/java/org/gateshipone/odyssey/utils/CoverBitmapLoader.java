@@ -68,7 +68,7 @@ public class CoverBitmapLoader {
         }
 
         // start the loader thread to load the image async
-        Thread loaderThread = new Thread(new AlbumImageRunner(album));
+        Thread loaderThread = new Thread(new AlbumImageRunner(album, mContext));
         loaderThread.start();
     }
 
@@ -91,7 +91,7 @@ public class CoverBitmapLoader {
                     coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                 }
                 if (coverPath != null && !coverPath.isEmpty()) {
-                    Bitmap cover = (Bitmap) BitmapFactory.decodeFile(coverPath);
+                    Bitmap cover = BitmapFactory.decodeFile(coverPath);
                     mListener.receiveBitmap(cover);
                     cursor.close();
                     return;
@@ -106,7 +106,7 @@ public class CoverBitmapLoader {
                 mListener.receiveBitmap(image);
             } catch (ImageNotFoundException e) {
                 // Try to fetch the image here
-                ArtworkManager.getInstance(mContext).fetchAlbumImage(mTrack);
+                ArtworkManager.getInstance(mContext).fetchAlbumImage(mTrack, mContext);
             }
         }
     }
@@ -128,7 +128,7 @@ public class CoverBitmapLoader {
                 Bitmap artistImage = ArtworkManager.getInstance(mContext).getArtistImage(mArtist);
                 mListener.receiveBitmap(artistImage);
             } catch (ImageNotFoundException e) {
-                ArtworkManager.getInstance(mContext).fetchArtistImage(mArtist);
+                ArtworkManager.getInstance(mContext).fetchArtistImage(mArtist, mContext);
             }
         }
     }
@@ -137,8 +137,11 @@ public class CoverBitmapLoader {
 
         private AlbumModel mAlbum;
 
-        public AlbumImageRunner(AlbumModel album) {
+        private final Context mContext;
+
+        public AlbumImageRunner(AlbumModel album, Context context) {
             mAlbum = album;
+            mContext = context;
         }
 
         /**
@@ -149,7 +152,7 @@ public class CoverBitmapLoader {
             try {
                 // Check if local image (tagged in album) is available
                 if ( mAlbum.getAlbumArtURL() != null && !mAlbum.getAlbumArtURL().isEmpty() ) {
-                    Bitmap cover = (Bitmap) BitmapFactory.decodeFile(mAlbum.getAlbumArtURL());
+                    Bitmap cover = BitmapFactory.decodeFile(mAlbum.getAlbumArtURL());
                     mListener.receiveBitmap(cover);
                 } else {
                     if ( mAlbum.getAlbumID() == -1 ) {
@@ -160,7 +163,7 @@ public class CoverBitmapLoader {
                     mListener.receiveBitmap(artistImage);
                 }
             } catch (ImageNotFoundException e) {
-                ArtworkManager.getInstance(mContext).fetchAlbumImage(mAlbum);
+                ArtworkManager.getInstance(mContext).fetchAlbumImage(mAlbum, mContext);
             }
         }
     }

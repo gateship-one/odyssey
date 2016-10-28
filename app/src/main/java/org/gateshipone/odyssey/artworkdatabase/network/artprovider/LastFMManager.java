@@ -68,11 +68,11 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
     }
 
 
-    public <T> void addToRequestQueue(Request<T> req) {
+    private <T> void addToRequestQueue(Request<T> req) {
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
@@ -91,19 +91,19 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                             getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    errorListener.fetchError(artist);
+                                    errorListener.fetchError(artist, context);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist);
+                    errorListener.fetchError(artist, context);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(artist);
+                errorListener.fetchError(artist, context);
             }
         });
 
@@ -141,7 +141,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
 
 
     @Override
-    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
+    public void fetchAlbumImage(final AlbumModel album, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
         getAlbumImageURL(album, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -156,19 +156,19 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                             getAlbumImage(image.getString("#text"), album, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    errorListener.fetchError(album);
+                                    errorListener.fetchError(album, context);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(album);
+                    errorListener.fetchError(album, context);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(album);
+                errorListener.fetchError(album, context);
             }
         });
     }

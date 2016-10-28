@@ -19,8 +19,10 @@
 package org.gateshipone.odyssey.artworkdatabase.network.responses;
 
 
+import android.content.Context;
+
 import org.gateshipone.odyssey.models.AlbumModel;
 
 public interface AlbumFetchError {
-    void fetchError(AlbumModel album);
+    void fetchError(AlbumModel album, Context context);
 }

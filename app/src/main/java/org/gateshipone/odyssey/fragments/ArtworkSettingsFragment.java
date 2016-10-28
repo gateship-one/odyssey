@@ -158,7 +158,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("pref_album_provider") || key.equals("pref_artist_provider")) {
-            ArtworkManager.getInstance(getContext()).cancelAllRequests();
+            ArtworkManager.getInstance(getContext()).cancelAllRequests(getContext());
         }
     }
 

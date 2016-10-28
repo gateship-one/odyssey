@@ -69,11 +69,11 @@ public class FanartTVManager implements ArtistImageProvider {
     }
 
 
-    public <T> void addToRequestQueue(Request<T> req) {
+    private <T> void addToRequestQueue(Request<T> req) {
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
+    public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
@@ -81,7 +81,7 @@ public class FanartTVManager implements ArtistImageProvider {
         getArtists(artistURLName, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                JSONArray artists = null;
+                JSONArray artists;
                 try {
                     artists = response.getJSONArray("artists");
 
@@ -92,7 +92,7 @@ public class FanartTVManager implements ArtistImageProvider {
                         getArtistImageURL(artistMBID, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                JSONArray thumbImages = null;
+                                JSONArray thumbImages;
                                 try {
                                     thumbImages = response.getJSONArray("artistthumb");
 
@@ -101,23 +101,23 @@ public class FanartTVManager implements ArtistImageProvider {
                                     getArtistImage(firstThumbImage.getString("url"), artist, listener, new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            errorListener.fetchError(artist);
+                                            errorListener.fetchError(artist, context);
                                         }
                                     });
 
                                 } catch (JSONException e) {
-                                    errorListener.fetchError(artist);
+                                    errorListener.fetchError(artist, context);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchError(artist);
+                                errorListener.fetchError(artist, context);
                             }
                         });
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist);
+                    errorListener.fetchError(artist, context);
                 }
             }
         }, new Response.ErrorListener() {
@@ -129,7 +129,7 @@ public class FanartTVManager implements ArtistImageProvider {
                     Log.e(TAG,"Rate limit reached");
                     mRequestQueue.stop();
                 } else {
-                    errorListener.fetchError(artist);
+                    errorListener.fetchError(artist, context);
                 }
             }
         });

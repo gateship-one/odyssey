@@ -40,9 +40,6 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * The version of the database
      */
     private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
-
-    private Context mContext;
-
     private static ArtworkDatabaseManager mInstance;
 
     private ArtworkDatabaseManager(Context context) {
@@ -52,7 +49,6 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public static synchronized ArtworkDatabaseManager getInstance(Context context) {
         if (null == mInstance) {
             mInstance = new ArtworkDatabaseManager(context);
-            ArtworkDatabaseManager.mInstance.mContext = context;
         }
         return mInstance;
     }
@@ -186,14 +182,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @param image  byte[] containing the raw image that was downloaded. This can be null in which case
      *               the database entry will have the not_found flag set.
      */
-    public synchronized void insertArtistImage(ArtistModel artist, byte[] image) {
+    public synchronized void insertArtistImage(ArtistModel artist, byte[] image, Context context) {
         SQLiteDatabase database = getWritableDatabase();
 
         long artistID = artist.getArtistID();
 
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mContext);
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), context);
         }
 
         ContentValues values = new ContentValues();

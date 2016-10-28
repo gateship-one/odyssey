@@ -19,6 +19,8 @@
 package org.gateshipone.odyssey.artworkdatabase.network.artprovider;
 
 
+import android.content.Context;
+
 import com.android.volley.Response;
 
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
@@ -27,6 +29,6 @@ import org.gateshipone.odyssey.models.ArtistModel;
 
 public interface ArtistImageProvider {
 
-    void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener);
+    void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener);
     void cancelAll();
 }

@@ -88,7 +88,7 @@ public class GridViewItem extends RelativeLayout {
      */
     public void startCoverImageTask() {
         if (mLoaderTask == null && mHolder.modelItem != null && !mCoverDone) {
-            mLoaderTask = new AsyncLoader();
+            mLoaderTask = new AsyncLoader(getContext());
             mLoaderTask.execute(mHolder);
         }
     }

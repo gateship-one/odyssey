@@ -67,18 +67,19 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
     }
 
 
-    public <T> void addToRequestQueue(Request<T> req) {
+    private <T> void addToRequestQueue(Request<T> req) {
         mRequestQueue.add(req);
     }
 
-    public void fetchArtistImage(final ArtistModel artist, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
+    @Override
+    public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
         String artistURLName = Uri.encode(artist.getArtistName());
 
         getArtists(artistURLName, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                JSONArray artists = null;
+                JSONArray artists;
                 try {
                     artists = response.getJSONArray("artists");
 
@@ -89,7 +90,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                         getArtistImageURL(artistMBID, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                JSONArray relations = null;
+                                JSONArray relations;
                                 try {
                                     relations = response.getJSONArray("relations");
                                     for (int i = 0; i < relations.length(); i++) {
@@ -101,30 +102,30 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                                             getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    errorListener.fetchError(artist);
+                                                    errorListener.fetchError(artist, context);
                                                 }
                                             });
                                         }
                                     }
                                 } catch (JSONException e) {
-                                    errorListener.fetchError(artist);
+                                    errorListener.fetchError(artist, context);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchError(artist);
+                                errorListener.fetchError(artist, context);
                             }
                         });
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist);
+                    errorListener.fetchError(artist, context);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(artist);
+                errorListener.fetchError(artist, context);
             }
         });
     }
@@ -154,28 +155,30 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
     private void getArtistImage(String url, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(MusicBrainzManager.class.getSimpleName(), url);
 
+        // FIXME not implemented yet
+
 //        Request<byte[]> byteResponse = new ArtistImageByteRequest(url, listener, errorListener);
 
 //        addToRequestQueue(byteResponse);
     }
 
     @Override
-    public void fetchAlbumImage(final AlbumModel album, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
+    public void fetchAlbumImage(final AlbumModel album, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
 
         getAlbumMBID(album, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                parseMusicBrainzReleaseJSON(album, 0, response, listener, errorListener);
+                parseMusicBrainzReleaseJSON(album, 0, response, context, listener, errorListener);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(album);
+                errorListener.fetchError(album, context);
             }
         });
     }
 
-    private void parseMusicBrainzReleaseJSON(final AlbumModel album, final int releaseIndex, final JSONObject response, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
+    private void parseMusicBrainzReleaseJSON(final AlbumModel album, final int releaseIndex, final JSONObject response, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
         if (releaseIndex >= MUSICBRAINZ_LIMIT_RESULT_COUNT) {
             return;
         }
@@ -193,17 +196,17 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                     public void onErrorResponse(VolleyError error) {
                         Log.v(TAG,"No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
                         if ( releaseIndex + 1 < releases.length()) {
-                            parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, listener, errorListener);
+                            parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, context, listener, errorListener);
                         } else {
-                            errorListener.fetchError(album);
+                            errorListener.fetchError(album, context);
                         }
                     }
                 });
             } else {
-                errorListener.fetchError(album);
+                errorListener.fetchError(album, context);
             }
         } catch (JSONException e) {
-            errorListener.fetchError(album);
+            errorListener.fetchError(album, context);
         }
 
     }

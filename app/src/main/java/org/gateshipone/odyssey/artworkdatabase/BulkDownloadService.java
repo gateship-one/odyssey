@@ -123,7 +123,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
             mWakelock.acquire();
 
-            ArtworkManager.getInstance(getApplicationContext()).bulkLoadImages(this);
+            ArtworkManager.getInstance(getApplicationContext()).bulkLoadImages(this, getApplicationContext());
         }
         return START_STICKY;
 
@@ -217,7 +217,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             Log.e(TAG, "Broadcast requested");
             if (intent.getAction().equals(ACTION_CANCEL)) {
                 Log.e(TAG, "Cancel requested");
-                ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests();
+                ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 stopForeground(true);
                 mWakelock.release();

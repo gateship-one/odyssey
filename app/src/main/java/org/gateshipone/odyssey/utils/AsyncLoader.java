@@ -18,6 +18,7 @@
 
 package org.gateshipone.odyssey.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -36,6 +37,12 @@ import org.gateshipone.odyssey.views.GridViewItem;
 public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bitmap> {
     private static final String TAG = AsyncLoader.class.getSimpleName();
     private CoverViewHolder mCover;
+
+    private final Context mContext;
+
+    public AsyncLoader(Context context) {
+        mContext = context;
+    }
 
     /**
      * Wrapper class for covers
@@ -68,7 +75,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
                 // Check if fetching for this item is already ongoing
                 if (!artist.getFetching()) {
                     // If not set it as ongoing and request the image fetch.
-                    mCover.artworkManager.fetchArtistImage(artist);
+                    mCover.artworkManager.fetchArtistImage(artist, mContext);
                     artist.setFetching(true);
                 }
             }
@@ -86,7 +93,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
                 // Check if fetching for this item is already ongoing
                 if (!album.getFetching()) {
                     // If not set it as ongoing and request the image fetch.
-                    mCover.artworkManager.fetchAlbumImage(album);
+                    mCover.artworkManager.fetchAlbumImage(album, mContext);
                     album.setFetching(true);
                 }
             }
