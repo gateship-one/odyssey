@@ -20,7 +20,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-        <color android:color="#2195F1"></color>
+        <color android:color="#2195F1" />
     </item>
 
     <item android:drawable="@drawable/odyssey_launch_stable">
