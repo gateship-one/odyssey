@@ -47,7 +47,7 @@ public class FileModel implements GenericModel {
      * Static list of valid file extensions
      */
     private static final List<String> fileExtensions = new ArrayList<>(Arrays.asList("3gp", "aac",
-            "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "ota", "rtttl",
+            "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus", "ota", "rtttl",
             "rtx", "ts", "wav", "wma", "xmf"));
 
     /**
