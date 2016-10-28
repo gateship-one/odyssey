@@ -18,9 +18,10 @@
 
 package org.gateshipone.odyssey.artworkdatabase.network.requests;
 
-
 import com.android.volley.Request;
 import com.android.volley.Response;
+
+import org.gateshipone.odyssey.BuildConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,8 @@ public abstract class OdysseyRequest<T> extends Request<T>{
 
     @Override
     public Map<String, String> getHeaders(){
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("User-agent", "Application Odyssey/1.0 (https://github.com/gateship-one/odyssey)");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-agent", "Application Odyssey/" + BuildConfig.VERSION_NAME + " (https://github.com/gateship-one/odyssey)");
         return headers;
     }
 }
