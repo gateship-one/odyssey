@@ -82,7 +82,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         } else if (mCover.modelItem instanceof AlbumModel) {
             AlbumModel album = (AlbumModel) mCover.modelItem;
             String albumURL = album.getAlbumArtURL();
-            if (null != albumURL) {
+            if (null != albumURL && !albumURL.isEmpty()) {
                 return decodeSampledBitmapFromResource(albumURL, mCover.imageDimension.first, mCover.imageDimension.second);
             }
             try {
