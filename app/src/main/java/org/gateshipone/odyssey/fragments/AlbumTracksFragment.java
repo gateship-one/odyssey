@@ -329,7 +329,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 @Override
                 public void run() {
                     // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, true);
+                    mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, true);
                     // set toolbar image
                     mToolbarAndFABCallback.setupToolbarImage(bm);
                 }
