@@ -59,6 +59,10 @@ public class FormatHelper {
      */
     public static String formatTrackNumber(int trackNumber) {
 
+        if (trackNumber == -1) {
+            return "";
+        }
+
         String trackNumberString = String.valueOf(trackNumber);
 
         // mediastore combines track and cd number in one string so cut off the first two literals

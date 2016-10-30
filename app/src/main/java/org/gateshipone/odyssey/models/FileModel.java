@@ -185,7 +185,6 @@ public class FileModel implements GenericModel {
         }
     }
 
-
     /**
      * Filename filter class for the FileModel.
      */
