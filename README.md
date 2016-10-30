@@ -4,6 +4,8 @@
 
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/app/org.gateshipone.odyssey)<a href="https://play.google.com/store/apps/details?id=org.gateshipone.odyssey"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60"></a>
 
+[Screenshots](https://github.com/gateship-one/odyssey/wiki/Screenshots)
+
 This is the source code repository of the Android music player Odyssey. 
 
 This whole project is licensed under the **GPLv3 or later** license (see LICENSE)
