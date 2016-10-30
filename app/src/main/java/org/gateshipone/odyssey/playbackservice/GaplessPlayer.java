@@ -31,6 +31,8 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
 
+import org.gateshipone.odyssey.utils.FormatHelper;
+
 /**
  * This class provides an easy to use interface for the android provided
  * mediaplayer class. It handles the transition between songs so the playback
@@ -156,7 +158,7 @@ public class GaplessPlayer {
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             // Set the datasource of the player to the provider URI
-            uri = "file://" + Uri.encode(uri,"/");
+            uri = FormatHelper.encodeFileURI(uri);
             mCurrentMediaPlayer.setDataSource(uri);
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError);
@@ -388,7 +390,7 @@ public class GaplessPlayer {
             mNextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             try {
                 // Try setting the data source
-                uri = "file://" + Uri.encode(uri,"/");
+                uri = FormatHelper.encodeFileURI(uri);
                 mNextMediaPlayer.setDataSource(uri);
             } catch (IllegalArgumentException e) {
                 throw new PlaybackException(REASON.ArgumentError);

@@ -116,7 +116,7 @@ public class FileExplorerHelper {
 
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
-                retriever.setDataSource(context, Uri.parse(urlString));
+                retriever.setDataSource(context, Uri.parse(FormatHelper.encodeFileURI(urlString)));
 
                 String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 
