@@ -59,6 +59,13 @@ public class MusicLibraryHelper {
     private static final int chunkSize = 1000;
 
     /**
+     * Workaround to insert images for albums that are not part of the system media library and
+     * therefore do not have an album id. The offset needs to be bigger then the count of
+     * available albums in the system library.
+     */
+    private static final long ALBUMID_HASH_OFFSET = 5000000;
+
+    /**
      * Return the artistId for the given artistname
      */
     public static long getArtistIDFromName(String artistName, Context context) {
@@ -138,6 +145,11 @@ public class MusicLibraryHelper {
             }
 
             albumCursor.close();
+        }
+
+        // no album id found -> album not in mediastore; generate fake id
+        if (albumID == -1) {
+            albumID = albumKey.hashCode() + ALBUMID_HASH_OFFSET;
         }
 
         return albumID;
