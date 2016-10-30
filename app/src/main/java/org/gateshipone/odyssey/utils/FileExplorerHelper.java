@@ -20,6 +20,8 @@ package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -41,8 +43,6 @@ public class FileExplorerHelper {
 
     private FileExplorerHelper() {
         mTrackHash = new HashMap<>();
-
-
     }
 
     public static synchronized FileExplorerHelper getInstance() {
@@ -110,8 +110,43 @@ public class FileExplorerHelper {
         }
 
         if (track == null) {
-            // no entry in the media db was found so create a dummy track
-            track = new TrackModel(file.getName(), "", "", "", 0, 1, urlString, -1);
+            // no entry in the media db was found so create a custom track
+            try {
+                // try to read the file metadata
+
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+                retriever.setDataSource(context, Uri.parse(urlString));
+
+                String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+
+                if (title == null) {
+                    title = file.getName();
+                }
+
+                String durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+
+                long duration = 0;
+
+                if (durationString != null) {
+                    duration = Long.valueOf(durationString);
+                }
+
+                String noString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+
+                int no = 1;
+
+                if (noString != null) {
+                    no = Integer.valueOf(noString);
+                }
+
+                String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+
+                track = new TrackModel(title, artist, album, "", duration, no, urlString, -1);
+            } catch (Exception e) {
+                track = new TrackModel(file.getName(), "", "", "", 0, -1, urlString, -1);
+            }
         }
 
         return track;
