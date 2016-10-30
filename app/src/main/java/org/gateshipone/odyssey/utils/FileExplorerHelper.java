@@ -129,15 +129,31 @@ public class FileExplorerHelper {
                 long duration = 0;
 
                 if (durationString != null) {
-                    duration = Long.valueOf(durationString);
+                    try {
+                        duration = Long.valueOf(durationString);
+                    } catch (NumberFormatException e) {
+                        duration = 0;
+                    }
                 }
 
                 String noString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
 
-                int no = 1;
+                int no = -1;
 
                 if (noString != null) {
-                    no = Integer.valueOf(noString);
+                    try {
+                        if (noString.contains("/")) {
+                            // if string has the format (trackNumber / numberOfTracks)
+                            String[] components = noString.split("/");
+                            if (components.length > 0) {
+                                no = Integer.valueOf(components[0]);
+                            }
+                        } else {
+                            no = Integer.valueOf(noString);
+                        }
+                    } catch (NumberFormatException e) {
+                        no = -1;
+                    }
                 }
 
                 String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
