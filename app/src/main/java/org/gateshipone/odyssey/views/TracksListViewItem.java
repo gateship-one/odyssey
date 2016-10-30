@@ -20,6 +20,7 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class TracksListViewItem extends LinearLayout {
     protected final TextView mTitleView;
     protected final TextView mInformationView;
     protected final TextView mDurationView;
+    protected final TextView mNumberTitleSeparatorView;
 
     /**
      * Constructor that only initialize the layout.
@@ -45,6 +47,7 @@ public class TracksListViewItem extends LinearLayout {
         mNumberView = (TextView) findViewById(R.id.item_tracks_number);
         mInformationView = (TextView) findViewById(R.id.item_tracks_additional_information);
         mDurationView = (TextView) findViewById(R.id.item_tracks_duration);
+        mNumberTitleSeparatorView = (TextView) findViewById(R.id.item_tracks_separator);
     }
 
     /**
@@ -70,7 +73,14 @@ public class TracksListViewItem extends LinearLayout {
      * Sets the number text for the track.
      */
     public void setNumber(String number) {
-        mNumberView.setText(number);
+        if (number.isEmpty()) {
+            mNumberView.setVisibility(View.GONE);
+            mNumberTitleSeparatorView.setVisibility(View.GONE);
+        } else {
+            mNumberView.setVisibility(View.VISIBLE);
+            mNumberTitleSeparatorView.setVisibility(View.VISIBLE);
+            mNumberView.setText(number);
+        }
     }
 
     /**
