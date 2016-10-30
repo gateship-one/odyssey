@@ -27,6 +27,12 @@
         android:title="@string/context_menu_action_playplaylist"/>
 
     <item
+        android:id="@+id/saved_playlists_context_menu_action_enqueue"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/context_menu_action_enqueueplaylist"/>
+
+    <item
         android:id="@+id/saved_playlists_context_menu_action_delete"
         android:orderInCategory="100"
         app:showAsAction="never"

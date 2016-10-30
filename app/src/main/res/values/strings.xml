@@ -74,6 +74,7 @@
     <string name="action_switch_storage_volume">Switch storage volume</string>
     <string name="action_add_directory">Add directory</string>
     <string name="action_search">Search</string>
+    <string name="action_add_playlist">Add playlist</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">add to playlist</string>
@@ -85,6 +86,7 @@
     <string name="context_menu_action_showalbum">show album</string>
     <string name="context_menu_action_removetrack">remove track</string>
     <string name="context_menu_action_playplaylist">play playlist</string>
+    <string name="context_menu_action_enqueueplaylist">add playlist</string>
     <string name="context_menu_action_deleteplaylist">delete playlist</string>
     <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
     <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
@@ -166,7 +168,7 @@
     <!-- About activity -->
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/gateship-one/odyssey</string>
-    <string name="activity_about_version">Version: </string>
+    <string name="activity_about_version">Version:</string>
 
     <!-- PBS working message -->
     <string name="playbackservice_working">Please wait</string>

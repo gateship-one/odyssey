@@ -106,4 +106,6 @@
     <string name="action_search">Suche</string>
     <string name="dialog_equalizer_not_found_title">Kein Equalizer verfügbar</string>
     <string name="dialog_equalizer_not_found_message">Auf dem Gerät wurde kein Equalizer gefunden</string>
+    <string name="context_menu_action_enqueueplaylist">Playlist hinzufügen</string>
+    <string name="action_add_playlist">Playlist hinzufügen</string>
 </resources>

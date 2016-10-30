@@ -19,13 +19,16 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +40,7 @@ import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.loaders.TrackLoader;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
@@ -91,6 +95,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         playlistTracksListView.setOnItemClickListener(this);
 
         registerForContextMenu(playlistTracksListView);
+
+        // activate options menu in toolbar
+        setHasOptionsMenu(true);
 
         Bundle args = getArguments();
 
@@ -179,6 +186,61 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
                 return super.onContextItemSelected(item);
         }
     }
+
+    /**
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
+     *
+     * @param menu         The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
+
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+
+        Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+        menu.findItem(R.id.action_add_playlist_tracks).setIcon(drawable);
+
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_playlist_tracks:
+                enqueuePlaylist();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Call the PBS to enqueue the entire playlist.
+     */
+    private void enqueuePlaylist() {
+        try {
+            // add playlist
+            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Call the PBS to play the entire playlist and start with the selected track.
