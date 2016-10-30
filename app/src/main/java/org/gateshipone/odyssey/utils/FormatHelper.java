@@ -19,6 +19,8 @@
 package org.gateshipone.odyssey.utils;
 
 
+import android.net.Uri;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -82,5 +84,14 @@ public class FormatHelper {
     public static String formatTimeStampToString(long timestamp) {
         Date date = new Date(timestamp);
         return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date);
+    }
+
+    /**
+     * Helper method to encode the uri to support special characters like :, %, # etc.
+     * @param uri the path to the media file as String
+     * @return the encoded uri as String
+     */
+    public static String encodeFileURI(String uri) {
+        return "file://" + Uri.encode(uri,"/");
     }
 }
