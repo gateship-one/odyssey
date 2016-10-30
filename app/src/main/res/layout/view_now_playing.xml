@@ -152,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/now_playing_control_layout"
-                android:background="@color/colorBackground">
+                android:background="?android:colorBackground">
 
                 <ViewSwitcher
                     android:id="@+id/now_playing_view_switcher"

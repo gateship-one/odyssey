@@ -23,44 +23,56 @@
         <item name="odyssey_color_primary">@color/colorPrimary_indigo</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_indigo</item>
         <item name="odyssey_color_accent">@color/colorAccent_indigo</item>
+        <item name="odyssey_color_background">@color/colorBackground_indigo</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_indigo</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_indigo</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_indigo</item>
+        <item name="android:colorBackground">@color/colorBackground_indigo</item>
     </style>
 
     <style name="AppTheme.orange" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_orange</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_orange</item>
         <item name="odyssey_color_accent">@color/colorAccent_orange</item>
+        <item name="odyssey_color_background">@color/colorBackground_orange</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_orange</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_orange</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_orange</item>
+        <item name="android:colorBackground">@color/colorBackground_orange</item>
     </style>
 
     <style name="AppTheme.deepOrange" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_deepOrange</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_deepOrange</item>
         <item name="odyssey_color_accent">@color/colorAccent_deepOrange</item>
+        <item name="odyssey_color_background">@color/colorBackground_deepOrange</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_deepOrange</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_deepOrange</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_deepOrange</item>
+        <item name="android:colorBackground">@color/colorBackground_deepOrange</item>
     </style>
 
     <style name="AppTheme.blue" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_blue</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_blue</item>
         <item name="odyssey_color_accent">@color/colorAccent_blue</item>
+        <item name="odyssey_color_background">@color/colorBackground_blue</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_blue</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_blue</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_blue</item>
+        <item name="android:colorBackground">@color/colorBackground_blue</item>
     </style>
 
     <style name="AppTheme.darkGrey" parent="AppTheme">
@@ -68,11 +80,14 @@
         <item name="odyssey_color_primary">@color/colorPrimary_darkGrey</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_darkGrey</item>
         <item name="odyssey_color_accent">@color/colorAccent_darkGrey</item>
+        <item name="odyssey_color_background">@color/colorBackground_darkGrey</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_darkGrey</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_darkGrey</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_darkGrey</item>
+        <item name="android:colorBackground">@color/colorBackground_darkGrey</item>
     </style>
 
     <style name="AppTheme.brown" parent="AppTheme">
@@ -80,11 +95,14 @@
         <item name="odyssey_color_primary">@color/colorPrimary_brown</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_brown</item>
         <item name="odyssey_color_accent">@color/colorAccent_brown</item>
+        <item name="odyssey_color_background">@color/colorBackground_brown</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_brown</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_brown</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_brown</item>
+        <item name="android:colorBackground">@color/colorBackground_brown</item>
     </style>
 
     <style name="AppTheme.lightGreen" parent="AppTheme">
@@ -92,16 +110,33 @@
         <item name="odyssey_color_primary">@color/colorPrimary_lightGreen</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_lightGreen</item>
         <item name="odyssey_color_accent">@color/colorAccent_lightGreen</item>
+        <item name="odyssey_color_background">@color/colorBackground_lightGreen</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_lightGreen</item>
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
         <item name="android:textColor">@color/primaryLightText_lightGreen</item>
         <item name="android:textColorSecondary">@color/secondaryLightText_lightGreen</item>
+        <item name="android:colorBackground">@color/colorBackground_lightGreen</item>
+    </style>
+
+    <style name="AppTheme.oledDark" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="odyssey_color_primary">@color/colorPrimary_oledDark</item>
+        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_oledDark</item>
+        <item name="odyssey_color_accent">@color/colorAccent_oledDark</item>
+        <item name="odyssey_color_background">@color/colorBackground_oledDark</item>
+        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_oledDark</item>
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
+        <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="android:textColor">@color/primaryLightText_oledDark</item>
+        <item name="android:textColorSecondary">@color/secondaryLightText_oledDark</item>
+        <item name="android:colorBackground">@color/colorBackground_oledDark</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
-        <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
         <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
@@ -126,9 +161,10 @@
 
     <style name="AppTheme.NavDrawer" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
+        <item name="android:windowBackground">?attr/odyssey_color_background</item>
     </style>
 
-    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"></style>
+    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"/>
 
     <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
@@ -141,6 +177,7 @@
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="android:windowBackground">?attr/odyssey_color_background</item>
     </style>
 
 </resources>

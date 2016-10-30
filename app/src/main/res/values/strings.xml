@@ -122,6 +122,7 @@
     <string name="preference_theme_item_dark_grey">Dark Grey</string>
     <string name="preference_theme_item_brown">Brown</string>
     <string name="preference_theme_item_light_green">Light Green</string>
+    <string name="preference_theme_item_oled_dark">OLED Dark</string>
 
     <string-array name="preference_odyssey_styles">
         <item>@string/preference_theme_item_indigo</item>
@@ -131,6 +132,7 @@
         <item>@string/preference_theme_item_dark_grey</item>
         <item>@string/preference_theme_item_brown</item>
         <item>@string/preference_theme_item_light_green</item>
+        <item>@string/preference_theme_item_oled_dark</item>
     </string-array>
 
     <string name="preference_album_sort_order_title">Artist Albums sort order</string>

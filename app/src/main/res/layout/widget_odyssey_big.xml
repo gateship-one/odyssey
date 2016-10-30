@@ -20,18 +20,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorWidgetBackground">
 
     <ImageView
         android:id="@+id/widget_big_cover"
         android:layout_width="96dp"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/odyssey_notification"
-        />
+        android:scaleType="fitCenter"
+        android:src="@drawable/odyssey_notification" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -40,37 +39,33 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="4dp"
-        android:gravity="center_vertical"
-
         android:layout_toEndOf="@+id/widget_big_cover"
-        android:orientation="vertical" >
-
-
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/widget_big_trackName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/material_font_style_size_subheading"
             android:fontFamily="sans-serif-regular"
-            android:textColor="@android:color/primary_text_dark"
             android:maxLines="1"
-            />
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="@dimen/material_font_style_size_subheading" />
 
         <TextView
             android:id="@+id/widget_big_ArtistAlbum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/material_font_style_size_body_1"
             android:fontFamily="sans-serif-regular"
             android:maxLines="1"
+            android:textColor="@android:color/secondary_text_dark"
+            android:textSize="@dimen/material_font_style_size_body_1" />
 
-            android:textColor="@android:color/secondary_text_dark" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="48dp"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:maxHeight="48dp">
 
             <ImageButton
                 android:id="@+id/widget_big_previous"
@@ -78,9 +73,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
-                android:tint="@color/colorTextLight"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_skip_previous_48dp" />
+                android:src="@drawable/ic_skip_previous_48dp"
+                android:tint="@color/colorTextLight" />
 
             <ImageButton
                 android:id="@+id/widget_big_play"
@@ -88,9 +83,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
-                android:tint="@color/colorTextLight"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_play_arrow_48dp" />
+                android:src="@drawable/ic_play_arrow_48dp"
+                android:tint="@color/colorTextLight" />
 
             <ImageButton
                 android:id="@+id/widget_big_next"
@@ -98,9 +93,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
-                android:tint="@color/colorTextLight"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_skip_next_48dp"/>
+                android:src="@drawable/ic_skip_next_48dp"
+                android:tint="@color/colorTextLight" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
