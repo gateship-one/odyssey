@@ -164,7 +164,9 @@
         <item name="android:windowBackground">?attr/odyssey_color_background</item>
     </style>
 
-    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material"/>
+    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:background">?attr/odyssey_color_background</item>
+    </style>
 
     <style name="AppTheme.NavDrawerHeader" parent="ThemeOverlay.AppCompat">
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
