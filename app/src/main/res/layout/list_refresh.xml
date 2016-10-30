@@ -21,7 +21,7 @@
     android:id="@+id/list_refresh_swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="?android:colorBackground">
 
     <ListView
         android:id="@+id/list_refresh_listview"

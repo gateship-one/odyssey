@@ -129,4 +129,7 @@
     <string name="provider_off">Aus</string>
     <string name="downloader_notification_remaining_images">Heruntergeladene Bilder:</string>
     <string name="downloader_notification_title">Herunterladen aktiv</string>
+    <string name="context_menu_action_enqueueplaylist">Playlist hinzufügen</string>
+    <string name="action_add_playlist">Playlist hinzufügen</string>
+    <string name="preference_theme_item_oled_dark">OLED (Dunkel)</string>
 </resources>

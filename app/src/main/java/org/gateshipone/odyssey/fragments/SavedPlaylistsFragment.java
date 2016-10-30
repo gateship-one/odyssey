@@ -179,11 +179,31 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
             case R.id.saved_playlists_context_menu_action_play:
                 playPlaylist(info.position);
                 return true;
+            case R.id.saved_playlists_context_menu_action_enqueue:
+                enqueuePlaylist(info.position);
+                return true;
             case R.id.saved_playlists_context_menu_action_delete:
                 deletePlaylist(info.position);
                 return true;
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    /**
+     * Call the PBS to enqueue the selected playlist.
+     * @param position the position of the selected playlist in the adapter
+     */
+    private void enqueuePlaylist(int position) {
+        // identify current playlist
+        PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+
+        try {
+            // add playlist
+            mServiceConnection.getPBS().enqueuePlaylist(clickedPlaylist.getPlaylistID());
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -204,9 +224,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
             // start playback
             mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e1) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 

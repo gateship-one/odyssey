@@ -74,6 +74,7 @@
     <string name="action_switch_storage_volume">Switch storage volume</string>
     <string name="action_add_directory">Add directory</string>
     <string name="action_search">Search</string>
+    <string name="action_add_playlist">Add playlist</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">add to playlist</string>
@@ -85,6 +86,7 @@
     <string name="context_menu_action_showalbum">show album</string>
     <string name="context_menu_action_removetrack">remove track</string>
     <string name="context_menu_action_playplaylist">play playlist</string>
+    <string name="context_menu_action_enqueueplaylist">add playlist</string>
     <string name="context_menu_action_deleteplaylist">delete playlist</string>
     <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
     <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
@@ -120,6 +122,7 @@
     <string name="preference_theme_item_dark_grey">Dark Grey</string>
     <string name="preference_theme_item_brown">Brown</string>
     <string name="preference_theme_item_light_green">Light Green</string>
+    <string name="preference_theme_item_oled_dark">OLED Dark</string>
 
     <string-array name="preference_odyssey_styles">
         <item>@string/preference_theme_item_indigo</item>
@@ -129,6 +132,7 @@
         <item>@string/preference_theme_item_dark_grey</item>
         <item>@string/preference_theme_item_brown</item>
         <item>@string/preference_theme_item_light_green</item>
+        <item>@string/preference_theme_item_oled_dark</item>
     </string-array>
 
     <string name="preference_album_sort_order_title">Artist Albums sort order</string>
@@ -211,7 +215,7 @@
     <string name="artwork_provided_by">Artwork provided by:</string>
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/gateship-one/odyssey</string>
-    <string name="activity_about_version">Version: </string>
+    <string name="activity_about_version">Version:</string>
 
     <string name="url_musicbrainz" translatable="false">https://www.musicbrainz.org</string>
     <string name="url_lastfm" translatable="false">http://www.last.fm</string>

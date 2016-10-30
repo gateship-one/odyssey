@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:tint="@android:color/black"
+        android:tint="?attr/odyssey_color_navheader_icon"
         android:alpha="0.1"
         android:src="@drawable/odyssey_256dp"/>
 

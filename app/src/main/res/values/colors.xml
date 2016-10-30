@@ -23,42 +23,64 @@
     <color name="colorAccent_indigo">#FF1744</color>
     <color name="primaryLightText_indigo">#FFFFFF</color>
     <color name="secondaryLightText_indigo">#BBBBBB</color>
+    <color name="colorBackground_indigo">#424242</color>
+    <color name="colorNavheaderIcon_indigo">#000000</color>
 
     <color name="colorPrimary_orange">#f57c00</color>
     <color name="colorPrimaryDark_orange">#e65100</color>
     <color name="colorAccent_orange">#2979ff</color>
     <color name="primaryLightText_orange">#FFFFFF</color>
     <color name="secondaryLightText_orange">#BBBBBB</color>
+    <color name="colorBackground_orange">#424242</color>
+    <color name="colorNavheaderIcon_orange">#000000</color>
 
     <color name="colorPrimary_deepOrange">#e64a19</color>
     <color name="colorPrimaryDark_deepOrange">#bf360c</color>
     <color name="colorAccent_deepOrange">#2979ff</color>
     <color name="primaryLightText_deepOrange">#FFFFFF</color>
     <color name="secondaryLightText_deepOrange">#BBBBBB</color>
+    <color name="colorBackground_deepOrange">#424242</color>
+    <color name="colorNavheaderIcon_deepOrange">#000000</color>
 
     <color name="colorPrimary_blue">#1976d2</color>
     <color name="colorPrimaryDark_blue">#0d47a1</color>
     <color name="colorAccent_blue">#f50057</color>
     <color name="primaryLightText_blue">#FFFFFF</color>
     <color name="secondaryLightText_blue">#BBBBBB</color>
+    <color name="colorBackground_blue">#424242</color>
+    <color name="colorNavheaderIcon_blue">#000000</color>
 
     <color name="colorPrimary_darkGrey">#323232</color>
     <color name="colorPrimaryDark_darkGrey">#212121</color>
     <color name="colorAccent_darkGrey">#2962ff</color>
     <color name="primaryLightText_darkGrey">#FFFFFF</color>
     <color name="secondaryLightText_darkGrey">#BBBBBB</color>
+    <color name="colorBackground_darkGrey">#424242</color>
+    <color name="colorNavheaderIcon_darkGrey">#000000</color>
 
     <color name="colorPrimary_brown">#795548</color>
     <color name="colorPrimaryDark_brown">#5d4037</color>
     <color name="colorAccent_brown">#ff6d00</color>
     <color name="primaryLightText_brown">#FFFFFF</color>
     <color name="secondaryLightText_brown">#BBBBBB</color>
+    <color name="colorBackground_brown">#424242</color>
+    <color name="colorNavheaderIcon_brown">#000000</color>
 
     <color name="colorPrimary_lightGreen">#689f38</color>
     <color name="colorPrimaryDark_lightGreen">#33691e</color>
     <color name="colorAccent_lightGreen">#ff5252</color>
     <color name="primaryLightText_lightGreen">#FFFFFF</color>
     <color name="secondaryLightText_lightGreen">#DDDDDD</color>
+    <color name="colorBackground_lightGreen">#424242</color>
+    <color name="colorNavheaderIcon_lightGreen">#000000</color>
+
+    <color name="colorPrimary_oledDark">#000000</color>
+    <color name="colorPrimaryDark_oledDark">#000000</color>
+    <color name="colorAccent_oledDark">#00CC00</color>
+    <color name="primaryLightText_oledDark">#FFFFFF</color>
+    <color name="secondaryLightText_oledDark">#DDDDDD</color>
+    <color name="colorBackground_oledDark">#111111</color>
+    <color name="colorNavheaderIcon_oledDark">#FFFFFF</color>
 
     <!-- Deprecate those with theme values -->
     <color name="colorDivider">#626262</color>
@@ -67,4 +89,7 @@
     <color name="colorTextLight">#FFFFFF</color>
     <color name="colorTextLightSecondary">#888888</color>
     <color name="colorTextDark">#000000</color>
+
+    <!-- Fixed colors -->
+    <color name="colorWidgetBackground">#424242</color>
 </resources>

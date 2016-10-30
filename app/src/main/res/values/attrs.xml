@@ -22,5 +22,7 @@
         <attr name="odyssey_color_primary" format="reference|color"/>
         <attr name="odyssey_color_primary_dark" format="reference|color"/>
         <attr name="odyssey_color_accent" format="reference|color"/>
+        <attr name="odyssey_color_background" format="reference|color"/>
+        <attr name="odyssey_color_navheader_icon" format="reference|color"/>
     </declare-styleable>
 </resources>
