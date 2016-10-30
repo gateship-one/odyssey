@@ -45,9 +45,11 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -60,7 +62,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener {
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -403,6 +405,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void newAlbumImage(AlbumModel album) {
+        if ( mLastAlbumKey.equals(album.getAlbumKey())) {
+            mCoverLoader.getAlbumImage(album);
         }
     }
 
@@ -904,6 +913,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
+        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
     }
 
     /**
@@ -933,6 +943,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         invalidate();
+        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
     }
 
     /**
