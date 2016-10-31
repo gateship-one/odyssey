@@ -29,6 +29,11 @@
         android:title="@string/preference_theme_title" />
     <CheckBoxPreference
         android:defaultValue="true"
+        android:key="pref_key_dark_theme"
+        android:summary="@string/preference_dark_theme_message"
+        android:title="@string/preference_dark_theme_title" />
+    <CheckBoxPreference
+        android:defaultValue="true"
         android:key="pref_key_album_artists_only"
         android:summary="@string/preference_show_album_artists_only_summary"
         android:title="@string/preference_show_album_artists_only_title" />

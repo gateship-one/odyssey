@@ -123,35 +123,64 @@ public class OdysseyMainActivity extends AppCompatActivity
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String themePref = sharedPref.getString("pref_theme", "indigo");
-
-        switch (themePref) {
-            case "indigo":
-                setTheme(R.style.AppTheme_indigo);
-                break;
-            case "orange":
-                setTheme(R.style.AppTheme_orange);
-                break;
-            case "deeporange":
-                setTheme(R.style.AppTheme_deepOrange);
-                break;
-            case "blue":
-                setTheme(R.style.AppTheme_blue);
-                break;
-            case "darkgrey":
-                setTheme(R.style.AppTheme_darkGrey);
-                break;
-            case "brown":
-                setTheme(R.style.AppTheme_brown);
-                break;
-            case "lightgreen":
-                setTheme(R.style.AppTheme_lightGreen);
-                break;
-            case "oleddark":
-                setTheme(R.style.AppTheme_oledDark);
-                break;
-            case "red_light":
-                setTheme(R.style.AppTheme_red_light);
-                break;
+        boolean darkTheme = sharedPref.getBoolean("pref_key_dark_theme",true);
+        if ( darkTheme) {
+            switch (themePref) {
+                case "indigo":
+                    setTheme(R.style.AppTheme_indigo);
+                    break;
+                case "orange":
+                    setTheme(R.style.AppTheme_orange);
+                    break;
+                case "deeporange":
+                    setTheme(R.style.AppTheme_deepOrange);
+                    break;
+                case "blue":
+                    setTheme(R.style.AppTheme_blue);
+                    break;
+                case "darkgrey":
+                    setTheme(R.style.AppTheme_darkGrey);
+                    break;
+                case "brown":
+                    setTheme(R.style.AppTheme_brown);
+                    break;
+                case "lightgreen":
+                    setTheme(R.style.AppTheme_lightGreen);
+                    break;
+                case "red":
+                    setTheme(R.style.AppTheme_red);
+                    break;
+            }
+        } else {
+            switch (themePref) {
+                case "indigo":
+                    setTheme(R.style.AppTheme_indigo_light);
+                    break;
+                case "orange":
+                    setTheme(R.style.AppTheme_orange_light);
+                    break;
+                case "deeporange":
+                    setTheme(R.style.AppTheme_deepOrange_light);
+                    break;
+                case "blue":
+                    setTheme(R.style.AppTheme_blue_light);
+                    break;
+                case "darkgrey":
+                    setTheme(R.style.AppTheme_darkGrey_light);
+                    break;
+                case "brown":
+                    setTheme(R.style.AppTheme_brown_light);
+                    break;
+                case "lightgreen":
+                    setTheme(R.style.AppTheme_lightGreen_light);
+                    break;
+                case "red":
+                    setTheme(R.style.AppTheme_red_light);
+                    break;
+            }
+        }
+        if ( themePref.equals("oleddark") ) {
+            setTheme(R.style.AppTheme_oledDark);
         }
 
         // Read default view preference
