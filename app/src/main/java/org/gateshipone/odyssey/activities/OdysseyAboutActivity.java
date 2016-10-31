@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class OdysseyAboutActivity extends Activity {
     @Override
@@ -69,5 +70,6 @@ public class OdysseyAboutActivity extends Activity {
         String versionName = BuildConfig.VERSION_NAME;
 
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
+        getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this,R.attr.odyssey_color_primary_dark));
     }
 }
