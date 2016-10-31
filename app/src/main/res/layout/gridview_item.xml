@@ -34,8 +34,10 @@
             android:id="@+id/grid_item_cover_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorBackgroundDark"
+            android:background="?attr/odyssey_cover_background"
+            android:tint="?attr/odyssey_color_text_background_primary"
             android:scaleType="centerCrop"
+            android:padding="16dp"
             android:src="@drawable/cover_placeholder_96dp" />
 
         <ImageView
@@ -61,7 +63,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/grid_item_gradient" />
+            android:background="?attr/odyssey_grid_gradient"/>
 
         <TextView
             android:id="@+id/grid_item_title"
@@ -73,6 +75,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
+            android:textColor="#FFFFFF"
             android:textSize="14sp" />
     </RelativeLayout>
 

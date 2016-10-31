@@ -36,6 +36,7 @@ import org.gateshipone.odyssey.adapter.BookmarksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
 
         // set divider
         AlertDialog dlg = builder.create();
-        dlg.getListView().setDivider(new ColorDrawable(ContextCompat.getColor(getContext(), R.color.colorDivider)));
+        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_background_selected)));
         dlg.getListView().setDividerHeight(getResources().getDimensionPixelSize(R.dimen.list_divider_size));
 
         return dlg;

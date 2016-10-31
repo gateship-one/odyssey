@@ -30,7 +30,7 @@
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
         android:scrollbarStyle="outsideOverlay"
-        android:divider="@color/colorDivider"
+        android:divider="?attr/odyssey_color_background_selected"
         android:dividerHeight="1sp"/>
 
 </LinearLayout>

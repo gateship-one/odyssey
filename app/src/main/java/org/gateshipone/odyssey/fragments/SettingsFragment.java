@@ -151,7 +151,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_theme")) {
+        if (key.equals("pref_theme") || key.equals("pref_key_dark_theme")) {
             Intent intent = getActivity().getIntent();
             getActivity().finish();
             startActivity(intent);

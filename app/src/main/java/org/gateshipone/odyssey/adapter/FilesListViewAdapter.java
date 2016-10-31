@@ -68,7 +68,7 @@ public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
 
         if (icon != null) {
             // get tint color
-            int tintColor = ThemeUtils.getThemeColor(mContext, android.R.attr.textColor);
+            int tintColor = ThemeUtils.getThemeColor(mContext, R.attr.odyssey_color_text_background_secondary);
             // tint the icon
             DrawableCompat.setTint(icon, tintColor);
         }

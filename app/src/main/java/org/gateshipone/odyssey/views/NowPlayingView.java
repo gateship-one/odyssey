@@ -26,8 +26,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
@@ -742,7 +745,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mPlaylistView) {
                     color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
                 } else {
-                    color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+                    color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
                 }
 
                 // tint the button
@@ -978,10 +981,25 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Check if the album title changed. If true, start the cover generator thread.
         if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
+            // get tint color
+            int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+
+            Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+
             // Show the placeholder image until the cover fetch process finishes
-            mCoverImage.setImageResource(R.drawable.cover_placeholder);
+            mCoverImage.setImageDrawable(drawable);
+
+            tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+            drawable = getResources().getDrawable(R.drawable.cover_placeholder_96dp, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+
+
             // The same for the small header image
-            mTopCoverImage.setImageResource(R.drawable.cover_placeholder_96dp);
+            mTopCoverImage.setImageDrawable(drawable);
             // Start the cover loader
             mCoverLoader.getImage(currentTrack);
         }
@@ -1046,7 +1064,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         switch (info.getRepeat()) {
             case REPEAT_OFF:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
                 break;
             case REPEAT_ALL:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
@@ -1061,7 +1079,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update random button
         switch (info.getRandom()) {
             case RANDOM_OFF:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
                 break;
             case RANDOM_ON:
                 mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
@@ -1155,7 +1173,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mCoverImage) {
                     mViewSwitcher.showNext();
                 }
-                color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
                 break;
             case PLAYLIST_VIEW:
                 // change the view only if the requested view is not displayed

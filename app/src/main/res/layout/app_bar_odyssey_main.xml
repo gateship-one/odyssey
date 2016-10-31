@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/fab_margin"
             android:src="@drawable/ic_play_arrow_48dp"
-            android:tint="?android:attr/textColor" />
+            android:tint="?attr/odyssey_color_text_accent" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

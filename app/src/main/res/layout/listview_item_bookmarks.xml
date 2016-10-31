@@ -30,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
+        android:textColor="?attr/odyssey_color_text_background_primary"
         android:fontFamily="sans-serif-regular"
         android:textSize="@dimen/material_font_style_size_subheading" />
 
@@ -44,7 +45,7 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/item_bookmarks_numberOfTracks"
             android:maxLines="1"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="?attr/odyssey_color_text_background_secondary"
             android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:maxLines="1"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="?attr/odyssey_color_text_background_secondary"
             android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />
     </RelativeLayout>

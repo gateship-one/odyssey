@@ -257,7 +257,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         menuInflater.inflate(R.menu.options_menu_files_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_directory).getIcon();
         drawable = DrawableCompat.wrap(drawable);

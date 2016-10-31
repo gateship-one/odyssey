@@ -108,7 +108,7 @@ public class SaveDialog extends DialogFragment {
         }
 
         // create edit text for title
-        final EditText editTextTitle = new EditText(getActivity());
+        final EditText editTextTitle = new EditText(builder.getContext());
         editTextTitle.setText(editTextDefaultTitle);
         // Add a listener that just removes the text on first clicking
         editTextTitle.setOnClickListener(new View.OnClickListener() {
