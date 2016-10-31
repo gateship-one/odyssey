@@ -103,8 +103,8 @@
     <color name="colorAccent_redLight">#2979ff</color>
     <color name="colorTextAccent_redLight">#FFFFFF</color>
     <color name="colorTextBackgroundSecondary_redLight">#757575</color>
-    <color name="colorBackground_redLight">#FFFFFF</color>
-    <color name="colorBackgroundSelected_redLight">#DDDDDD</color>
+    <color name="colorBackground_redLight">#f5f5f5</color>
+    <color name="colorBackgroundSelected_redLight">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_redLight">#1D1D1D</color>
     <color name="colorNavheaderIcon_redLight">#000000</color>
 
