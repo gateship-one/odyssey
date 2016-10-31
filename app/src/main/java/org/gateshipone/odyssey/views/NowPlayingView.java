@@ -733,7 +733,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mPlaylistView) {
                     color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
                 } else {
-                    color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+                    color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
                 }
 
                 // tint the button
@@ -1144,7 +1144,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mCoverImage) {
                     mViewSwitcher.showNext();
                 }
-                color = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
                 break;
             case PLAYLIST_VIEW:
                 // change the view only if the requested view is not displayed
