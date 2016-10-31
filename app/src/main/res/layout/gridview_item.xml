@@ -36,6 +36,7 @@
             android:layout_height="match_parent"
             android:background="@color/coverBackground"
             android:scaleType="centerCrop"
+            android:padding="16dp"
             android:src="@drawable/cover_placeholder_96dp" />
 
         <ImageView
