@@ -152,6 +152,8 @@
         <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
         <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
+        <item name="odyssey_cover_background">#111111</item>
+        <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_dark</item>
     </style>
 
 
@@ -217,6 +219,8 @@
         <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
         <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
+        <item name="odyssey_cover_background">#FFFFFF</item>
+        <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_light</item>
     </style>
 
 

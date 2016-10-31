@@ -111,8 +111,6 @@
     <!-- Deprecate those with theme values -->
     <color name="colorDivider">#626262</color>
 
-    <color name="coverBackground">#111111</color>
-
 
     <!-- Fixed colors -->
     <color name="colorWidgetBackground">#424242</color>

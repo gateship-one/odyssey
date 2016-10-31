@@ -28,6 +28,8 @@
         <attr name="odyssey_color_text_background_secondary" format="reference|color"/>
         <attr name="odyssey_color_text_background_primary" format="reference|color"/>
         <attr name="odyssey_color_navheader_icon" format="reference|color"/>
+        <attr name="odyssey_cover_background" format="reference|color"/>
+        <attr name="odyssey_grid_gradient" format="reference"/>
         <attr name="odyssey_navdrawer_theme" format="reference"/>
     </declare-styleable>
 </resources>
