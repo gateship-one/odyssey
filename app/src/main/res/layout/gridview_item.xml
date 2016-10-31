@@ -34,7 +34,7 @@
             android:id="@+id/grid_item_cover_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorBackgroundDark"
+            android:background="@color/coverBackground"
             android:scaleType="centerCrop"
             android:src="@drawable/cover_placeholder_96dp" />
 
