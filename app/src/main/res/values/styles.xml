@@ -245,6 +245,12 @@
     </style>
 
     <style name="AppThemeLight.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">?attr/odyssey_color_accent</item>
+        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
+        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+        <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
+        <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
+        <item name="android:windowBackground">?attr/odyssey_color_background</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
     </style>
 </resources>
