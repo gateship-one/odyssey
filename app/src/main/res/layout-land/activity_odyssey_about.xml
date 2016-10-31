@@ -58,7 +58,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/activity_about_version"
-                android:textColor="@color/colorTextLightSecondary"
+                android:textColor="?attr/odyssey_color_text_secondary"
                 android:textSize="@dimen/notification_font_size_small" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/app_name"
-                android:textColor="@color/colorTextLightSecondary"
+                android:textColor="?attr/odyssey_color_text_secondary"
                 android:textSize="@dimen/notification_font_size_small" />
         </LinearLayout>
 
