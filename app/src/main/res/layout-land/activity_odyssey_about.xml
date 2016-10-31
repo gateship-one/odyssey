@@ -28,8 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:scaleType="fitCenter"
-        android:tint="?attr/odyssey_color_text_background_primary"
-        android:src="@drawable/odyssey_256dp" />
+        android:src="@drawable/icon_512" />
 
     <LinearLayout
         android:id="@+id/activity_about_upper_text"
