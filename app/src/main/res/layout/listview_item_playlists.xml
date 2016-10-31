@@ -29,6 +29,7 @@
         android:id="@+id/item_playlists_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="?attr/odyssey_color_text_background_primary"
         android:maxLines="1"
         android:textSize="16sp" />
 

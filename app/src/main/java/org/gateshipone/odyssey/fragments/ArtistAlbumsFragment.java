@@ -161,7 +161,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         menuInflater.inflate(R.menu.options_menu_artist_albums_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_artist_albums).getIcon();
         drawable = DrawableCompat.wrap(drawable);

@@ -216,7 +216,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         menuInflater.inflate(R.menu.options_menu_album_tracks_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor);
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_album).getIcon();
         drawable = DrawableCompat.wrap(drawable);

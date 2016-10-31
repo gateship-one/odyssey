@@ -59,6 +59,9 @@ public class OdysseyAboutActivity extends Activity {
             case "oleddark":
                 setTheme(R.style.AppTheme_oledDark);
                 break;
+            case "red_light":
+                setTheme(R.style.AppTheme_red_light);
+                break;
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_about);

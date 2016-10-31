@@ -73,6 +73,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical|center_horizontal"
             android:maxLines="1"
+            android:textColor="#FFFFFF"
             android:singleLine="true"
             android:textSize="14sp" />
     </RelativeLayout>

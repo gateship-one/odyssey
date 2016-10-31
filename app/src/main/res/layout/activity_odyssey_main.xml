@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:theme="@style/AppTheme.NavDrawer"
+        android:theme="?attr/odyssey_navdrawer_theme"
         app:headerLayout="@layout/nav_header_odyssey_main"
         app:menu="@menu/activity_odyssey_main_drawer"/>
 

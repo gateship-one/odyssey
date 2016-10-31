@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="256dp"
         android:scaleType="fitCenter"
+        android:tint="?attr/odyssey_color_text_background_primary"
         android:src="@drawable/odyssey_256dp" />
 
     <LinearLayout
@@ -59,7 +60,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/activity_about_version"
-                android:textColor="?attr/odyssey_color_text_secondary"
+                android:textColor="?attr/odyssey_color_text_background_secondary"
                 android:textSize="@dimen/material_font_style_size_subheading" />
 
             <TextView
@@ -69,7 +70,7 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/app_name"
-                android:textColor="?attr/odyssey_color_text_secondary"
+                android:textColor="?attr/odyssey_color_text_background_secondary"
                 android:textSize="@dimen/material_font_style_size_subheading" />
         </LinearLayout>
 

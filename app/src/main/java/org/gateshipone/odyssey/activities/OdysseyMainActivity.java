@@ -149,6 +149,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             case "oleddark":
                 setTheme(R.style.AppTheme_oledDark);
                 break;
+            case "red_light":
+                setTheme(R.style.AppTheme_red_light);
+                break;
         }
 
         // Read default view preference

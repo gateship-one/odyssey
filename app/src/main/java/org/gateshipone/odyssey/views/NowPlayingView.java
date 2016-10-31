@@ -1035,7 +1035,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         switch (info.getRepeat()) {
             case REPEAT_OFF:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
                 break;
             case REPEAT_ALL:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
@@ -1050,7 +1050,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update random button
         switch (info.getRandom()) {
             case RANDOM_OFF:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.textColor)));
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
                 break;
             case RANDOM_ON:
                 mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));

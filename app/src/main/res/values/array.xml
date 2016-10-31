@@ -27,6 +27,7 @@
         <item>brown</item>
         <item>lightgreen</item>
         <item>oleddark</item>
+        <item>red_light</item>
     </string-array>
 
     <string-array name="preference_album_sort_orders_values" translatable="false">
