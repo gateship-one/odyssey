@@ -189,10 +189,6 @@
     <color name="colorNavheaderIcon_light_red">#000000</color>
 
 
-    <!-- Deprecate those with theme values -->
-    <color name="colorDivider">#626262</color>
-
-
     <!-- Fixed colors -->
     <color name="colorWidgetBackground">#424242</color>
 </resources>
