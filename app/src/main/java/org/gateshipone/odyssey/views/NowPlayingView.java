@@ -26,8 +26,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
@@ -967,10 +969,25 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Check if the album title changed. If true, start the cover generator thread.
         if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
+            // get tint color
+            int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+
+            Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+
             // Show the placeholder image until the cover fetch process finishes
-            mCoverImage.setImageResource(R.drawable.cover_placeholder);
+            mCoverImage.setImageDrawable(drawable);
+
+            tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+            drawable = getResources().getDrawable(R.drawable.cover_placeholder_96dp, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+
+
             // The same for the small header image
-            mTopCoverImage.setImageResource(R.drawable.cover_placeholder_96dp);
+            mTopCoverImage.setImageDrawable(drawable);
             // Start the cover loader
             mCoverLoader.getImage(currentTrack);
         }
