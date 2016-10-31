@@ -128,7 +128,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         // set toolbar behaviour and title
         OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        if (mAlbumArtURL != null) {
+        if (!mAlbumArtURL.isEmpty()) {
             activity.setUpToolbar(mAlbumTitle, false, false, true);
             activity.setToolbarImage(Drawable.createFromPath(mAlbumArtURL));
         } else {
