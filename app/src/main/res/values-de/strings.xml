@@ -110,4 +110,6 @@
     <string name="action_add_playlist">Playlist hinzufügen</string>
     <string name="preference_theme_item_oled_dark">OLED (Dunkel)</string>
     <string name="preference_theme_item_red">Rot</string>
+    <string name="preference_dark_theme_message">Verwende ein dunkles Design</string>
+    <string name="preference_dark_theme_title">Dunkles Design</string>
 </resources>
