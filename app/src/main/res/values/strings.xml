@@ -72,7 +72,7 @@
     <string name="action_add_album">Add Album</string>
     <string name="action_add_artist_albums">Add Albums</string>
     <string name="action_switch_storage_volume">Switch storage volume</string>
-    <string name="action_add_directory">Add directory</string>
+    <string name="action_add_directory">Add directory to playlist</string>
     <string name="action_search">Search</string>
     <string name="action_add_playlist">Add playlist</string>
 

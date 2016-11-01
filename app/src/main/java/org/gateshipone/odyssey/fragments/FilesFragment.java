@@ -26,6 +26,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -269,6 +270,14 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         DrawableCompat.setTint(drawable, tintColor);
         menu.findItem(R.id.action_switch_storage_volume).setIcon(drawable);
 
+        drawable = menu.findItem(R.id.action_search).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+        menu.findItem(R.id.action_search).setIcon(drawable);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchTextObserver());
+
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
@@ -394,6 +403,34 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+    }
+
+    /**
+     * Observer class to apply a filter
+     */
+    private class SearchTextObserver implements SearchView.OnQueryTextListener {
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            if (query.isEmpty()) {
+                removeFilter();
+            } else {
+                applyFilter(query);
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (newText.isEmpty()) {
+                removeFilter();
+            } else {
+                applyFilter(newText);
+            }
+
+            return true;
         }
     }
 }
