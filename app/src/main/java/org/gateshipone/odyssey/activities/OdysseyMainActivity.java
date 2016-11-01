@@ -57,6 +57,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
@@ -125,8 +126,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String themePref = sharedPref.getString("pref_theme", "indigo");
-        boolean darkTheme = sharedPref.getBoolean("pref_key_dark_theme",true);
-        if ( darkTheme) {
+        boolean darkTheme = sharedPref.getBoolean("pref_key_dark_theme", true);
+        if (darkTheme) {
             switch (themePref) {
                 case "indigo":
                     setTheme(R.style.AppTheme_indigo);
@@ -181,7 +182,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                     break;
             }
         }
-        if ( themePref.equals("oleddark") ) {
+        if (themePref.equals("oleddark")) {
             setTheme(R.style.AppTheme_oledDark);
         }
 
@@ -794,17 +795,19 @@ public class OdysseyMainActivity extends AppCompatActivity
                 // sees the explanation, try again to request the permission.
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
-                    Snackbar.make(layout, R.string.permission_request_snackbar_explanation,
-                            Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
+                    Snackbar sb =  Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
+                    sb.setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     ActivityCompat.requestPermissions(OdysseyMainActivity.this,
                                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                             PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                                 }
-                            })
-                            .show();
+                            });
+                    // style the snackbar text
+                    TextView sbText = (TextView) sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                    sb.show();
                 }
             } else {
 
