@@ -137,6 +137,28 @@ public class FileModel implements GenericModel {
     }
 
     /**
+     * Return the number of subfolders
+     */
+    public int getNumberOfSubFolders() {
+        int numberOfSubFolders = 0;
+
+        // get all files in the current folder
+        File[] filesArray = mFile.listFiles(mFileExtensionFilter);
+
+        if ( null == filesArray ) {
+            return numberOfSubFolders;
+        }
+
+        for (File file : filesArray) {
+            if (file.isDirectory()) {
+                numberOfSubFolders++;
+            }
+        }
+
+        return numberOfSubFolders;
+    }
+
+    /**
      * Return the section title of this class.
      * This will be the name of the file object.
      */

@@ -158,7 +158,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         activity.setUpPlayButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playCurrentFolder();
+                playCurrentFolderAndSubFolders();
             }
         });
     }
@@ -186,8 +186,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
         } else {
-            // play the clicked file
-            playFile(position);
+            // play the folder from the current position
+            playFolder(position);
         }
     }
 
@@ -227,10 +227,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         switch (item.getItemId()) {
             case R.id.fragment_files_action_add_folder:
-                enqueueFolder(info.position);
+                enqueueFolderAndSubFolders(info.position);
                 return true;
             case R.id.fragment_files_action_play_folder:
-                playFolder(info.position);
+                playFolderAndSubFolders(info.position);
                 return true;
             case R.id.fragment_files_action_add_file:
                 enqueueFile(info.position, false);
@@ -292,7 +292,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_directory:
-                enqueueCurrentFolder();
+                enqueueCurrentFolderAndSubFolders();
                 return true;
             case R.id.action_switch_storage_volume:
                 ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
@@ -342,16 +342,36 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     }
 
     /**
+     * Call the PBS to play all music files from the selected folder (excluding subfolders) and starts with the selected file.
+     * A previous playlist will be cleared.
+     *
+     * @param position the position of the selected file in the adapter
+     */
+    private void playFolder(int position) {
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+            mServiceConnection.getPBS().enqueueDirectory(mCurrentDirectory.getPath());
+
+            // compute position
+            int index = position - mCurrentDirectory.getNumberOfSubFolders();
+            mServiceConnection.getPBS().jumpTo(index);
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    /**
      * Call the PBS to play all music files from the selected folder and his children.
      * A previous playlist will be cleared.
      *
      * @param position the position of the selected folder
      */
-    private void playFolder(int position) {
+    private void playFolderAndSubFolders(int position) {
 
         try {
             mServiceConnection.getPBS().clearPlaylist();
-            enqueueFolder(position);
+            enqueueFolderAndSubFolders(position);
             mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
@@ -364,13 +384,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      *
      * @param position the position of the selected folder
      */
-    private void enqueueFolder(int position) {
+    private void enqueueFolderAndSubFolders(int position) {
 
         FileModel currentFolder = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueDirectory(currentFolder.getPath());
-            //enqueueFolder(position);
+            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath());
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -381,11 +400,11 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Call the PBS to play all music in the current folder and his children.
      * A previous playlist will be cleared.
      */
-    private void playCurrentFolder() {
+    private void playCurrentFolderAndSubFolders() {
 
         try {
             mServiceConnection.getPBS().clearPlaylist();
-            enqueueCurrentFolder();
+            enqueueCurrentFolderAndSubFolders();
             mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
@@ -396,11 +415,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * Call the PBS to enqueue all music in the current folder and his children.
      */
-    private void enqueueCurrentFolder() {
+    private void enqueueCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().enqueueDirectory(mCurrentDirectory.getPath());
-            //enqueueFolder(position);
+            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath());
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

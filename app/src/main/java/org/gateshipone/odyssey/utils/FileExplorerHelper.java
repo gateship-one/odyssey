@@ -24,7 +24,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -170,13 +169,12 @@ public class FileExplorerHelper {
 
     /**
      * return a list of TrackModels created for the given folder
-     * this includes all subfolders
+     * this excludes all subfolders
      */
     public List<TrackModel> getTrackModelsForFolder(Context context, FileModel folder) {
         List<TrackModel> tracks = new ArrayList<>();
 
         // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
-        Log.v(TAG, "create track hash");
         mTrackHash.clear();
 
         String urlString = folder.getURLString();
@@ -207,12 +205,61 @@ public class FileExplorerHelper {
             cursor.close();
         }
 
-        Log.v(TAG, "create track hash done");
+        List<FileModel> files = folder.listFilesSorted();
 
-        Log.v(TAG, "create track models");
+        for (FileModel file : files) {
+            if (file.isFile()) {
+                // file is not a directory so create a trackmodel for the file
+                tracks.add(getTrackModelForFile(context, file));
+            }
+        }
+
+        // clear the hash
+        mTrackHash.clear();
+
+        return tracks;
+    }
+
+    /**
+     * return a list of TrackModels created for the given folder
+     * this includes all subfolders
+     */
+    public List<TrackModel> getTrackModelsForFolderAndSubFolders(Context context, FileModel folder) {
+        List<TrackModel> tracks = new ArrayList<>();
+
+        // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
+        mTrackHash.clear();
+
+        String urlString = folder.getURLString();
+        String whereVal[] = {urlString + "%"};
+
+        String where = MediaStore.Audio.Media.DATA + " LIKE ?";
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                    int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                    TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
+
+                    mTrackHash.put(url, track);
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
         // check current folder and subfolders for music files
-        getTrackModelsForFolder(context, folder, tracks);
-        Log.v(TAG, "create track models done");
+        getTrackModelsForFolderAndSubFolders(context, folder, tracks);
 
         // clear the hash
         mTrackHash.clear();
@@ -223,7 +270,7 @@ public class FileExplorerHelper {
     /**
      * add TrackModel objects for the current folder and all subfolders to the tracklist
      */
-    public void getTrackModelsForFolder(Context context, FileModel folder, List<TrackModel> tracks) {
+    public void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
             tracks.add(getTrackModelForFile(context, folder));
@@ -232,7 +279,7 @@ public class FileExplorerHelper {
 
             for (FileModel file : files) {
                 // call method for all files found in this folder
-                getTrackModelsForFolder(context, file, tracks);
+                getTrackModelsForFolderAndSubFolders(context, file, tracks);
             }
         }
     }
