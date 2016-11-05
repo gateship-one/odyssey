@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.adapter.GenericViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
@@ -49,7 +50,7 @@ public class GridViewItem extends RelativeLayout {
     /**
      * Constructor that already sets the values for each view.
      */
-    public GridViewItem(Context context, String title, ViewGroup.LayoutParams layoutParams) {
+    public GridViewItem(Context context, String title, ViewGroup.LayoutParams layoutParams, GenericViewAdapter adapter) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -63,6 +64,7 @@ public class GridViewItem extends RelativeLayout {
 
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.gridItem = this;
+        mHolder.mAdapter = adapter;
         mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
 
         mCoverDone = false;
@@ -95,7 +97,7 @@ public class GridViewItem extends RelativeLayout {
 
 
     public void prepareArtworkFetching(ArtworkManager artworkManager, GenericModel modelItem) {
-        if ( !modelItem.equals(mHolder.modelItem) || !mCoverDone) {
+        if (!modelItem.equals(mHolder.modelItem) || !mCoverDone) {
             setImage(null);
         }
         mHolder.artworkManager = artworkManager;
@@ -119,7 +121,7 @@ public class GridViewItem extends RelativeLayout {
     }
 
     public void setImage(Bitmap image) {
-        if ( null != image ) {
+        if (null != image) {
             mCoverDone = true;
 
             mImageView.setImageBitmap(image);

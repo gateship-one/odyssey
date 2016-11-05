@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Pair;
 
+import org.gateshipone.odyssey.adapter.GenericViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -40,6 +41,8 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
     private final Context mContext;
 
+    private long mStartTime;
+
     public AsyncLoader(Context context) {
         mContext = context;
     }
@@ -52,10 +55,14 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         public GridViewItem gridItem;
         public ArtworkManager artworkManager;
         public GenericModel modelItem;
+        public GenericViewAdapter mAdapter;
     }
 
     @Override
     protected Bitmap doInBackground(CoverViewHolder... params) {
+        // Save the time when loading started for later duration calculation
+        mStartTime = System.currentTimeMillis();
+
         mCover = params[0];
         Bitmap image = null;
         // Check if model item is artist or album
@@ -155,6 +162,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
 
         // set mCover if exists
         if (null != result) {
+            mCover.mAdapter.addImageLoadTime(System.currentTimeMillis() - mStartTime);
             mCover.gridItem.setImage(result);
         }
     }
