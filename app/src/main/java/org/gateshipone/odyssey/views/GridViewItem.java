@@ -65,7 +65,8 @@ public class GridViewItem extends RelativeLayout {
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.gridItem = this;
         mHolder.mAdapter = adapter;
-        mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
+
+        setLayoutParams(layoutParams);
 
         mCoverDone = false;
         mSwitcher.setOutAnimation(null);
@@ -144,4 +145,12 @@ public class GridViewItem extends RelativeLayout {
         }
     }
 
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+
+        if (mHolder != null) {
+            mHolder.imageDimension = new Pair<>(params.width, params.height);
+        }
+    }
 }

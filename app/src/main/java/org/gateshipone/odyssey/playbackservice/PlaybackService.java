@@ -713,7 +713,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void jumpToIndex(int index, int jumpTime) {
 
         // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
-        if ( mPlayer.getActive() ) {
+        if (mPlayer.getActive()) {
             // Abort here if the player is still active
             return;
         }
@@ -929,7 +929,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Dequeues a track from the playlist
      *
-     * @param index Position if the track to remove
+     * @param index Position of the track to remove
      */
     public void dequeueTrack(int index) {
         // Check if track is currently playing, if so stop it
@@ -1217,7 +1217,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         FileModel currentFile = new FileModel(filePath);
-        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(),currentFile);
+        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(), currentFile);
 
         enqueueTrack(track, asNext);
 
@@ -1237,7 +1237,25 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         FileModel currentDirectory = new FileModel(directoryPath);
 
-        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(),currentDirectory);
+        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(), currentDirectory);
+
+        // add tracks to current playlist
+        enqueueTracks(tracks);
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+    }
+
+    /**
+     * creates trackmodels for a given directorypath (inclusive all subdirectories) and adds the tracks to the playlist
+     *
+     * @param directoryPath the path to the selected directory
+     */
+    public void enqueueDirectoryAndSubDirectories(String directoryPath) {
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+
+        FileModel currentDirectory = new FileModel(directoryPath);
+
+        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory);
 
         // add tracks to current playlist
         enqueueTracks(tracks);

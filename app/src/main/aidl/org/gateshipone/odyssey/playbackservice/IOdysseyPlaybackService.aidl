@@ -97,6 +97,7 @@ interface IOdysseyPlaybackService {
 	// file explorer methods
 	void enqueueFile(String filePath, boolean asNext);
 	void enqueueDirectory(String directoryPath);
+	void enqueueDirectoryAndSubDirectories(String directoryPath);
 
 	// Information getters
 	String getArtist();
