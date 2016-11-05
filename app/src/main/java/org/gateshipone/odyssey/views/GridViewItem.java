@@ -23,7 +23,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,8 +30,6 @@ import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.AsyncLoader;
-
-import java.lang.ref.WeakReference;
 
 public class GridViewItem extends RelativeLayout {
 
@@ -52,8 +49,6 @@ public class GridViewItem extends RelativeLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.gridview_item, this, true);
 
-        setLayoutParams(layoutParams);
-
         mImageView = (ImageView) findViewById(R.id.grid_item_cover_image);
         mTitleView = (TextView) findViewById(R.id.grid_item_title);
         mSwitcher = (ViewSwitcher) findViewById(R.id.grid_item_view_switcher);
@@ -61,7 +56,8 @@ public class GridViewItem extends RelativeLayout {
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverViewReference = mImageView;
         mHolder.coverViewSwitcher = mSwitcher;
-        mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
+
+        setLayoutParams(layoutParams);
 
         mCoverDone = false;
         mHolder.imagePath = imageURL;
@@ -115,6 +111,15 @@ public class GridViewItem extends RelativeLayout {
             mSwitcher.setDisplayedChild(0);
             mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
             mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+        }
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+
+        if (mHolder != null) {
+            mHolder.imageDimension = new Pair<>(params.width, params.height);
         }
     }
 
