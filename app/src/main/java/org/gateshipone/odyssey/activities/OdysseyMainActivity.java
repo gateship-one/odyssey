@@ -43,11 +43,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -222,6 +222,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_odyssey_main);
+
+        // restore elevation behaviour as pre 24 support lib
+        AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
+        layout.setStateListAnimator(null);
+        ViewCompat.setElevation(layout, 0);
 
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance();
