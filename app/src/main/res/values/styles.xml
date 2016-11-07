@@ -196,7 +196,7 @@
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_lightGreen</item>
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_lightGreen</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_lightGreen</item>
+        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_lightGreen</item>
     </style>
 
     <style name="AppTheme.red_light" parent="AppThemeLight">
