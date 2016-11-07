@@ -916,7 +916,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
-        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
     }
 
     /**
@@ -946,7 +946,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         invalidate();
-        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener(this);
     }
 
     /**

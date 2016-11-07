@@ -102,11 +102,11 @@ public class CoverBitmapLoader {
 
             // If we reach this, we obviously don't have a local image. Try the database of downloaded images
             try {
-                Bitmap image = ArtworkManager.getInstance(mContext).getAlbumImage(mTrack);
+                Bitmap image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mTrack);
                 mListener.receiveBitmap(image);
             } catch (ImageNotFoundException e) {
                 // Try to fetch the image here
-                ArtworkManager.getInstance(mContext).fetchAlbumImage(mTrack, mContext);
+                ArtworkManager.getInstance(mContext.getApplicationContext()).fetchAlbumImage(mTrack, mContext);
             }
         }
     }
@@ -125,10 +125,10 @@ public class CoverBitmapLoader {
         @Override
         public void run() {
             try {
-                Bitmap artistImage = ArtworkManager.getInstance(mContext).getArtistImage(mArtist);
+                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mArtist);
                 mListener.receiveBitmap(artistImage);
             } catch (ImageNotFoundException e) {
-                ArtworkManager.getInstance(mContext).fetchArtistImage(mArtist, mContext);
+                ArtworkManager.getInstance(mContext.getApplicationContext()).fetchArtistImage(mArtist, mContext);
             }
         }
     }
@@ -159,11 +159,11 @@ public class CoverBitmapLoader {
                         mAlbum.setAlbumID(MusicLibraryHelper.getAlbumIDFromKey(mAlbum.getAlbumKey(), mContext));
                     }
                     // No tagged album image available, check download database
-                    Bitmap artistImage = ArtworkManager.getInstance(mContext).getAlbumImage(mAlbum);
+                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mAlbum);
                     mListener.receiveBitmap(artistImage);
                 }
             } catch (ImageNotFoundException e) {
-                ArtworkManager.getInstance(mContext).fetchAlbumImage(mAlbum, mContext);
+                ArtworkManager.getInstance(mContext.getApplicationContext()).fetchAlbumImage(mAlbum, mContext);
             }
         }
     }

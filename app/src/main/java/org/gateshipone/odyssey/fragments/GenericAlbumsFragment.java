@@ -99,14 +99,14 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
     }
 
     /**
