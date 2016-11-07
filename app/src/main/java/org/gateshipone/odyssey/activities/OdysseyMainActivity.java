@@ -610,8 +610,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Fade());
-        newFragment.setExitTransition(new Fade());
+        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        newFragment.setExitTransition(new Slide(Gravity.TOP));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -721,7 +721,7 @@ public class OdysseyMainActivity extends AppCompatActivity
              * Use View.GONE instead INVISIBLE to hide view behind NowPlayingView,
              * fixes overlaying Fragments on FragmentTransaction combined with minimizing the NPV in one action
              */
-            coordinatorLayout.setVisibility(View.GONE);
+            coordinatorLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -795,15 +795,15 @@ public class OdysseyMainActivity extends AppCompatActivity
                 // sees the explanation, try again to request the permission.
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
-                    Snackbar sb =  Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
+                    Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
                     sb.setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                                }
-                            });
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(OdysseyMainActivity.this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                        }
+                    });
                     // style the snackbar text
                     TextView sbText = (TextView) sb.getView().findViewById(android.support.design.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
@@ -917,42 +917,25 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
         // set scrolling behaviour
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
-        // set title for both the activity and the collapsingToolbarlayout for both cases
-        // where and image is shown and not.
-        if (toolbar != null) {
-            toolbar.setTitle(title);
-
+        if (scrollingEnabled && !showImage) {
+            toolbar.setTitleEnabled(false);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             setTitle(title);
 
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        } else if (!scrollingEnabled && showImage && collapsingImage != null) {
+            toolbar.setTitleEnabled(true);
+            toolbar.setPadding(0, 0, 0, 0);
+            toolbar.setTitle(title);
 
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-            AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
-            if (layout != null) {
-                layout.setExpanded(true, false);
-            }
-
-            if (scrollingEnabled) {
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            } else {
-                params.setScrollFlags(0);
-            }
-
-            if (showImage && collapsingImage != null) {
-                // Enable title of collapsingToolbarlayout for smooth transition
-                toolbar.setTitleEnabled(true);
-                setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder, null));
-                params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
-
-                // Reset the previously added padding again.
-                toolbar.setPadding(0, 0, 0, 0);
-            } else {
-                // Disable title for collapsingToolbarLayout and show normal title
-                toolbar.setTitleEnabled(false);
-                // Set the padding to match the statusbar height if a picture is shown.
-                toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-            }
-
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+        } else {
+            toolbar.setTitleEnabled(false);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+            setTitle(title);
+            params.setScrollFlags(0);
         }
     }
 

@@ -223,7 +223,6 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_oledDark</item>
     </style>
 
-
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
@@ -252,13 +251,8 @@
         <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_dark</item>
     </style>
 
-
     <style name="AppTheme.AppBarOverlay" parent="AppTheme">
         <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
-    </style>
-
-    <style name="AppTheme.PopupOverlay" parent="AppTheme">
-        <item name="android:textColor">?attr/odyssey_color_text_accent</item>
     </style>
 
     <style name="AppTheme.NavDrawer" parent="AppTheme">
@@ -320,13 +314,8 @@
         <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_light</item>
     </style>
 
-
     <style name="AppThemeLight.AppBarOverlay" parent="AppThemeLight">
         <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
-    </style>
-
-    <style name="AppThemeLight.PopupOverlay" parent="AppThemeLight">
-        <item name="android:textColor">?attr/odyssey_color_text_accent</item>
     </style>
 
     <style name="AppThemeLight.NavDrawer" parent="AppThemeLight">
