@@ -104,10 +104,21 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends BaseAda
             mFilteredModelData.clear();
         }
 
-        createSections();
-
         setScrollSpeed(0);
-        notifyDataSetChanged();
+
+        if ( mFilter.isEmpty()) {
+            // create sectionlist for fastscrolling
+            createSections();
+
+            notifyDataSetChanged();
+        } else {
+            // Refilter the new data
+            if (mFilterTask != null) {
+                mFilterTask.cancel(true);
+            }
+            mFilterTask = new FilterTask();
+            mFilterTask.execute(mFilter);
+        }
     }
 
     /**
