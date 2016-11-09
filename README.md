@@ -36,7 +36,7 @@ Currently Odyssey only uses the artwork that is already on your device. In the f
  * Nice and simple launcher widget
  * Album sort by year (select this in the settings)
  * Quick responding interface
- * Dark but colorful themes
+ * Colorful Material based themes
   
 
 
