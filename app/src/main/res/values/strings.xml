@@ -60,7 +60,7 @@
     <string name="dialog_choose_playlist">Choose playlist</string>
     <string name="dialog_equalizer_not_found_title">No equalizer available</string>
     <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer</string>
-    <string name="error_dialog_ok_action" translatable="false">Ok</string>
+    <string name="error_dialog_ok_action" translatable="false">@android:string/ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
@@ -77,29 +77,29 @@
     <string name="action_add_playlist">Add playlist</string>
 
     <!-- context menu titles -->
-    <string name="context_menu_action_enqueue">add to playlist</string>
-    <string name="context_menu_action_enqueueasnext">play after current song</string>
-    <string name="context_menu_action_playsong">play song</string>
-    <string name="context_menu_action_playalbum">play album</string>
-    <string name="context_menu_action_playalbums">play albums</string>
-    <string name="context_menu_action_showartist">show artist</string>
-    <string name="context_menu_action_showalbum">show album</string>
-    <string name="context_menu_action_removetrack">remove track</string>
-    <string name="context_menu_action_playplaylist">play playlist</string>
-    <string name="context_menu_action_enqueueplaylist">add playlist</string>
-    <string name="context_menu_action_deleteplaylist">delete playlist</string>
+    <string name="context_menu_action_enqueue">Add to playlist</string>
+    <string name="context_menu_action_enqueueasnext">Play after current song</string>
+    <string name="context_menu_action_playsong">Play song</string>
+    <string name="context_menu_action_playalbum">Play album</string>
+    <string name="context_menu_action_playalbums">Play albums</string>
+    <string name="context_menu_action_showartist">Show artist</string>
+    <string name="context_menu_action_showalbum">Show album</string>
+    <string name="context_menu_action_removetrack">Remove track</string>
+    <string name="context_menu_action_playplaylist">Play playlist</string>
+    <string name="context_menu_action_enqueueplaylist">Add playlist</string>
+    <string name="context_menu_action_deleteplaylist">Delete playlist</string>
     <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
     <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
-    <string name="context_menu_action_enqueue_folder">add folder to playlist</string>
-    <string name="context_menu_action_play_folder">play folder</string>
-    <string name="context_menu_action_enqueue_file">add file to playlist</string>
-    <string name="context_menu_action_play_file">play file</string>
+    <string name="context_menu_action_enqueue_folder">Add folder to playlist</string>
+    <string name="context_menu_action_play_folder">Play folder</string>
+    <string name="context_menu_action_enqueue_file">Add file to playlist</string>
+    <string name="context_menu_action_play_file">Play file</string>
 
     <!-- popup menu titles -->
-    <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
-    <string name="popup_menu_action_clearplaylist">clear playlist</string>
-    <string name="popup_menu_action_saveplaylist">save playlist</string>
-    <string name="popup_menu_action_createbookmark">create bookmark</string>
+    <string name="popup_menu_action_shuffleplaylist">Shuffle playlist</string>
+    <string name="popup_menu_action_clearplaylist">Clear playlist</string>
+    <string name="popup_menu_action_saveplaylist">Save playlist</string>
+    <string name="popup_menu_action_createbookmark">Create bookmark</string>
     <string name="popup_menu_action_startequalizer">Open equalizer</string>
 
     <!-- seperator -->
