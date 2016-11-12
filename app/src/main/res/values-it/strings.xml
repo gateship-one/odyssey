@@ -60,7 +60,7 @@
     <string name="action_add_album">Aggiungi un album</string>
     <string name="action_add_artist_albums">Aggiungi più album</string>
     <string name="action_switch_storage_volume">Cambia volume di storage</string>
-    <string name="action_add_directory">Aggiungi una directory</string>
+    <string name="action_add_directory">Aggiungi una directory alla playlist</string>
     <string name="action_search">Cerca</string>
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Aggiungi alla playlist</string>
@@ -196,4 +196,10 @@
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Download massivo in corso</string>
     <string name="downloader_notification_remaining_images">Immagini scaricate:</string>
+    <string name="action_add_playlist">Aggiungi playlist</string>
+    <string name="preference_theme_item_red">Rosso</string>
+    <string name="preference_theme_item_oled_dark">OLED (Scuro)</string>
+    <string name="preference_dark_theme_message">Utilizzare uno sfondo scuro</string>
+    <string name="preference_dark_theme_title">Sfondo scuro</string>
+    <string name="context_menu_action_enqueueplaylist">Aggiungi playlist</string>
 </resources>
