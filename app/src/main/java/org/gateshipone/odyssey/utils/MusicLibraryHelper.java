@@ -26,8 +26,10 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.ArrayList;
@@ -78,15 +80,15 @@ public class MusicLibraryHelper {
 
         String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
 
-        Cursor artistCursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, projectionArtists, where, whereVal, orderBy);
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, projectionArtists, where, whereVal, orderBy);
 
-        if (artistCursor != null) {
-            if (artistCursor.moveToFirst()) {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
 
-                artistID = artistCursor.getLong(artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+                artistID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Artists._ID));
             }
 
-            artistCursor.close();
+            cursor.close();
         }
 
         return artistID;
@@ -94,29 +96,31 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of albuminformations for the given albumKey.
+     *
+     * @param albumKey The key to identify the album in the mediastore
      */
     public static ArrayList<String> getAlbumInformationFromKey(String albumKey, Context context) {
         String whereVal[] = {albumKey};
 
         String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
 
-        Cursor albumCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
 
         ArrayList<String> albumInformations = new ArrayList<>();
 
-        if (albumCursor != null) {
-            if (albumCursor.moveToFirst()) {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
 
-                String albumTitle = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
-                String albumArt = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                String artistTitle = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+                String albumTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+                String albumArt = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                String artistTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
 
                 albumInformations.add(albumTitle);
                 albumInformations.add(albumArt);
                 albumInformations.add(artistTitle);
             }
 
-            albumCursor.close();
+            cursor.close();
         }
 
         return albumInformations;
@@ -125,7 +129,7 @@ public class MusicLibraryHelper {
     /**
      * Retrieves the album ID for the given album key
      *
-     * @param albumKey Key to use for retrieval
+     * @param albumKey The key to identify the album in the mediastore
      * @param context  Context used for the request
      * @return albumID if found or -1 if not found.
      */
@@ -134,17 +138,17 @@ public class MusicLibraryHelper {
 
         String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
 
-        Cursor albumCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
 
         long albumID = -1;
 
-        if (albumCursor != null) {
-            if (albumCursor.moveToFirst()) {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
 
-                albumID = albumCursor.getLong(albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+                albumID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
             }
 
-            albumCursor.close();
+            cursor.close();
         }
 
         // no album id found -> album not in mediastore; generate fake id
@@ -183,10 +187,8 @@ public class MusicLibraryHelper {
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
-
                     // add current track
-                    albumTracks.add(item);
+                    albumTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
 
                 } while (cursor.moveToNext());
             }
@@ -222,16 +224,18 @@ public class MusicLibraryHelper {
                 orderBy = MediaStore.Audio.Albums.ALBUM;
         }
 
-        Cursor albumCursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId),
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId),
                 new String[]{MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_KEY, MediaStore.Audio.Albums.FIRST_YEAR}, "", null, orderBy + " COLLATE NOCASE");
 
-        if (albumCursor != null) {
-            if (albumCursor.moveToFirst()) {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 do {
-                    String albumKey = albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY));
+                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY));
                     artistTracks.addAll(getTracksForAlbum(albumKey, context));
-                } while (albumCursor.moveToNext());
+                } while (cursor.moveToNext());
             }
+
+            cursor.close();
         }
 
         return artistTracks;
@@ -260,10 +264,8 @@ public class MusicLibraryHelper {
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.ALBUM_KEY));
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
-
                     // add the track
-                    playlistTracks.add(item);
+                    playlistTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
 
                 } while (cursor.moveToNext());
             }
@@ -296,10 +298,8 @@ public class MusicLibraryHelper {
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
-
                     // add the track
-                    allTracks.add(item);
+                    allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
 
                 } while (cursor.moveToNext());
             }
@@ -366,45 +366,100 @@ public class MusicLibraryHelper {
         }
     }
 
+    /**
+     * Return a list of all albums in the mediastore.
+     */
     public static List<AlbumModel> getAllAlbums(Context context) {
-        // Create cursor for content retrieval
-        Cursor albumCursor;
-
-        // load all albums
-        albumCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
-
         ArrayList<AlbumModel> albums = new ArrayList<>();
 
-        if (albumCursor != null) {
-            if (albumCursor.moveToFirst()) {
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
 
-                int albumKeyColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
-                int albumTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
-                int imagePathColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
-                int artistTitleColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-                int albumIDColumnIndex = albumCursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+
+                int albumKeyColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
+                int albumTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
+                int imagePathColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+                int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+                int albumIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
 
                 do {
-                    String albumKey = albumCursor.getString(albumKeyColumnIndex);
-                    String albumTitle = albumCursor.getString(albumTitleColumnIndex);
-                    String imagePath = albumCursor.getString(imagePathColumnIndex);
-                    String artistTitle = albumCursor.getString(artistTitleColumnIndex);
-                    long albumID = albumCursor.getLong(albumIDColumnIndex);
-                    AlbumModel album = new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID);
-                    albums.add(album);
+                    String albumKey = cursor.getString(albumKeyColumnIndex);
+                    String albumTitle = cursor.getString(albumTitleColumnIndex);
+                    String imagePath = cursor.getString(imagePathColumnIndex);
+                    String artistTitle = cursor.getString(artistTitleColumnIndex);
+                    long albumID = cursor.getLong(albumIDColumnIndex);
 
-                } while (albumCursor.moveToNext());
+                    // add the album
+                    albums.add(new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID));
+
+                } while (cursor.moveToNext());
             }
 
-            albumCursor.close();
+            cursor.close();
         }
         return albums;
     }
 
+    /**
+     * Return a list of all albums of an artist
+     *
+     * @param artistId The id to identify the artist in the mediastore
+     */
+    public static List<AlbumModel> getAllAlbumsForArtist(long artistId, Context context) {
+        ArrayList<AlbumModel> albums = new ArrayList<>();
+
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String orderPref = sharedPref.getString("pref_album_sort_order", "name");
+
+        String orderBy;
+
+        switch (orderPref) {
+            case "name":
+                orderBy = MediaStore.Audio.Albums.ALBUM;
+                break;
+            case "year":
+                orderBy = MediaStore.Audio.Albums.FIRST_YEAR;
+                break;
+            default:
+                orderBy = MediaStore.Audio.Albums.ALBUM;
+        }
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId), MusicLibraryHelper.projectionAlbums, "", null, orderBy + " COLLATE NOCASE");
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+
+                int albumKeyColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
+                int albumTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
+                int imagePathColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+                int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+                int albumIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+
+                do {
+                    String albumKey = cursor.getString(albumKeyColumnIndex);
+                    String albumTitle = cursor.getString(albumTitleColumnIndex);
+                    String imagePath = cursor.getString(imagePathColumnIndex);
+                    String artistTitle = cursor.getString(artistTitleColumnIndex);
+                    long albumID = cursor.getLong(albumIDColumnIndex);
+
+                    // add the album
+                    albums.add(new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID));
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+        return albums;
+    }
+
+    /**
+     * Return a list of all artists in the mediastore.
+     */
     public static List<ArtistModel> getAllArtists(Context context) {
-        // FIXME Remove the coverPath workaround
         ArrayList<ArtistModel> artists = new ArrayList<>();
-        String artist, coverPath;
+        String artist;
 
         SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(context);
         boolean showAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only", true);
@@ -413,52 +468,84 @@ public class MusicLibraryHelper {
             // load all artists
 
             // get all artists
-            Cursor artistCursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null, MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
+            Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null,
+                    MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
 
-            if (artistCursor != null) {
+            if (cursor != null) {
 
-                if (artistCursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
 
                     long artistID;
 
-                    int artistTitleColumnIndex = artistCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
-                    int artistIDColumnIndex = artistCursor.getColumnIndex(MediaStore.Audio.Artists._ID);
+                    int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
+                    int artistIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists._ID);
 
                     do {
-                        artist = artistCursor.getString(artistTitleColumnIndex);
-                        artistID = artistCursor.getLong(artistIDColumnIndex);
+                        artist = cursor.getString(artistTitleColumnIndex);
+                        artistID = cursor.getLong(artistIDColumnIndex);
 
+                        // add the artist
                         artists.add(new ArtistModel(artist, null, artistID));
 
-                    } while (artistCursor.moveToNext());
+                    } while (cursor.moveToNext());
                 }
 
-                artistCursor.close();
+                cursor.close();
             }
         } else {
             // load only artist which has an album entry
 
             // get all album covers
-            Cursor albumArtCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM}, MediaStore.Audio.Albums.ARTIST + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null,
-                    MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");
+            Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM},
+                    MediaStore.Audio.Albums.ARTIST + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null, MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");
 
-            if (albumArtCursor != null) {
+            if (cursor != null) {
 
-                if (albumArtCursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
 
-                    int albumArtistTitleColumnIndex = albumArtCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+                    int albumArtistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
 
                     do {
-                        artist = albumArtCursor.getString(albumArtistTitleColumnIndex);
+                        artist = cursor.getString(albumArtistTitleColumnIndex);
 
+                        // add the artist
                         artists.add(new ArtistModel(artist, null, -1));
 
-                    } while (albumArtCursor.moveToNext());
+                    } while (cursor.moveToNext());
                 }
 
-                albumArtCursor.close();
+                cursor.close();
             }
         }
         return artists;
+    }
+
+    /**
+     * Return a list of all playlists in the mediastore.
+     */
+    public static List<PlaylistModel> getAllPlaylists(Context context) {
+         ArrayList<PlaylistModel> playlists = new ArrayList<>();
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
+
+        if (cursor != null) {
+
+            if (cursor.moveToFirst()) {
+                int playlistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);
+                int playlistIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Playlists._ID);
+
+                do {
+                    String playlistTitle = cursor.getString(playlistTitleColumnIndex);
+                    long playlistID = cursor.getLong(playlistIDColumnIndex);
+
+                    // add the playlist
+                    playlists.add(new PlaylistModel(playlistTitle, playlistID));
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        return playlists;
     }
 }
