@@ -485,7 +485,7 @@ public class MusicLibraryHelper {
                         artistID = cursor.getLong(artistIDColumnIndex);
 
                         // add the artist
-                        artists.add(new ArtistModel(artist, null, artistID));
+                        artists.add(new ArtistModel(artist, artistID));
 
                     } while (cursor.moveToNext());
                 }
@@ -509,7 +509,7 @@ public class MusicLibraryHelper {
                         artist = cursor.getString(albumArtistTitleColumnIndex);
 
                         // add the artist
-                        artists.add(new ArtistModel(artist, null, -1));
+                        artists.add(new ArtistModel(artist, -1));
 
                     } while (cursor.moveToNext());
                 }

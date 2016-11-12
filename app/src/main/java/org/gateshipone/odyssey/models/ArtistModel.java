@@ -25,12 +25,6 @@ public class ArtistModel implements GenericModel {
      */
     private final String mArtistName;
 
-    // FIXME remove this local artwork hack
-    /**
-     * The url for the artist cover
-     */
-    private final String mArtistURL;
-
     /**
      * Unique id to identify the artist in the mediastore
      */
@@ -43,33 +37,20 @@ public class ArtistModel implements GenericModel {
     /**
      * Constructs a ArtistModel instance with the given parameters.
      */
-    public ArtistModel(String name, String artURL, long artistID) {
+    public ArtistModel(String name, long artistID) {
         if (name != null) {
             mArtistName = name;
         } else {
             mArtistName = "";
         }
 
-        if (artURL != null) {
-            mArtistURL = artURL;
-        } else {
-            mArtistURL = "";
-        }
         mArtistID = artistID;
     }
 
     public ArtistModel(ArtistModel artist) {
         mArtistName  = artist.mArtistName;
-        mArtistURL = artist.mArtistURL;
         mArtistID = artist.mArtistID;
 
-    }
-
-    /**
-     * Return the url for the artist cover
-     */
-    public String getArtistURL() {
-        return mArtistURL;
     }
 
     /**

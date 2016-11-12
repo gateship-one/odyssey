@@ -68,11 +68,6 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         // Check if model item is artist or album
         if (mCover.modelItem instanceof ArtistModel) {
             ArtistModel artist = (ArtistModel) mCover.modelItem;
-            //FIXME remove artistURL support
-            String artistURL = artist.getArtistURL();
-            if (null != artistURL && !artistURL.isEmpty()) {
-                return decodeSampledBitmapFromResource(artistURL, mCover.imageDimension.first, mCover.imageDimension.second);
-            }
 
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception

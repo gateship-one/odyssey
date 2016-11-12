@@ -105,7 +105,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
             });
         }
 
-        mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, null, mArtistID));
+        mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, mArtistID));
     }
 
     /**
