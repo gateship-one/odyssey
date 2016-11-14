@@ -53,6 +53,11 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.OdysseyContributorsActivity"
+            android:label="Contributors"
+            android:parentActivityName=".activities.OdysseyMainActivity">
+        </activity>
 
         <service
             android:name=".playbackservice.PlaybackService"

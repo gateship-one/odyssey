@@ -66,7 +66,6 @@
     <string name="preference_album_sort_order_year">Jahr</string>
     <string name="preference_album_sort_order_title">Albensortierung</string>
     <string name="preference_album_sort_order_message">Sortiere nach</string>
-    <string name="permission_request_snackbar_button">OK</string>
     <string name="permission_request_snackbar_explanation">Zugriff auf den Speicher erforderlich um Musik zu laden.</string>
     <string name="action_add_album">Album hinzufügen</string>
     <string name="action_add_artist_albums">Alben hinzufügen</string>
@@ -135,4 +134,6 @@
     <string name="preference_theme_item_red">Rot</string>
     <string name="preference_dark_theme_message">Verwende ein dunkles Design</string>
     <string name="preference_dark_theme_title">Dunkles Design</string>
+    <string name="contributor_translator_italian">Italienische Übersetzung</string>
+    <string name="odyssey_contributors_title">Mitwirkende</string>
 </resources>

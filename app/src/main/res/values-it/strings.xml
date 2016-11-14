@@ -19,7 +19,6 @@
 <resources>
     <string name="app_name">Odyssey</string>
     <!-- permission request -->
-    <string name="permission_request_snackbar_button">OK</string>
     <string name="permission_request_snackbar_explanation">Per caricare dei file di musica è necessario il permesso di Storage.</string>
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Apri il navigation drawer</string>
@@ -202,4 +201,6 @@
     <string name="preference_dark_theme_message">Utilizzare uno sfondo scuro</string>
     <string name="preference_dark_theme_title">Sfondo scuro</string>
     <string name="context_menu_action_enqueueplaylist">Aggiungi playlist</string>
+    <string name="contributor_translator_italian">Traduzione italiana</string>
+    <string name="odyssey_contributors_title">Contributori</string>
 </resources>

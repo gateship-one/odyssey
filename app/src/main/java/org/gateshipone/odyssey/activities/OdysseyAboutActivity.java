@@ -104,6 +104,15 @@ public class OdysseyAboutActivity extends Activity {
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
         getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this,R.attr.odyssey_color_primary_dark));
 
+        findViewById(R.id.odyssey_contributors).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);
+
+                startActivity(myIntent);
+            }
+        });
+
         findViewById(R.id.logo_musicbrainz).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -54,5 +53,17 @@
         <item>off</item>
         <item>last_fm</item>
         <item>fanart_tv</item>
+    </string-array>
+
+    <string-array name="odyssey_contributors" translatable="false">
+        <item>Hendrik Borghorst</item>
+        <item>Frederik Lütkes</item>
+        <item>Alessandra Ghiazza</item>
+    </string-array>
+
+    <string-array name="odyssey_contributors_type">
+        <item>@string/contributor_team</item>
+        <item>@string/contributor_team</item>
+        <item>@string/contributor_translator_italian</item>
     </string-array>
 </resources>

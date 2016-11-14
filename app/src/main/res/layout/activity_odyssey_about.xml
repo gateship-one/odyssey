@@ -29,7 +29,7 @@
         <ImageView
             android:id="@+id/activity_about_logo"
             android:layout_width="match_parent"
-            android:layout_height="256dp"
+            android:layout_height="@dimen/about_odyssey_icon_size"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_512" />
 
@@ -74,23 +74,15 @@
                     android:textSize="@dimen/material_font_style_size_subheading" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_content_spacing"
-                android:fontFamily="sans-serif-regular"
-                android:gravity="center"
-                android:text="@string/authors"
-                android:textSize="@dimen/material_font_style_size_subheading" />
-
-            <TextView
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/odyssey_contributors"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_content_spacing"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="@string/team"
-                android:textSize="@dimen/material_font_style_size_title" />
+                android:layout_gravity="center"
+                android:text="@string/odyssey_contributors_title"
+                android:textSize="@dimen/material_font_style_size_subheading" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,7 +101,7 @@
                 <ImageButton
                     android:id="@+id/logo_musicbrainz"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="@dimen/about_artwork_provider_icon_size"
                     android:layout_weight="1"
                     android:scaleType="fitCenter"
                     style="?attr/borderlessButtonStyle"
@@ -118,7 +110,7 @@
                 <ImageButton
                     android:id="@+id/logo_lastfm"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="@dimen/about_artwork_provider_icon_size"
                     android:layout_weight="1"
                     android:scaleType="fitCenter"
                     style="?attr/borderlessButtonStyle"
@@ -127,7 +119,7 @@
                 <ImageButton
                     android:id="@+id/logo_fanarttv"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="@dimen/about_artwork_provider_icon_size"
                     android:layout_weight="1"
                     android:scaleType="fitCenter"
                     style="?attr/borderlessButtonStyle"
