@@ -63,7 +63,12 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
             return MusicLibraryHelper.getAllAlbums(mContext);
         } else {
             // load all albums from the given artist
-            return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, mContext);
+
+            // Read order preference
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String orderKey = sharedPref.getString("pref_album_sort_order", "name");
+
+            return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, orderKey, mContext);
         }
     }
 

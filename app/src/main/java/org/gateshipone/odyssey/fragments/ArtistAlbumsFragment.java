@@ -18,10 +18,12 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -200,9 +202,13 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
      * Call the PBS to enqueue artist.
      */
     private void enqueueArtist() {
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String orderKey = sharedPref.getString("pref_album_sort_order", "name");
+
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(mArtistID);
+            mServiceConnection.getPBS().enqueueArtist(mArtistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

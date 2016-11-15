@@ -26,12 +26,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -47,8 +46,12 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
     private static final int NOTIFICATION_ID = 84;
 
-    private static final String ACTION_CANCEL = "cancel_download";
-    public static final String ACTION_START_BULKDOWNLOAD = "start_download";
+    public static final String ACTION_CANCEL_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.cancel";
+    public static final String ACTION_START_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.start";
+
+    public static final String BUNDLE_KEY_ARTIST_PROVIDER = "org.gateshipone.odyssey.artist_provider";
+    public static final String BUNDLE_KEY_ALBUM_PROVIDER = "org.gateshipone.odyssey.album_provider";
+    public static final String BUNDLE_KEY_WIFI_ONLY = "org.gateshipone.odyssey.wifi_only";
 
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
@@ -63,6 +66,8 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
     private PowerManager.WakeLock mWakelock;
 
     private ConnectionStateReceiver mConnectionStateChangeReceiver;
+
+    private boolean mWifiOnly;
 
     /**
      * Called when the service is created because it is requested by an activity
@@ -97,11 +102,21 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (intent.getAction().equals(ACTION_START_BULKDOWNLOAD)) {
             Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
 
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(BulkDownloadService.this);
+            String artistProvider = "last_fm";
+            String albumProvider = "musicbrainz";
+            mWifiOnly = true;
+
+            // read setting from extras
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, "last_fm");
+                albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, "musicbrainz");
+                mWifiOnly = intent.getBooleanExtra(BUNDLE_KEY_WIFI_ONLY, true);
+            }
+
             ConnectivityManager cm =
                     (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -109,24 +124,25 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             if (null == netInfo) {
                 return START_NOT_STICKY;
             }
-            boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+
             boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
 
-            if ( wifiOnly && !isWifi) {
+            if (mWifiOnly && !isWifi) {
                 return START_NOT_STICKY;
             }
 
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    "MALP_BulkDownloader");
+                    "Odyssey_BulkDownloader");
 
             // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
             mWakelock.acquire();
 
-            ArtworkManager.getInstance(getApplicationContext()).bulkLoadImages(this, getApplicationContext());
+            ArtworkManager artworkManager = ArtworkManager.getInstance(getApplicationContext());
+            artworkManager.initialize(artistProvider, albumProvider, mWifiOnly);
+            artworkManager.bulkLoadImages(this, getApplicationContext());
         }
         return START_STICKY;
-
     }
 
     private void runAsForeground() {
@@ -136,7 +152,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             // Create a filter to only handle certain actions
             IntentFilter intentFilter = new IntentFilter();
 
-            intentFilter.addAction(ACTION_CANCEL);
+            intentFilter.addAction(ACTION_CANCEL_BULKDOWNLOAD);
 
             registerReceiver(mBroadcastReceiver, intentFilter);
         }
@@ -151,7 +167,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         mBuilder.setOngoing(true);
 
         // Cancel action
-        Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL);
+        Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
         PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getResources().getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
@@ -215,7 +231,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, "Broadcast requested");
-            if (intent.getAction().equals(ACTION_CANCEL)) {
+            if (intent.getAction().equals(ACTION_CANCEL_BULKDOWNLOAD)) {
                 Log.e(TAG, "Cancel requested");
                 ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
                 mNotificationManager.cancel(NOTIFICATION_ID);
@@ -230,8 +246,6 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(BulkDownloadService.this);
-
             ConnectivityManager cm =
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -239,10 +253,10 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             if (null == netInfo) {
                 return;
             }
-            boolean wifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+
             boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
 
-            if (wifiOnly && !isWifi) {
+            if (mWifiOnly && !isWifi) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
                 LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(new RequestQueue.RequestFilter() {

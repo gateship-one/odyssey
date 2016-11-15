@@ -20,13 +20,10 @@ package org.gateshipone.odyssey.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -203,17 +200,14 @@ public class MusicLibraryHelper {
      * Return a list of all tracks of an artist
      *
      * @param artistId The id to identify the artist in the mediastore
+     * @param orderKey String to specify the order of the tracks
      */
-    public static List<TrackModel> getTracksForArtist(long artistId, Context context) {
+    public static List<TrackModel> getTracksForArtist(long artistId, String orderKey, Context context) {
         List<TrackModel> artistTracks = new ArrayList<>();
-
-        // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String orderPref = sharedPref.getString("pref_album_sort_order", "name");
 
         String orderBy;
 
-        switch (orderPref) {
+        switch (orderKey) {
             case "name":
                 orderBy = MediaStore.Audio.Albums.ALBUM;
                 break;
@@ -405,17 +399,14 @@ public class MusicLibraryHelper {
      * Return a list of all albums of an artist
      *
      * @param artistId The id to identify the artist in the mediastore
+     * @param orderKey String to specify the order of the albums
      */
-    public static List<AlbumModel> getAllAlbumsForArtist(long artistId, Context context) {
+    public static List<AlbumModel> getAllAlbumsForArtist(long artistId, String orderKey, Context context) {
         ArrayList<AlbumModel> albums = new ArrayList<>();
-
-        // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String orderPref = sharedPref.getString("pref_album_sort_order", "name");
 
         String orderBy;
 
-        switch (orderPref) {
+        switch (orderKey) {
             case "name":
                 orderBy = MediaStore.Audio.Albums.ALBUM;
                 break;
@@ -456,13 +447,11 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of all artists in the mediastore.
+     *
+     * @param showAlbumArtistsOnly flag if only albumartists should be loaded
      */
-    public static List<ArtistModel> getAllArtists(Context context) {
+    public static List<ArtistModel> getAllArtists(boolean showAlbumArtistsOnly, Context context) {
         ArrayList<ArtistModel> artists = new ArrayList<>();
-        String artist;
-
-        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        boolean showAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only", true);
 
         if (!showAlbumArtistsOnly) {
             // load all artists
@@ -474,15 +463,12 @@ public class MusicLibraryHelper {
             if (cursor != null) {
 
                 if (cursor.moveToFirst()) {
-
-                    long artistID;
-
                     int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
                     int artistIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists._ID);
 
                     do {
-                        artist = cursor.getString(artistTitleColumnIndex);
-                        artistID = cursor.getLong(artistIDColumnIndex);
+                        String artist = cursor.getString(artistTitleColumnIndex);
+                        long artistID = cursor.getLong(artistIDColumnIndex);
 
                         // add the artist
                         artists.add(new ArtistModel(artist, artistID));
@@ -506,7 +492,7 @@ public class MusicLibraryHelper {
                     int albumArtistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
 
                     do {
-                        artist = cursor.getString(albumArtistTitleColumnIndex);
+                        String artist = cursor.getString(albumArtistTitleColumnIndex);
 
                         // add the artist
                         artists.add(new ArtistModel(artist, -1));
@@ -524,7 +510,7 @@ public class MusicLibraryHelper {
      * Return a list of all playlists in the mediastore.
      */
     public static List<PlaylistModel> getAllPlaylists(Context context) {
-         ArrayList<PlaylistModel> playlists = new ArrayList<>();
+        ArrayList<PlaylistModel> playlists = new ArrayList<>();
 
         Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
 

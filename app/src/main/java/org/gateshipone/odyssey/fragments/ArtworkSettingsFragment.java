@@ -32,6 +32,10 @@ import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 
+import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
+import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
+import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
+
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     /**
@@ -92,6 +96,11 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             public boolean onPreferenceClick(Preference preference) {
                 Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
                 serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
+
+                SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+                serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString("pref_artist_provider", "last_fm"));
+                serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString("pref_album_provider", "musicbrainz"));
+                serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean("pref_download_wifi_only", true));
                 getActivity().startService(serviceIntent);
                 return true;
             }
@@ -157,8 +166,25 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_album_provider") || key.equals("pref_artist_provider")) {
-            ArtworkManager.getInstance(getContext().getApplicationContext()).cancelAllRequests(getContext());
+        if (key.equals("pref_album_provider") || key.equals("pref_artist_provider") || key.equals("pref_download_wifi_only")) {
+            Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
+            getActivity().getApplicationContext().sendBroadcast(nextIntent);
+
+            ArtworkManager artworkManager = ArtworkManager.getInstance(getContext().getApplicationContext());
+
+            artworkManager.cancelAllRequests(getContext());
+
+            switch (key) {
+                case "pref_album_provider":
+                    artworkManager.setAlbumProvider(sharedPreferences.getString("pref_album_provider", "musicbrainz"));
+                    break;
+                case "pref_artist_provider":
+                    artworkManager.setArtistProvider(sharedPreferences.getString("pref_artist_provider", "last_fm"));
+                    break;
+                case "pref_download_wifi_only":
+                    artworkManager.setWifiOnly(sharedPreferences.getBoolean("pref_download_wifi_only", true));
+                    break;
+            }
         }
     }
 

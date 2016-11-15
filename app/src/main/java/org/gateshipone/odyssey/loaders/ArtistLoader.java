@@ -24,6 +24,7 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.content.AsyncTaskLoader;
 
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
@@ -40,7 +41,10 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
      */
     @Override
     public List<ArtistModel> loadInBackground() {
-        return MusicLibraryHelper.getAllArtists(mContext);
+        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean showAlbumArtistsOnly = sharedPref.getBoolean("pref_key_album_artists_only", true);
+
+        return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, mContext);
     }
 
     @Override

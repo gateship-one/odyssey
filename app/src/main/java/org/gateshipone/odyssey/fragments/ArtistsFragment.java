@@ -19,8 +19,10 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
@@ -235,9 +237,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String orderKey = sharedPref.getString("pref_album_sort_order", "name");
+
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(artistID);
+            mServiceConnection.getPBS().enqueueArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -85,6 +85,12 @@ public class ControlObject {
         mLongParam = param;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, long longParam, String stringParam) {
+        mAction = action;
+        mLongParam = longParam;
+        mStringparam = stringParam;
+    }
+
     public PLAYBACK_ACTION getAction() {
         return mAction;
     }
