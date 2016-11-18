@@ -132,8 +132,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             }
 
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                    "Odyssey_BulkDownloader");
+            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Odyssey_BulkDownloader");
 
             // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
             mWakelock.acquire();

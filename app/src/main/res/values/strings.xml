@@ -126,29 +126,12 @@
     <string name="preference_theme_item_oled_dark">OLED Dark</string>
     <string name="preference_theme_item_red">Red</string>
 
-    <string-array name="preference_odyssey_styles">
-        <item>@string/preference_theme_item_indigo</item>
-        <item>@string/preference_theme_item_orange</item>
-        <item>@string/preference_theme_item_deep_orange</item>
-        <item>@string/preference_theme_item_blue</item>
-        <item>@string/preference_theme_item_dark_grey</item>
-        <item>@string/preference_theme_item_brown</item>
-        <item>@string/preference_theme_item_light_green</item>
-        <item>@string/preference_theme_item_red</item>
-        <item>@string/preference_theme_item_oled_dark</item>
-    </string-array>
-
     <string name="preference_album_sort_order_title">Artist Albums sort order</string>
     <string name="preference_album_sort_order_message">Sort by</string>
     <string name="preference_album_sort_order_summary">Select the sort order for albums of an artist.</string>
 
     <string name="preference_album_sort_order_name">Name</string>
     <string name="preference_album_sort_order_year">Year</string>
-
-    <string-array name="preference_album_sort_orders">
-        <item>@string/preference_album_sort_order_name</item>
-        <item>@string/preference_album_sort_order_year</item>
-    </string-array>
 
     <string name="preference_default_view_title">Default view</string>
     <string name="preference_default_view_message">Select default view</string>
@@ -163,15 +146,6 @@
 
     <string name="artwork_settings">Artwork settings</string>
 
-    <string-array name="preference_default_views">
-        <item>@string/preference_default_view_my_music_artists</item>
-        <item>@string/preference_default_view_my_music_albums</item>
-        <item>@string/preference_default_view_my_music_tracks</item>
-        <item>@string/preference_default_view_my_music_playlists</item>
-        <item>@string/preference_default_view_my_music_bookmarks</item>
-        <item>@string/preference_default_view_my_music_files</item>
-    </string-array>
-
     <!-- artwork preferences -->
     <string name="preference_artwork_album_provider_title">Album image provider</string>
     <string name="preference_artwork_album_provider_summary">Select an provider for album cover images.</string>
@@ -182,21 +156,9 @@
     <string name="last_fm" translatable="false">Last.fm</string>
     <string name="fanart_tv" translatable="false">Fanart.tv</string>
 
-    <string-array name="preference_artwork_album_provider_entries">
-        <item>@string/provider_off</item>
-        <item>@string/musicbrainz</item>
-        <item>@string/last_fm</item>
-    </string-array>
-
     <string name="preference_artwork_artist_provider_title">Artist image provider</string>
     <string name="preference_artwork_artist_provider_summary">Select an provider for artist cover images.</string>
     <string name="preference_artwork_artist_provider_message">Select an provider for artist cover images.</string>
-
-    <string-array name="preference_artwork_artist_provider_entries">
-        <item>@string/provider_off</item>
-        <item>@string/last_fm</item>
-        <item>@string/fanart_tv</item>
-    </string-array>
 
     <string name="preference_artwork_clear_artist">Clear artist images</string>
     <string name="preference_artwork_clear_artist_summary">Removes all saved images for artists.</string>

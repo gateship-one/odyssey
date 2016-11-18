@@ -53,7 +53,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onCreate(savedInstanceState);
 
         // add listener to clear album data
-        Preference clearAlbums = findPreference("pref_clear_album");
+        Preference clearAlbums = findPreference(getString(R.string.pref_clear_album_key));
         clearAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -63,7 +63,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         });
 
         // add listener to clear artist data
-        Preference clearArtist = findPreference("pref_clear_artist");
+        Preference clearArtist = findPreference(getString(R.string.pref_clear_artist_key));
         clearArtist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -72,7 +72,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             }
         });
 
-        Preference clearBlockedAlbums = findPreference("pref_clear_blocked_album");
+        Preference clearBlockedAlbums = findPreference(getString(R.string.pref_clear_blocked_album_key));
         clearBlockedAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -81,7 +81,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             }
         });
 
-        Preference clearBlockedArtists = findPreference("pref_clear_blocked_artist");
+        Preference clearBlockedArtists = findPreference(getString(R.string.pref_clear_blocked_artist_key));
         clearBlockedArtists.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -90,7 +90,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             }
         });
 
-        Preference buldLoad = findPreference("pref_bulk_load");
+        Preference buldLoad = findPreference(getString(R.string.pref_bulk_load_key));
         buldLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -98,9 +98,12 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
                 serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
 
                 SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-                serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString("pref_artist_provider", "last_fm"));
-                serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString("pref_album_provider", "musicbrainz"));
-                serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean("pref_download_wifi_only", true));
+                serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
+                        getString(R.string.pref_artwork_provider_artist_default)));
+                serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),
+                        getString(R.string.pref_artwork_provider_album_default)));
+                serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
+                        getResources().getBoolean(R.bool.pref_download_wifi_default)));
                 getActivity().startService(serviceIntent);
                 return true;
             }
@@ -135,7 +138,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_settings), false, false, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_settings), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
@@ -166,7 +169,11 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_album_provider") || key.equals("pref_artist_provider") || key.equals("pref_download_wifi_only")) {
+        String albumProviderKey = getString(R.string.pref_album_provider_key);
+        String artistProviderKey = getString(R.string.pref_artist_provider_key);
+        String downloadWifiOnlyKey = getString(R.string.pref_download_wifi_only_key);
+
+        if (key.equals(albumProviderKey) || key.equals(artistProviderKey) || key.equals(downloadWifiOnlyKey)) {
             Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
             getActivity().getApplicationContext().sendBroadcast(nextIntent);
 
@@ -174,16 +181,12 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
             artworkManager.cancelAllRequests(getContext());
 
-            switch (key) {
-                case "pref_album_provider":
-                    artworkManager.setAlbumProvider(sharedPreferences.getString("pref_album_provider", "musicbrainz"));
-                    break;
-                case "pref_artist_provider":
-                    artworkManager.setArtistProvider(sharedPreferences.getString("pref_artist_provider", "last_fm"));
-                    break;
-                case "pref_download_wifi_only":
-                    artworkManager.setWifiOnly(sharedPreferences.getBoolean("pref_download_wifi_only", true));
-                    break;
+            if (key.equals(albumProviderKey)) {
+                artworkManager.setAlbumProvider(sharedPreferences.getString(albumProviderKey, getString(R.string.pref_artwork_provider_album_default)));
+            } else if(key.equals(artistProviderKey)) {
+                artworkManager.setArtistProvider(sharedPreferences.getString(artistProviderKey, getString(R.string.pref_artwork_provider_artist_default)));
+            } else if (key.equals(downloadWifiOnlyKey)) {
+                artworkManager.setWifiOnly(sharedPreferences.getBoolean(downloadWifiOnlyKey, getResources().getBoolean(R.bool.pref_download_wifi_default)));
             }
         }
     }

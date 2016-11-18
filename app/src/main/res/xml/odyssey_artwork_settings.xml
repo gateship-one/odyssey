@@ -22,7 +22,7 @@
         android:dialogTitle="@string/preference_artwork_album_provider_title"
         android:entries="@array/preference_artwork_album_provider_entries"
         android:entryValues="@array/preference_artwork_album_provider_values"
-        android:key="pref_album_provider"
+        android:key="@string/pref_album_provider_key"
         android:persistent="true"
         android:summary="@string/preference_artwork_album_provider_summary"
         android:title="@string/preference_artwork_album_provider_title" />
@@ -31,35 +31,35 @@
         android:dialogTitle="@string/preference_artwork_artist_provider_title"
         android:entries="@array/preference_artwork_artist_provider_entries"
         android:entryValues="@array/preference_artwork_artist_provider_values"
-        android:key="pref_artist_provider"
+        android:key="@string/pref_artist_provider_key"
         android:persistent="true"
         android:summary="@string/preference_artwork_artist_provider_summary"
         android:title="@string/preference_artwork_artist_provider_title" />
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="pref_download_wifi_only"
+        android:key="@string/pref_download_wifi_only_key"
         android:persistent="true"
         android:summary="@string/preference_artwork_wifi_only_text"
         android:title="@string/preference_artwork_wifi_only_title" />
     <Preference
-        android:key="pref_clear_artist"
+        android:key="@string/pref_clear_artist_key"
         android:summary="@string/preference_artwork_clear_artist_summary"
         android:title="@string/preference_artwork_clear_artist" />
     <Preference
-        android:key="pref_clear_album"
+        android:key="@string/pref_clear_album_key"
         android:summary="@string/preference_artwork_clear_album_summary"
         android:title="@string/preference_artwork_clear_album" />
     <Preference
-        android:key="pref_clear_blocked_artist"
+        android:key="@string/pref_clear_blocked_artist_key"
         android:summary="@string/preference_artwork_clear_blocked_artist_summary"
         android:title="@string/preference_artwork_clear_blocked_artist" />
     <Preference
-        android:key="pref_clear_blocked_album"
+        android:key="@string/pref_clear_blocked_album_key"
         android:summary="@string/preference_artwork_clear_blocked_album_summary"
         android:title="@string/preference_artwork_clear_blocked_album" />
 
     <Preference
-        android:key="pref_bulk_load"
+        android:key="@string/pref_bulk_load_key"
         android:summary="@string/preference_artwork_bulk_load_summary"
         android:title="@string/preference_artwork_bulk_load" />
 </PreferenceScreen>

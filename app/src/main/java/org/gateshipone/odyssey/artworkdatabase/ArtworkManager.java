@@ -35,6 +35,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artworkdatabase.network.artprovider.FanartTVManager;
 import org.gateshipone.odyssey.artworkdatabase.network.artprovider.LastFMManager;
@@ -91,9 +92,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         context.registerReceiver(receiver, filter);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        mArtistProvider = sharedPref.getString("pref_artist_provider", "last_fm");
-        mAlbumProvider = sharedPref.getString("pref_album_provider", "musicbrainz");
-        mWifiOnly = sharedPref.getBoolean("pref_download_wifi_only", true);
+        mArtistProvider = sharedPref.getString(context.getString(R.string.pref_artist_provider_key), context.getString(R.string.pref_artwork_provider_artist_default));
+        mAlbumProvider = sharedPref.getString(context.getString(R.string.pref_album_provider_key), context.getString(R.string.pref_artwork_provider_album_default));
+        mWifiOnly = sharedPref.getBoolean(context.getString(R.string.pref_download_wifi_only_key), context.getResources().getBoolean(R.bool.pref_download_wifi_default));
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -405,7 +406,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 fetchNextBulkArtist(mContext);
             }
             if (response.image == null) {
-                mDBManager.insertArtistImage(response.artist, response.image, mContext);
+                mDBManager.insertArtistImage(response.artist, null, mContext);
                 return response.artist;
             }
 
@@ -467,7 +468,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 fetchNextBulkAlbum(mContext);
             }
             if (response.image == null) {
-                mDBManager.insertAlbumImage(response.album, response.image);
+                mDBManager.insertAlbumImage(response.album, null);
                 return response.album;
             }
 
