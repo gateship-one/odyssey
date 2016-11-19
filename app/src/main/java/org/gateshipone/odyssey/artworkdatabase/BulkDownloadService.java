@@ -77,8 +77,6 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         super.onCreate();
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mSumImageDownloads = 0;
-
         mConnectionStateChangeReceiver = new ConnectionStateReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -105,6 +103,11 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         if (intent.getAction().equals(ACTION_START_BULKDOWNLOAD)) {
             Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
 
+            // reset counter
+            mRemainingArtists = 0;
+            mRemainingAlbums = 0;
+            mSumImageDownloads = 0;
+
             String artistProvider = getString(R.string.pref_artwork_provider_artist_default);
             String albumProvider = getString(R.string.pref_artwork_provider_album_default);
             mWifiOnly = true;
@@ -115,6 +118,10 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
                 artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, getString(R.string.pref_artwork_provider_artist_default));
                 albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, getString(R.string.pref_artwork_provider_album_default));
                 mWifiOnly = intent.getBooleanExtra(BUNDLE_KEY_WIFI_ONLY, true);
+            }
+
+            if (artistProvider.equals(getString(R.string.pref_artwork_provider_none_key)) && albumProvider.equals(getString(R.string.pref_artwork_provider_none_key))) {
+                return START_NOT_STICKY;
             }
 
             ConnectivityManager cm =
@@ -157,9 +164,9 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         }
 
         mBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getString(R.string.downloader_notification_title))
+                .setContentTitle(getString(R.string.downloader_notification_title))
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(getResources().getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) + '/' + String.valueOf(mSumImageDownloads)))
+                        .bigText(getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) + '/' + String.valueOf(mSumImageDownloads)))
                 .setProgress(mSumImageDownloads, mSumImageDownloads - (mRemainingArtists + mRemainingAlbums), false)
                 .setSmallIcon(R.drawable.odyssey_notification);
 
@@ -168,7 +175,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         // Cancel action
         Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
         PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getResources().getString(R.string.dialog_action_cancel), nextPendingIntent).build();
+        android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
         mBuilder.addAction(cancelAction);
 
@@ -220,7 +227,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         if ((mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) % 10 == 0) {
             mBuilder.setProgress(mSumImageDownloads, mSumImageDownloads - (mRemainingArtists + mRemainingAlbums), false);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle()
-                    .bigText(getResources().getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) + '/' + String.valueOf(mSumImageDownloads)));
+                    .bigText(getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) + '/' + String.valueOf(mSumImageDownloads)));
             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
     }

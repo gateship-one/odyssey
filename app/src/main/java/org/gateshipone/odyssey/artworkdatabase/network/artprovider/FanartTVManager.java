@@ -55,7 +55,7 @@ public class FanartTVManager implements ArtistImageProvider {
     private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + String.valueOf(MUSICBRAINZ_LIMIT_RESULT_COUNT);
 
 
-    private static final String API_KEY = "API_KEY_MISSING";
+    private static final String API_KEY = "c0cc5d1b6e807ce93e49d75e0e5d371b";
 
     private FanartTVManager(Context context) {
         mRequestQueue = LimitingRequestQueue.getInstance(context);
@@ -75,8 +75,7 @@ public class FanartTVManager implements ArtistImageProvider {
 
     public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
-
-        String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
+        String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/", " "));
 
         getArtists(artistURLName, new Response.Listener<JSONObject>() {
             @Override
@@ -126,7 +125,7 @@ public class FanartTVManager implements ArtistImageProvider {
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse != null && networkResponse.statusCode == 503) {
                     // If MusicBrainz returns 503 this is probably because of rate limiting
-                    Log.e(TAG,"Rate limit reached");
+                    Log.e(TAG, "Rate limit reached");
                     mRequestQueue.stop();
                 } else {
                     errorListener.fetchError(artist, context);

@@ -559,12 +559,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return;
         }
         mBulkProgressCallback = progressCallback;
+        mArtistList.clear();
+        mAlbumList.clear();
         Log.v(TAG, "Start bulk loading");
-        List<AlbumModel> albums = MusicLibraryHelper.getAllAlbums(context);
-        new ParseAlbumListTask(context).execute(albums);
+        if (!mAlbumProvider.equals(context.getString((R.string.pref_artwork_provider_none_key)))) {
+            List<AlbumModel> albums = MusicLibraryHelper.getAllAlbums(context);
+            new ParseAlbumListTask(context).execute(albums);
+        }
 
-        List<ArtistModel> artits = MusicLibraryHelper.getAllArtists(false, context);
-        new ParseArtistListTask(context).execute(artits);
+        if (!mArtistProvider.equals(context.getString((R.string.pref_artwork_provider_none_key)))) {
+            List<ArtistModel> artists = MusicLibraryHelper.getAllArtists(false, context);
+            new ParseArtistListTask(context).execute(artists);
+        }
     }
 
     private class ParseAlbumListTask extends AsyncTask<List<AlbumModel>, Object, Object> {
@@ -587,10 +593,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 mAlbumList.clear();
                 mAlbumList.addAll(albumList);
             }
-            if (!mArtistList.isEmpty()) {
-                fetchNextBulkAlbum(mContext);
-                fetchNextBulkArtist(mContext);
-            }
+
+            fetchNextBulkAlbum(mContext);
+
             return null;
         }
     }
@@ -614,10 +619,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 mArtistList.clear();
                 mArtistList.addAll(artistList);
             }
-            if (!mAlbumList.isEmpty()) {
-                fetchNextBulkAlbum(mContext);
-                fetchNextBulkArtist(mContext);
-            }
+
+            fetchNextBulkArtist(mContext);
+
             return null;
         }
     }
@@ -656,6 +660,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 isEmpty = mAlbumList.isEmpty();
             }
         }
+
         if (mArtistList.isEmpty()) {
             mBulkProgressCallback.finishedLoading();
         }
