@@ -105,15 +105,15 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         if (intent.getAction().equals(ACTION_START_BULKDOWNLOAD)) {
             Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
 
-            String artistProvider = "last_fm";
-            String albumProvider = "musicbrainz";
+            String artistProvider = getString(R.string.pref_artwork_provider_artist_default);
+            String albumProvider = getString(R.string.pref_artwork_provider_album_default);
             mWifiOnly = true;
 
             // read setting from extras
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, "last_fm");
-                albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, "musicbrainz");
+                artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, getString(R.string.pref_artwork_provider_artist_default));
+                albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, getString(R.string.pref_artwork_provider_album_default));
                 mWifiOnly = intent.getBooleanExtra(BUNDLE_KEY_WIFI_ONLY, true);
             }
 

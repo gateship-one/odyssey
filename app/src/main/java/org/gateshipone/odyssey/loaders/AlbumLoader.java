@@ -18,19 +18,15 @@
 
 package org.gateshipone.odyssey.loaders;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.content.AsyncTaskLoader;
 
 public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
@@ -67,7 +63,7 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
 
             // Read order preference
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String orderKey = sharedPref.getString(mContext.getString(R.string.pref_album_sort_order_key), mContext.getString(R.string.pref_sort_default));
+            String orderKey = sharedPref.getString(mContext.getString(R.string.pref_album_sort_order_key), mContext.getString(R.string.pref_artist_albums_sort_default));
 
             return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, orderKey, mContext);
         }

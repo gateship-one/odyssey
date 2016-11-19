@@ -18,57 +18,57 @@
   -->
 
 <resources>
-    <string name="pref_album_provider_key">pref_album_provider</string>
-    <string name="pref_artist_provider_key">pref_artist_provider</string>
-    <string name="pref_download_wifi_only_key">pref_download_wifi_only</string>
+    <string name="pref_album_provider_key" translatable="false">pref_album_provider</string>
+    <string name="pref_artist_provider_key" translatable="false">pref_artist_provider</string>
+    <string name="pref_download_wifi_only_key" translatable="false">pref_download_wifi_only</string>
     <bool name="pref_download_wifi_default">true</bool>
-    <string name="pref_clear_artist_key">pref_clear_artist</string>ge
-    <string name="pref_clear_album_key">pref_clear_album</string>
-    <string name="pref_clear_blocked_artist_key">pref_clear_blocked_artist</string>
-    <string name="pref_clear_blocked_album_key">pref_clear_blocked_album</string>
-    <string name="pref_bulk_load_key">pref_bulk_load</string>
+    <string name="pref_clear_artist_key" translatable="false">pref_clear_artist</string>
+    <string name="pref_clear_album_key" translatable="false">pref_clear_album</string>
+    <string name="pref_clear_blocked_artist_key" translatable="false">pref_clear_blocked_artist</string>
+    <string name="pref_clear_blocked_album_key" translatable="false">pref_clear_blocked_album</string>
+    <string name="pref_bulk_load_key" translatable="false">pref_bulk_load</string>
 
-    <string name="pref_file_browser_root_dir_key">pref_file_browser_root_dir</string>
+    <string name="pref_file_browser_root_dir_key" translatable="false">pref_file_browser_root_dir</string>
 
-    <string name="pref_indigo_key">indigo</string>
-    <string name="pref_orange_key">orange</string>
-    <string name="pref_deeporange_key">deeporange</string>
-    <string name="pref_blue_key">blue</string>
-    <string name="pref_darkgrey_key">darkgrey</string>
-    <string name="pref_brown_key">brown</string>
-    <string name="pref_lightgreen_key">lightgreen</string>
-    <string name="pref_red_key">red</string>
-    <string name="pref_oleddark_key">oleddark</string>
-    <string name="pref_theme_default">@string/pref_indigo_key</string>
+    <string name="pref_indigo_key" translatable="false">indigo</string>
+    <string name="pref_orange_key" translatable="false">orange</string>
+    <string name="pref_deeporange_key" translatable="false">deeporange</string>
+    <string name="pref_blue_key" translatable="false">blue</string>
+    <string name="pref_darkgrey_key" translatable="false">darkgrey</string>
+    <string name="pref_brown_key" translatable="false">brown</string>
+    <string name="pref_lightgreen_key" translatable="false">lightgreen</string>
+    <string name="pref_red_key" translatable="false">red</string>
+    <string name="pref_oleddark_key" translatable="false">oleddark</string>
+    <string name="pref_theme_default" translatable="false">@string/pref_indigo_key</string>
     <bool name="pref_theme_dark_default">true</bool>
 
-    <string name="pref_sort_name_key">name</string>
-    <string name="pref_sort_year_key">year</string>
-    <string name="pref_sort_default">@string/pref_sort_name_key</string>
+    <string name="pref_artist_albums_sort_name_key" translatable="false">name</string>
+    <string name="pref_artist_albums_sort_year_key" translatable="false">year</string>
+    <string name="pref_artist_albums_sort_default" translatable="false">@string/pref_artist_albums_sort_name_key</string>
 
-    <string name="pref_view_my_music_artists_key">my_music_artists</string>
-    <string name="pref_view_my_music_albums_key">my_music_albums</string>
-    <string name="pref_view_my_music_tracks_key">my_music_tracks</string>
-    <string name="pref_view_playlists_key">playlists</string>
-    <string name="pref_view_bookmarks_key">bookmarks</string>
-    <string name="pref_view_files_key">files</string>
-    <string name="pref_view_default">@string/pref_view_my_music_albums_key</string>
+    <string name="pref_view_my_music_artists_key" translatable="false">my_music_artists</string>
+    <string name="pref_view_my_music_albums_key" translatable="false">my_music_albums</string>
+    <string name="pref_view_my_music_tracks_key" translatable="false">my_music_tracks</string>
+    <string name="pref_view_playlists_key" translatable="false">playlists</string>
+    <string name="pref_view_bookmarks_key" translatable="false">bookmarks</string>
+    <string name="pref_view_files_key" translatable="false">files</string>
+    <string name="pref_view_default" translatable="false">@string/pref_view_my_music_albums_key</string>
 
-    <string name="pref_artwork_provider_musicbrainz_key">musicbrainz</string>
-    <string name="pref_artwork_provider_lastfm_key">last_fm</string>
-    <string name="pref_artwork_provider_fanarttv_key">fanart_tv</string>
-    <string name="pref_artwork_provider_none_key">off</string>
-    <string name="pref_artwork_provider_album_default">@string/pref_artwork_provider_lastfm_key</string>äö
-    <string name="pref_artwork_provider_artist_default">@string/pref_artwork_provider_lastfm_key</string>
+    <string name="pref_artwork_provider_musicbrainz_key" translatable="false">musicbrainz</string>
+    <string name="pref_artwork_provider_lastfm_key" translatable="false">last_fm</string>
+    <string name="pref_artwork_provider_fanarttv_key" translatable="false">fanart_tv</string>
+    <string name="pref_artwork_provider_none_key" translatable="false">off</string>
+    <string name="pref_artwork_provider_album_default" translatable="false">@string/pref_artwork_provider_lastfm_key</string>
+    <string name="pref_artwork_provider_artist_default" translatable="false">@string/pref_artwork_provider_lastfm_key</string>
 
-    <string name="pref_theme_key">pref_theme</string>
-    <string name="pref_dark_theme_key">pref_dark_theme</string>
-    <string name="pref_album_artists_only_key">pref_album_artists_only</string>
+    <string name="pref_theme_key" translatable="false">pref_theme</string>
+    <string name="pref_dark_theme_key" translatable="false">pref_dark_theme</string>
+    <string name="pref_album_artists_only_key" translatable="false">pref_album_artists_only</string>
     <bool name="pref_album_artists_only_default">true</bool>
-    <string name="pref_album_sort_order_key">pref_album_sort_order</string>
-    <string name="pref_start_view_key">pref_start_view</string>
-    <string name="pref_artwork_settings_key">pref_artwork_settings</string>
-    <string name="pref_open_equalizer_key">pref_open_equalizer</string>
+    <string name="pref_album_sort_order_key" translatable="false">pref_album_sort_order</string>
+    <string name="pref_start_view_key" translatable="false">pref_start_view</string>
+    <string name="pref_artwork_settings_key" translatable="false">pref_artwork_settings</string>
+    <string name="pref_open_equalizer_key" translatable="false">pref_open_equalizer</string>
 
     <string-array name="preference_style_values" translatable="false">
         <item>@string/pref_indigo_key</item>
@@ -83,8 +83,8 @@
     </string-array>
 
     <string-array name="preference_album_sort_orders_values" translatable="false">
-        <item>@string/pref_sort_name_key</item>
-        <item>@string/pref_sort_year_key</item>
+        <item>@string/pref_artist_albums_sort_name_key</item>
+        <item>@string/pref_artist_albums_sort_year_key</item>
     </string-array>
 
     <string-array name="preference_default_view_values" translatable="false">

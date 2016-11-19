@@ -204,7 +204,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     private void enqueueArtist() {
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_sort_default));
+        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
 
         // enqueue artist
         try {

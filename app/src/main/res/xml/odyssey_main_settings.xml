@@ -19,7 +19,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="indigo"
+        android:defaultValue="@string/pref_theme_default"
         android:dialogTitle="@string/preference_theme_title"
         android:entries="@array/preference_odyssey_styles"
         android:entryValues="@array/preference_style_values"
@@ -28,17 +28,17 @@
         android:summary="@string/preference_theme_summary"
         android:title="@string/preference_theme_title" />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="@bool/pref_theme_dark_default"
         android:key="@string/pref_dark_theme_key"
         android:summary="@string/preference_dark_theme_message"
         android:title="@string/preference_dark_theme_title" />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="@bool/pref_album_artists_only_default"
         android:key="@string/pref_album_artists_only_key"
         android:summary="@string/preference_show_album_artists_only_summary"
         android:title="@string/preference_show_album_artists_only_title" />
     <ListPreference
-        android:defaultValue="name"
+        android:defaultValue="@string/pref_artist_albums_sort_default"
         android:dialogTitle="@string/preference_album_sort_order_message"
         android:entries="@array/preference_album_sort_orders"
         android:entryValues="@array/preference_album_sort_orders_values"
@@ -47,7 +47,7 @@
         android:summary="@string/preference_album_sort_order_summary"
         android:title="@string/preference_album_sort_order_title" />
     <ListPreference
-        android:defaultValue="my_music_albums"
+        android:defaultValue="@string/pref_view_default"
         android:dialogTitle="@string/preference_default_view_message"
         android:entries="@array/preference_default_views"
         android:entryValues="@array/preference_default_view_values"

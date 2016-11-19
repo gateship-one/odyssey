@@ -18,7 +18,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="musicbrainz"
+        android:defaultValue="@string/pref_artwork_provider_album_default"
         android:dialogTitle="@string/preference_artwork_album_provider_title"
         android:entries="@array/preference_artwork_album_provider_entries"
         android:entryValues="@array/preference_artwork_album_provider_values"
@@ -27,7 +27,7 @@
         android:summary="@string/preference_artwork_album_provider_summary"
         android:title="@string/preference_artwork_album_provider_title" />
     <ListPreference
-        android:defaultValue="last_fm"
+        android:defaultValue="@string/pref_artwork_provider_artist_default"
         android:dialogTitle="@string/preference_artwork_artist_provider_title"
         android:entries="@array/preference_artwork_artist_provider_entries"
         android:entryValues="@array/preference_artwork_artist_provider_values"
@@ -36,7 +36,7 @@
         android:summary="@string/preference_artwork_artist_provider_summary"
         android:title="@string/preference_artwork_artist_provider_title" />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="@bool/pref_download_wifi_default"
         android:key="@string/pref_download_wifi_only_key"
         android:persistent="true"
         android:summary="@string/preference_artwork_wifi_only_text"

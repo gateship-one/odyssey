@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -207,15 +208,12 @@ public class MusicLibraryHelper {
 
         String orderBy;
 
-        switch (orderKey) {
-            case "name":
-                orderBy = MediaStore.Audio.Albums.ALBUM;
-                break;
-            case "year":
-                orderBy = MediaStore.Audio.Albums.FIRST_YEAR;
-                break;
-            default:
-                orderBy = MediaStore.Audio.Albums.ALBUM;
+        if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_name_key))) {
+            orderBy = MediaStore.Audio.Albums.ALBUM;
+        } else if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_year_key))) {
+            orderBy = MediaStore.Audio.Albums.FIRST_YEAR;
+        } else {
+            orderBy = MediaStore.Audio.Albums.ALBUM;
         }
 
         Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId),
@@ -406,15 +404,12 @@ public class MusicLibraryHelper {
 
         String orderBy;
 
-        switch (orderKey) {
-            case "name":
-                orderBy = MediaStore.Audio.Albums.ALBUM;
-                break;
-            case "year":
-                orderBy = MediaStore.Audio.Albums.FIRST_YEAR;
-                break;
-            default:
-                orderBy = MediaStore.Audio.Albums.ALBUM;
+        if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_name_key))) {
+            orderBy = MediaStore.Audio.Albums.ALBUM;
+        } else if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_year_key))) {
+            orderBy = MediaStore.Audio.Albums.FIRST_YEAR;
+        } else {
+            orderBy = MediaStore.Audio.Albums.ALBUM;
         }
 
         Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId), MusicLibraryHelper.projectionAlbums, "", null, orderBy + " COLLATE NOCASE");
