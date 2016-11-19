@@ -155,7 +155,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_my_music), true, true, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(getPlayButtonListener(tab.ordinal()));
         }

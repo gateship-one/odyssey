@@ -104,7 +104,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_saved_playlists), false, true, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_saved_playlists), false, true, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }

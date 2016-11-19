@@ -164,7 +164,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                 setTheme(R.style.AppTheme_red_light);
             }
         }
-        if (themePref.equals(getResources().getString(R.string.pref_oleddark_key))) {
+        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
             setTheme(R.style.AppTheme_oledDark);
         }
 

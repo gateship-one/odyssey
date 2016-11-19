@@ -75,7 +75,7 @@ public class OdysseyAboutActivity extends Activity {
                 setTheme(R.style.AppTheme_red_light);
             }
         }
-        if (themePref.equals(getResources().getString(R.string.pref_oleddark_key))) {
+        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
             setTheme(R.style.AppTheme_oledDark);
         }
         super.onCreate(savedInstanceState);
@@ -99,7 +99,7 @@ public class OdysseyAboutActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getResources().getString(R.string.url_musicbrainz)));
+                urlIntent.setData(Uri.parse(getString(R.string.url_musicbrainz)));
                 startActivity(urlIntent);
             }
         });
@@ -108,7 +108,7 @@ public class OdysseyAboutActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getResources().getString(R.string.url_lastfm)));
+                urlIntent.setData(Uri.parse(getString(R.string.url_lastfm)));
                 startActivity(urlIntent);
             }
         });
@@ -117,7 +117,7 @@ public class OdysseyAboutActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getResources().getString(R.string.url_fanarttv)));
+                urlIntent.setData(Uri.parse(getString(R.string.url_fanarttv)));
                 startActivity(urlIntent);
             }
         });

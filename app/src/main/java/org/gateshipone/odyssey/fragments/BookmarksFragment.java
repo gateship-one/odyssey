@@ -71,7 +71,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_bookmarks), false, true, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_bookmarks), false, true, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }

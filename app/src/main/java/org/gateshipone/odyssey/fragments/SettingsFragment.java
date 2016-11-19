@@ -118,7 +118,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_settings), false, true, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
