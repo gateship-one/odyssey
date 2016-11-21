@@ -102,30 +102,30 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                                             getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    errorListener.fetchError(artist, context);
+                                                    errorListener.fetchVolleyError(artist, context, error);
                                                 }
                                             });
                                         }
                                     }
                                 } catch (JSONException e) {
-                                    errorListener.fetchError(artist, context);
+                                    errorListener.fetchJSONException(artist, context, e);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchError(artist, context);
+                                errorListener.fetchVolleyError(artist, context, error);
                             }
                         });
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist, context);
+                    errorListener.fetchJSONException(artist, context, e);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(artist, context);
+                errorListener.fetchVolleyError(artist, context, error);
             }
         });
     }
@@ -173,7 +173,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(album, context);
+                errorListener.fetchVolleyError(album, context, error);
             }
         });
     }
@@ -185,7 +185,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 
         try {
             final JSONArray releases = response.getJSONArray("releases");
-            if ( releases.length() > releaseIndex) {
+            if (releases.length() > releaseIndex) {
                 String mbid = releases.getJSONObject(releaseIndex).getString("id");
                 album.setMBID(mbid);
 
@@ -194,23 +194,21 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
                 getAlbumImage(url, album, listener, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.v(TAG,"No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
-                        if ( releaseIndex + 1 < releases.length()) {
+                        Log.v(TAG, "No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
+                        if (releaseIndex + 1 < releases.length()) {
                             parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, context, listener, errorListener);
                         } else {
-                            errorListener.fetchError(album, context);
+                            errorListener.fetchVolleyError(album, context, error);
                         }
                     }
                 });
             } else {
-                errorListener.fetchError(album, context);
+                errorListener.fetchVolleyError(album, context, null);
             }
         } catch (JSONException e) {
-            errorListener.fetchError(album, context);
+            errorListener.fetchJSONException(album, context, e);
         }
-
     }
-
 
     private void getAlbumMBID(AlbumModel album, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String albumName = Uri.encode(album.getAlbumName());
@@ -241,7 +239,7 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 
     private void getAlbumImage(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
         Request<AlbumImageResponse> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
-        Log.v(TAG,"Get image: " + url);
+        Log.v(TAG, "Get image: " + url);
         addToRequestQueue(byteResponse);
     }
 

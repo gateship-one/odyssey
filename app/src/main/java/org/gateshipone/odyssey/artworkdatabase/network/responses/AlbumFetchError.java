@@ -21,8 +21,13 @@ package org.gateshipone.odyssey.artworkdatabase.network.responses;
 
 import android.content.Context;
 
+import com.android.volley.VolleyError;
+
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.json.JSONException;
 
 public interface AlbumFetchError {
-    void fetchError(AlbumModel album, Context context);
+    void fetchJSONException(AlbumModel album, Context context, JSONException exception);
+
+    void fetchVolleyError(AlbumModel album, Context context, VolleyError error);
 }

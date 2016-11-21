@@ -31,9 +31,11 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
@@ -48,6 +50,7 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -351,18 +354,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     }
 
     /**
-     * Interface implementation to handle errors during fetching of artist images
+     * Interface implementation to handle errors during fetching of album images
      *
-     * @param artist Artist that resulted in a fetch error
+     * @param album Album that resulted in a fetch error
      */
     @Override
-    public void fetchError(ArtistModel artist, Context context) {
-        Log.e(TAG, "Error fetching: " + artist.getArtistName());
-        ArtistImageResponse imageResponse = new ArtistImageResponse();
-        imageResponse.artist = artist;
+    public void fetchJSONException(AlbumModel album, Context context, JSONException exception) {
+        Log.e(TAG, "JSONException for album: " + album.getAlbumName() + "-" + album.getArtistName());
+        AlbumImageResponse imageResponse = new AlbumImageResponse();
+        imageResponse.album = album;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertArtistImageTask(context).execute(imageResponse);
+        new InsertAlbumImageTask(context).execute(imageResponse);
     }
 
     /**
@@ -371,13 +374,77 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param album Album that resulted in a fetch error
      */
     @Override
-    public void fetchError(AlbumModel album, Context context) {
-        Log.e(TAG, "Fetch error for album: " + album.getAlbumName() + "-" + album.getArtistName());
+    public void fetchVolleyError(AlbumModel album, Context context, VolleyError error) {
+        Log.e(TAG, "VolleyError for album: " + album.getAlbumName() + "-" + album.getArtistName());
+
+        if (error != null) {
+            NetworkResponse networkResponse = error.networkResponse;
+            if (networkResponse != null && networkResponse.statusCode == 503) {
+                mAlbumList.clear();
+                cancelAllRequests(context);
+                boolean isEmpty;
+                synchronized (mArtistList) {
+                    isEmpty = mArtistList.isEmpty();
+                }
+                if (isEmpty && mBulkProgressCallback != null) {
+                    mBulkProgressCallback.finishedLoading();
+                }
+                return;
+            }
+        }
+
         AlbumImageResponse imageResponse = new AlbumImageResponse();
         imageResponse.album = album;
         imageResponse.image = null;
         imageResponse.url = null;
         new InsertAlbumImageTask(context).execute(imageResponse);
+    }
+
+    /**
+     * Interface implementation to handle errors during fetching of artist images
+     *
+     * @param artist Artist that resulted in a fetch error
+     */
+    @Override
+    public void fetchJSONException(ArtistModel artist, Context context, JSONException exception) {
+        Log.e(TAG, "JSONException fetching: " + artist.getArtistName());
+        ArtistImageResponse imageResponse = new ArtistImageResponse();
+        imageResponse.artist = artist;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertArtistImageTask(context).execute(imageResponse);
+    }
+
+    /**
+     * Interface implementation to handle errors during fetching of artist images
+     *
+     * @param artist Artist that resulted in a fetch error
+     */
+    @Override
+    public void fetchVolleyError(ArtistModel artist, Context context, VolleyError error) {
+        Log.e(TAG, "VolleyError fetching: " + artist.getArtistName());
+
+        if (error != null) {
+            NetworkResponse networkResponse = error.networkResponse;
+            if (networkResponse != null && networkResponse.statusCode == 503) {
+                mArtistList.clear();
+                cancelAllRequests(context);
+                boolean isEmpty;
+                synchronized (mAlbumList) {
+                    isEmpty = mAlbumList.isEmpty();
+                }
+                if (isEmpty && mBulkProgressCallback != null) {
+                    mBulkProgressCallback.finishedLoading();
+                }
+                return;
+            }
+        }
+
+        ArtistImageResponse imageResponse = new ArtistImageResponse();
+        imageResponse.artist = artist;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertArtistImageTask(context).execute(imageResponse);
     }
 
     /**
@@ -501,7 +568,6 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 }
             }
         }
-
     }
 
     /**
@@ -537,7 +603,6 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 Log.v(TAG, "Cancel all downloads because of connection change");
                 cancelAllRequests(context);
             }
-
         }
     }
 

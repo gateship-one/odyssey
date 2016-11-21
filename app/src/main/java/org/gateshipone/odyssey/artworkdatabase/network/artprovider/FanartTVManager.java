@@ -22,7 +22,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -100,36 +99,29 @@ public class FanartTVManager implements ArtistImageProvider {
                                     getArtistImage(firstThumbImage.getString("url"), artist, listener, new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            errorListener.fetchError(artist, context);
+                                            errorListener.fetchVolleyError(artist, context, error);
                                         }
                                     });
 
                                 } catch (JSONException e) {
-                                    errorListener.fetchError(artist, context);
+                                    errorListener.fetchJSONException(artist, context, e);
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchError(artist, context);
+                                errorListener.fetchVolleyError(artist, context, error);
                             }
                         });
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist, context);
+                    errorListener.fetchJSONException(artist, context, e);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                if (networkResponse != null && networkResponse.statusCode == 503) {
-                    // If MusicBrainz returns 503 this is probably because of rate limiting
-                    Log.e(TAG, "Rate limit reached");
-                    mRequestQueue.stop();
-                } else {
-                    errorListener.fetchError(artist, context);
-                }
+                errorListener.fetchVolleyError(artist, context, error);
             }
         });
     }

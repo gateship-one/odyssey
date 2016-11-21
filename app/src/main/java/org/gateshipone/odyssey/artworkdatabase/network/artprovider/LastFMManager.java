@@ -75,7 +75,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
     public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
 
-        String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/"," "));
+        String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/", " "));
 
         getArtistImageURL(artistURLName, new Response.Listener<JSONObject>() {
             @Override
@@ -84,26 +84,26 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                     JSONObject artistObj = response.getJSONObject("artist");
                     // FIXME optionally get mbid here without aborting the image fetch
                     JSONArray images = artistObj.getJSONArray("image");
-                    Log.v(TAG,"Found: " + images.length() + "images");
-                    for ( int i = 0; i < images.length(); i++ ) {
+                    Log.v(TAG, "Found: " + images.length() + "images");
+                    for (int i = 0; i < images.length(); i++) {
                         JSONObject image = images.getJSONObject(i);
-                        if ( image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
+                        if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
                             getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    errorListener.fetchError(artist, context);
+                                    errorListener.fetchVolleyError(artist, context, error);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(artist, context);
+                    errorListener.fetchJSONException(artist, context, e);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(artist, context);
+                errorListener.fetchVolleyError(artist, context, error);
             }
         });
 
@@ -124,7 +124,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
 
 
         String url = LAST_FM_API_URL + "artist.getinfo&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
-        Log.v(TAG,url);
+        Log.v(TAG, url);
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
@@ -149,26 +149,26 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                     JSONObject albumObj = response.getJSONObject("album");
                     JSONArray images = albumObj.getJSONArray("image");
                     // FIXME optionally get mbid here without aborting the image fetch
-                    Log.v(TAG,"Found: " + images.length() + "images");
-                    for ( int i = 0; i < images.length(); i++ ) {
+                    Log.v(TAG, "Found: " + images.length() + "images");
+                    for (int i = 0; i < images.length(); i++) {
                         JSONObject image = images.getJSONObject(i);
-                        if ( image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
+                        if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
                             getAlbumImage(image.getString("#text"), album, listener, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    errorListener.fetchError(album, context);
+                                    errorListener.fetchVolleyError(album, context, error);
                                 }
                             });
                         }
                     }
                 } catch (JSONException e) {
-                    errorListener.fetchError(album, context);
+                    errorListener.fetchJSONException(album, context, e);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                errorListener.fetchError(album, context);
+                errorListener.fetchVolleyError(album, context, error);
             }
         });
     }
@@ -178,7 +178,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         String artistName = Uri.encode(album.getArtistName());
 
         String url = LAST_FM_API_URL + "album.getinfo&album=" + albumName + "&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
-        Log.v(TAG,url);
+        Log.v(TAG, url);
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
