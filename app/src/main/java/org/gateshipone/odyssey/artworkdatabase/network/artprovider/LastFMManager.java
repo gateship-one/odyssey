@@ -88,12 +88,17 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
                     for (int i = 0; i < images.length(); i++) {
                         JSONObject image = images.getJSONObject(i);
                         if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
-                            getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    errorListener.fetchVolleyError(artist, context, error);
-                                }
-                            });
+                            String url = image.getString("#text");
+                            if (!url.isEmpty()) {
+                                getArtistImage(image.getString("#text"), artist, listener, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        errorListener.fetchVolleyError(artist, context, error);
+                                    }
+                                });
+                            } else {
+                                errorListener.fetchVolleyError(artist, context, null);
+                            }
                         }
                     }
                 } catch (JSONException e) {
