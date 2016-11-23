@@ -90,8 +90,8 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             }
         });
 
-        Preference buldLoad = findPreference(getString(R.string.pref_bulk_load_key));
-        buldLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference bulkLoad = findPreference(getString(R.string.pref_bulk_load_key));
+        bulkLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
                 Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
