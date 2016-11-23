@@ -100,7 +100,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(ACTION_START_BULKDOWNLOAD)) {
+        if (intent != null && intent.getAction().equals(ACTION_START_BULKDOWNLOAD)) {
             Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
 
             // reset counter
