@@ -220,7 +220,9 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);
         stopSelf();
-        mWakelock.release();
+        if (mWakelock.isHeld()) {
+            mWakelock.release();
+        }
     }
 
     private void updateNotification() {
