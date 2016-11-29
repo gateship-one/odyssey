@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
@@ -151,17 +150,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     private ImageButton mTopPlayPauseButton;
     private ImageButton mTopPlaylistButton;
-    private ImageButton mTopMenuButton;
-
-    private int mTopPlaylistButtonHeight;
 
     /**
      * Buttons in the bottom part of the view
      */
     private ImageButton mBottomRepeatButton;
-    private ImageButton mBottomPreviousButton;
     private ImageButton mBottomPlayPauseButton;
-    private ImageButton mBottomNextButton;
     private ImageButton mBottomRandomButton;
 
     /**
@@ -170,8 +164,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private SeekBar mPositionSeekbar;
 
     private LinearLayout mHeaderTextLayout;
-    private RelativeLayout.LayoutParams mHeaderTextLayoutParams;
-
 
     /**
      * Various textviews for track information
@@ -207,13 +199,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Maximizes this view with an animation.
-     */
-    public void maximize() {
-        smoothSlideTo(0f);
-    }
-
-    /**
      * Minimizes the view with an animation.
      */
     public void minimize() {
@@ -226,7 +211,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * @param slideOffset 0.0 - 1.0 (0.0 is dragged down, 1.0 is dragged up)
      * @return If the move was successful
      */
-    boolean smoothSlideTo(float slideOffset) {
+    private boolean smoothSlideTo(float slideOffset) {
         final int topBound = getPaddingTop();
         int y = (int) (topBound + slideOffset * mDragRange);
 
@@ -291,7 +276,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         invalidate();
         requestLayout();
-
 
         // Set inverse alpha values for smooth layout transition.
         // Visibility still needs to be set otherwise parts of the buttons
@@ -413,7 +397,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        if ( mLastAlbumKey.equals(album.getAlbumKey())) {
+        if (mLastAlbumKey.equals(album.getAlbumKey())) {
             mCoverLoader.getAlbumImage(album);
         }
     }
@@ -532,9 +516,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             final int topBound = getPaddingTop();
             int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
 
-            final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-
-            return newTop;
+            return Math.min(Math.max(top, topBound), bottomBound);
         }
 
         /**
@@ -623,7 +605,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * @param view View to check with
      * @param x    x value of the input
      * @param y    y value of the input
-     * @return
+     * @return True if input coordinates lay within the given view
      */
     private boolean isViewHit(View view, int x, int y) {
         int[] viewLocation = new int[2];
@@ -673,14 +655,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // header buttons
         mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
         mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
-        mTopMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
+        ImageButton topMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
 
         // bottom buttons
         mBottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
-        mBottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
         mBottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
-        mBottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
         mBottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
+        ImageButton bottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
+        ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
 
         // Main cover image
         mCoverImage = (ImageView) findViewById(R.id.now_playing_cover);
@@ -769,7 +751,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         // Add listener to top menu button
-        mTopMenuButton.setOnClickListener(new OnClickListener() {
+        topMenuButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAdditionalOptionsMenu(v);
@@ -790,7 +772,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         // Add listener to bottom previous button
-        mBottomPreviousButton.setOnClickListener(new OnClickListener() {
+        bottomPreviousButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 try {
@@ -816,7 +798,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         });
 
         // Add listener to bottom next button
-        mBottomNextButton.setOnClickListener(new OnClickListener() {
+        bottomNextButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 try {
@@ -849,7 +831,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Called to open the popup menu on the top right corner.
      *
-     * @param v
+     * @param v View to which the popup menu should be attached
      */
     private void showAdditionalOptionsMenu(View v) {
         PopupMenu menu = new PopupMenu(getContext(), v);
@@ -874,7 +856,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // Calculate the maximal range that the view is allowed to be dragged
-        mDragRange = (getHeight() - mHeaderView.getHeight());
+        mDragRange = (getMeasuredHeight() - mHeaderView.getMeasuredHeight());
 
         // New temporary top position, to fix the view at top or bottom later if state is idle.
         int newTop = mTopPosition;
