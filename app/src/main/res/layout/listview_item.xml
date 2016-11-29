@@ -17,15 +17,15 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:minHeight="@dimen/material_list_item_height"
     android:orientation="vertical"
     android:padding="@dimen/material_standard_horizontal_spacing">
 
-
     <TextView
-        android:id="@+id/item_bookmarks_title"
+        android:id="@+id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-regular"
@@ -38,24 +38,25 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/item_bookmarks_date"
+            android:id="@+id/item_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/item_bookmarks_numberOfTracks"
+            android:layout_toStartOf="@+id/item_additional_subtitle"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-regular"
             android:maxLines="1"
             android:textColor="?attr/odyssey_color_text_background_secondary"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
         <TextView
-            android:id="@+id/item_bookmarks_numberOfTracks"
+            android:id="@+id/item_additional_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:fontFamily="sans-serif-regular"
             android:maxLines="1"
-            android:textColor="?attr/odyssey_color_text_background_secondary"
+            android:textColor="?attr/odyssey_color_text_background_primary"
             android:textSize="@dimen/material_font_style_size_body_1" />
     </RelativeLayout>
 

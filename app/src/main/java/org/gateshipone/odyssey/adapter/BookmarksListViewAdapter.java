@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.views.BookmarksListViewItem;
+import org.gateshipone.odyssey.views.ListViewItem;
 
 public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> {
 
@@ -72,13 +72,13 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         }
 
         if (convertView != null) {
-            BookmarksListViewItem bookmarksListViewItem = (BookmarksListViewItem) convertView;
+            ListViewItem bookmarksListViewItem = (ListViewItem) convertView;
 
             bookmarksListViewItem.setTitle(bookmarkTitle);
-            bookmarksListViewItem.setNumberOfTracks(numberOfTracksString);
-            bookmarksListViewItem.setDate(dateString);
+            bookmarksListViewItem.setSubtitle(dateString);
+            bookmarksListViewItem.setAddtionalSubtitle(numberOfTracksString);
         } else {
-            convertView = new BookmarksListViewItem(mContext, bookmarkTitle, numberOfTracksString, dateString);
+            convertView = new ListViewItem(mContext, bookmarkTitle, dateString, numberOfTracksString);
         }
 
         return convertView;

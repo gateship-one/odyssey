@@ -29,7 +29,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.views.TracksListViewItem;
+import org.gateshipone.odyssey.views.ListViewItem;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
@@ -137,18 +137,18 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
         String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
 
         if (convertView != null) {
-            TracksListViewItem tracksListViewItem = (TracksListViewItem) convertView;
-            tracksListViewItem.setTitle(trackTitle);
-            tracksListViewItem.setSubtitle(trackSubtitle);
-            tracksListViewItem.setDuration(trackDuration);
+            ListViewItem listViewItem = (ListViewItem) convertView;
+            listViewItem.setTitle(trackTitle);
+            listViewItem.setSubtitle(trackSubtitle);
+            listViewItem.setAddtionalSubtitle(trackDuration);
         } else {
-            convertView = new TracksListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
+            convertView = new ListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
         }
 
         if (position == mCurrentPlayingIndex) {
-            ((TracksListViewItem) convertView).setPlaying(true);
+            ((ListViewItem) convertView).setPlaying(true);
         } else {
-            ((TracksListViewItem) convertView).setPlaying(false);
+            ((ListViewItem) convertView).setPlaying(false);
         }
 
         return convertView;

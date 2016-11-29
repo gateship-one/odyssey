@@ -26,73 +26,73 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
-public class TracksListViewItem extends LinearLayout {
+public class ListViewItem extends LinearLayout {
 
     protected final TextView mTitleView;
     protected final TextView mSubtitleView;
-    protected final TextView mTrackDurationView;
+    protected final TextView mAdditionalSubtitleView;
 
     /**
      * Constructor that only initialize the layout.
      *
      * @param context The current android context.
      */
-    public TracksListViewItem(Context context) {
+    public ListViewItem(Context context) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.listview_item_tracks, this, true);
+        inflater.inflate(R.layout.listview_item, this, true);
 
-        mTitleView = (TextView) findViewById(R.id.item_tracks_title);
-        mSubtitleView = (TextView) findViewById(R.id.item_tracks_subtitle);
-        mTrackDurationView = (TextView) findViewById(R.id.item_tracks_duration);
+        mTitleView = (TextView) findViewById(R.id.item_title);
+        mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
+        mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
     }
 
     /**
      * Constructor that already sets the values for each view.
      *
-     * @param context  The current android context.
-     * @param title    The title as a string (i.e. a combination of track number and title)
-     * @param subtitle The subtitle as a string (i.e. a combination of artist and album name)
-     * @param duration The duration of the track as a string
+     * @param context            The current android context.
+     * @param title              The title as a string (i.e. a combination of number and title of a track)
+     * @param subtitle           The subtitle as a string (i.e. a combination of artist and album name of a track)
+     * @param additionalSubtitle The additional subtitle as a string (i.e. the duration of a track)
      */
-    public TracksListViewItem(Context context, String title, String subtitle, String duration) {
+    public ListViewItem(Context context, String title, String subtitle, String additionalSubtitle) {
         this(context);
 
         mTitleView.setText(title);
         mSubtitleView.setText(subtitle);
-        mTrackDurationView.setText(duration);
+        mAdditionalSubtitleView.setText(additionalSubtitle);
     }
 
     /**
-     * Sets the title for the track.
+     * Sets the title for the item.
      *
-     * @param title The title as a string (i.e. a combination of track number and title)
+     * @param title The title as a string (i.e. a combination of number and title of a track)
      */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }
 
     /**
-     * Sets the subtitle for the track.
+     * Sets the subtitle for the item.
      *
-     * @param subtitle The subtitle as a string (i.e. a combination of artist and album name)
+     * @param subtitle The subtitle as a string (i.e. a combination of artist and album name of a track)
      */
     public void setSubtitle(String subtitle) {
         mSubtitleView.setText(subtitle);
     }
 
     /**
-     * Sets the duration text for the track.
+     * Sets the additional subtitle for the item.
      *
-     * @param duration The duration of the track as a string
+     * @param additionalSubtitle The additional subtitle as a string (i.e. the duration of a track)
      */
-    public void setDuration(String duration) {
-        mTrackDurationView.setText(duration);
+    public void setAddtionalSubtitle(String additionalSubtitle) {
+        mAdditionalSubtitleView.setText(additionalSubtitle);
     }
 
     /**
-     * Method that tint the title, number and separator view according to the state.
+     * Method that tint the title view according to the state.
      *
      * @param state flag indicates if the representing track is currently marked as played by the playbackservice
      */
