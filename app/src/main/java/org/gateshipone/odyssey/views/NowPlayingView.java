@@ -168,8 +168,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Various textviews for track information
      */
-    private TextView mTrackName;
-    private TextView mTrackAdditionalInfo;
+    private TextView mTrackTitle;
+    private TextView mTrackSubtitle;
     private TextView mElapsedTime;
     private TextView mDuration;
 
@@ -425,8 +425,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 // report the change of the view
                 if (mDragStatusReceiver != null) {
                     // Disable scrolling of the text views
-                    mTrackName.setSelected(false);
-                    mTrackAdditionalInfo.setSelected(false);
+                    mTrackTitle.setSelected(false);
+                    mTrackSubtitle.setSelected(false);
 
                     mDragStatusReceiver.onStartDrag();
                 }
@@ -532,8 +532,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // Check if the new state is the idle state. If then notify the observer (if one is registered)
             if (state == ViewDragHelper.STATE_IDLE) {
                 // Enable scrolling of the text views
-                mTrackName.setSelected(true);
-                mTrackAdditionalInfo.setSelected(true);
+                mTrackTitle.setSelected(true);
+                mTrackSubtitle.setSelected(true);
 
                 if (mDragOffset == 0.0f) {
                     // Called when dragged up
@@ -681,12 +681,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDraggedDownButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_down);
 
         // textviews
-        mTrackName = (TextView) findViewById(R.id.now_playing_trackName);
+        mTrackTitle = (TextView) findViewById(R.id.now_playing_track_title);
         // For marquee scrolling the TextView need selected == true
-        mTrackName.setSelected(true);
-        mTrackAdditionalInfo = (TextView) findViewById(R.id.now_playing_track_additional_info);
+        mTrackTitle.setSelected(true);
+        mTrackSubtitle = (TextView) findViewById(R.id.now_playing_track_subtitle);
         // For marquee scrolling the TextView need selected == true
-        mTrackAdditionalInfo.setSelected(true);
+        mTrackSubtitle.setSelected(true);
 
         // Textviews directly under the seekbar
         mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
@@ -919,12 +919,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mServiceConnection.openConnection();
 
         // Reenable scrolling views after resuming
-        if (mTrackName != null) {
-            mTrackName.setSelected(true);
+        if (mTrackTitle != null) {
+            mTrackTitle.setSelected(true);
         }
 
-        if (mTrackAdditionalInfo != null) {
-            mTrackAdditionalInfo.setSelected(true);
+        if (mTrackSubtitle != null) {
+            mTrackSubtitle.setSelected(true);
         }
 
         invalidate();
@@ -958,7 +958,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         TrackModel currentTrack = info.getCurrentTrack();
 
         // set tracktitle, album, artist and albumcover
-        mTrackName.setText(currentTrack.getTrackName());
+        mTrackTitle.setText(currentTrack.getTrackName());
 
 
         // Check if the album title changed. If true, start the cover generator thread.
@@ -991,13 +991,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Set the artist of the track
         String trackInformation = "";
         if (!currentTrack.getTrackArtistName().isEmpty() && !currentTrack.getTrackAlbumName().isEmpty()) {
-            trackInformation = currentTrack.getTrackArtistName() + getResources().getString(R.string.separator) + currentTrack.getTrackAlbumName();
+            trackInformation = getResources().getString(R.string.track_title_template, currentTrack.getTrackArtistName(), currentTrack.getTrackAlbumName());
         } else if (!currentTrack.getTrackArtistName().isEmpty()) {
             trackInformation = currentTrack.getTrackArtistName();
         } else if (!currentTrack.getTrackAlbumName().isEmpty()) {
             trackInformation = currentTrack.getTrackAlbumName();
         }
-        mTrackAdditionalInfo.setText(trackInformation);
+        mTrackSubtitle.setText(trackInformation);
 
         // Calculate the margin to avoid cut off textviews
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mHeaderTextLayout.getLayoutParams();
@@ -1005,7 +1005,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mHeaderTextLayout.setLayoutParams(layoutParams);
 
         // Set the track duration
-        mDuration.setText(FormatHelper.formatTracktimeFromMS(currentTrack.getTrackDuration()));
+        mDuration.setText(FormatHelper.formatTracktimeFromMS(getContext(), currentTrack.getTrackDuration()));
 
         // set up seekbar (set maximum value, track total duration)
         mPositionSeekbar.setMax((int) currentTrack.getTrackDuration());
@@ -1084,7 +1084,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // update the seekbar
         mPositionSeekbar.setProgress(trackPosition);
         // update the elapsed view
-        mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(trackPosition));
+        mElapsedTime.setText(FormatHelper.formatTracktimeFromMS(getContext(), trackPosition));
     }
 
     /**

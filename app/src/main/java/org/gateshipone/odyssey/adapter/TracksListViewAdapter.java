@@ -50,33 +50,33 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
 
         TrackModel track = (TrackModel) getItem(position);
 
-        // title
+        // title (number + name)
         String trackTitle = track.getTrackName();
-
-        // additional information (artist + album)
-        String trackInformation = "";
-        if (!track.getTrackArtistName().isEmpty() && !track.getTrackAlbumName().isEmpty()) {
-            trackInformation = track.getTrackArtistName() + mContext.getString(R.string.separator) + track.getTrackAlbumName();
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackInformation = track.getTrackArtistName();
-        } else if (!track.getTrackAlbumName().isEmpty()) {
-            trackInformation = track.getTrackAlbumName();
+        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+        if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
+            trackTitle = mContext.getString(R.string.track_title_template, trackNumber, trackTitle);
+        } else if (!trackNumber.isEmpty()) {
+            trackTitle = trackNumber;
         }
 
-        // tracknumber
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+        // subtitle (artist + album)
+        String trackSubtitle = track.getTrackAlbumName();
+        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
+            trackSubtitle = mContext.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
+        } else if (!track.getTrackArtistName().isEmpty()) {
+            trackSubtitle = track.getTrackArtistName();
+        }
 
         // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(track.getTrackDuration());
+        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
 
         if (convertView != null) {
             TracksListViewItem tracksListViewItem = (TracksListViewItem) convertView;
-            tracksListViewItem.setNumber(trackNumber);
             tracksListViewItem.setTitle(trackTitle);
-            tracksListViewItem.setAdditionalInformation(trackInformation);
+            tracksListViewItem.setSubtitle(trackSubtitle);
             tracksListViewItem.setDuration(trackDuration);
         } else {
-            convertView = new TracksListViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
+            convertView = new TracksListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
         }
 
         return convertView;

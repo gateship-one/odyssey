@@ -20,22 +20,22 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class TracksListViewItem extends LinearLayout {
 
-    protected final TextView mNumberView;
     protected final TextView mTitleView;
-    protected final TextView mInformationView;
-    protected final TextView mDurationView;
-    protected final TextView mNumberTitleSeparatorView;
+    protected final TextView mSubtitleView;
+    protected final TextView mTrackDurationView;
 
     /**
      * Constructor that only initialize the layout.
+     *
+     * @param context The current android context.
      */
     public TracksListViewItem(Context context) {
         super(context);
@@ -44,57 +44,65 @@ public class TracksListViewItem extends LinearLayout {
         inflater.inflate(R.layout.listview_item_tracks, this, true);
 
         mTitleView = (TextView) findViewById(R.id.item_tracks_title);
-        mNumberView = (TextView) findViewById(R.id.item_tracks_number);
-        mInformationView = (TextView) findViewById(R.id.item_tracks_additional_information);
-        mDurationView = (TextView) findViewById(R.id.item_tracks_duration);
-        mNumberTitleSeparatorView = (TextView) findViewById(R.id.item_tracks_separator);
+        mSubtitleView = (TextView) findViewById(R.id.item_tracks_subtitle);
+        mTrackDurationView = (TextView) findViewById(R.id.item_tracks_duration);
     }
 
     /**
      * Constructor that already sets the values for each view.
+     *
+     * @param context  The current android context.
+     * @param title    The title as a string (i.e. a combination of track number and title)
+     * @param subtitle The subtitle as a string (i.e. a combination of artist and album name)
+     * @param duration The duration of the track as a string
      */
-    public TracksListViewItem(Context context, String number, String title, String information, String duration) {
+    public TracksListViewItem(Context context, String title, String subtitle, String duration) {
         this(context);
 
         mTitleView.setText(title);
-        mNumberView.setText(number);
-        mInformationView.setText(information);
-        mDurationView.setText(duration);
+        mSubtitleView.setText(subtitle);
+        mTrackDurationView.setText(duration);
     }
 
     /**
      * Sets the title for the track.
+     *
+     * @param title The title as a string (i.e. a combination of track number and title)
      */
     public void setTitle(String title) {
         mTitleView.setText(title);
     }
 
     /**
-     * Sets the number text for the track.
+     * Sets the subtitle for the track.
+     *
+     * @param subtitle The subtitle as a string (i.e. a combination of artist and album name)
      */
-    public void setNumber(String number) {
-        if (number.isEmpty()) {
-            mNumberView.setVisibility(View.GONE);
-            mNumberTitleSeparatorView.setVisibility(View.GONE);
-        } else {
-            mNumberView.setVisibility(View.VISIBLE);
-            mNumberTitleSeparatorView.setVisibility(View.VISIBLE);
-            mNumberView.setText(number);
-        }
-    }
-
-    /**
-     * Sets the additional information text for the track.
-     * For example a combination text of artist and album.
-     */
-    public void setAdditionalInformation(String information) {
-        mInformationView.setText(information);
+    public void setSubtitle(String subtitle) {
+        mSubtitleView.setText(subtitle);
     }
 
     /**
      * Sets the duration text for the track.
+     *
+     * @param duration The duration of the track as a string
      */
     public void setDuration(String duration) {
-        mDurationView.setText(duration);
+        mTrackDurationView.setText(duration);
+    }
+
+    /**
+     * Method that tint the title, number and separator view according to the state.
+     *
+     * @param state flag indicates if the representing track is currently marked as played by the playbackservice
+     */
+    public void setPlaying(boolean state) {
+        if (state) {
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            mTitleView.setTextColor(color);
+        } else {
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+            mTitleView.setTextColor(color);
+        }
     }
 }

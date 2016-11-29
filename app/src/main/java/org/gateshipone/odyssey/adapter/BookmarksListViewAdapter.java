@@ -68,7 +68,7 @@ public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> 
         String dateString = "";
         if (id > 0) {
             // set date string only if id of this bookmark is valid
-            dateString = FormatHelper.formatTimeStampToString(bookmark.getId());
+            dateString = FormatHelper.formatTimeStampToString(mContext, bookmark.getId());
         }
 
         if (convertView != null) {

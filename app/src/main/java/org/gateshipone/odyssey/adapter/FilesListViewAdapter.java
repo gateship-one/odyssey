@@ -74,7 +74,7 @@ public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
         }
 
         // last modified
-        String lastModifiedDateString = FormatHelper.formatTimeStampToString(file.getLastModified());
+        String lastModifiedDateString = FormatHelper.formatTimeStampToString(mContext, file.getLastModified());
 
         // Check if a view can be recycled
         if (convertView != null) {

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -20,18 +19,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minHeight="@dimen/material_list_item_height"
     android:orientation="vertical"
-    android:padding="@dimen/material_standard_horizontal_spacing"
-    android:minHeight="@dimen/material_list_item_height">
+    android:padding="@dimen/material_standard_horizontal_spacing">
 
 
     <TextView
         android:id="@+id/item_bookmarks_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-regular"
         android:maxLines="1"
         android:textColor="?attr/odyssey_color_text_background_primary"
-        android:fontFamily="sans-serif-regular"
         android:textSize="@dimen/material_font_style_size_subheading" />
 
     <RelativeLayout
@@ -44,9 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/item_bookmarks_numberOfTracks"
+            android:fontFamily="sans-serif-regular"
             android:maxLines="1"
             android:textColor="?attr/odyssey_color_text_background_secondary"
-            android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
         <TextView
@@ -54,9 +53,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:fontFamily="sans-serif-regular"
             android:maxLines="1"
             android:textColor="?attr/odyssey_color_text_background_secondary"
-            android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />
     </RelativeLayout>
 

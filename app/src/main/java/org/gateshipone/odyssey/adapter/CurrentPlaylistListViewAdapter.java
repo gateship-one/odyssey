@@ -29,7 +29,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.views.CurrentPlaylistViewItem;
+import org.gateshipone.odyssey.views.TracksListViewItem;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 
@@ -116,39 +116,39 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
             track = new TrackModel();
         }
 
-        // title
+        // title (number + name)
         String trackTitle = track.getTrackName();
-
-        // additional information (artist + album)
-        String trackInformation = "";
-        if (!track.getTrackArtistName().isEmpty() && !track.getTrackAlbumName().isEmpty()) {
-            trackInformation = track.getTrackArtistName() + mContext.getString(R.string.separator) + track.getTrackAlbumName();
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackInformation = track.getTrackArtistName();
-        } else if (!track.getTrackAlbumName().isEmpty()) {
-            trackInformation = track.getTrackAlbumName();
+        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+        if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
+            trackTitle = mContext.getString(R.string.track_title_template, trackNumber, trackTitle);
+        } else if (!trackNumber.isEmpty()) {
+            trackTitle = trackNumber;
         }
 
-        // tracknumber
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+        // subtitle (artist + album)
+        String trackSubtitle = track.getTrackAlbumName();
+        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
+            trackSubtitle = mContext.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
+        } else if (!track.getTrackArtistName().isEmpty()) {
+            trackSubtitle = track.getTrackArtistName();
+        }
 
         // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(track.getTrackDuration());
+        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
 
         if (convertView != null) {
-            CurrentPlaylistViewItem currentPlaylistViewItem = (CurrentPlaylistViewItem) convertView;
-            currentPlaylistViewItem.setNumber(trackNumber);
-            currentPlaylistViewItem.setTitle(trackTitle);
-            currentPlaylistViewItem.setAdditionalInformation(trackInformation);
-            currentPlaylistViewItem.setDuration(trackDuration);
+            TracksListViewItem tracksListViewItem = (TracksListViewItem) convertView;
+            tracksListViewItem.setTitle(trackTitle);
+            tracksListViewItem.setSubtitle(trackSubtitle);
+            tracksListViewItem.setDuration(trackDuration);
         } else {
-            convertView = new CurrentPlaylistViewItem(mContext, trackNumber, trackTitle, trackInformation, trackDuration);
+            convertView = new TracksListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
         }
 
         if (position == mCurrentPlayingIndex) {
-            ((CurrentPlaylistViewItem) convertView).setPlaying(true);
+            ((TracksListViewItem) convertView).setPlaying(true);
         } else {
-            ((CurrentPlaylistViewItem) convertView).setPlaying(false);
+            ((TracksListViewItem) convertView).setPlaying(false);
         }
 
         return convertView;

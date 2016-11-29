@@ -100,8 +100,11 @@
     <string name="popup_menu_action_createbookmark">Create bookmark</string>
     <string name="popup_menu_action_startequalizer">Open equalizer</string>
 
-    <!-- seperator -->
-    <string name="separator" translatable="false">" - "</string>
+    <!-- templates -->
+    <string name="track_title_template" translatable="false">%1$s - %2$s</string>
+    <string name="track_duration_short_template" translatable="false">%02d:%02d</string>
+    <string name="track_duration_long_template" translatable="false">%02d:%02d:%02d</string>
+    <string name="timestamp_format_pattern" translatable="false">yyyy-MM-dd HH:mm</string>
 
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Only show album artists</string>
