@@ -16,7 +16,7 @@
  *
  */
 
-package org.gateshipone.odyssey.views;
+package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -29,7 +29,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.views.ListViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class CurrentPlaylistListViewAdapter extends BaseAdapter {
 

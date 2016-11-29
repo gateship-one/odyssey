@@ -20,7 +20,7 @@ package org.gateshipone.odyssey.adapter;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.views.GridViewItem;
+import org.gateshipone.odyssey.viewitems.GridViewItem;
 
 import android.content.Context;
 import android.view.View;

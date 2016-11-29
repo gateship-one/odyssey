@@ -30,7 +30,7 @@ import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
-import org.gateshipone.odyssey.views.GridViewItem;
+import org.gateshipone.odyssey.viewitems.GridViewItem;
 
 /**
  * Loader class for covers

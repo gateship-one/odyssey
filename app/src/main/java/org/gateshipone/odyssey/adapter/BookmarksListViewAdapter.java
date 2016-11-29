@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.views.ListViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> {
 

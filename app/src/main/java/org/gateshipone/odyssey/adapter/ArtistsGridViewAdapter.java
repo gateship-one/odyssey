@@ -25,7 +25,7 @@ import android.widget.GridView;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.views.GridViewItem;
+import org.gateshipone.odyssey.viewitems.GridViewItem;
 
 public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  implements ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();

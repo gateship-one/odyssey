@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.models.PlaylistModel;
-import org.gateshipone.odyssey.views.PlaylistsListViewItem;
+import org.gateshipone.odyssey.viewitems.PlaylistsListViewItem;
 
 public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistModel> {
 

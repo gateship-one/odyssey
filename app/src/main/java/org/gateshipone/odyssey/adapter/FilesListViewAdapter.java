@@ -28,7 +28,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.views.FilesListViewItem;
+import org.gateshipone.odyssey.viewitems.FilesListViewItem;
 
 public class FilesListViewAdapter extends GenericViewAdapter<FileModel> {
 
