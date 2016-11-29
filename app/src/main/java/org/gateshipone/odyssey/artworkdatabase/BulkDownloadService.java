@@ -244,7 +244,6 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
                 ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 stopForeground(true);
-                mWakelock.release();
                 stopSelf();
             }
         }
