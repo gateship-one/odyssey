@@ -59,28 +59,32 @@ public class AlbumsGridViewAdapter extends GenericViewAdapter<AlbumModel> implem
         AlbumModel album = (AlbumModel)getItem(position);
         String label = album.getAlbumName();
 
+        GridViewItem gridItem;
+        ViewGroup.LayoutParams layoutParams;
+        // Check if a view can be recycled
         if (convertView != null) {
-            GridViewItem gridItem = (GridViewItem) convertView;
+            gridItem = (GridViewItem) convertView;
+            gridItem.setTitle(label);
 
-            // Make sure to reset the layoutParams in case of change (rotation for example)
-            ViewGroup.LayoutParams layoutParams = gridItem.getLayoutParams();
+            layoutParams = gridItem.getLayoutParams();
             layoutParams.height = mRootGrid.getColumnWidth();
             layoutParams.width = mRootGrid.getColumnWidth();
-            gridItem.setLayoutParams(layoutParams);
-
-            gridItem.setTitle(label);
         } else {
-            convertView = new GridViewItem(mContext, label, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()), this);
+            gridItem = new GridViewItem(mContext, label, this);
+            layoutParams = new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth());
         }
 
+        // Make sure to reset the layoutParams in case of change (rotation for example)
+        gridItem.setLayoutParams(layoutParams);
+
         // This will prepare the view for fetching the image from the internet if not already saved in local database.
-        ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, album);
+        gridItem.prepareArtworkFetching(mArtworkManager, album);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
-            ((GridViewItem) convertView).startCoverImageTask();
+            gridItem.startCoverImageTask();
         }
-        return convertView;
+        return gridItem;
     }
 
     @Override
