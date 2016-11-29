@@ -43,11 +43,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -62,6 +62,7 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
 import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
+import org.gateshipone.odyssey.fragments.ArtworkSettingsFragment;
 import org.gateshipone.odyssey.fragments.BookmarksFragment;
 import org.gateshipone.odyssey.fragments.FilesFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
@@ -75,6 +76,7 @@ import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -89,7 +91,7 @@ import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
-        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver {
+        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback, ToolbarAndFABCallback {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -123,103 +125,81 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String themePref = sharedPref.getString("pref_theme", "indigo");
-        boolean darkTheme = sharedPref.getBoolean("pref_key_dark_theme", true);
+        String themePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
+        boolean darkTheme = sharedPref.getBoolean(getString(R.string.pref_dark_theme_key), getResources().getBoolean(R.bool.pref_theme_dark_default));
         if (darkTheme) {
-            switch (themePref) {
-                case "indigo":
-                    setTheme(R.style.AppTheme_indigo);
-                    break;
-                case "orange":
-                    setTheme(R.style.AppTheme_orange);
-                    break;
-                case "deeporange":
-                    setTheme(R.style.AppTheme_deepOrange);
-                    break;
-                case "blue":
-                    setTheme(R.style.AppTheme_blue);
-                    break;
-                case "darkgrey":
-                    setTheme(R.style.AppTheme_darkGrey);
-                    break;
-                case "brown":
-                    setTheme(R.style.AppTheme_brown);
-                    break;
-                case "lightgreen":
-                    setTheme(R.style.AppTheme_lightGreen);
-                    break;
-                case "red":
-                    setTheme(R.style.AppTheme_red);
-                    break;
+            if (themePref.equals(getString(R.string.pref_indigo_key))) {
+                setTheme(R.style.AppTheme_indigo);
+            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
+                setTheme(R.style.AppTheme_orange);
+            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
+                setTheme(R.style.AppTheme_deepOrange);
+            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
+                setTheme(R.style.AppTheme_blue);
+            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
+                setTheme(R.style.AppTheme_darkGrey);
+            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
+                setTheme(R.style.AppTheme_brown);
+            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
+                setTheme(R.style.AppTheme_lightGreen);
+            } else if (themePref.equals(getString(R.string.pref_red_key))) {
+                setTheme(R.style.AppTheme_red);
             }
         } else {
-            switch (themePref) {
-                case "indigo":
-                    setTheme(R.style.AppTheme_indigo_light);
-                    break;
-                case "orange":
-                    setTheme(R.style.AppTheme_orange_light);
-                    break;
-                case "deeporange":
-                    setTheme(R.style.AppTheme_deepOrange_light);
-                    break;
-                case "blue":
-                    setTheme(R.style.AppTheme_blue_light);
-                    break;
-                case "darkgrey":
-                    setTheme(R.style.AppTheme_darkGrey_light);
-                    break;
-                case "brown":
-                    setTheme(R.style.AppTheme_brown_light);
-                    break;
-                case "lightgreen":
-                    setTheme(R.style.AppTheme_lightGreen_light);
-                    break;
-                case "red":
-                    setTheme(R.style.AppTheme_red_light);
-                    break;
+            if (themePref.equals(getString(R.string.pref_indigo_key))) {
+                setTheme(R.style.AppTheme_indigo_light);
+            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
+                setTheme(R.style.AppTheme_orange_light);
+            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
+                setTheme(R.style.AppTheme_deepOrange_light);
+            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
+                setTheme(R.style.AppTheme_blue_light);
+            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
+                setTheme(R.style.AppTheme_darkGrey_light);
+            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
+                setTheme(R.style.AppTheme_brown_light);
+            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
+                setTheme(R.style.AppTheme_lightGreen_light);
+            } else if (themePref.equals(getString(R.string.pref_red_key))) {
+                setTheme(R.style.AppTheme_red_light);
             }
         }
-        if (themePref.equals("oleddark")) {
+        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
             setTheme(R.style.AppTheme_oledDark);
         }
 
         // Read default view preference
-        String defaultView = sharedPref.getString("pref_default_view", "my_music_albums");
+        String defaultView = sharedPref.getString(getString(R.string.pref_start_view_key), getString(R.string.pref_view_default));
 
         // the default tab for mymusic
         MyMusicFragment.DEFAULTTAB defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
         // the nav ressource id to mark the right item in the nav drawer
         int navId = -1;
 
-        switch (defaultView) {
-            case "my_music_artists":
-                navId = R.id.nav_my_music;
-                defaultTab = MyMusicFragment.DEFAULTTAB.ARTISTS;
-                break;
-            case "my_music_albums":
-                navId = R.id.nav_my_music;
-                defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
-                break;
-            case "my_music_tracks":
-                defaultTab = MyMusicFragment.DEFAULTTAB.TRACKS;
-                break;
-            case "playlists":
-                navId = R.id.nav_saved_playlists;
-                break;
-            case "bookmarks":
-                navId = R.id.nav_bookmarks;
-                break;
-            case "files":
-                navId = R.id.nav_files;
-                break;
-            default:
-                navId = R.id.nav_my_music;
+        if (defaultView.equals(getString(R.string.pref_view_my_music_artists_key))) {
+            navId = R.id.nav_my_music;
+            defaultTab = MyMusicFragment.DEFAULTTAB.ARTISTS;
+        } else if (defaultView.equals(getString(R.string.pref_view_my_music_albums_key))) {
+            navId = R.id.nav_my_music;
+            defaultTab = MyMusicFragment.DEFAULTTAB.ALBUMS;
+        } else if (defaultView.equals(getString(R.string.pref_view_my_music_tracks_key))) {
+            defaultTab = MyMusicFragment.DEFAULTTAB.TRACKS;
+        } else if (defaultView.equals(getString(R.string.pref_view_playlists_key))) {
+            navId = R.id.nav_saved_playlists;
+        } else if (defaultView.equals(getString(R.string.pref_view_bookmarks_key))) {
+            navId = R.id.nav_bookmarks;
+        } else if (defaultView.equals(getString(R.string.pref_view_files_key))) {
+            navId = R.id.nav_files;
         }
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_odyssey_main);
+
+        // restore elevation behaviour as pre 24 support lib
+        AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
+        layout.setStateListAnimator(null);
+        ViewCompat.setElevation(layout, 0);
 
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance();
@@ -288,7 +268,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
                     if (!storageVolumesList.isEmpty()) {
                         // choose the latest used storage volume as default
-                        defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
+                        defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
                     }
 
                     args = new Bundle();
@@ -570,7 +550,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             if (!storageVolumesList.isEmpty()) {
                 // choose the latest used storage volume as default
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                defaultDirectory = sharedPref.getString("pref_file_browser_root_dir", storageVolumesList.get(0));
+                defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
             }
 
             Bundle args = new Bundle();
@@ -608,8 +588,8 @@ public class OdysseyMainActivity extends AppCompatActivity
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Fade());
-        newFragment.setExitTransition(new Fade());
+        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        newFragment.setExitTransition(new Slide(Gravity.TOP));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -671,7 +651,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             // save new root directory
             SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            sharedPrefEditor.putString("pref_file_browser_root_dir", dirPath);
+            sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), dirPath);
             sharedPrefEditor.apply();
         } else {
             // no root directory so add fragment to the backstack
@@ -689,68 +669,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    public void setUpToolbar(String title, boolean scrollingEnabled, boolean drawerIndicatorEnabled, boolean showImage) {
-
-        // set drawer state
-        mDrawerToggle.setDrawerIndicatorEnabled(drawerIndicatorEnabled);
-
-
-        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        View collapsingImageGradientTop = findViewById(R.id.collapsing_image_gradient_top);
-        View collapsingImageGradientBottom = findViewById(R.id.collapsing_image_gradient_bottom);
-        if (collapsingImage != null && collapsingImageGradientTop != null && collapsingImageGradientBottom != null) {
-            if (showImage) {
-                collapsingImage.setVisibility(View.VISIBLE);
-                collapsingImageGradientTop.setVisibility(View.VISIBLE);
-                collapsingImageGradientBottom.setVisibility(View.VISIBLE);
-            } else {
-                collapsingImage.setVisibility(View.GONE);
-                collapsingImage.setImageDrawable(null);
-                collapsingImageGradientTop.setVisibility(View.GONE);
-                collapsingImageGradientBottom.setVisibility(View.GONE);
-            }
-        }
-        // set scrolling behaviour
-        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-        // set title for both the activity and the collapsingToolbarlayout for both cases
-        // where and image is shown and not.
-        if (toolbar != null) {
-            toolbar.setTitle(title);
-
-            setTitle(title);
-
-
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-            AppBarLayout layout = (AppBarLayout) findViewById(R.id.appbar);
-            if (layout != null) {
-                layout.setExpanded(true, false);
-            }
-
-            if (scrollingEnabled) {
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            } else {
-                params.setScrollFlags(0);
-            }
-
-            if (showImage && collapsingImage != null) {
-                // Enable title of collapsingToolbarlayout for smooth transition
-                toolbar.setTitleEnabled(true);
-                setToolbarImage(getResources().getDrawable(R.drawable.cover_placeholder, null));
-                params.setScrollFlags(params.getScrollFlags() | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
-
-                // Reset the previously added padding again.
-                toolbar.setPadding(0, 0, 0, 0);
-            } else {
-                // Disable title for collapsingToolbarLayout and show normal title
-                toolbar.setTitleEnabled(false);
-                // Set the padding to match the statusbar height if a picture is shown.
-                toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-            }
-
-        }
-    }
-
     /**
      * Method to retrieve the height of the statusbar to compensate in non-transparent cases.
      *
@@ -765,31 +683,10 @@ public class OdysseyMainActivity extends AppCompatActivity
         return resHeight;
     }
 
-    public void setToolbarImage(Bitmap bm) {
-        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        if (collapsingImage != null) {
-            collapsingImage.setImageBitmap(bm);
-        }
-    }
-
-    public void setToolbarImage(Drawable drawable) {
+    private void setToolbarImage(Drawable drawable) {
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageDrawable(drawable);
-        }
-    }
-
-    public void setUpPlayButton(View.OnClickListener listener) {
-        FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.odyssey_play_button);
-
-        if (playButton != null) {
-            if (listener == null) {
-                playButton.hide();
-            } else {
-                playButton.show();
-            }
-
-            playButton.setOnClickListener(listener);
         }
     }
 
@@ -802,7 +699,7 @@ public class OdysseyMainActivity extends AppCompatActivity
              * Use View.GONE instead INVISIBLE to hide view behind NowPlayingView,
              * fixes overlaying Fragments on FragmentTransaction combined with minimizing the NPV in one action
              */
-            coordinatorLayout.setVisibility(View.GONE);
+            coordinatorLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -876,15 +773,15 @@ public class OdysseyMainActivity extends AppCompatActivity
                 // sees the explanation, try again to request the permission.
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
-                    Snackbar sb =  Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
+                    Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
                     sb.setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                                }
-                            });
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(OdysseyMainActivity.this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                        }
+                    });
                     // style the snackbar text
                     TextView sbText = (TextView) sb.getView().findViewById(android.support.design.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
@@ -936,6 +833,95 @@ public class OdysseyMainActivity extends AppCompatActivity
                     nowPlayingView.createBookmark(title);
                     break;
             }
+        }
+    }
+
+    @Override
+    public void openArtworkSettings() {
+        // Create fragment and give it an argument for the selected directory
+        ArtworkSettingsFragment newFragment = new ArtworkSettingsFragment();
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // set enter / exit animation
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+
+        transaction.addToBackStack("ArtworkSettingsFragment");
+
+        transaction.replace(R.id.fragment_container, newFragment);
+
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    @Override
+    public void setupFAB(View.OnClickListener listener) {
+        FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.odyssey_play_button);
+
+        if (playButton != null) {
+            if (listener == null) {
+                playButton.hide();
+            } else {
+                playButton.show();
+            }
+
+            playButton.setOnClickListener(listener);
+        }
+    }
+
+    @Override
+    public void setupToolbar(String title, boolean scrollingEnabled, boolean drawerIndicatorEnabled, boolean showImage) {
+        // set drawer state
+        mDrawerToggle.setDrawerIndicatorEnabled(drawerIndicatorEnabled);
+
+        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        View collapsingImageGradientTop = findViewById(R.id.collapsing_image_gradient_top);
+        View collapsingImageGradientBottom = findViewById(R.id.collapsing_image_gradient_bottom);
+        if (collapsingImage != null && collapsingImageGradientTop != null && collapsingImageGradientBottom != null) {
+            if (showImage) {
+                collapsingImage.setVisibility(View.VISIBLE);
+                collapsingImageGradientTop.setVisibility(View.VISIBLE);
+                collapsingImageGradientBottom.setVisibility(View.VISIBLE);
+            } else {
+                collapsingImage.setVisibility(View.GONE);
+                collapsingImage.setImageDrawable(null);
+                collapsingImageGradientTop.setVisibility(View.GONE);
+                collapsingImageGradientBottom.setVisibility(View.GONE);
+            }
+        }
+        // set scrolling behaviour
+        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+        if (scrollingEnabled && !showImage) {
+            toolbar.setTitleEnabled(false);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+            setTitle(title);
+
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        } else if (!scrollingEnabled && showImage && collapsingImage != null) {
+            toolbar.setTitleEnabled(true);
+            toolbar.setPadding(0, 0, 0, 0);
+            toolbar.setTitle(title);
+
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+        } else {
+            toolbar.setTitleEnabled(false);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+            setTitle(title);
+            params.setScrollFlags(0);
+        }
+    }
+
+    @Override
+    public void setupToolbarImage(Bitmap bm) {
+        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
+        if (collapsingImage != null) {
+            collapsingImage.setImageBitmap(bm);
         }
     }
 

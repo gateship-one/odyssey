@@ -19,6 +19,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -34,18 +35,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.TrackLoader;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
+public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener {
 
     /**
      * Listener to open an artist
@@ -68,6 +71,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private String mAlbumArtURL = "";
     private String mArtistName = "";
     private String mAlbumKey = "";
+
+    private CoverBitmapLoader mBitmapLoader;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -98,6 +103,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         setHasOptionsMenu(true);
 
+        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+
         return rootView;
     }
 
@@ -115,6 +122,12 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     /**
@@ -126,22 +139,20 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        if (!mAlbumArtURL.isEmpty()) {
-            activity.setUpToolbar(mAlbumTitle, false, false, true);
-            activity.setToolbarImage(Drawable.createFromPath(mAlbumArtURL));
-        } else {
-            activity.setUpToolbar(mAlbumTitle, false, false, false);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playAlbum(0);
+                }
+            });
         }
 
-        // set up play button
-        activity.setUpPlayButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playAlbum(0);
-            }
-        });
+        AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
+        mBitmapLoader.getAlbumImage(album);
     }
 
     /**
@@ -308,6 +319,21 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+    }
+
+    @Override
+    public void receiveBitmap(final Bitmap bm) {
+        if (bm != null && mToolbarAndFABCallback != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // set toolbar behaviour and title
+                    mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, true);
+                    // set toolbar image
+                    mToolbarAndFABCallback.setupToolbarImage(bm);
+                }
+            });
         }
     }
 }

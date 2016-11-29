@@ -40,10 +40,17 @@ public class AlbumModel implements GenericModel {
      */
     private final String mAlbumKey;
 
+    private long mAlbumID;
+
+    private String mMBID;
+
+    private boolean mImageFetching;
+
+
     /**
      * Constructs a AlbumModel instance with the given parameters.
      */
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey) {
+    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
         if (name != null) {
             mAlbumName = name;
         } else {
@@ -67,6 +74,8 @@ public class AlbumModel implements GenericModel {
         } else {
             mAlbumKey = "";
         }
+
+        mAlbumID = albumID;
     }
 
     /**
@@ -97,12 +106,33 @@ public class AlbumModel implements GenericModel {
         return mAlbumKey;
     }
 
+    public long getAlbumID() {
+        return mAlbumID;
+    }
+
+    public void setAlbumID(long albumID) {
+        mAlbumID = albumID;
+    }
+
     /**
      * Return the AlbumModel as a String for debugging purposes.
      */
     @Override
     public String toString() {
         return "Album: " + getAlbumName() + " from: " + getArtistName();
+    }
+
+    @Override
+    public boolean equals(Object album) {
+        if ( null == album) {
+            return false;
+        }
+        if ( album instanceof AlbumModel) {
+            return mAlbumID == ((AlbumModel) album).mAlbumID && mAlbumName.equals(((AlbumModel) album).mAlbumName)
+                    && mArtistName.equals(((AlbumModel) album).mArtistName);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -114,4 +144,23 @@ public class AlbumModel implements GenericModel {
     public String getSectionTitle() {
         return mAlbumName;
     }
+
+    public void setMBID(String mbid) {
+        mMBID = mbid;
+    }
+
+    public String getMBID() {
+        return mMBID;
+    }
+
+
+    public synchronized void setFetching(boolean fetching) {
+        mImageFetching = fetching;
+    }
+
+    public synchronized boolean getFetching() {
+        return mImageFetching;
+    }
+
+
 }

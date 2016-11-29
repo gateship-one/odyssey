@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
@@ -47,9 +48,11 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -62,7 +65,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener {
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -405,6 +408,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void newAlbumImage(AlbumModel album) {
+        if ( mLastAlbumKey.equals(album.getAlbumKey())) {
+            mCoverLoader.getAlbumImage(album);
         }
     }
 
@@ -906,6 +916,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
     }
 
     /**
@@ -935,6 +946,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         invalidate();
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener(this);
     }
 
     /**
@@ -1252,7 +1264,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param bm Bitmap ready for use in the UI
          */
         @Override
-        public void receiveBitmap(final BitmapDrawable bm) {
+        public void receiveBitmap(final Bitmap bm) {
             if (bm != null) {
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
@@ -1262,9 +1274,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                         @Override
                         public void run() {
                             // Set the main cover image
-                            mCoverImage.setImageDrawable(bm);
+                            mCoverImage.setImageBitmap(bm);
                             // Set the small header image
-                            mTopCoverImage.setImageDrawable(bm);
+                            mTopCoverImage.setImageBitmap(bm);
                         }
                     });
                 }

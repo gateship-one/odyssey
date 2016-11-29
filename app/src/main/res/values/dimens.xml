@@ -64,4 +64,7 @@
     <dimen name="material_font_style_size_body_1">14sp</dimen>
     <dimen name="material_font_style_size_caption">12sp</dimen>
 
+    <!-- about icon dimensions -->
+    <dimen name="about_odyssey_icon_size">256dp</dimen>
+    <dimen name="about_artwork_provider_icon_size">64dp</dimen>
 </resources>

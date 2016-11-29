@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.BookmarksListViewAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
@@ -70,11 +69,12 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_bookmarks), false, true, false);
-
-        activity.setUpPlayButton(null);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_bookmarks), false, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(null);
+        }
     }
 
     /**

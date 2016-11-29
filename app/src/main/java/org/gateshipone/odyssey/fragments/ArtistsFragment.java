@@ -19,8 +19,10 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
@@ -34,6 +36,7 @@ import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.ArtistsGridViewAdapter;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.ArtistLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
@@ -96,6 +99,20 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         registerForContextMenu(mRootGrid);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
     }
 
     /**
@@ -220,9 +237,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(artistID);
+            mServiceConnection.getPBS().enqueueArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

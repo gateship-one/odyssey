@@ -24,7 +24,6 @@ import java.util.concurrent.Semaphore;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 public class PlaybackServiceHandler extends Handler {
     private final WeakReference<PlaybackService> mService;
@@ -134,7 +133,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().enqueueAlbum(msgObj.getStringParam());
                     break;
                 case ODYSSEY_ENQUEUEARTIST:
-                    mService.get().enqueueArtist(msgObj.getLongParam());
+                    mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam());
                     break;
             }
 

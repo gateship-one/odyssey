@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
@@ -53,9 +52,7 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
      */
     @Override
     public List<PlaylistModel> loadInBackground() {
-        Cursor playlistCursor = PermissionHelper.query(mContext, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
-
-        ArrayList<PlaylistModel> playlists = new ArrayList<>();
+        List<PlaylistModel> playlists = new ArrayList<>();
 
         if (mAddHeader) {
             // add a dummy playlist for the choose playlist dialog
@@ -63,22 +60,8 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
             playlists.add(new PlaylistModel(mContext.getString(R.string.create_new_playlist), -1));
         }
 
-        if (playlistCursor != null) {
-            int playlistTitleColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);
-            int playlistIDColumnIndex = playlistCursor.getColumnIndex(MediaStore.Audio.Playlists._ID);
+        playlists.addAll(MusicLibraryHelper.getAllPlaylists(mContext));
 
-            for (int i = 0; i < playlistCursor.getCount(); i++) {
-                playlistCursor.moveToPosition(i);
-
-                String playlistTitle = playlistCursor.getString(playlistTitleColumnIndex);
-                long playlistID = playlistCursor.getLong(playlistIDColumnIndex);
-
-                PlaylistModel playlist = new PlaylistModel(playlistTitle, playlistID);
-                playlists.add(playlist);
-            }
-
-            playlistCursor.close();
-        }
         return playlists;
     }
 

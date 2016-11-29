@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,29 +17,53 @@
   -->
 
 <resources>
-    <string-array name="preference_style_values" translatable="false">
-        <item>indigo</item>
-        <item>orange</item>
-        <item>deeporange</item>
-        <item>blue</item>
-        <item>darkgrey</item>
-        <item>brown</item>
-        <item>lightgreen</item>
-        <item>red</item>
-        <item>oleddark</item>
+    <string-array name="odyssey_contributors" translatable="false">
+        <item>Hendrik Borghorst</item>
+        <item>Frederik Lütkes</item>
+        <item>Alessandra Ghiazza</item>
     </string-array>
 
-    <string-array name="preference_album_sort_orders_values" translatable="false">
-        <item>name</item>
-        <item>year</item>
+    <string-array name="odyssey_contributors_type">
+        <item>@string/contributor_team</item>
+        <item>@string/contributor_team</item>
+        <item>@string/contributor_translator_italian</item>
     </string-array>
 
-    <string-array name="preference_default_view_values" translatable="false">
-        <item>my_music_artists</item>
-        <item>my_music_albums</item>
-        <item>my_music_tracks</item>
-        <item>playlists</item>
-        <item>bookmarks</item>
-        <item>files</item>
+    <string-array name="preference_artwork_artist_provider_entries">
+        <item>@string/provider_off</item>
+        <item>@string/last_fm</item>
+        <item>@string/fanart_tv</item>
+    </string-array>
+
+    <string-array name="preference_artwork_album_provider_entries">
+        <item>@string/provider_off</item>
+        <item>@string/musicbrainz</item>
+        <item>@string/last_fm</item>
+    </string-array>
+
+    <string-array name="preference_default_views">
+        <item>@string/preference_default_view_my_music_artists</item>
+        <item>@string/preference_default_view_my_music_albums</item>
+        <item>@string/preference_default_view_my_music_tracks</item>
+        <item>@string/preference_default_view_my_music_playlists</item>
+        <item>@string/preference_default_view_my_music_bookmarks</item>
+        <item>@string/preference_default_view_my_music_files</item>
+    </string-array>
+
+    <string-array name="preference_album_sort_orders">
+        <item>@string/preference_album_sort_order_name</item>
+        <item>@string/preference_album_sort_order_year</item>
+    </string-array>
+
+    <string-array name="preference_odyssey_styles">
+        <item>@string/preference_theme_item_indigo</item>
+        <item>@string/preference_theme_item_orange</item>
+        <item>@string/preference_theme_item_deep_orange</item>
+        <item>@string/preference_theme_item_blue</item>
+        <item>@string/preference_theme_item_dark_grey</item>
+        <item>@string/preference_theme_item_brown</item>
+        <item>@string/preference_theme_item_light_green</item>
+        <item>@string/preference_theme_item_red</item>
+        <item>@string/preference_theme_item_oled_dark</item>
     </string-array>
 </resources>

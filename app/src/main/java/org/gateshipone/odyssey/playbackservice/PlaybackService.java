@@ -851,12 +851,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Enqueue all tracks of an artist identified by the artistId.
      *
      * @param artistId The id of the artist
+     * @param orderKey String to specify the order of the tracks
      */
-    public void enqueueArtist(long artistId) {
+    public void enqueueArtist(long artistId, String orderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
 
         // get all tracks for the current artistId from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, getApplicationContext());
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);

@@ -18,11 +18,9 @@
 
 <resources>
     <string name="app_name">Odyssey</string>
-    <string name="authors" translatable="false">Hendrik Borghorst\nFrederik Lütkes</string>
-    <string name="team" translatable="false">Team Gateship One</string>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_button">OK</string>
+    <string name="permission_request_snackbar_button" translatable="false">@android:string/ok</string>
     <string name="permission_request_snackbar_explanation">Storage Permission is needed to load music files.</string>
 
     <!-- nav drawer -->
@@ -60,7 +58,7 @@
     <string name="dialog_choose_playlist">Choose playlist</string>
     <string name="dialog_equalizer_not_found_title">No equalizer available</string>
     <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer</string>
-    <string name="error_dialog_ok_action" translatable="false">Ok</string>
+    <string name="error_dialog_ok_action" translatable="false">@android:string/ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
@@ -77,29 +75,29 @@
     <string name="action_add_playlist">Add playlist</string>
 
     <!-- context menu titles -->
-    <string name="context_menu_action_enqueue">add to playlist</string>
-    <string name="context_menu_action_enqueueasnext">play after current song</string>
-    <string name="context_menu_action_playsong">play song</string>
-    <string name="context_menu_action_playalbum">play album</string>
-    <string name="context_menu_action_playalbums">play albums</string>
-    <string name="context_menu_action_showartist">show artist</string>
-    <string name="context_menu_action_showalbum">show album</string>
-    <string name="context_menu_action_removetrack">remove track</string>
-    <string name="context_menu_action_playplaylist">play playlist</string>
-    <string name="context_menu_action_enqueueplaylist">add playlist</string>
-    <string name="context_menu_action_deleteplaylist">delete playlist</string>
+    <string name="context_menu_action_enqueue">Add to playlist</string>
+    <string name="context_menu_action_enqueueasnext">Play after current song</string>
+    <string name="context_menu_action_playsong">Play song</string>
+    <string name="context_menu_action_playalbum">Play album</string>
+    <string name="context_menu_action_playalbums">Play albums</string>
+    <string name="context_menu_action_showartist">Show artist</string>
+    <string name="context_menu_action_showalbum">Show album</string>
+    <string name="context_menu_action_removetrack">Remove track</string>
+    <string name="context_menu_action_playplaylist">Play playlist</string>
+    <string name="context_menu_action_enqueueplaylist">Add playlist</string>
+    <string name="context_menu_action_deleteplaylist">Delete playlist</string>
     <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
     <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
-    <string name="context_menu_action_enqueue_folder">add folder to playlist</string>
-    <string name="context_menu_action_play_folder">play folder</string>
-    <string name="context_menu_action_enqueue_file">add file to playlist</string>
-    <string name="context_menu_action_play_file">play file</string>
+    <string name="context_menu_action_enqueue_folder">Add folder to playlist</string>
+    <string name="context_menu_action_play_folder">Play folder</string>
+    <string name="context_menu_action_enqueue_file">Add file to playlist</string>
+    <string name="context_menu_action_play_file">Play file</string>
 
     <!-- popup menu titles -->
-    <string name="popup_menu_action_shuffleplaylist">shuffle playlist</string>
-    <string name="popup_menu_action_clearplaylist">clear playlist</string>
-    <string name="popup_menu_action_saveplaylist">save playlist</string>
-    <string name="popup_menu_action_createbookmark">create bookmark</string>
+    <string name="popup_menu_action_shuffleplaylist">Shuffle playlist</string>
+    <string name="popup_menu_action_clearplaylist">Clear playlist</string>
+    <string name="popup_menu_action_saveplaylist">Save playlist</string>
+    <string name="popup_menu_action_createbookmark">Create bookmark</string>
     <string name="popup_menu_action_startequalizer">Open equalizer</string>
 
     <!-- seperator -->
@@ -128,29 +126,12 @@
     <string name="preference_theme_item_oled_dark">OLED Dark</string>
     <string name="preference_theme_item_red">Red</string>
 
-    <string-array name="preference_odyssey_styles">
-        <item>@string/preference_theme_item_indigo</item>
-        <item>@string/preference_theme_item_orange</item>
-        <item>@string/preference_theme_item_deep_orange</item>
-        <item>@string/preference_theme_item_blue</item>
-        <item>@string/preference_theme_item_dark_grey</item>
-        <item>@string/preference_theme_item_brown</item>
-        <item>@string/preference_theme_item_light_green</item>
-        <item>@string/preference_theme_item_red</item>
-        <item>@string/preference_theme_item_oled_dark</item>
-    </string-array>
-
     <string name="preference_album_sort_order_title">Artist Albums sort order</string>
     <string name="preference_album_sort_order_message">Sort by</string>
     <string name="preference_album_sort_order_summary">Select the sort order for albums of an artist.</string>
 
     <string name="preference_album_sort_order_name">Name</string>
     <string name="preference_album_sort_order_year">Year</string>
-
-    <string-array name="preference_album_sort_orders">
-        <item>@string/preference_album_sort_order_name</item>
-        <item>@string/preference_album_sort_order_year</item>
-    </string-array>
 
     <string name="preference_default_view_title">Default view</string>
     <string name="preference_default_view_message">Select default view</string>
@@ -163,20 +144,57 @@
     <string name="preference_default_view_my_music_bookmarks">Bookmarks</string>
     <string name="preference_default_view_my_music_files">Files</string>
 
-    <string-array name="preference_default_views">
-        <item>@string/preference_default_view_my_music_artists</item>
-        <item>@string/preference_default_view_my_music_albums</item>
-        <item>@string/preference_default_view_my_music_tracks</item>
-        <item>@string/preference_default_view_my_music_playlists</item>
-        <item>@string/preference_default_view_my_music_bookmarks</item>
-        <item>@string/preference_default_view_my_music_files</item>
-    </string-array>
+    <string name="artwork_settings">Artwork settings</string>
+
+    <!-- artwork preferences -->
+    <string name="preference_artwork_album_provider_title">Album image provider</string>
+    <string name="preference_artwork_album_provider_summary">Select an provider for album cover images.</string>
+    <string name="preference_artwork_album_provider_message">Select an provider for album cover images.</string>
+
+    <string name="provider_off">Off</string>
+    <string name="musicbrainz" translatable="false">MusicBrainz</string>
+    <string name="last_fm" translatable="false">Last.fm</string>
+    <string name="fanart_tv" translatable="false">Fanart.tv</string>
+
+    <string name="preference_artwork_artist_provider_title">Artist image provider</string>
+    <string name="preference_artwork_artist_provider_summary">Select an provider for artist cover images.</string>
+    <string name="preference_artwork_artist_provider_message">Select an provider for artist cover images.</string>
+
+    <string name="preference_artwork_clear_artist">Clear artist images</string>
+    <string name="preference_artwork_clear_artist_summary">Removes all saved images for artists.</string>
+    <string name="preference_artwork_clear_album">Clear album images</string>
+    <string name="preference_artwork_clear_album_summary">Removes all saved images for albums.</string>
+
+    <string name="preference_artwork_clear_blocked_artist">Clear blocked artist images</string>
+    <string name="preference_artwork_clear_blocked_artist_summary">Removes all entries for artists that where searched for but not found.</string>
+    <string name="preference_artwork_clear_blocked_album">Clear blocked album images</string>
+    <string name="preference_artwork_clear_blocked_album_summary">Removes all entries for albums that where searched for but not found.</string>
+
+    <string name="preference_artwork_bulk_load">Try to load all images for your database.</string>
+    <string name="preference_artwork_bulk_load_summary">This will load a lot of images. Be warned this will take some time. It might result in a temporary rate limit of the provider.</string>
+
+    <string name="preference_artwork_wifi_only_title">Only use WIFI for downloading</string>
+    <string name="preference_artwork_wifi_only_text">Artwork downloading will only take place if the device is connected via WIFI.</string>
 
     <!-- About activity -->
+    <string name="artwork_provided_by">Artwork provided by:</string>
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="activity_about_version">Version:</string>
 
+    <string name="url_musicbrainz" translatable="false">https://www.musicbrainz.org</string>
+    <string name="url_lastfm" translatable="false">http://www.last.fm</string>
+    <string name="url_fanarttv" translatable="false">https://fanart.tv</string>
+
     <!-- PBS working message -->
     <string name="playbackservice_working">Please wait</string>
+
+    <!-- Bulk downloader service -->
+    <string name="downloader_notification_title">Bulk download running</string>
+    <string name="downloader_notification_remaining_images">Downloaded images:</string>
+
+    <!-- Contributors activity -->
+    <string name="odyssey_contributors_title">Contributors</string>
+    <string name="contributor_team" translatable="false">Team Gateship One</string>
+    <string name="contributor_translator_italian">Italian Translation</string>
 </resources>

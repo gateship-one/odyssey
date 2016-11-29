@@ -25,7 +25,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
@@ -200,11 +199,11 @@ OdysseyWidgetProvider extends AppWidgetProvider {
          * @param bm Bitmap fetched for the currently running track.
          */
         @Override
-        public void receiveBitmap(BitmapDrawable bm) {
+        public void receiveBitmap(Bitmap bm) {
             // Check if a valid image was found.
             if (bm != null) {
                 // Set the globally used variable
-                mLastCover = bm.getBitmap();
+                mLastCover = bm;
 
                 // Call the update method to refresh the view
                 setWidgetContent(mLastInfo);

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:defaultValue="@string/pref_artwork_provider_album_default"
+        android:dialogTitle="@string/preference_artwork_album_provider_title"
+        android:entries="@array/preference_artwork_album_provider_entries"
+        android:entryValues="@array/preference_artwork_album_provider_values"
+        android:key="@string/pref_album_provider_key"
+        android:persistent="true"
+        android:summary="@string/preference_artwork_album_provider_summary"
+        android:title="@string/preference_artwork_album_provider_title" />
+    <ListPreference
+        android:defaultValue="@string/pref_artwork_provider_artist_default"
+        android:dialogTitle="@string/preference_artwork_artist_provider_title"
+        android:entries="@array/preference_artwork_artist_provider_entries"
+        android:entryValues="@array/preference_artwork_artist_provider_values"
+        android:key="@string/pref_artist_provider_key"
+        android:persistent="true"
+        android:summary="@string/preference_artwork_artist_provider_summary"
+        android:title="@string/preference_artwork_artist_provider_title" />
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_download_wifi_default"
+        android:key="@string/pref_download_wifi_only_key"
+        android:persistent="true"
+        android:summary="@string/preference_artwork_wifi_only_text"
+        android:title="@string/preference_artwork_wifi_only_title" />
+    <Preference
+        android:key="@string/pref_clear_artist_key"
+        android:summary="@string/preference_artwork_clear_artist_summary"
+        android:title="@string/preference_artwork_clear_artist" />
+    <Preference
+        android:key="@string/pref_clear_album_key"
+        android:summary="@string/preference_artwork_clear_album_summary"
+        android:title="@string/preference_artwork_clear_album" />
+    <Preference
+        android:key="@string/pref_clear_blocked_artist_key"
+        android:summary="@string/preference_artwork_clear_blocked_artist_summary"
+        android:title="@string/preference_artwork_clear_blocked_artist" />
+    <Preference
+        android:key="@string/pref_clear_blocked_album_key"
+        android:summary="@string/preference_artwork_clear_blocked_album_summary"
+        android:title="@string/preference_artwork_clear_blocked_album" />
+
+    <Preference
+        android:key="@string/pref_bulk_load_key"
+        android:summary="@string/preference_artwork_bulk_load_summary"
+        android:title="@string/preference_artwork_bulk_load" />
+</PreferenceScreen>

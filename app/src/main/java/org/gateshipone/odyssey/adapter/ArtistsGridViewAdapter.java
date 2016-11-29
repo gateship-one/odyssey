@@ -23,23 +23,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.views.GridViewItem;
 
-public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
-
+public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel>  implements ArtworkManager.onNewArtistImageListener {
+    private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();
     private final GridView mRootGrid;
+
 
     /**
      * The parent grid to adjust the layoutparams.
      */
     private final Context mContext;
 
+    private ArtworkManager mArtworkManager;
+
     public ArtistsGridViewAdapter(Context context, GridView rootGrid) {
         super();
 
         mContext = context;
         mRootGrid = rootGrid;
+
+        mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
     }
 
     /**
@@ -53,7 +59,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ArtistModel artist = (ArtistModel)getItem(position);
         String label = artist.getArtistName();
-        String imageURL = artist.getArtistURL();
 
         // Check if a view can be recycled
         if (convertView != null) {
@@ -66,16 +71,25 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> {
             gridItem.setLayoutParams(layoutParams);
 
             gridItem.setTitle(label);
-            gridItem.setImageURL(imageURL);
+
         } else {
             // Create new view if no reusable is available
-            convertView = new GridViewItem(mContext, label, imageURL, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()));
+            convertView = new GridViewItem(mContext, label, new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth()), this);
+
         }
+
+        // This will prepare the view for fetching the image from the internet if not already saved in local database.
+        ((GridViewItem)convertView).prepareArtworkFetching(mArtworkManager, artist);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
             ((GridViewItem) convertView).startCoverImageTask();
         }
         return convertView;
+    }
+
+    @Override
+    public void newArtistImage(ArtistModel artist) {
+        notifyDataSetChanged();
     }
 }

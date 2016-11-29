@@ -158,9 +158,12 @@ public class FileExplorerHelper {
                 String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
 
-                track = new TrackModel(title, artist, album, "", duration, no, urlString, -1);
+                String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
+
+                track = new TrackModel(title, artist, album, albumKey, duration, no, urlString, -1);
             } catch (Exception e) {
-                track = new TrackModel(file.getName(), "", "", "", 0, -1, urlString, -1);
+                String albumKey = "" + file.getName().hashCode();
+                track = new TrackModel(file.getName(), "", "", albumKey, 0, -1, urlString, -1);
             }
         }
 

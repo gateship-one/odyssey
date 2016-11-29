@@ -24,4 +24,6 @@ package org.gateshipone.odyssey.adapter;
  */
 public interface ScrollSpeedAdapter {
     void setScrollSpeed(int speed);
+    void addImageLoadTime(long time);
+    long getAverageImageLoadTime();
 }

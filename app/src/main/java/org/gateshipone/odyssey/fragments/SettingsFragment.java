@@ -19,6 +19,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
@@ -28,12 +29,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
-import org.gateshipone.odyssey.dialogs.SaveDialog;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    /**
+     * Callback for artwork request
+     */
+    private OnArtworkSettingsRequestedCallback mArtworkCallback;
+
+    /**
+     * Callback to setup toolbar and fab
+     */
+    private ToolbarAndFABCallback mToolbarAndFABCallback;
 
     /**
      * Called to do initial creation of a fragment.
@@ -45,7 +55,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         super.onCreate(savedInstanceState);
 
         // add listener to open equalizer
-        Preference openEqualizer = findPreference("pref_key_open_equalizer");
+        Preference openEqualizer = findPreference(getString(R.string.pref_open_equalizer_key));
         openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
@@ -62,6 +72,38 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 return true;
             }
         });
+
+        // add listener to open artwork settings
+        Preference openArtwork = findPreference(getString(R.string.pref_artwork_settings_key));
+        openArtwork.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                mArtworkCallback.openArtworkSettings();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Called when the fragment is first attached to its context.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mArtworkCallback = (OnArtworkSettingsRequestedCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArtworkSettingsRequestedCallback");
+        }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
     }
 
     /**
@@ -74,10 +116,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(getResources().getString(R.string.fragment_title_settings), false, true, false);
-        activity.setUpPlayButton(null);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_settings), false, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(null);
+        }
     }
 
     /**
@@ -107,10 +151,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_theme") || key.equals("pref_key_dark_theme")) {
+        if (key.equals(getString(R.string.pref_theme_key)) || key.equals(getString(R.string.pref_dark_theme_key))) {
             Intent intent = getActivity().getIntent();
             getActivity().finish();
             startActivity(intent);
         }
+    }
+
+
+    public interface OnArtworkSettingsRequestedCallback {
+        void openArtworkSettings();
     }
 }

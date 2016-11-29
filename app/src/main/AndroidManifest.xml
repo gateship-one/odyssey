@@ -22,6 +22,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -50,6 +52,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.OdysseyContributorsActivity"
+            android:label="Contributors"
+            android:parentActivityName=".activities.OdysseyMainActivity">
         </activity>
 
         <service
@@ -87,6 +94,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_big_info" />
         </receiver>
+
+        <service android:name=".artworkdatabase.BulkDownloadService"
+            android:exported="false"
+            android:process=":downloadProcess"/>
     </application>
 
 </manifest>

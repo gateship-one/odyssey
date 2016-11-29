@@ -64,29 +64,41 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
      */
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        // New row started if this is true.
         if (firstVisibleItem != mLastFirstVisibleItem) {
-            // view has changed so check if images should be loaded
-
-            // compute scroll speed since last scroll event
             long currentTime = System.currentTimeMillis();
             if (currentTime == mLastTime) {
                 return;
             }
+            // Calculate the duration of scroll per line
             long timeScrollPerRow = currentTime - mLastTime;
-            mScrollSpeed = (int) (1000 / timeScrollPerRow);
+
+
+            if ( view instanceof GridView ) {
+                GridView gw = (GridView)view;
+                mScrollSpeed = (int) (1000 / timeScrollPerRow) * gw.getNumColumns();
+            } else {
+                mScrollSpeed = (int) (1000 / timeScrollPerRow);
+            }
+
+            // Calculate how many items per second of loading images is possible
+            int possibleItems = (int)(1000/mAdapter.getAverageImageLoadTime());
+
+
+            // Set the scrollspeed in the adapter
             mAdapter.setScrollSpeed(mScrollSpeed);
 
+            // Save values for next comparsion
             mLastFirstVisibleItem = firstVisibleItem;
             mLastTime = currentTime;
-
-            // load images only if scroll speed is low
-            if (mScrollSpeed < visibleItemCount) {
+            // Start the grid image loader task only if scroll speed is slow enough:
+            // The devices is able to render the images needed for the scroll speed
+            if (mScrollSpeed < possibleItems) {
                 for (int i = 0; i < visibleItemCount; i++) {
                     GridViewItem gridItem = (GridViewItem) mRootGrid.getChildAt(i);
                     gridItem.startCoverImageTask();
                 }
             }
         }
-
     }
 }

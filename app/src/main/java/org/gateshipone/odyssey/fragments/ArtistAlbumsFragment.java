@@ -18,9 +18,12 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -32,15 +35,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends GenericAlbumsFragment {
+public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener {
 
     /**
      * The name of the artist showed in the fragment.
@@ -59,6 +63,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
     public final static String ARG_ARTISTNAME = "artistname";
     public final static String ARG_ARTISTID = "artistid";
 
+    private CoverBitmapLoader mBitmapLoader;
+
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -75,6 +81,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
 
         setHasOptionsMenu(true);
 
+        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+
         return rootView;
     }
 
@@ -87,17 +95,19 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
     public void onResume() {
         super.onResume();
 
-        // set toolbar behaviour and title
-        OdysseyMainActivity activity = (OdysseyMainActivity) getActivity();
-        activity.setUpToolbar(mArtistName, false, false, false);
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playArtist();
+                }
+            });
+        }
 
-        // set up play button
-        activity.setUpPlayButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playArtist();
-            }
-        });
+        mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, mArtistID));
     }
 
     /**
@@ -192,9 +202,13 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
      * Call the PBS to enqueue artist.
      */
     private void enqueueArtist() {
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(mArtistID);
+            mServiceConnection.getPBS().enqueueArtist(mArtistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,6 +240,21 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment {
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void receiveBitmap(final Bitmap bm) {
+        if (bm != null && mToolbarAndFABCallback != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // set toolbar behaviour and title
+                    mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, true);
+                    // set toolbar image
+                    mToolbarAndFABCallback.setupToolbarImage(bm);
+                }
+            });
         }
     }
 }

@@ -196,7 +196,7 @@
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_lightGreen</item>
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_lightGreen</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_lightGreen</item>
+        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_lightGreen</item>
     </style>
 
     <style name="AppTheme.red_light" parent="AppThemeLight">
@@ -222,7 +222,6 @@
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_oledDark</item>
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_oledDark</item>
     </style>
-    
 
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
@@ -252,13 +251,8 @@
         <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_dark</item>
     </style>
 
-
     <style name="AppTheme.AppBarOverlay" parent="AppTheme">
         <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
-    </style>
-
-    <style name="AppTheme.PopupOverlay" parent="AppTheme">
-        <item name="android:textColor">?attr/odyssey_color_text_accent</item>
     </style>
 
     <style name="AppTheme.NavDrawer" parent="AppTheme">
@@ -270,6 +264,7 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+        <item name="android:background">?attr/odyssey_color_background</item>
     </style>
 
     <style name="AppTheme.NavDrawerHeader" parent="AppTheme">
@@ -319,13 +314,8 @@
         <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_light</item>
     </style>
 
-
     <style name="AppThemeLight.AppBarOverlay" parent="AppThemeLight">
         <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
-    </style>
-
-    <style name="AppThemeLight.PopupOverlay" parent="AppThemeLight">
-        <item name="android:textColor">?attr/odyssey_color_text_accent</item>
     </style>
 
     <style name="AppThemeLight.NavDrawer" parent="AppThemeLight">
@@ -337,6 +327,7 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+        <item name="android:background">?attr/odyssey_color_background</item>
     </style>
 
     <style name="AppThemeLight.NavDrawerHeader" parent="AppThemeLight">

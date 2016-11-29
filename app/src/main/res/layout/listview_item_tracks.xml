@@ -74,7 +74,6 @@
             android:layout_toStartOf="@+id/item_tracks_duration"
             android:ellipsize="end"
             android:maxLines="1"
-            android:singleLine="true"
             android:textColor="?attr/odyssey_color_text_background_secondary"
             android:fontFamily="sans-serif-regular"
             android:textSize="@dimen/material_font_style_size_body_1" />

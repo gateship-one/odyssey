@@ -20,7 +20,7 @@ package org.gateshipone.odyssey.playbackservice.managers;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -333,12 +333,12 @@ public class PlaybackServiceStatusHelper {
     private class BitmapCoverListener implements CoverBitmapLoader.CoverBitmapListener {
 
         @Override
-        public void receiveBitmap(BitmapDrawable bm) {
+        public void receiveBitmap(Bitmap bm) {
             if (bm != null) {
                 // Try to get old metadata to save image retrieval.
                 MediaMetadataCompat.Builder metaDataBuilder;
                 metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
-                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm.getBitmap());
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
                 mMediaSession.setMetadata(metaDataBuilder.build());
                 mNotificationManager.setNotificationImage(bm);
             }
