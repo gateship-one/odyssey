@@ -125,6 +125,38 @@ public class MusicLibraryHelper {
     }
 
     /**
+     * Return an album model created by the given album key.
+     *
+     * @param albumKey The key to identify the album in the mediastore.
+     * @param context  The current context.
+     * @return The created album model.
+     */
+    public static AlbumModel createAlbumModelFromKey(final String albumKey, final Context context) {
+        String whereVal[] = {albumKey};
+
+        String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, where, whereVal, null);
+
+        AlbumModel albumModel = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+
+                String albumTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+                String albumArt = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                String artistTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+                long albumID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+
+                albumModel = new AlbumModel(albumTitle, albumArt, artistTitle, albumKey, albumID);
+            }
+
+            cursor.close();
+        }
+
+        return albumModel;
+    }
+
+    /**
      * Retrieves the album ID for the given album key
      *
      * @param albumKey The key to identify the album in the mediastore

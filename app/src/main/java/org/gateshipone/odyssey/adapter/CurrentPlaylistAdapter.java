@@ -25,19 +25,27 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FormatHelper;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.viewitems.CurrentPlaylistItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
-public class CurrentPlaylistAdapter extends BaseAdapter {
+import java.util.List;
+
+public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
     private final Context mContext;
     private final PlaybackServiceConnection mPlayBackServiceConnection;
 
     private int mCurrentPlayingIndex = -1;
     private int mPlaylistSize = 0;
+
+    private final ArtworkManager mArtworkManager;
 
     public CurrentPlaylistAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();
@@ -52,6 +60,8 @@ public class CurrentPlaylistAdapter extends BaseAdapter {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
     }
 
     /**
@@ -105,20 +115,28 @@ public class CurrentPlaylistAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // get the trackmodel for the current position from the PBS
-        TrackModel track;
+        TrackModel currentTrack;
+        TrackModel previousTrack;
         try {
             if (mPlayBackServiceConnection != null) {
-                track = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+                currentTrack = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+                if (position > 0) {
+                    previousTrack = mPlayBackServiceConnection.getPBS().getPlaylistSong(position - 1);
+                } else {
+                    previousTrack = null;
+                }
             } else {
-                track = new TrackModel();
+                currentTrack = new TrackModel();
+                previousTrack = null;
             }
         } catch (RemoteException e) {
-            track = new TrackModel();
+            currentTrack = new TrackModel();
+            previousTrack = null;
         }
 
         // title (number + name)
-        String trackTitle = track.getTrackName();
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
+        String trackTitle = currentTrack.getTrackName();
+        String trackNumber = FormatHelper.formatTrackNumber(currentTrack.getTrackNumber());
         if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
             trackTitle = mContext.getString(R.string.track_title_template, trackNumber, trackTitle);
         } else if (!trackNumber.isEmpty()) {
@@ -126,32 +144,59 @@ public class CurrentPlaylistAdapter extends BaseAdapter {
         }
 
         // subtitle (artist + album)
-        String trackSubtitle = track.getTrackAlbumName();
-        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
-            trackSubtitle = mContext.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackSubtitle = track.getTrackArtistName();
+        String trackSubtitle = currentTrack.getTrackAlbumName();
+        if (!currentTrack.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
+            trackSubtitle = mContext.getString(R.string.track_title_template, currentTrack.getTrackArtistName(), trackSubtitle);
+        } else if (!currentTrack.getTrackArtistName().isEmpty()) {
+            trackSubtitle = currentTrack.getTrackArtistName();
         }
 
         // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
+        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, currentTrack.getTrackDuration());
 
-        if (convertView != null) {
-            ListViewItem listViewItem = (ListViewItem) convertView;
-            listViewItem.setTitle(trackTitle);
-            listViewItem.setSubtitle(trackSubtitle);
-            listViewItem.setAddtionalSubtitle(trackDuration);
+        // check if track belongs to an new album
+        boolean isNewAlbum = true;
+        if (previousTrack != null) {
+            isNewAlbum = !previousTrack.getTrackAlbumKey().equals(currentTrack.getTrackAlbumKey());
+        }
+
+        CurrentPlaylistItem currentPlaylistItem;
+        if (isNewAlbum) {
+            if (convertView != null) {
+                currentPlaylistItem = (CurrentPlaylistItem) convertView;
+                currentPlaylistItem.setTitle(trackTitle);
+                currentPlaylistItem.setSubtitle(trackSubtitle);
+                currentPlaylistItem.setAddtionalSubtitle(trackDuration);
+                currentPlaylistItem.setSectionTitle(currentTrack.getTrackAlbumName());
+            } else {
+                currentPlaylistItem = new CurrentPlaylistItem(mContext, trackTitle, trackSubtitle, trackDuration, currentTrack.getTrackAlbumName());
+            }
+
+            currentPlaylistItem.prepareArtworkFetching(mArtworkManager, currentTrack);
+
+            // Check if the scroll speed currently is already 0, then start the image task right away.
+            if (mScrollSpeed == 0) {
+                currentPlaylistItem.startCoverImageTask();
+            }
         } else {
-            convertView = new ListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
+            if (convertView != null) {
+                currentPlaylistItem = (CurrentPlaylistItem) convertView;
+                currentPlaylistItem.setTitle(trackTitle);
+                currentPlaylistItem.setSubtitle(trackSubtitle);
+                currentPlaylistItem.setAddtionalSubtitle(trackDuration);
+                currentPlaylistItem.setSectionTitle(null);
+            } else {
+                currentPlaylistItem = new CurrentPlaylistItem(mContext, trackTitle, trackSubtitle, trackDuration, null);
+            }
         }
 
         if (position == mCurrentPlayingIndex) {
-            ((ListViewItem) convertView).setPlaying(true);
+            currentPlaylistItem.setPlaying(true);
         } else {
-            ((ListViewItem) convertView).setPlaying(false);
+            currentPlaylistItem.setPlaying(false);
         }
 
-        return convertView;
+        return currentPlaylistItem;
     }
 
     /**

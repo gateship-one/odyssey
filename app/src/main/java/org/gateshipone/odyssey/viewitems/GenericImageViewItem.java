@@ -46,12 +46,11 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
     private final AsyncLoader.CoverViewHolder mHolder;
 
     /**
-     *
-     * @param context
-     * @param layoutID
-     * @param imageviewID
-     * @param switcherID
-     * @param adapter
+     * @param context     The current context.
+     * @param layoutID    The id of the layout that should be used.
+     * @param imageviewID The id of the image view for the header section.
+     * @param switcherID  The id of the view switcher in the header section.
+     * @param adapter     The section adapter or null.
      */
     public GenericImageViewItem(final Context context, @LayoutRes final int layoutID, @IdRes final int imageviewID, @IdRes final int switcherID, final GenericSectionAdapter adapter) {
         super(context);
@@ -67,7 +66,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
         mHolder.mAdapter = adapter;
 
         mCoverDone = false;
-        if ( null != mImageView && null != mSwitcher) {
+        if (mImageView != null && mSwitcher != null) {
             mSwitcher.setOutAnimation(null);
             mSwitcher.setInAnimation(null);
             mImageView.setImageDrawable(null);
@@ -94,7 +93,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      * Prepares the view to load an image when the scrolling view deems it is ready (scrollspeed slow enough).
      *
      * @param artworkManager ArtworkManager instance used to get the image.
-     * @param modelItem      ModelItem to get the image for (MPDAlbum/MPDArtist)
+     * @param modelItem      ModelItem to get the image for (Album/Artist)
      */
     public void prepareArtworkFetching(final ArtworkManager artworkManager, final GenericModel modelItem) {
         if (!modelItem.equals(mHolder.modelItem) || !mCoverDone) {
@@ -127,7 +126,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      */
     @Override
     public void setImage(final Bitmap image) {
-        if (null != image) {
+        if (image != null) {
             mCoverDone = true;
 
             mImageView.setImageBitmap(image);
