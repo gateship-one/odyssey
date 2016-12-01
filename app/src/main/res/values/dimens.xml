@@ -48,6 +48,7 @@
     <!-- values from: https://material.google.com/layout/metrics-keylines.html -->
     <dimen name="material_list_item_height">72dp</dimen>
     <dimen name="material_list_item_height_no_detail">64dp</dimen>
+    <dimen name="material_list_item_height_section">48dp</dimen>
     <dimen name="material_toolbar_height">56dp</dimen>
     <dimen name="material_screen_edge_spacing">16dp</dimen>
     <dimen name="material_content_spacing">8dp</dimen>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/material_list_item_height"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/section_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/material_list_item_height_section"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/material_screen_edge_spacing">
+
+            <ViewSwitcher
+                android:id="@+id/section_header_image_switcher"
+                android:layout_width="@dimen/material_list_item_height_section"
+                android:layout_height="@dimen/material_list_item_height_section"
+                android:animateFirstView="true"
+                android:inAnimation="@anim/fadein"
+                android:outAnimation="@anim/fadeout">
+
+                <ImageView
+                    android:id="@+id/section_header_image_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/cover_placeholder_96dp"
+                    android:tint="?attr/odyssey_color_text_background_primary" />
+
+                <ImageView
+                    android:id="@+id/section_header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+            </ViewSwitcher>
+
+            <TextView
+                android:id="@+id/section_header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif-regular"
+                android:maxLines="1"
+                android:paddingStart="@dimen/material_standard_horizontal_spacing"
+                android:textSize="@dimen/material_font_style_size_title"
+                tools:text="section header" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_divider_size"
+            android:layout_marginEnd="@dimen/material_screen_edge_spacing"
+            android:layout_marginStart="@dimen/material_screen_edge_spacing"
+            android:background="?attr/odyssey_color_background_selected" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/listview_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/section_header" />
+</RelativeLayout>
