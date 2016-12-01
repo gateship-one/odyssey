@@ -19,78 +19,22 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
-import android.os.RemoteException;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
-public class CurrentPlaylistListViewAdapter extends BaseAdapter {
+public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
 
     private final Context mContext;
-    private final PlaybackServiceConnection mPlayBackServiceConnection;
 
-    private int mCurrentPlayingIndex = -1;
-    private int mPlaylistSize = 0;
-
-    public CurrentPlaylistListViewAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
+    public TracksAdapter(Context context) {
         super();
 
         mContext = context;
-
-        mPlayBackServiceConnection = playbackServiceConnection;
-
-        try {
-            mPlaylistSize = mPlayBackServiceConnection.getPBS().getPlaylistSize();
-            mCurrentPlayingIndex = mPlayBackServiceConnection.getPBS().getCurrentIndex();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Return the length of the model data of this adapter.
-     */
-    @Override
-    public int getCount() {
-        return mPlaylistSize;
-    }
-
-    /**
-     * Simple getter for the model data.
-     * This method will call the PBS to get the trackmodel from the current playlist.
-     *
-     * @param position Index of the track to get. No check for boundaries here.
-     * @return The trackmodel at index position.
-     */
-    @Override
-    public Object getItem(int position) {
-        try {
-            if (mPlayBackServiceConnection != null) {
-                return mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
-            } else {
-                return null;
-            }
-        } catch (RemoteException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Simple position->id mapping here.
-     *
-     * @param position Position to get the id from
-     * @return The id (position)
-     */
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     /**
@@ -104,17 +48,7 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // get the trackmodel for the current position from the PBS
-        TrackModel track;
-        try {
-            if (mPlayBackServiceConnection != null) {
-                track = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
-            } else {
-                track = new TrackModel();
-            }
-        } catch (RemoteException e) {
-            track = new TrackModel();
-        }
+        TrackModel track = (TrackModel) getItem(position);
 
         // title (number + name)
         String trackTitle = track.getTrackName();
@@ -145,23 +79,6 @@ public class CurrentPlaylistListViewAdapter extends BaseAdapter {
             convertView = new ListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
         }
 
-        if (position == mCurrentPlayingIndex) {
-            ((ListViewItem) convertView).setPlaying(true);
-        } else {
-            ((ListViewItem) convertView).setPlaying(false);
-        }
-
         return convertView;
-    }
-
-    /**
-     * Update the playlist size and the index of the current track.
-     *
-     * @param info The NowplayingInformation object containing the new playlist size and the current track index
-     */
-    public void updateState(NowPlayingInformation info) {
-        mCurrentPlayingIndex = info.getPlayingIndex();
-        mPlaylistSize = info.getPlaylistLength();
-        notifyDataSetChanged();
     }
 }

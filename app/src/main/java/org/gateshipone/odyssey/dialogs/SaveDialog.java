@@ -18,9 +18,9 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -65,15 +65,16 @@ public class SaveDialog extends DialogFragment {
         return fragment;
     }
 
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mSaveCallback = (OnSaveDialogListener) activity;
+            mSaveCallback = (OnSaveDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnSaveDialogListener");
+            throw new ClassCastException(context.toString() + " must implement OnSaveDialogListener");
         }
     }
 

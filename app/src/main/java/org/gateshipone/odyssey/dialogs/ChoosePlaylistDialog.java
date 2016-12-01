@@ -18,21 +18,20 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.SavedPlaylistListViewAdapter;
+import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -50,18 +49,18 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
     /**
      * Adapter used for the ListView
      */
-    private SavedPlaylistListViewAdapter mPlaylistsListViewAdapter;
+    private SavedPlaylistsAdapter mPlaylistsListViewAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mSaveCallback = (OnSaveDialogListener) activity;
+            mSaveCallback = (OnSaveDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnSaveDialogListener");
+            throw new ClassCastException(context.toString() + " must implement OnSaveDialogListener");
         }
     }
 
@@ -107,7 +106,7 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        mPlaylistsListViewAdapter = new SavedPlaylistListViewAdapter(getActivity());
+        mPlaylistsListViewAdapter = new SavedPlaylistsAdapter(getActivity());
 
         builder.setTitle(R.string.dialog_choose_playlist).setAdapter(mPlaylistsListViewAdapter, new DialogInterface.OnClickListener() {
             @Override

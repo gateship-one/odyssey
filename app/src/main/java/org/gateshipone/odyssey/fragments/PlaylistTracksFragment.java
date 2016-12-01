@@ -37,9 +37,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
+import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.loaders.TrackLoader;
-import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
@@ -87,7 +86,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             }
         });
 
-        mAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksAdapter(getActivity());
 
         playlistTracksListView.setAdapter(mAdapter);
 

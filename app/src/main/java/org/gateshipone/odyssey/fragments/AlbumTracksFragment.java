@@ -36,7 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
+import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.TrackLoader;
@@ -85,7 +85,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // get listview
         ListView albumTracksListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
-        mAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksAdapter(getActivity());
 
         albumTracksListView.setAdapter(mAdapter);
 

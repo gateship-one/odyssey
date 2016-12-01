@@ -26,7 +26,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import org.gateshipone.odyssey.adapter.GenericViewAdapter;
+import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -53,7 +53,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     /**
      * The generic adapter for the view model
      */
-    protected GenericViewAdapter<T> mAdapter;
+    protected GenericSectionAdapter<T> mAdapter;
 
     private OdysseyComponentCallback mComponentCallback;
 

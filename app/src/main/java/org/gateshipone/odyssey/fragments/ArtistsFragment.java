@@ -35,7 +35,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.ArtistsGridViewAdapter;
+import org.gateshipone.odyssey.adapter.ArtistsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.ArtistLoader;
@@ -89,7 +89,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             }
         });
 
-        mAdapter = new ArtistsGridViewAdapter(getActivity(), mRootGrid);
+        mAdapter = new ArtistsAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAdapter);
         mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
@@ -105,14 +105,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsAdapter)mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsAdapter)mAdapter);
     }
 
     /**

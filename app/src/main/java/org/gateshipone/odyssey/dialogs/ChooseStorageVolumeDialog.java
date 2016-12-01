@@ -18,9 +18,9 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,15 +46,15 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
     private ArrayAdapter<String> mStorageVolumesAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mDirectorySelectedCallback = (OnDirectorySelectedListener) activity;
+            mDirectorySelectedCallback = (OnDirectorySelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnDirectorySelectedListener");
+            throw new ClassCastException(context.toString() + " must implement OnDirectorySelectedListener");
         }
     }
 

@@ -18,28 +18,27 @@
 
 package org.gateshipone.odyssey.adapter;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.viewitems.GridViewItem;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
-import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.viewitems.GridViewItem;
+public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements ArtworkManager.onNewAlbumImageListener {
 
-public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
-    private static final String TAG = ArtistsGridViewAdapter.class.getSimpleName();
-    private final GridView mRootGrid;
-
+    private final Context mContext;
 
     /**
      * The parent grid to adjust the layoutparams.
      */
-    private final Context mContext;
+    private final GridView mRootGrid;
 
     private ArtworkManager mArtworkManager;
 
-    public ArtistsGridViewAdapter(Context context, GridView rootGrid) {
+    public AlbumsAdapter(Context context, GridView rootGrid) {
         super();
 
         mContext = context;
@@ -50,16 +49,15 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
 
     /**
      * Get a View that displays the data at the specified position in the data set.
-     *
-     * @param position    The position of the item within the adapter's data set.
+     * @param position The position of the item within the adapter's data set.
      * @param convertView The old view to reuse, if possible.
-     * @param parent      The parent that this view will eventually be attached to.
+     * @param parent The parent that this view will eventually be attached to.
      * @return A View corresponding to the data at the specified position.
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArtistModel artist = (ArtistModel) getItem(position);
-        String label = artist.getArtistName();
+        AlbumModel album = (AlbumModel)getItem(position);
+        String label = album.getAlbumName();
 
         GridViewItem gridItem;
         ViewGroup.LayoutParams layoutParams;
@@ -72,7 +70,6 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
             layoutParams.height = mRootGrid.getColumnWidth();
             layoutParams.width = mRootGrid.getColumnWidth();
         } else {
-            // Create new view if no reusable is available
             gridItem = new GridViewItem(mContext, label, this);
             layoutParams = new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth());
         }
@@ -81,7 +78,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
         gridItem.setLayoutParams(layoutParams);
 
         // This will prepare the view for fetching the image from the internet if not already saved in local database.
-        gridItem.prepareArtworkFetching(mArtworkManager, artist);
+        gridItem.prepareArtworkFetching(mArtworkManager, album);
 
         // Check if the scroll speed currently is already 0, then start the image task right away.
         if (mScrollSpeed == 0) {
@@ -91,7 +88,7 @@ public class ArtistsGridViewAdapter extends GenericViewAdapter<ArtistModel> impl
     }
 
     @Override
-    public void newArtistImage(ArtistModel artist) {
+    public void newAlbumImage(AlbumModel album) {
         notifyDataSetChanged();
     }
 }

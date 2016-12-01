@@ -33,7 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.TracksListViewAdapter;
+import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -85,7 +85,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
             }
         });
 
-        mAdapter = new TracksListViewAdapter(getActivity());
+        mAdapter = new TracksAdapter(getActivity());
 
         mRootList.setAdapter(mAdapter);
         mRootList.setOnItemClickListener(this);

@@ -31,7 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.BookmarksListViewAdapter;
+import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
 
@@ -50,7 +50,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         // get listview
         ListView listView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
-        mAdapter = new BookmarksListViewAdapter(getActivity());
+        mAdapter = new BookmarksAdapter(getActivity());
 
         listView.setAdapter(mAdapter);
 

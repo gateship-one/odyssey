@@ -28,7 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.CurrentPlaylistListViewAdapter;
+import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -38,7 +38,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private final ListView mListView;
     private final Context mContext;
 
-    private CurrentPlaylistListViewAdapter mCurrentPlaylistListViewAdapter;
+    private CurrentPlaylistAdapter mCurrentPlaylistAdapter;
 
     private PlaybackServiceConnection mPlaybackServiceConnection;
 
@@ -68,9 +68,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection) {
         mPlaybackServiceConnection = playbackServiceConnection;
 
-        mCurrentPlaylistListViewAdapter = new CurrentPlaylistListViewAdapter(mContext, mPlaybackServiceConnection);
+        mCurrentPlaylistAdapter = new CurrentPlaylistAdapter(mContext, mPlaybackServiceConnection);
 
-        mListView.setAdapter(mCurrentPlaylistListViewAdapter);
+        mListView.setAdapter(mCurrentPlaylistAdapter);
 
         // set the selection to the current track, so the list view will positioned appropriately
         try {
@@ -97,7 +97,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * The playlist has changed so update the view.
      */
     public void playlistChanged(NowPlayingInformation info) {
-        mCurrentPlaylistListViewAdapter.updateState(info);
+        mCurrentPlaylistAdapter.updateState(info);
         // set the selection to the current track, so the list view will positioned appropriately
         mListView.setSelection(info.getPlayingIndex());
     }
@@ -123,7 +123,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void enqueueTrackAsNext(int position) {
         // save track
-        TrackModel track = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+        TrackModel track = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
 
         // remove track from playlist
         removeTrack(position);
@@ -143,7 +143,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public String getAlbumKey(int position) {
-        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
 
         return clickedTrack.getTrackAlbumKey();
     }
@@ -154,7 +154,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public String getArtistTitle(int position) {
-        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistListViewAdapter.getItem(position);
+        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
 
         return clickedTrack.getTrackArtistName();
     }

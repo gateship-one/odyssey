@@ -19,19 +19,22 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.viewitems.ListViewItem;
+import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.FilesListViewItem;
 
-public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
+public class FilesAdapter extends GenericSectionAdapter<FileModel> {
 
     private final Context mContext;
 
-    public TracksListViewAdapter(Context context) {
+    public FilesAdapter(Context context) {
         super();
 
         mContext = context;
@@ -48,35 +51,40 @@ public class TracksListViewAdapter extends GenericViewAdapter<TrackModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = (TrackModel) getItem(position);
+        FileModel file = (FileModel)getItem(position);
 
-        // title (number + name)
-        String trackTitle = track.getTrackName();
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
-        if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
-            trackTitle = mContext.getString(R.string.track_title_template, trackNumber, trackTitle);
-        } else if (!trackNumber.isEmpty()) {
-            trackTitle = trackNumber;
-        }
+        // title
+        String title = file.getName();
 
-        // subtitle (artist + album)
-        String trackSubtitle = track.getTrackAlbumName();
-        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
-            trackSubtitle = mContext.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackSubtitle = track.getTrackArtistName();
-        }
-
-        // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
-
-        if (convertView != null) {
-            ListViewItem listViewItem = (ListViewItem) convertView;
-            listViewItem.setTitle(trackTitle);
-            listViewItem.setSubtitle(trackSubtitle);
-            listViewItem.setAddtionalSubtitle(trackDuration);
+        // get icon for filetype
+        Drawable icon;
+        if (file.isDirectory()) {
+            // choose directory icon
+            icon = mContext.getDrawable(R.drawable.ic_folder_48dp);
         } else {
-            convertView = new ListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
+            // choose file icon
+            icon = mContext.getDrawable(R.drawable.ic_file_48dp);
+        }
+
+        if (icon != null) {
+            // get tint color
+            int tintColor = ThemeUtils.getThemeColor(mContext, R.attr.odyssey_color_text_background_secondary);
+            // tint the icon
+            DrawableCompat.setTint(icon, tintColor);
+        }
+
+        // last modified
+        String lastModifiedDateString = FormatHelper.formatTimeStampToString(mContext, file.getLastModified());
+
+        // Check if a view can be recycled
+        if (convertView != null) {
+            FilesListViewItem filesListViewItem = (FilesListViewItem) convertView;
+            filesListViewItem.setTitle(title);
+            filesListViewItem.setModifiedDate(lastModifiedDateString);
+            filesListViewItem.setIcon(icon);
+        } else {
+            // Create new view if no reusable is available
+            convertView = new FilesListViewItem(mContext, title, lastModifiedDateString, icon);
         }
 
         return convertView;

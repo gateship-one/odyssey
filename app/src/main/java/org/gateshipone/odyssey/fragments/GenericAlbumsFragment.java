@@ -30,7 +30,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.AlbumsGridViewAdapter;
+import org.gateshipone.odyssey.adapter.AlbumsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
@@ -83,7 +83,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
             }
         });
 
-        mAdapter = new AlbumsGridViewAdapter(getActivity(), mRootGrid);
+        mAdapter = new AlbumsAdapter(getActivity(), mRootGrid);
 
         mRootGrid.setAdapter(mAdapter);
         mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
@@ -99,14 +99,14 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsGridViewAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
     }
 
     /**

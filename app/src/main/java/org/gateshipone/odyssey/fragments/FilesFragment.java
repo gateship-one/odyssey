@@ -38,7 +38,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.FilesListViewAdapter;
+import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
@@ -95,7 +95,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             }
         });
 
-        mAdapter = new FilesListViewAdapter(getActivity());
+        mAdapter = new FilesAdapter(getActivity());
 
         filesListView.setAdapter(mAdapter);
         filesListView.setOnItemClickListener(this);

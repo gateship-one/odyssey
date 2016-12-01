@@ -18,21 +18,20 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.BookmarksListViewAdapter;
+import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
@@ -50,18 +49,18 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
     /**
      * Adapter used for the ListView
      */
-    private BookmarksListViewAdapter mBookmarksListViewAdapter;
+    private BookmarksAdapter mBookmarksAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mSaveCallback = (OnSaveDialogListener) activity;
+            mSaveCallback = (OnSaveDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnSaveDialogListener");
+            throw new ClassCastException(context.toString() + " must implement OnSaveDialogListener");
         }
     }
 
@@ -85,7 +84,7 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
      */
     @Override
     public void onLoadFinished(Loader<List<BookmarkModel>> loader, List<BookmarkModel> data) {
-        mBookmarksListViewAdapter.swapModel(data);
+        mBookmarksAdapter.swapModel(data);
     }
 
     /**
@@ -95,7 +94,7 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
      */
     @Override
     public void onLoaderReset(Loader<List<BookmarkModel>> loader) {
-        mBookmarksListViewAdapter.swapModel(null);
+        mBookmarksAdapter.swapModel(null);
     }
 
     /**
@@ -107,9 +106,9 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        mBookmarksListViewAdapter = new BookmarksListViewAdapter(getActivity());
+        mBookmarksAdapter = new BookmarksAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksListViewAdapter, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -119,7 +118,7 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
                     saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
                 } else {
                     // override existing bookmark
-                    BookmarkModel bookmark = (BookmarkModel) mBookmarksListViewAdapter.getItem(which);
+                    BookmarkModel bookmark = (BookmarkModel) mBookmarksAdapter.getItem(which);
                     String objectTitle = bookmark.getTitle();
                     mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
                 }

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class GenericViewAdapter<T extends GenericModel> extends ScrollSpeedAdapter implements SectionIndexer {
+public abstract class GenericSectionAdapter<T extends GenericModel> extends ScrollSpeedAdapter implements SectionIndexer {
     /**
      * Variables used for sectioning (fast scroll).
      */
@@ -55,7 +55,7 @@ public abstract class GenericViewAdapter<T extends GenericModel> extends ScrollS
      */
     private String mFilter;
 
-    public GenericViewAdapter() {
+    public GenericSectionAdapter() {
         super();
 
         mSectionList = new ArrayList<>();

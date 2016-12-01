@@ -25,11 +25,11 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.viewitems.PlaylistsListViewItem;
 
-public class SavedPlaylistListViewAdapter extends GenericViewAdapter<PlaylistModel> {
+public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> {
 
     private final Context mContext;
 
-    public SavedPlaylistListViewAdapter(Context context) {
+    public SavedPlaylistsAdapter(Context context) {
         super();
 
         mContext = context;

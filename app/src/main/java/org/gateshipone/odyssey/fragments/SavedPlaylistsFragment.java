@@ -33,7 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.SavedPlaylistListViewAdapter;
+import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -67,7 +67,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // get listview
         mRootListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
 
-        mAdapter = new SavedPlaylistListViewAdapter(getActivity());
+        mAdapter = new SavedPlaylistsAdapter(getActivity());
 
         mRootListView.setAdapter(mAdapter);
         mRootListView.setOnItemClickListener(this);

@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
-import org.gateshipone.odyssey.adapter.GenericViewAdapter;
+import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
@@ -53,7 +53,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      * @param switcherID
      * @param adapter
      */
-    public GenericImageViewItem(final Context context, @LayoutRes final int layoutID, @IdRes final int imageviewID, @IdRes final int switcherID, final GenericViewAdapter adapter) {
+    public GenericImageViewItem(final Context context, @LayoutRes final int layoutID, @IdRes final int imageviewID, @IdRes final int switcherID, final GenericSectionAdapter adapter) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

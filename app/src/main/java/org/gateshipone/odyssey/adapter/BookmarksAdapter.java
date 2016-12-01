@@ -27,11 +27,11 @@ import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
-public class BookmarksListViewAdapter extends GenericViewAdapter<BookmarkModel> {
+public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
 
     private final Context mContext;
 
-    public BookmarksListViewAdapter(Context context) {
+    public BookmarksAdapter(Context context) {
         super();
 
         mContext = context;
