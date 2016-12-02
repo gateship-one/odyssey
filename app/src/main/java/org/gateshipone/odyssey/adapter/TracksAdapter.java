@@ -50,35 +50,15 @@ public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
 
         TrackModel track = (TrackModel) getItem(position);
 
-        // title (number + name)
-        String trackTitle = track.getTrackName();
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
-        if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
-            trackTitle = mContext.getString(R.string.track_title_template, trackNumber, trackTitle);
-        } else if (!trackNumber.isEmpty()) {
-            trackTitle = trackNumber;
-        }
-
-        // subtitle (artist + album)
-        String trackSubtitle = track.getTrackAlbumName();
-        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
-            trackSubtitle = mContext.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackSubtitle = track.getTrackArtistName();
-        }
-
-        // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(mContext, track.getTrackDuration());
-
+        ListViewItem listViewItem;
+        // Check if a view can be recycled
         if (convertView != null) {
-            ListViewItem listViewItem = (ListViewItem) convertView;
-            listViewItem.setTitle(trackTitle);
-            listViewItem.setSubtitle(trackSubtitle);
-            listViewItem.setAddtionalSubtitle(trackDuration);
+            listViewItem = (ListViewItem) convertView;
+            listViewItem.setTrack(mContext, track);
         } else {
-            convertView = new ListViewItem(mContext, trackTitle, trackSubtitle, trackDuration);
+            listViewItem = new ListViewItem(mContext, track);
         }
 
-        return convertView;
+        return listViewItem;
     }
 }

@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.models.PlaylistModel;
-import org.gateshipone.odyssey.viewitems.PlaylistsListViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> {
 
@@ -48,16 +48,15 @@ public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> 
 
         PlaylistModel playlist = (PlaylistModel)getItem(position);
 
-        // title
-        String playlistTitle = playlist.getPlaylistName();
-
+        ListViewItem listViewItem;
+        // Check if a view can be recycled
         if(convertView != null) {
-            PlaylistsListViewItem playlistsListViewItem = (PlaylistsListViewItem) convertView;
-            playlistsListViewItem.setTitle(playlistTitle);
+            listViewItem = (ListViewItem) convertView;
+            listViewItem.setPlaylist(mContext, playlist);
         } else {
-            convertView = new PlaylistsListViewItem(mContext, playlistTitle);
+            listViewItem = new ListViewItem(mContext, playlist);
         }
 
-        return convertView;
+        return listViewItem;
     }
 }

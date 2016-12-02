@@ -49,38 +49,16 @@ public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         BookmarkModel bookmark = (BookmarkModel)getItem(position);
 
-        // title
-        String bookmarkTitle = bookmark.getTitle();
-
-        // number of tracks
-        int numberOfTracks = bookmark.getNumberOfTracks();
-
-        String numberOfTracksString = "";
-
-        if (numberOfTracks > 0) {
-            // set number of tracks only if this bookmark contains tracks
-            numberOfTracksString = Integer.toString(bookmark.getNumberOfTracks()) + " " + mContext.getString(R.string.fragment_bookmarks_tracks);
-        }
-
-        // get date string
-        long id = bookmark.getId();
-
-        String dateString = "";
-        if (id > 0) {
-            // set date string only if id of this bookmark is valid
-            dateString = FormatHelper.formatTimeStampToString(mContext, bookmark.getId());
-        }
-
+        ListViewItem listViewItem;
+        // Check if a view can be recycled
         if (convertView != null) {
-            ListViewItem bookmarksListViewItem = (ListViewItem) convertView;
+            listViewItem = (ListViewItem) convertView;
 
-            bookmarksListViewItem.setTitle(bookmarkTitle);
-            bookmarksListViewItem.setSubtitle(dateString);
-            bookmarksListViewItem.setAddtionalSubtitle(numberOfTracksString);
+            listViewItem.setBookmark(mContext, bookmark);
         } else {
-            convertView = new ListViewItem(mContext, bookmarkTitle, dateString, numberOfTracksString);
+            listViewItem = new ListViewItem(mContext, bookmark);
         }
 
-        return convertView;
+        return listViewItem;
     }
 }

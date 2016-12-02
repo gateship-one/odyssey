@@ -28,7 +28,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.viewitems.FilesListViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class FilesAdapter extends GenericSectionAdapter<FileModel> {
 
@@ -53,40 +53,16 @@ public class FilesAdapter extends GenericSectionAdapter<FileModel> {
 
         FileModel file = (FileModel)getItem(position);
 
-        // title
-        String title = file.getName();
-
-        // get icon for filetype
-        Drawable icon;
-        if (file.isDirectory()) {
-            // choose directory icon
-            icon = mContext.getDrawable(R.drawable.ic_folder_48dp);
-        } else {
-            // choose file icon
-            icon = mContext.getDrawable(R.drawable.ic_file_48dp);
-        }
-
-        if (icon != null) {
-            // get tint color
-            int tintColor = ThemeUtils.getThemeColor(mContext, R.attr.odyssey_color_text_background_secondary);
-            // tint the icon
-            DrawableCompat.setTint(icon, tintColor);
-        }
-
-        // last modified
-        String lastModifiedDateString = FormatHelper.formatTimeStampToString(mContext, file.getLastModified());
-
+        ListViewItem listViewItem;
         // Check if a view can be recycled
         if (convertView != null) {
-            FilesListViewItem filesListViewItem = (FilesListViewItem) convertView;
-            filesListViewItem.setTitle(title);
-            filesListViewItem.setModifiedDate(lastModifiedDateString);
-            filesListViewItem.setIcon(icon);
+            listViewItem = (ListViewItem) convertView;
+            listViewItem.setFile(mContext, file);
         } else {
             // Create new view if no reusable is available
-            convertView = new FilesListViewItem(mContext, title, lastModifiedDateString, icon);
+            listViewItem = new ListViewItem(mContext, file);
         }
 
-        return convertView;
+        return listViewItem;
     }
 }
