@@ -59,8 +59,8 @@ public class OdysseyContributorsActivity extends Activity {
             contributors_list.add(map);
         }
 
-        SimpleAdapter adapter = new SimpleAdapter(this, contributors_list, R.layout.listview_item_contributors,
-                new String[] {CONTRIBUTOR_NAME_KEY, CONTRIBUTOR_TYPE_KEY}, new int[] { R.id.item_contributors_name, R.id.item_contributors_type });
+        SimpleAdapter adapter = new SimpleAdapter(this, contributors_list, R.layout.listview_item,
+                new String[] {CONTRIBUTOR_NAME_KEY, CONTRIBUTOR_TYPE_KEY}, new int[] { R.id.item_title, R.id.item_subtitle });
 
         contributors.setAdapter(adapter);
     }
