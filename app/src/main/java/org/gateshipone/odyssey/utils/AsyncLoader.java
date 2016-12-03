@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.util.Pair;
 
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
+import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -58,7 +59,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
         public CoverLoadable coverLoadable;
         public ArtworkManager artworkManager;
         public GenericModel modelItem;
-        public GenericSectionAdapter mAdapter;
+        public ScrollSpeedAdapter mAdapter;
     }
 
     @Override

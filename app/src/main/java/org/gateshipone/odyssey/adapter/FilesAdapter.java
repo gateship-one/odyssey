@@ -60,7 +60,7 @@ public class FilesAdapter extends GenericSectionAdapter<FileModel> {
             listViewItem.setFile(mContext, file);
         } else {
             // Create new view if no reusable is available
-            listViewItem = new ListViewItem(mContext, file);
+            listViewItem = new ListViewItem(mContext, file, this);
         }
 
         return listViewItem;

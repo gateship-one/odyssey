@@ -22,9 +22,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
-import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
@@ -47,7 +45,7 @@ public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        BookmarkModel bookmark = (BookmarkModel)getItem(position);
+        BookmarkModel bookmark = (BookmarkModel) getItem(position);
 
         ListViewItem listViewItem;
         // Check if a view can be recycled
@@ -56,7 +54,7 @@ public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
 
             listViewItem.setBookmark(mContext, bookmark);
         } else {
-            listViewItem = new ListViewItem(mContext, bookmark);
+            listViewItem = new ListViewItem(mContext, bookmark, this);
         }
 
         return listViewItem;

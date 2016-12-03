@@ -56,7 +56,7 @@ public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
             listViewItem = (ListViewItem) convertView;
             listViewItem.setTrack(mContext, track);
         } else {
-            listViewItem = new ListViewItem(mContext, track);
+            listViewItem = new ListViewItem(mContext, track, this);
         }
 
         return listViewItem;

@@ -80,6 +80,7 @@
     </LinearLayout>
 
     <include
+        android:id="@+id/basic_listview_item"
         layout="@layout/listview_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

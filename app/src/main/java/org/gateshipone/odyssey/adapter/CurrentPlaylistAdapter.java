@@ -136,21 +136,45 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
         ListViewItem listViewItem;
         // Check if a view can be recycled
-        if (!isNewAlbum && convertView != null && !(((ListViewItem) convertView).getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM)) {
+        if (convertView != null) {
             listViewItem = ((ListViewItem) convertView);
-            listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);
-        } else if (isNewAlbum) {
-            // If not create a new Listitem
-            listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
 
+            if (isNewAlbum) {
+                if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
+                    // clear cover
+                    listViewItem.setImage(null);
+                    listViewItem.setTrack(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
+                } else {
+                    // Current view has wrong type so reusable is not possible
+                    listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
+                }
+            } else {
+                if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
+                    // Current view has wrong type so reusable is not possible
+                    // clear cover
+                    listViewItem.setImage(null);
+                    listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
+                } else {
+                    listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);
+                }
+            }
+        } else {
+            // Create new view if no reusable is available
+            if (isNewAlbum) {
+                listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
+            } else {
+                listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
+            }
+        }
+
+        // setup cover loading routine if necessary
+        if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
             listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
             if (mScrollSpeed == 0) {
                 listViewItem.startCoverImageTask();
             }
-        } else {
-            listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex);
         }
 
         return listViewItem;

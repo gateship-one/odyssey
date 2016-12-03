@@ -54,7 +54,7 @@ public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> 
             listViewItem = (ListViewItem) convertView;
             listViewItem.setPlaylist(mContext, playlist);
         } else {
-            listViewItem = new ListViewItem(mContext, playlist);
+            listViewItem = new ListViewItem(mContext, playlist, this);
         }
 
         return listViewItem;

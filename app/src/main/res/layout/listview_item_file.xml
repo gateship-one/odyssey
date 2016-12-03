@@ -18,8 +18,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:minHeight="@dimen/material_list_item_height"
     android:orientation="vertical">
 
@@ -33,8 +33,9 @@
         tools:tint="?attr/odyssey_color_text_background_secondary" />
 
     <include
+        android:id="@+id/basic_listview_item"
         layout="@layout/listview_item"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/item_icon" />
 </RelativeLayout>

@@ -22,7 +22,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
+import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 
 public class GridViewItem extends GenericImageViewItem {
     private static final String TAG = GridViewItem.class.getSimpleName();
@@ -32,7 +32,7 @@ public class GridViewItem extends GenericImageViewItem {
     /**
      * Constructor that already sets the values for each view.
      */
-    public GridViewItem(final Context context, final String title, final GenericSectionAdapter adapter) {
+    public GridViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.gridview_item, R.id.grid_item_cover_image, R.id.grid_item_view_switcher, adapter);
 
         mTitleView = (TextView) findViewById(R.id.grid_item_title);

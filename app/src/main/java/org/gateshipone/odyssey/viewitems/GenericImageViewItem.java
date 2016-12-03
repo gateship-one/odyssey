@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
-import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
+import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
@@ -50,9 +50,9 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      * @param layoutID    The id of the layout that should be used.
      * @param imageviewID The id of the image view for the header section.
      * @param switcherID  The id of the view switcher in the header section.
-     * @param adapter     The section adapter or null.
+     * @param adapter     The scroll speed adapter or null.
      */
-    public GenericImageViewItem(final Context context, @LayoutRes final int layoutID, @IdRes final int imageviewID, @IdRes final int switcherID, final GenericSectionAdapter adapter) {
+    public GenericImageViewItem(final Context context, @LayoutRes final int layoutID, @IdRes final int imageviewID, @IdRes final int switcherID, final ScrollSpeedAdapter adapter) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -104,7 +104,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
     }
 
     /**
-     * If this GridItem gets detached from the parent it makes no sense to let
+     * If this item gets detached from the parent it makes no sense to let
      * the task for image retrieval running. (non-Javadoc)
      *
      * @see android.view.View#onDetachedFromWindow()
