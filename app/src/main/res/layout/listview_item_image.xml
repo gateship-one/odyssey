@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/material_list_item_height"
+    android:orientation="vertical">
+
+    <ViewSwitcher
+        android:id="@+id/item_image_switcher"
+        android:layout_width="@dimen/material_list_item_height"
+        android:layout_height="@dimen/material_list_item_height"
+        android:animateFirstView="true"
+        android:inAnimation="@anim/fadein"
+        android:outAnimation="@anim/fadeout">
+
+        <ImageView
+            android:id="@+id/item_image_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cover_placeholder_96dp"
+            android:tint="?attr/odyssey_color_text_background_primary" />
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+    </ViewSwitcher>
+
+    <include
+        android:id="@+id/basic_listview_item"
+        layout="@layout/listview_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/item_image_switcher" />
+</RelativeLayout>

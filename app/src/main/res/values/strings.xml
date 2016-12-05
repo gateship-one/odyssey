@@ -147,6 +147,13 @@
     <string name="preference_default_view_my_music_bookmarks">Bookmarks</string>
     <string name="preference_default_view_my_music_files">Files</string>
 
+    <string name="preference_library_view_title">Select library view</string>
+    <string name="preference_library_view_message">Select library view</string>
+    <string name="preference_library_view_summary">Select the type of view that is used for albums and artists.</string>
+
+    <string name="preference_library_view_grid">Grid</string>
+    <string name="preference_library_view_list">List</string>
+
     <string name="artwork_settings">Artwork settings</string>
 
     <!-- artwork preferences -->

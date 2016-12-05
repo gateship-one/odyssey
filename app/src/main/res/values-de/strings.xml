@@ -136,4 +136,9 @@
     <string name="preference_dark_theme_title">Dunkles Design</string>
     <string name="contributor_translator_italian">Italienische Übersetzung</string>
     <string name="odyssey_contributors_title">Mitwirkende</string>
+    <string name="preference_library_view_grid">Gitter</string>
+    <string name="preference_library_view_list">Liste</string>
+    <string name="preference_library_view_message">Bibliotheksanzeige wählen</string>
+    <string name="preference_library_view_title">Bibliotheksanzeige wählen</string>
+    <string name="preference_library_view_summary">Wählen Sie den Typ der Anzeige für die Interpreten- und Albenanzeige</string>
 </resources>

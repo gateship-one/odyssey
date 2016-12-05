@@ -45,6 +45,7 @@ public class ListViewItem extends GenericImageViewItem {
     public enum LISTVIEWTYPE {
         SIMPLE_TRACK_ITEM,
         SECTION_TRACK_ITEM,
+        IMAGE_ITEM,
         BOOKMARK_ITEM,
         PLAYLIST_ITEM,
         FILE_ITEM
@@ -117,6 +118,29 @@ public class ListViewItem extends GenericImageViewItem {
         mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
         mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
         mSectionTitleView = (TextView) findViewById(R.id.section_header_text);
+    }
+
+    /**
+     * Constructor to create a image item element (i.e. for artists or albums).
+     *
+     * @param context The current context.
+     * @param title   The title of the item.
+     * @param adapter The scroll speed adapter for cover loading.
+     */
+    public ListViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
+        super(context, R.layout.listview_item_image, R.id.item_image, R.id.item_image_switcher, adapter);
+
+        mViewType = LISTVIEWTYPE.IMAGE_ITEM;
+
+        mTitleView = (TextView) findViewById(R.id.item_title);
+        mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
+        mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
+
+        // hide subtitles
+        mSubtitleView.setVisibility(GONE);
+        mAdditionalSubtitleView.setVisibility(GONE);
+
+        setTitle(title);
     }
 
     /**
@@ -408,7 +432,7 @@ public class ListViewItem extends GenericImageViewItem {
      *
      * @param title The title as a string (i.e. a combination of number and title of a track)
      */
-    private void setTitle(final String title) {
+    public void setTitle(final String title) {
         mTitleView.setText(title);
     }
 

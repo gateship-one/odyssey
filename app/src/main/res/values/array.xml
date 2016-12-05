@@ -50,6 +50,11 @@
         <item>@string/preference_default_view_my_music_files</item>
     </string-array>
 
+    <string-array name="preference_library_views">
+        <item>@string/preference_library_view_grid</item>
+        <item>@string/preference_library_view_list</item>
+    </string-array>
+
     <string-array name="preference_album_sort_orders">
         <item>@string/preference_album_sort_order_name</item>
         <item>@string/preference_album_sort_order_year</item>

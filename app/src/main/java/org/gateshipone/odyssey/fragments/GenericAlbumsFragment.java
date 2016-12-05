@@ -19,15 +19,17 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.AlbumsAdapter;
@@ -48,9 +50,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     protected OnAlbumSelectedListener mAlbumSelectedCallback;
 
     /**
-     * Save the root GridView for later usage.
+     * Save the root List/GridView for later usage.
      */
-    protected GridView mRootGrid;
+    protected AbsListView mListView;
 
     /**
      * Save the last scroll position to resume there
@@ -61,16 +63,27 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+        View rootView;
 
-        // get gridview
-        mRootGrid = (GridView) rootView.findViewById(R.id.grid_refresh_gridview);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+
+        boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+
+        if (useList) {
+            rootView = inflater.inflate(R.layout.list_refresh, container, false);
+            // get listview
+            mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+        } else {
+            rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+            // get gridview
+            mListView = (AbsListView) rootView.findViewById(R.id.grid_refresh_gridview);
+        }
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.grid_refresh_swipe_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -83,14 +96,14 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
             }
         });
 
-        mAdapter = new AlbumsAdapter(getActivity(), mRootGrid);
+        mAdapter = new AlbumsAdapter(getActivity(), mListView, useList);
 
-        mRootGrid.setAdapter(mAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
-        mRootGrid.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter, mListView));
+        mListView.setOnItemClickListener(this);
 
         // register for context menu
-        registerForContextMenu(mRootGrid);
+        registerForContextMenu(mListView);
 
         return rootView;
     }
@@ -143,7 +156,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
-            mRootGrid.setSelection(mLastPosition);
+            mListView.setSelection(mLastPosition);
             mLastPosition = -1;
         }
     }

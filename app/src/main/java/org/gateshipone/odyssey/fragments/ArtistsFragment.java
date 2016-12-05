@@ -31,8 +31,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.ArtistsAdapter;
@@ -54,9 +54,9 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     private OnArtistSelectedListener mArtistSelectedCallback;
 
     /**
-     * Save the root GridView for later usage.
+     * Save the root List/GridView for later usage.
      */
-    private GridView mRootGrid;
+    protected AbsListView mListView;
 
     /**
      * Save the last scroll position to resume there
@@ -70,13 +70,25 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+        View rootView;
 
-        // get gridview
-        mRootGrid = (GridView) rootView.findViewById(R.id.grid_refresh_gridview);
+        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+
+        boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+
+        if (useList) {
+            rootView = inflater.inflate(R.layout.list_refresh, container, false);
+            // get listview
+            mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+        } else {
+            rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+            // get gridview
+            mListView = (AbsListView) rootView.findViewById(R.id.grid_refresh_gridview);
+        }
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.grid_refresh_swipe_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -89,14 +101,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             }
         });
 
-        mAdapter = new ArtistsAdapter(getActivity(), mRootGrid);
+        mAdapter = new ArtistsAdapter(getActivity(), mListView, useList);
 
-        mRootGrid.setAdapter(mAdapter);
-        mRootGrid.setOnScrollListener(new ScrollSpeedListener(mAdapter, mRootGrid));
-        mRootGrid.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter, mListView));
+        mListView.setOnItemClickListener(this);
 
         // register for context menu
-        registerForContextMenu(mRootGrid);
+        registerForContextMenu(mListView);
 
         return rootView;
     }
@@ -155,7 +167,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
-            mRootGrid.setSelection(mLastPosition);
+            mListView.setSelection(mLastPosition);
             mLastPosition = -1;
         }
     }

@@ -21,29 +21,35 @@ package org.gateshipone.odyssey.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistsAdapter.class.getSimpleName();
-    private final GridView mRootGrid;
 
+    private final Context mContext;
 
     /**
      * The parent grid to adjust the layoutparams.
      */
-    private final Context mContext;
+    private final AbsListView mListView;
 
     private ArtworkManager mArtworkManager;
 
-    public ArtistsAdapter(Context context, GridView rootGrid) {
+    private boolean mUseList;
+
+    public ArtistsAdapter(final Context context, final AbsListView listView, final boolean useList) {
         super();
 
         mContext = context;
-        mRootGrid = rootGrid;
+        mListView = listView;
+
+        mUseList = useList;
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
     }
@@ -61,33 +67,54 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
         ArtistModel artist = (ArtistModel) getItem(position);
         String label = artist.getArtistName();
 
-        GridViewItem gridItem;
-        ViewGroup.LayoutParams layoutParams;
-        // Check if a view can be recycled
-        if (convertView != null) {
-            gridItem = (GridViewItem) convertView;
-            gridItem.setTitle(label);
+        if (mUseList) {
+            ListViewItem listItem;
+            // Check if a view can be recycled
+            if (convertView != null) {
+                listItem = (ListViewItem) convertView;
+                listItem.setImage(null);
+                listItem.setTitle(label);
+            } else {
+                listItem = new ListViewItem(mContext, label, this);
+            }
 
-            layoutParams = gridItem.getLayoutParams();
-            layoutParams.height = mRootGrid.getColumnWidth();
-            layoutParams.width = mRootGrid.getColumnWidth();
+            // This will prepare the view for fetching the image from the internet if not already saved in local database.
+            listItem.prepareArtworkFetching(mArtworkManager, artist);
+
+            // Check if the scroll speed currently is already 0, then start the image task right away.
+            if (mScrollSpeed == 0) {
+                listItem.startCoverImageTask();
+            }
+            return listItem;
         } else {
-            // Create new view if no reusable is available
-            gridItem = new GridViewItem(mContext, label, this);
-            layoutParams = new android.widget.AbsListView.LayoutParams(mRootGrid.getColumnWidth(), mRootGrid.getColumnWidth());
+            GridViewItem gridItem;
+            ViewGroup.LayoutParams layoutParams;
+            // Check if a view can be recycled
+            if (convertView != null) {
+                gridItem = (GridViewItem) convertView;
+                gridItem.setTitle(label);
+
+                layoutParams = gridItem.getLayoutParams();
+                layoutParams.height = ((GridView) mListView).getColumnWidth();
+                layoutParams.width = ((GridView) mListView).getColumnWidth();
+            } else {
+                // Create new view if no reusable is available
+                gridItem = new GridViewItem(mContext, label, this);
+                layoutParams = new android.widget.AbsListView.LayoutParams(((GridView) mListView).getColumnWidth(), ((GridView) mListView).getColumnWidth());
+            }
+
+            // Make sure to reset the layoutParams in case of change (rotation for example)
+            gridItem.setLayoutParams(layoutParams);
+
+            // This will prepare the view for fetching the image from the internet if not already saved in local database.
+            gridItem.prepareArtworkFetching(mArtworkManager, artist);
+
+            // Check if the scroll speed currently is already 0, then start the image task right away.
+            if (mScrollSpeed == 0) {
+                gridItem.startCoverImageTask();
+            }
+            return gridItem;
         }
-
-        // Make sure to reset the layoutParams in case of change (rotation for example)
-        gridItem.setLayoutParams(layoutParams);
-
-        // This will prepare the view for fetching the image from the internet if not already saved in local database.
-        gridItem.prepareArtworkFetching(mArtworkManager, artist);
-
-        // Check if the scroll speed currently is already 0, then start the image task right away.
-        if (mScrollSpeed == 0) {
-            gridItem.startCoverImageTask();
-        }
-        return gridItem;
     }
 
     @Override

@@ -166,4 +166,9 @@
     <string name="context_menu_action_enqueueplaylist">Aggiungi playlist</string>
     <string name="contributor_translator_italian">Traduzione italiana</string>
     <string name="odyssey_contributors_title">Contributori</string>
+    <string name="preference_library_view_grid">Griglia</string>
+    <string name="preference_library_view_list">Lista</string>
+    <string name="preference_library_view_message">Seleziona vista biblioteca</string>
+    <string name="preference_library_view_title">Seleziona vista biblioteca</string>
+    <string name="preference_library_view_summary">Selezionare il tipo di visualizzazione che viene utilizzato per gli album e gli artisti.</string>
 </resources>
