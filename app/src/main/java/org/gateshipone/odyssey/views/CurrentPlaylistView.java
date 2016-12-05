@@ -32,6 +32,7 @@ import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
+import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener {
 
@@ -71,6 +72,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mCurrentPlaylistAdapter = new CurrentPlaylistAdapter(mContext, mPlaybackServiceConnection);
 
         mListView.setAdapter(mCurrentPlaylistAdapter);
+        mListView.setOnScrollListener(new ScrollSpeedListener(mCurrentPlaylistAdapter, mListView));
 
         // set the selection to the current track, so the list view will positioned appropriately
         try {

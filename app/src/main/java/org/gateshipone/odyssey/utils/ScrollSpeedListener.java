@@ -23,7 +23,7 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
-import org.gateshipone.odyssey.viewitems.GridViewItem;
+import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 /**
  * Listener to control image loading while scrolling
@@ -53,8 +53,8 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             mScrollSpeed = 0;
             mAdapter.setScrollSpeed(0);
             for (int i = 0; i <= mListView.getLastVisiblePosition() - mListView.getFirstVisiblePosition(); i++) {
-                GridViewItem gridItem = (GridViewItem) mListView.getChildAt(i);
-                gridItem.startCoverImageTask();
+                GenericImageViewItem item = (GenericImageViewItem) mListView.getChildAt(i);
+                item.startCoverImageTask();
             }
         }
     }
@@ -74,7 +74,7 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             long timeScrollPerRow = currentTime - mLastTime;
 
 
-            if ( view instanceof GridView ) {
+            if ( view instanceof GridView) {
                 GridView gw = (GridView)view;
                 mScrollSpeed = (int) (1000 / timeScrollPerRow) * gw.getNumColumns();
             } else {
@@ -95,8 +95,8 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             // The devices is able to render the images needed for the scroll speed
             if (mScrollSpeed < possibleItems) {
                 for (int i = 0; i < visibleItemCount; i++) {
-                    GridViewItem gridItem = (GridViewItem) mListView.getChildAt(i);
-                    gridItem.startCoverImageTask();
+                    GenericImageViewItem item = (GenericImageViewItem) mListView.getChildAt(i);
+                    item.startCoverImageTask();
                 }
             }
         }
