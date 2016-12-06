@@ -233,7 +233,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         // register context menu for currentPlaylistListView
-        ListView currentPlaylistListView = (ListView) findViewById(R.id.current_playlist_listview);
+        ListView currentPlaylistListView = (ListView) findViewById(R.id.list_linear_listview);
         registerForContextMenu(currentPlaylistListView);
 
         if (findViewById(R.id.fragment_container) != null) {
@@ -446,7 +446,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        if (v.getId() == R.id.current_playlist_listview) {
+        if (v.getId() == R.id.list_linear_listview) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu_current_playlist, menu);
 

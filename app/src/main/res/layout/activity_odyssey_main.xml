@@ -32,7 +32,7 @@
         android:layout_height="match_parent" />
 
     <include
-        layout="@layout/view_now_playing"
+        layout="@layout/now_playing_layout"
         android:id="@+id/now_playing_dragger"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

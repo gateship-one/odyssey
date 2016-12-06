@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -17,9 +16,7 @@
   ~
   -->
 
-<FrameLayout
-
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -63,13 +60,13 @@
                     android:id="@+id/now_playing_track_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:focusable="true"
                     android:ellipsize="marquee"
-                    android:scrollHorizontally="true"
-                    android:marqueeRepeatLimit="marquee_forever"
+                    android:focusable="true"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="?attr/odyssey_color_text_accent"/>
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textColor="?attr/odyssey_color_text_accent" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -80,64 +77,64 @@
                         android:id="@+id/now_playing_track_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:focusable="true"
                         android:ellipsize="marquee"
-                        android:scrollHorizontally="true"
-                        android:marqueeRepeatLimit="marquee_forever"
+                        android:focusable="true"
                         android:fontFamily="sans-serif-regular"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
                         android:textColor="?attr/odyssey_color_text_accent" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/now_playing_layout_dragged_up"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentEnd="true">
 
-                <LinearLayout
-                    android:id="@+id/now_playing_layout_dragged_up"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_alignParentEnd="true">
-
-                    <ImageButton
-                        android:id="@+id/now_playing_topPlaylistButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?android:selectableItemBackground"
-                        android:baselineAlignBottom="false"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_queue_music_24dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:layout_gravity="center"/>
-
-                    <ImageButton
-                        android:id="@+id/now_playing_topMenuButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_more_vert_24dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/now_playing_layout_dragged_down"
+                <ImageButton
+                    android:id="@+id/now_playing_topPlaylistButton"
                     android:layout_width="48dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="?android:selectableItemBackground"
+                    android:baselineAlignBottom="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_queue_music_24dp"
+                    android:tint="?attr/odyssey_color_text_accent"
+                    android:visibility="gone" />
 
-                    <ImageButton
-                        android:id="@+id/now_playing_topPlayPauseButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?android:selectableItemBackground"
-                        android:baselineAlignBottom="false"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_play_arrow_48dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/now_playing_topMenuButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="?android:selectableItemBackground"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_more_vert_24dp"
+                    android:tint="?attr/odyssey_color_text_accent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/now_playing_layout_dragged_down"
+                android:layout_width="48dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
+
+                <ImageButton
+                    android:id="@+id/now_playing_topPlayPauseButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="?android:selectableItemBackground"
+                    android:baselineAlignBottom="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_play_arrow_48dp"
+                    android:tint="?attr/odyssey_color_text_accent" />
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -148,34 +145,42 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/now_playing_headerLayout">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/now_playing_coverLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/now_playing_control_layout"
-                android:background="?android:colorBackground">
+                android:background="?android:colorBackground"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <ViewSwitcher
                     android:id="@+id/now_playing_view_switcher"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inAnimation="@anim/fadein"
-                    android:outAnimation="@anim/fadeout">
+                    android:outAnimation="@anim/fadeout"
+                    android:visibility="gone" />
 
-                    <ImageView
-                        android:id="@+id/now_playing_cover"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/cover_placeholder" />
+                <ImageView
+                    android:id="@+id/now_playing_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/cover_placeholder" />
 
-                    <org.gateshipone.odyssey.views.CurrentPlaylistView
-                        android:id="@+id/now_playing_playlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                <View
+                    android:layout_width="@dimen/list_divider_size"
+                    android:layout_height="match_parent"
+                    android:background="?attr/odyssey_color_background_selected" />
 
-                </ViewSwitcher>
+                <org.gateshipone.odyssey.views.CurrentPlaylistView
+                    android:id="@+id/now_playing_playlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/now_playing_control_layout"
@@ -200,7 +205,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:gravity="center"
-                        android:textColor="?attr/odyssey_color_text_accent"/>
+                        android:textColor="?attr/odyssey_color_text_accent" />
 
                     <TextView
                         android:id="@+id/now_playing_duration"
@@ -208,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:gravity="center"
-                        android:textColor="?attr/odyssey_color_text_accent"/>
+                        android:textColor="?attr/odyssey_color_text_accent" />
 
 
                 </RelativeLayout>

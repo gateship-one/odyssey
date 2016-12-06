@@ -52,10 +52,10 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public CurrentPlaylistView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.view_current_playlist, this, true);
+        LayoutInflater.from(context).inflate(R.layout.list_linear, this, true);
 
         // get listview
-        mListView = (ListView) this.findViewById(R.id.current_playlist_listview);
+        mListView = (ListView) this.findViewById(R.id.list_linear_listview);
 
         mListView.setOnItemClickListener(this);
 
