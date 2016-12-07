@@ -446,7 +446,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        if (v.getId() == R.id.list_linear_listview) {
+        if (v.getId() == R.id.list_linear_listview && mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu_current_playlist, menu);
 
@@ -470,7 +470,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         CurrentPlaylistView currentPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
 
-        if (currentPlaylistView != null) {
+        if (currentPlaylistView != null && mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
             switch (item.getItemId()) {
                 case R.id.view_current_playlist_action_playnext:
                     currentPlaylistView.enqueueTrackAsNext(info.position);
