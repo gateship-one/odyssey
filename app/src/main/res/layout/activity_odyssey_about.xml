@@ -145,6 +145,17 @@
                 android:gravity="center"
                 android:text="@string/license_text"
                 android:textSize="@dimen/material_font_style_size_caption" />
+
+            <Button
+                android:id="@+id/odyssey_thirdparty_licenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_content_spacing"
+                android:fontFamily="sans-serif-medium"
+                android:layout_gravity="center"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:text="@string/odyssey_thirparty_licenses_dialog_title"
+                android:textSize="@dimen/material_font_style_size_caption" />
         </LinearLayout>
 
     </LinearLayout>

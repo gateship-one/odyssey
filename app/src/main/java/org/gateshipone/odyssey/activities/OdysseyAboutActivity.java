@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.dialogs.LicensesDialog;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class OdysseyAboutActivity extends Activity {
@@ -92,6 +93,13 @@ public class OdysseyAboutActivity extends Activity {
                 Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);
 
                 startActivity(myIntent);
+            }
+        });
+
+        findViewById(R.id.odyssey_thirdparty_licenses).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LicensesDialog.newInstance().show(getFragmentManager(), "LicensesDialog");
             }
         });
 

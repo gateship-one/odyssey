@@ -207,4 +207,7 @@
     <string name="odyssey_contributors_title">Contributors</string>
     <string name="contributor_team" translatable="false">Team Gateship One</string>
     <string name="contributor_translator_italian">Italian Translation</string>
+
+    <!-- Thirdparty Licenses dialog -->
+    <string name="odyssey_thirparty_licenses_dialog_title">Third Party Licenses</string>
 </resources>
