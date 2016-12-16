@@ -36,11 +36,16 @@ import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageRespo
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.utils.FormatHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvider {
+/**
+ * FIXME:
+ * ArtistImageProvider currently NOT IMPLEMENTED!!!
+ */
+public class MusicBrainzManager implements AlbumImageProvider {
     private static final String TAG = MusicBrainzManager.class.getSimpleName();
 
     private static final String MUSICBRAINZ_API_URL = "http://musicbrainz.org/ws/2";
@@ -67,11 +72,12 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
     }
 
 
-    private <T> void addToRequestQueue(Request<T> req) {
-        mRequestQueue.add(req);
-    }
-
-    @Override
+    /**
+     * Fetch an image for an given {@link ArtistModel}. Make sure to provide response and error listener.
+     * @param artist Artist to try to get an image for.
+     * @param listener ResponseListener that reacts on successful retrieval of an image.
+     * @param errorListener Error listener that is called when an error occurs.
+     */
     public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
         String artistURLName = Uri.encode(artist.getArtistName());
@@ -130,6 +136,12 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         });
     }
 
+    /**
+     * Searches for the artist with the given artist name and tries to manually get an MBID
+     * @param artistName Artist name to search for
+     * @param listener Callback to handle the response
+     * @param errorListener Callback to handle errors
+     */
     private void getArtists(String artistName, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 
         Log.v(MusicBrainzManager.class.getSimpleName(), artistName);
@@ -138,9 +150,15 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        addToRequestQueue(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Fetches the image URL for the raw image blob.
+     * @param artistMBID Artist mbid to look for an image
+     * @param listener Callback listener to handle the response
+     * @param errorListener Callback to handle a fetch error
+     */
     private void getArtistImageURL(String artistMBID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 
         Log.v(MusicBrainzManager.class.getSimpleName(), artistMBID);
@@ -149,9 +167,15 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        addToRequestQueue(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Raw download for an image
+     * @param url Final image URL to download
+     * @param listener Response listener to receive the image as a byte array
+     * @param errorListener Error listener
+     */
     private void getArtistImage(String url, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(MusicBrainzManager.class.getSimpleName(), url);
 
@@ -162,6 +186,12 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 //        addToRequestQueue(byteResponse);
     }
 
+    /**
+     * Public interface to get an image for an album.
+     * @param album Album to check for an image
+     * @param listener Callback to handle the fetched image
+     * @param errorListener Callback to handle errors
+     */
     @Override
     public void fetchAlbumImage(final AlbumModel album, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
 
@@ -178,6 +208,15 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         });
     }
 
+    /**
+     * Parses the JSON response and searches the image URL
+     * @param album Album to check for an image
+     * @param releaseIndex Index of the requested release to check for an image
+     * @param response Response to check use to search for an image
+     * @param context Context used for lookup
+     * @param listener Callback to handle the response
+     * @param errorListener Callback to handle errors
+     */
     private void parseMusicBrainzReleaseJSON(final AlbumModel album, final int releaseIndex, final JSONObject response, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
         if (releaseIndex >= MUSICBRAINZ_LIMIT_RESULT_COUNT) {
             return;
@@ -210,9 +249,17 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
         }
     }
 
+    /**
+     * Wrapper to get an MBID out of an {@link AlbumModel}.
+     * @param album Album to get the MBID for
+     * @param listener Response listener
+     * @param errorListener Error listener
+     */
     private void getAlbumMBID(AlbumModel album, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String albumName = Uri.encode(album.getAlbumName());
+        albumName = FormatHelper.escapeSpecialCharsLucene(albumName);
         String artistName = Uri.encode(album.getArtistName());
+        artistName = FormatHelper.escapeSpecialCharsLucene(artistName);
         String url;
         if (!artistName.isEmpty()) {
             url = MUSICBRAINZ_API_URL + "/" + "release/?query=release:" + albumName + "%20AND%20artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
@@ -224,23 +271,20 @@ public class MusicBrainzManager implements ArtistImageProvider, AlbumImageProvid
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        addToRequestQueue(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
     }
 
-    private void getAlbumImageURL(String releaseMBID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = COVERART_ARCHIVE_API_URL + "/" + "release/" + releaseMBID;
-
-        Log.v(TAG, "Requesting release image urls for: " + url);
-
-        OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
-
-        addToRequestQueue(jsonObjectRequest);
-    }
-
+    /**
+     * Raw download for an image
+     * @param url Final image URL to download
+     * @param album Album associated with the image to download
+     * @param listener Response listener to receive the image as a byte array
+     * @param errorListener Error listener
+     */
     private void getAlbumImage(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
         Request<AlbumImageResponse> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
         Log.v(TAG, "Get image: " + url);
-        addToRequestQueue(byteResponse);
+        mRequestQueue.add(byteResponse);
     }
 
     @Override
