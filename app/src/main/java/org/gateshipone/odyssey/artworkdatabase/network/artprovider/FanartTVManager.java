@@ -37,23 +37,52 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Artwork downloading class for http://fanart.tv. This class provides an interface
+ * to download artist images and artist fanart images.
+ */
 public class FanartTVManager implements ArtistImageProvider {
     private static final String TAG = FanartTVManager.class.getSimpleName();
 
+    /**
+     * API-URL for MusicBrainz database. Used to resolve artist names to MBIDs
+     */
     private static final String MUSICBRAINZ_API_URL = "http://musicbrainz.org/ws/2";
 
+    /**
+     * API-URL for fanart.tv itself.
+     */
     private static final String FANART_TV_API_URL = "http://webservice.fanart.tv/v3/music";
 
+    /**
+     * {@link RequestQueue} used to handle the requests of this class.
+     */
     private RequestQueue mRequestQueue;
 
+    /**
+     * Singleton instance
+     */
     private static FanartTVManager mInstance;
 
+    /**
+     * constant API url part to instruct MB to return json format
+     */
     private static final String MUSICBRAINZ_FORMAT_JSON = "&fmt=json";
 
+    /**
+     * Limit the number of results to one. Used for resolving artist names to MBIDs
+     */
     private static final int MUSICBRAINZ_LIMIT_RESULT_COUNT = 1;
+
+    /**
+     * Constant URL format to limit results
+     */
     private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + String.valueOf(MUSICBRAINZ_LIMIT_RESULT_COUNT);
 
-
+    /**
+     * API-Key for used for fanart.tv.
+     * THIS KEY IS ONLY INTENDED FOR THE USE BY GATESHIP-ONE APPLICATIONS. PLEASE RESPECT THIS.
+     */
     private static final String API_KEY = "c0cc5d1b6e807ce93e49d75e0e5d371b";
 
     private FanartTVManager(Context context) {
@@ -67,11 +96,12 @@ public class FanartTVManager implements ArtistImageProvider {
         return mInstance;
     }
 
-
-    private <T> void addToRequestQueue(Request<T> req) {
-        mRequestQueue.add(req);
-    }
-
+    /**
+     * Fetch an image for an given {@link ArtistModel}. Make sure to provide response and error listener.
+     * @param artist Artist to try to get an image for.
+     * @param listener ResponseListener that reacts on successful retrieval of an image.
+     * @param errorListener Error listener that is called when an error occurs.
+     */
     public void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener) {
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/", " "));
@@ -126,6 +156,12 @@ public class FanartTVManager implements ArtistImageProvider {
         });
     }
 
+    /**
+     * Gets a list of possible artists from Musicbrainz database.
+     * @param artistName Name of the artist to search for
+     * @param listener Response listener to handle the artist list
+     * @param errorListener Error listener
+     */
     private void getArtists(String artistName, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 
         Log.v(FanartTVManager.class.getSimpleName(), artistName);
@@ -134,9 +170,15 @@ public class FanartTVManager implements ArtistImageProvider {
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        addToRequestQueue(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Retrieves all available information (Artist image url, fanart url, ...) for an artist with an MBID of fanart.tv
+     * @param artistMBID Artists MBID to query
+     * @param listener Response listener to handle the artists information from fanart.tv
+     * @param errorListener Error listener
+     */
     private void getArtistImageURL(String artistMBID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 
         Log.v(FanartTVManager.class.getSimpleName(), artistMBID);
@@ -145,15 +187,22 @@ public class FanartTVManager implements ArtistImageProvider {
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        addToRequestQueue(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Raw download for an image-
+     * @param url Final image URL to download
+     * @param artist Artist associated with the image to download
+     * @param listener Response listener to receive the image as a byte array
+     * @param errorListener Error listener
+     */
     private void getArtistImage(String url, ArtistModel artist, Response.Listener<ArtistImageResponse> listener, Response.ErrorListener errorListener) {
         Log.v(FanartTVManager.class.getSimpleName(), url);
 
         Request<ArtistImageResponse> byteResponse = new ArtistImageByteRequest(url, artist, listener, errorListener);
 
-        addToRequestQueue(byteResponse);
+        mRequestQueue.add(byteResponse);
     }
 
     @Override
