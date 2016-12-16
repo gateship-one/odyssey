@@ -33,6 +33,7 @@ import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artworkdatabase.network.requests.ArtistImageByteRequest;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.utils.FormatHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -166,7 +167,9 @@ public class FanartTVManager implements ArtistImageProvider {
 
         Log.v(FanartTVManager.class.getSimpleName(), artistName);
 
-        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
+        String queryArtistname = FormatHelper.escapeSpecialCharsLucene(artistName);
+
+        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + queryArtistname + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 

@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class FormatHelper {
+    private static final String LUCENE_SPECIAL_CHARACTERS_REGEX = "([\\+\\-\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\\\\\/])";
+
     /**
      * Helper method to uniformly format length strings in Odyssey.
      *
@@ -99,5 +101,20 @@ public class FormatHelper {
      */
     public static String encodeFileURI(final String uri) {
         return "file://" + Uri.encode(uri, "/");
+    }
+
+    /**
+     * Escapes Apache lucene special characters (e.g. used by MusicBrainz) for URLs.
+     * See:
+     * https://lucene.apache.org/core/4_3_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html
+     * @param input Input string
+     * @return Escaped string
+     */
+    public static String escapeSpecialCharsLucene(String input) {
+        String retVal = input.replaceAll("(\\&\\&)", "\\\\&\\\\&");
+        retVal = retVal.replaceAll("(\\|\\|)", "\\\\|\\\\|");
+
+        retVal = retVal.replaceAll(LUCENE_SPECIAL_CHARACTERS_REGEX,"\\\\$1");
+        return retVal;
     }
 }
