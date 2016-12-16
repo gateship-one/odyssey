@@ -42,7 +42,7 @@ public class LicensesDialog extends DialogFragment {
         WebView view = new WebView(getActivity());
         view.loadUrl("file:///android_asset/thirdparty_licenses.html");
         return new AlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.odyssey_thirparty_licenses_dialog_title))
+                .setTitle(getString(R.string.odyssey_thirdparty_licenses_dialog_title))
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .create();

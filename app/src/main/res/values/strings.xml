@@ -209,5 +209,5 @@
     <string name="contributor_translator_italian">Italian Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
-    <string name="odyssey_thirparty_licenses_dialog_title">Third Party Licenses</string>
+    <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>
 </resources>

@@ -141,5 +141,5 @@
     <string name="preference_library_view_message">Bibliotheksanzeige wählen</string>
     <string name="preference_library_view_title">Bibliotheksanzeige wählen</string>
     <string name="preference_library_view_summary">Wählen Sie den Typ der Anzeige für die Interpreten- und Albenanzeige</string>
-    <string name="odyssey_thirparty_licenses_dialog_title">Drittanbieterlizenzen</string>
+    <string name="odyssey_thirdparty_licenses_dialog_title">Drittanbieterlizenzen</string>
 </resources>

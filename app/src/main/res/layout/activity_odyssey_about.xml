@@ -154,7 +154,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:layout_gravity="center"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/odyssey_thirparty_licenses_dialog_title"
+                android:text="@string/odyssey_thirdparty_licenses_dialog_title"
                 android:textSize="@dimen/material_font_style_size_caption" />
         </LinearLayout>
 
