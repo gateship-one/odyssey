@@ -203,6 +203,9 @@
     <string name="downloader_notification_title">Bulk download running</string>
     <string name="downloader_notification_remaining_images">Downloaded images:</string>
 
+    <string name="bulk_download_notice_title">Image download</string>
+    <string name="bulk_download_notice_text">Downloading a large amount of images puts heavy load on the servers of the service you chose. It may occur that a server load prevents downloading of images. The downloader will then cancel its action if it detects an overload.\n\nPlease consider donating to the artwork services.</string>
+
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributors</string>
     <string name="contributor_team" translatable="false">Team Gateship One</string>
