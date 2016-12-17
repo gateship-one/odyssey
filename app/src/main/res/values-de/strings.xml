@@ -143,5 +143,5 @@
     <string name="preference_library_view_summary">Wählen Sie den Typ der Anzeige für die Interpreten- und Albenanzeige</string>
     <string name="odyssey_thirdparty_licenses_dialog_title">Drittanbieterlizenzen</string>
     <string name="bulk_download_notice_title">Bilder-Download</string>
-    <string name="bulk_download_notice_text">Der herunterladen von vielen Bildern sorgt für eine hohe Serverauslastung beim Bilderanbieter. Es kann vorkommen, dass die Serverauslastung zu groß wird. In diesem Fall wird der Downloader seine Aktion abbrechen.\n\nBitte ziehen Sie eine Spende an die ausgewählten Bilderanbieter in Betracht.</string>
+    <string name="bulk_download_notice_text">Das Herunterladen von vielen Bildern sorgt für eine hohe Serverauslastung beim Bilderanbieter. Es kann vorkommen, dass die Serverauslastung zu groß wird. In diesem Fall wird der Downloader seine Aktion abbrechen.\n\nBitte ziehen Sie eine Spende an die ausgewählten Bilderanbieter in Betracht.</string>
 </resources>
