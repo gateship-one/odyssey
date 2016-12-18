@@ -1,3 +1,12 @@
+### Version: 1.1.0 Tag: release-XX (20XX-XX-XX) ####
+* Artwork support with MusicBrainz, Last.fm, Fanart.tv as artwork provider (album, artist images)
+* Album images in playlist view as sections
+* Tablet optimized nowplaying screen
+* Listviews for artists / albums (optional)
+* Fix multiple UI issues
+* Unify settings (your personal settings will be deleted)
+* Add italian translation
+
 ### Version: 1.0.11 Tag: release-11 (2016-11-05) ###
 * add new themes (including light and oled themes)
 * support .opus files in the filebrowser (playback may not be supported by all devices)
