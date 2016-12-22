@@ -36,7 +36,7 @@ For more comfort you are able to use the launcher widget to have quick control o
  * Quick responding interface
  * Colorful Material based themes
  * Mostly optimized for tablets
- * Artwork support with MusicBrainz,Last.fm, Fanart.tv as artwork provider (Album, artist images and fullscreen fanart)
+ * Artwork support with MusicBrainz,Last.fm, Fanart.tv as artwork provider (Album and artist images)
  * Bulkdownloader to download all artwork to local memory
 
 
