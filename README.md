@@ -23,8 +23,6 @@ resume your audio book/podcast later.
 
 For more comfort you are able to use the launcher widget to have quick control over your music playback.
 
-Currently Odyssey only uses the artwork that is already on your device. In the future this will be expanded to artwork provided by [MusicBrainz](https://www.musicbrainz.org). 
-
 ## Requirements: ##
  * Android 5.0
  * Music on your device ;)
@@ -37,6 +35,8 @@ Currently Odyssey only uses the artwork that is already on your device. In the f
  * Album sort by year (select this in the settings)
  * Quick responding interface
  * Colorful Material based themes
-  
+ * Mostly optimized for tablets
+ * Artwork support with MusicBrainz,Last.fm, Fanart.tv as artwork provider (Album, artist images and fullscreen fanart)
+ * Bulkdownloader to download all artwork to local memory
 
 
