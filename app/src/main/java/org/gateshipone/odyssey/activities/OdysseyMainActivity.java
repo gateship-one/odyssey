@@ -529,7 +529,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         // clear backstack
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         Fragment fragment = null;
 
@@ -647,7 +647,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         if (isRootDirectory) {
             // if root directory clear the backstack
-            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             // save new root directory
             SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
