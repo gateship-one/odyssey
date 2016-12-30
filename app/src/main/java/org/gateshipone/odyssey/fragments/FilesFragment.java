@@ -19,6 +19,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -26,6 +27,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -260,17 +262,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         // get tint color
         int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
 
-        Drawable drawable = menu.findItem(R.id.action_add_directory).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, tintColor);
-        menu.findItem(R.id.action_add_directory).setIcon(drawable);
-
-        drawable = menu.findItem(R.id.action_switch_storage_volume).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, tintColor);
-        menu.findItem(R.id.action_switch_storage_volume).setIcon(drawable);
-
-        drawable = menu.findItem(R.id.action_search).getIcon();
+        Drawable drawable = menu.findItem(R.id.action_search).getIcon();
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, tintColor);
         menu.findItem(R.id.action_search).setIcon(drawable);
@@ -297,9 +289,22 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                 ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
                 chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
                 return true;
+            case R.id.action_set_default_directory:
+                SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+                sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
+                sharedPrefEditor.apply();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isRootDirectory() {
+        return mIsRootDirectory;
+    }
+
+    public FileModel getCurrentDirectory() {
+        return mCurrentDirectory;
     }
 
     /**

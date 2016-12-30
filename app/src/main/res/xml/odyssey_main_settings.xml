@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -64,6 +63,10 @@
         android:persistent="true"
         android:summary="@string/preference_library_view_summary"
         android:title="@string/preference_library_view_title" />
+    <Preference
+        android:key="@string/pref_clear_default_directory_key"
+        android:summary="@string/preference_clear_default_directory_summary"
+        android:title="@string/preference_clear_default_directory_title" />
     <Preference
         android:key="@string/pref_artwork_settings_key"
         android:title="@string/artwork_settings" />

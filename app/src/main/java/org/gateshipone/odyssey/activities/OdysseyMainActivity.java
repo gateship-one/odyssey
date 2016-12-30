@@ -77,6 +77,7 @@ import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -273,7 +274,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
                     args = new Bundle();
                     args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
-                    args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
+                    args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, storageVolumesList.contains(defaultDirectory));
 
                     fragment.setArguments(args);
                     break;
@@ -406,6 +407,22 @@ public class OdysseyMainActivity extends AppCompatActivity
             if (navigationView != null) {
                 navigationView.setCheckedItem(R.id.nav_my_music);
             }
+        } else if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof FilesFragment) {
+            // handle back pressed events for the files fragment manually
+
+            FilesFragment fragment = (FilesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+
+            if (fragment.isRootDirectory()) {
+                // current directory is a root directory so handle back press normally
+                super.onBackPressed();
+            } else {
+                // no root directory so create a new fragment with the parent directory
+                List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+
+                String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
+
+                onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+            }
         } else {
             super.onBackPressed();
 
@@ -426,7 +443,29 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (fragmentManager.getBackStackEntryCount() > 0) {
+                if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof FilesFragment) {
+                    // handle click events for the files fragment manually
+
+                    FilesFragment fragment = (FilesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+
+                    if (fragment.isRootDirectory()) {
+                        // current directory is a root directory so enable navigation drawer
+
+                        mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+                        if (mDrawerToggle.onOptionsItemSelected(item)) {
+                            return true;
+                        }
+                    } else {
+                        // no root directory so create a new fragment with the parent directory
+                        List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+
+                        String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
+
+                        onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                    }
+
+                } else if (fragmentManager.getBackStackEntryCount() > 0) {
                     onBackPressed();
                 } else {
                     // back stack empty so enable navigation drawer
@@ -555,7 +594,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             Bundle args = new Bundle();
             args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
-            args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, true);
+            args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, storageVolumesList.contains(defaultDirectory));
 
             fragment.setArguments(args);
 
@@ -645,22 +684,10 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        if (isRootDirectory) {
-            // if root directory clear the backstack
-            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            // save new root directory
-            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), dirPath);
-            sharedPrefEditor.apply();
-        } else {
-            // no root directory so add fragment to the backstack
-
-            // set enter / exit animation
+        if (!isRootDirectory) {
+            // no root directory so set a enter / exit transition
             newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
             newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
-
-            transaction.addToBackStack("FilesFragment");
         }
 
         transaction.replace(R.id.fragment_container, newFragment);

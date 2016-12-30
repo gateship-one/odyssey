@@ -73,6 +73,7 @@
     <string name="action_add_directory">Add directory to playlist</string>
     <string name="action_search">Search</string>
     <string name="action_add_playlist">Add playlist</string>
+    <string name="action_set_default_directory">Set as default directory</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
@@ -155,6 +156,9 @@
     <string name="preference_library_view_list">List</string>
 
     <string name="artwork_settings">Artwork settings</string>
+
+    <string name="preference_clear_default_directory_title">Clear default directory</string>
+    <string name="preference_clear_default_directory_summary">Reset the default directory to an available root directory of the device.</string>
 
     <!-- artwork preferences -->
     <string name="preference_artwork_album_provider_title">Album image provider</string>

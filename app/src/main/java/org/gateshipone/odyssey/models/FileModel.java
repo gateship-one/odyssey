@@ -112,6 +112,10 @@ public class FileModel implements GenericModel {
         return mFile.isFile();
     }
 
+    public String getParent() {
+        return mFile.getParent();
+    }
+
     /**
      * Return a list of the files in the directory represented by the file object.
      * This list will contain FileModel objects sorted by the filename and the filetype.

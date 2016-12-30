@@ -144,4 +144,7 @@
     <string name="odyssey_thirdparty_licenses_dialog_title">Drittanbieterlizenzen</string>
     <string name="bulk_download_notice_title">Bilder-Download</string>
     <string name="bulk_download_notice_text">Das Herunterladen von vielen Bildern sorgt für eine hohe Serverauslastung beim Bilderanbieter. Es kann vorkommen, dass die Serverauslastung zu groß wird. In diesem Fall wird der Downloader seine Aktion abbrechen.\n\nBitte ziehen Sie eine Spende an die ausgewählten Bilderanbieter in Betracht.</string>
+    <string name="action_set_default_directory">Als Standardverzeichnis festlegen</string>
+    <string name="preference_clear_default_directory_summary">Setzt das Standardverzeichnis auf ein verfügbares Rootverzeichnis des Gerätes zurück.</string>
+    <string name="preference_clear_default_directory_title">Lösche Standardverzeichnis</string>
 </resources>

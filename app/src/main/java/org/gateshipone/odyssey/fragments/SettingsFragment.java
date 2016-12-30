@@ -32,6 +32,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -82,6 +83,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 return true;
             }
         });
+
+        // add listener to clear the default directory
+        Preference clearDefaultDirectory = findPreference(getString(R.string.pref_clear_default_directory_key));
+        clearDefaultDirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference preference) {
+                SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+                sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
+                sharedPrefEditor.apply();
+                return true;
+            }
+        });
+
     }
 
     /**
