@@ -207,12 +207,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param artist Artist to fetch an image for.
      */
     public void fetchArtistImage(final ArtistModel artist, final Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
-
-        if (mWifiOnly && !isWifi) {
+        if (!isDownloadAllowed(context)) {
             return;
         }
 
@@ -239,12 +234,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param album Album to fetch an image for.
      */
     public void fetchAlbumImage(final AlbumModel album, final Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
-
-        if (mWifiOnly && !isWifi) {
+        if (!isDownloadAllowed(context)) {
             return;
         }
 
@@ -271,18 +261,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param track Track to be used for image fetching
      */
     public void fetchAlbumImage(final TrackModel track, final Context context) {
+        if (!isDownloadAllowed(context)) {
+            return;
+        }
+
         // Create a dummy album
         AlbumModel album = new AlbumModel(track.getTrackAlbumName(), null, track.getTrackArtistName(),
                 track.getTrackAlbumKey(), MusicLibraryHelper.getAlbumIDFromKey(track.getTrackAlbumKey(), context));
-
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
-
-        if (mWifiOnly && !isWifi) {
-            return;
-        }
 
         if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
             MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, new Response.Listener<AlbumImageResponse>() {
@@ -447,6 +432,20 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         new InsertArtistImageTask(context).execute(imageResponse);
     }
 
+    private boolean isDownloadAllowed(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo == null) {
+            return false;
+        } else {
+            boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
+
+            return !(mWifiOnly && !isWifi);
+        }
+    }
+
     /**
      * AsyncTask to insert the images to the SQLdatabase. This is necessary as the Volley response
      * is handled in the UI thread.
@@ -588,17 +587,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (null == netInfo) {
-                return;
-            }
-
-            boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
-
-            if (mWifiOnly && !isWifi) {
+            if (!isDownloadAllowed(context)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
                 cancelAllRequests(context);

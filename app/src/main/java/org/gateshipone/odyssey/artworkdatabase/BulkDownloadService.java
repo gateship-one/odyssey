@@ -124,17 +124,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
                 return START_NOT_STICKY;
             }
 
-            ConnectivityManager cm =
-                    (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (null == netInfo) {
-                return START_NOT_STICKY;
-            }
-
-            boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
-
-            if (mWifiOnly && !isWifi) {
+            if (!isDownloadAllowed(this)) {
                 return START_NOT_STICKY;
             }
 
@@ -234,6 +224,20 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         }
     }
 
+    private boolean isDownloadAllowed(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo == null) {
+            return false;
+        } else {
+            boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
+
+            return !(mWifiOnly && !isWifi);
+        }
+    }
+
     private class ActionReceiver extends BroadcastReceiver {
 
         @Override
@@ -253,17 +257,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (null == netInfo) {
-                return;
-            }
-
-            boolean isWifi = netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
-
-            if (mWifiOnly && !isWifi) {
+            if (!isDownloadAllowed(context)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
                 LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(new RequestQueue.RequestFilter() {
