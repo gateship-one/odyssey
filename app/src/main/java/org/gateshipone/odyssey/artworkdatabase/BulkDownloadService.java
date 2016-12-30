@@ -224,6 +224,12 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         }
     }
 
+    /**
+     * Checks the current network state if an artwork download is allowed.
+     *
+     * @param context The current context to resolve the networkinfo
+     * @return true if a download is allowed else false
+     */
     private boolean isDownloadAllowed(final Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
