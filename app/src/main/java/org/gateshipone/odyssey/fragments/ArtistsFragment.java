@@ -61,7 +61,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     /**
      * Save the last scroll position to resume there
      */
-    private int mLastPosition;
+    private int mLastPosition = -1;
 
     /**
      * Called to create instantiate the UI of the fragment.

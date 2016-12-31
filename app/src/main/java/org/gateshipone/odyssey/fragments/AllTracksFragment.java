@@ -50,16 +50,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     private OnArtistSelectedListener mArtistSelectedCallback;
 
     /**
-     * Save the root ListView for later usage.
-     */
-    private ListView mRootList;
-
-    /**
-     * Save the last scroll position to resume there
-     */
-    private int mLastPosition;
-
-    /**
      * Called to create instantiate the UI of the fragment.
      */
     @Override
@@ -69,7 +59,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        mRootList = (ListView) rootView.findViewById(R.id.list_refresh_listview);
+        ListView rootList = (ListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
@@ -87,10 +77,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
 
         mAdapter = new TracksAdapter(getActivity());
 
-        mRootList.setAdapter(mAdapter);
-        mRootList.setOnItemClickListener(this);
+        rootList.setAdapter(mAdapter);
+        rootList.setOnItemClickListener(this);
 
-        registerForContextMenu(mRootList);
+        registerForContextMenu(rootList);
 
         return rootView;
     }
@@ -132,12 +122,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     @Override
     public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
         super.onLoadFinished(loader, data);
-
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mRootList.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
     }
 
     /**
@@ -147,7 +131,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         playTrack(position);
     }
-
 
     /**
      * Create the context menu.

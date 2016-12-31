@@ -56,7 +56,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     /**
      * Save the last scroll position to resume there
      */
-    private int mLastPosition;
+    private int mLastPosition = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

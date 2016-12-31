@@ -57,7 +57,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     /**
      * Save the last scroll position to resume there
      */
-    protected int mLastPosition;
+    protected int mLastPosition = -1;
 
     /**
      * Called to create instantiate the UI of the fragment.
