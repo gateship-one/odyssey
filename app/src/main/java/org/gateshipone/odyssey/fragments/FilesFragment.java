@@ -66,10 +66,20 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private boolean mIsRootDirectory = false;
 
     /**
+     * Saved search string when user rotates devices
+     */
+    private String mSearchString;
+
+    /**
      * key values for arguments of the fragment
      */
     public final static String ARG_DIRECTORYPATH = "directory_path";
     public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
+
+    /**
+     * Constant for state saving
+     */
+    public final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -120,7 +130,20 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             }
         }
 
+        // try to resume the saved search string
+        if (savedInstanceState != null) {
+            mSearchString = savedInstanceState.getString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save the already typed search string (or null if nothing is entered)
+        outState.putString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING, mSearchString);
     }
 
     /**
@@ -141,7 +164,6 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
     /**
      * Called when the fragment resumes.
-     * Reload the data, setup the toolbar and create the PBS connection.
      */
     @Override
     public void onResume() {
@@ -268,6 +290,18 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         menu.findItem(R.id.action_search).setIcon(drawable);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        // Check if a search string is saved from before
+        if (mSearchString != null) {
+            // Expand the view
+            searchView.setIconified(false);
+            menu.findItem(R.id.action_search).expandActionView();
+            // Set the query string
+            searchView.setQuery(mSearchString, false);
+            // Notify the adapter
+            applyFilter(mSearchString);
+        }
+
         searchView.setOnQueryTextListener(new SearchTextObserver());
 
         super.onCreateOptionsMenu(menu, menuInflater);
@@ -436,9 +470,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         @Override
         public boolean onQueryTextSubmit(String query) {
+
             if (query.isEmpty()) {
+                mSearchString = null;
                 removeFilter();
             } else {
+                mSearchString = query;
                 applyFilter(query);
             }
 
@@ -448,8 +485,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         @Override
         public boolean onQueryTextChange(String newText) {
             if (newText.isEmpty()) {
+                mSearchString = null;
                 removeFilter();
             } else {
+                mSearchString = newText;
                 applyFilter(newText);
             }
 

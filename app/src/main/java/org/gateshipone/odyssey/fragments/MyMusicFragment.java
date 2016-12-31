@@ -50,7 +50,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      */
     protected ToolbarAndFABCallback mToolbarAndFABCallback;
 
-
     /**
      * ServiceConnection object to communicate with the PlaybackService
      */
@@ -75,6 +74,16 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * Save the optionsmenu for later usage
      */
     private Menu mOptionMenu;
+
+    /**
+     * Saved search string when user rotates devices
+     */
+    private String mSearchString;
+
+    /**
+     * Constant for state saving
+     */
+    public final static String MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "MyMusicFragment.SearchString";
 
     /**
      * key value for arguments of the fragment
@@ -129,35 +138,28 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
         mMyMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         mMyMusicViewPager.setOffscreenPageLimit(2);
-        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
 
 
         // set start page
         Bundle args = getArguments();
 
-        DEFAULTTAB tab = DEFAULTTAB.ALBUMS;
+        // only set requested tab if no state was saved
+        if (args != null && savedInstanceState == null) {
+            DEFAULTTAB tab = DEFAULTTAB.values()[args.getInt(MY_MUSIC_REQUESTED_TAB)];
 
-        if (args != null) {
-            tab = DEFAULTTAB.values()[args.getInt(MY_MUSIC_REQUESTED_TAB)];
-        }
+            switch (tab) {
+                case ARTISTS:
+                    mMyMusicViewPager.setCurrentItem(0, false);
+                    break;
+                case ALBUMS:
+                    mMyMusicViewPager.setCurrentItem(1, false);
+                    break;
+                case TRACKS:
+                    mMyMusicViewPager.setCurrentItem(2, false);
+                    break;
+            }
 
-        switch (tab) {
-            case ARTISTS:
-                mMyMusicViewPager.setCurrentItem(0);
-                break;
-            case ALBUMS:
-                mMyMusicViewPager.setCurrentItem(1);
-                break;
-            case TRACKS:
-                mMyMusicViewPager.setCurrentItem(2);
-                break;
-        }
-
-        if (mToolbarAndFABCallback != null) {
-            // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
-            // set up play button
-            mToolbarAndFABCallback.setupFAB(getPlayButtonListener(tab.ordinal()));
         }
 
         // activate options menu in toolbar
@@ -167,7 +169,20 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
+        // try to resume the saved search string
+        if (savedInstanceState != null) {
+            mSearchString = savedInstanceState.getString(MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save the already typed search string (or null if nothing is entered)
+        outState.putString(MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING, mSearchString);
     }
 
     /**
@@ -183,6 +198,21 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
+    }
+
+    /**
+     * Setup toolbar and button callback in last creation state.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mToolbarAndFABCallback != null) {
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(getPlayButtonListener(mMyMusicViewPager.getCurrentItem()));
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
         }
     }
 
@@ -235,7 +265,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
             // Disable memory trimming to prevent removing the shown data
             fragment.enableMemoryTrimming(false);
-
         }
     }
 
@@ -304,6 +333,19 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mOptionMenu.findItem(R.id.action_search).setIcon(drawable);
 
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        // Check if a search string is saved from before
+        if (mSearchString != null) {
+            // Expand the view
+            mSearchView.setIconified(false);
+            menu.findItem(R.id.action_search).expandActionView();
+            // Set the query string
+            mSearchView.setQuery(mSearchString, false);
+
+            OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
+            // Notify the adapter
+            fragment.applyFilter(mSearchString);
+        }
 
         mSearchView.setOnQueryTextListener(new SearchTextObserver());
 
@@ -389,8 +431,10 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(mMyMusicViewPager.getCurrentItem());
 
             if (filter.isEmpty()) {
+                mSearchString = null;
                 fragment.removeFilter();
             } else {
+                mSearchString = filter;
                 fragment.applyFilter(filter);
             }
         }
