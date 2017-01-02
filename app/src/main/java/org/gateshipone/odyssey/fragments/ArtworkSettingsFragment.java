@@ -19,12 +19,10 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
@@ -32,11 +30,8 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
+import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -96,28 +91,8 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         bulkLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(getResources().getString(R.string.bulk_download_notice_title));
-                builder.setMessage(getResources().getString(R.string.bulk_download_notice_text));
-
-                builder.setPositiveButton(R.string.error_dialog_ok_action, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
-                        serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
-
-                        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-                        serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
-                                getString(R.string.pref_artwork_provider_artist_default)));
-                        serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),
-                                getString(R.string.pref_artwork_provider_album_default)));
-                        serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
-                                getResources().getBoolean(R.bool.pref_download_wifi_default)));
-                        getActivity().startService(serviceIntent);
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
+                bulkDownloaderDialog.show(getFragmentManager(), "BulkDownloaderDialog");
 
                 return true;
             }
