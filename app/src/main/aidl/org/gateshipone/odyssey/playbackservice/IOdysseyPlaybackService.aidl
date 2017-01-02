@@ -104,4 +104,7 @@ interface IOdysseyPlaybackService {
 	String getAlbum();
 	String getTrackname();
 	int getTrackNo();
+
+    // return the working state of the pbs
+	boolean isBusy();
 }

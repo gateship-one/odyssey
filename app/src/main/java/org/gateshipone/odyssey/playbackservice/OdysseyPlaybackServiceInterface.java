@@ -174,6 +174,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public boolean isBusy() throws RemoteException {
+        return mService.get().isBusy();
+    }
+
+    @Override
     public void seekTo(int position) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SEEKTO, position);
         Message msg = mService.get().getHandler().obtainMessage();

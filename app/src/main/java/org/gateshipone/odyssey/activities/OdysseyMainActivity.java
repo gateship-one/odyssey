@@ -310,11 +310,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
         registerReceiver(mPBSOperationFinishedReceiver, filter);
 
-        // if progress dialog is still active close it
-        if (mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-
         NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
             nowPlayingView.registerDragStatusReceiver(this);
@@ -351,9 +346,11 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
+        mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
     }
 
+    @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
@@ -553,7 +550,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -710,13 +707,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         return resHeight;
     }
 
-    private void setToolbarImage(Drawable drawable) {
-        ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
-        if (collapsingImage != null) {
-            collapsingImage.setImageDrawable(drawable);
-        }
-    }
-
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
@@ -745,7 +735,7 @@ public class OdysseyMainActivity extends AppCompatActivity
      * This method smoothly fades out the alpha value of the statusbar to give
      * a transition if the user pulls up the NowPlayingView.
      *
-     * @param pos
+     * @param pos The position of the NowplayingView as float (in the range 0.0 - 1.0)
      */
     @Override
     public void onDragPositionChanged(float pos) {
@@ -949,6 +939,32 @@ public class OdysseyMainActivity extends AppCompatActivity
         ImageView collapsingImage = (ImageView) findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageBitmap(bm);
+        }
+    }
+
+    private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
+
+        @Override
+        public void onConnect() {
+            try {
+                if (mServiceConnection.getPBS().isBusy()) {
+                    // pbs is still working so show the progress dialog again
+                    mProgressDialog.show();
+                } else {
+                    // pbs is not working so dismiss the progress dialog
+                    mProgressDialog.dismiss();
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                // error occured so dismiss the progress dialog anyway
+                mProgressDialog.dismiss();
+            }
+        }
+
+        @Override
+        public void onDisconnect() {
+            // disconnected so dismiss dialog anyway
+            mProgressDialog.dismiss();
         }
     }
 

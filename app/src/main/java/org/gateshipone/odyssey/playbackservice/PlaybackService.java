@@ -217,6 +217,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private BroadcastControlReceiver mBroadcastControlReceiver = null;
 
+    private boolean mBusy = false;
+
 
     /**
      * Called when the PlaybackService is bound by an activity.
@@ -525,6 +527,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void playAllTracks() {
         // Notify the user about the possible long running operation
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // clear the playlist before adding all tracks
         clearPlaylist();
@@ -540,6 +543,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Notify the user that the operation is now finished
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -837,6 +841,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueueAlbum(String albumKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // get all tracks for the current albumkey from mediastore
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
@@ -845,6 +850,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -855,6 +861,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueueArtist(long artistId, String orderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // get all tracks for the current artistId from mediastore
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
@@ -863,6 +870,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1117,10 +1125,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void savePlaylist(String name) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         MusicLibraryHelper.savePlaylist(name, mCurrentList, getApplicationContext());
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1130,6 +1140,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueuePlaylist(long playlistId) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // get playlist from mediastore
         List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
@@ -1138,6 +1149,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         enqueueTracks(playlistTracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1145,6 +1157,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void resumeBookmark(long timestamp) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // clear current playlist
         clearPlaylist();
@@ -1173,6 +1186,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         resume();
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1180,12 +1194,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void deleteBookmark(long timestamp) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // delete wont affect current playback
         // so just delete the state and the playlist from the database
         mDatabaseManager.removeState(timestamp);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1193,6 +1209,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void createBookmark(String bookmarkTitle) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         // grab the current state and playlist and save this as a new bookmark with the given title
         OdysseyServiceState serviceState = new OdysseyServiceState();
@@ -1206,6 +1223,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mDatabaseManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1216,6 +1234,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueueFile(String filePath, boolean asNext) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         FileModel currentFile = new FileModel(filePath);
         TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(), currentFile);
@@ -1226,6 +1245,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.updateStatus();
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1235,6 +1255,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueueDirectory(String directoryPath) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         FileModel currentDirectory = new FileModel(directoryPath);
 
@@ -1244,6 +1265,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1253,6 +1275,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void enqueueDirectoryAndSubDirectories(String directoryPath) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
         FileModel currentDirectory = new FileModel(directoryPath);
 
@@ -1262,6 +1285,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         enqueueTracks(tracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**
@@ -1285,6 +1309,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // No playback because list is empty
             return PLAYSTATE.STOPPED;
         }
+    }
+
+    /**
+     * Returns the working state of the service
+     *
+     * @return true if the service is busy else false
+     */
+    public boolean isBusy() {
+        return mBusy;
     }
 
     /**
