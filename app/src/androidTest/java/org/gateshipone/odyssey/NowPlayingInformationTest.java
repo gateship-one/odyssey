@@ -86,6 +86,9 @@ public class NowPlayingInformationTest {
 
         // Read the data.
         NowPlayingInformation createdFromParcel = NowPlayingInformation.CREATOR.createFromParcel(parcel);
+		if (parcel != null) {
+			parcel.recycle();
+		}
 
         // Verify that the received data is correct.
         assertThat(createdFromParcel.getPlayState(), is(TEST_PLAYING));

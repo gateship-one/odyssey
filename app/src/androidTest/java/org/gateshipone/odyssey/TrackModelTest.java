@@ -76,6 +76,9 @@ public class TrackModelTest {
 
         // Read the data.
         TrackModel createdFromParcel = TrackModel.CREATOR.createFromParcel(parcel);
+		if (parcel != null) {
+			parcel.recycle();
+		}
 
         // Verify that the received data is correct.
         assertThat(createdFromParcel.getTrackName(), is(TEST_TRACKNAME));
