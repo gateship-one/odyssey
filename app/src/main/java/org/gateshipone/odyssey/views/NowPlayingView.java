@@ -839,6 +839,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         menu.inflate(R.menu.popup_menu_nowplaying_view);
         // Set the main NowPlayingView as a listener (directly implements callback)
         menu.setOnMenuItemClickListener(this);
+
+        // Only show the playlist actions if playlist is shown
+        if ( mViewSwitcher.getDisplayedChild() == 0) {
+            menu.getMenu().setGroupEnabled(R.id.action_group_playlist, false);
+            menu.getMenu().setGroupVisible(R.id.action_group_playlist, false);
+        }
         // Open the menu itself
         menu.show();
     }

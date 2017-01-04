@@ -19,6 +19,8 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/action_group_playlist">
     <item
         android:id="@+id/view_nowplaying_action_shuffleplaylist"
         android:orderInCategory="100"
@@ -36,6 +38,7 @@
         android:orderInCategory="100"
         android:title="@string/popup_menu_action_clearplaylist"
         app:showAsAction="never" />
+    </group>
 
     <item
         android:id="@+id/view_nowplaying_action_createbookmark"
