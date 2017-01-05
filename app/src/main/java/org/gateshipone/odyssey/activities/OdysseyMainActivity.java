@@ -393,17 +393,6 @@ public class OdysseyMainActivity extends AppCompatActivity
                 coordinatorLayout.setVisibility(View.VISIBLE);
                 nowPlayingView.minimize();
             }
-        } else if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof SettingsFragment || fragmentManager.findFragmentById(R.id.fragment_container) instanceof SavedPlaylistsFragment) {
-            // If current fragment is the settings or savedplaylists fragment, jump back to myMusicFragment.
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_container, new MyMusicFragment());
-            transaction.commit();
-
-            // Reset the navigation view
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            if (navigationView != null) {
-                navigationView.setCheckedItem(R.id.nav_my_music);
-            }
         } else if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof FilesFragment) {
             // handle back pressed events for the files fragment manually
 
