@@ -147,4 +147,10 @@
     <string name="action_set_default_directory">Als Standardverzeichnis festlegen</string>
     <string name="preference_clear_default_directory_summary">Setzt das Standardverzeichnis auf ein verfügbares Rootverzeichnis des Gerätes zurück.</string>
     <string name="preference_clear_default_directory_title">Lösche Standardverzeichnis</string>
+    <string name="preference_category_artwork_database_cleanup">Datenbankbereinigung</string>
+    <string name="preference_category_artwork_other_actions">Andere Aktionen</string>
+    <string name="preference_category_artwork_settings">Bildereinstellungen</string>
+    <string name="preference_category_design">Design</string>
+    <string name="preference_category_library">Bibliothek</string>
+    <string name="preference_category_other">Andere</string>
 </resources>

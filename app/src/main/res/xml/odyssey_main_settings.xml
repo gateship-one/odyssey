@@ -17,6 +17,8 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/preference_category_design">
     <ListPreference
         android:defaultValue="@string/pref_theme_default"
         android:dialogTitle="@string/preference_theme_title"
@@ -31,6 +33,9 @@
         android:key="@string/pref_dark_theme_key"
         android:summary="@string/preference_dark_theme_message"
         android:title="@string/preference_dark_theme_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/preference_category_library">
     <CheckBoxPreference
         android:defaultValue="@bool/pref_album_artists_only_default"
         android:key="@string/pref_album_artists_only_key"
@@ -70,6 +75,9 @@
     <Preference
         android:key="@string/pref_artwork_settings_key"
         android:title="@string/artwork_settings" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/preference_category_other">
     <Preference
         android:key="@string/pref_open_equalizer_key"
         android:title="@string/popup_menu_action_startequalizer" />
@@ -79,4 +87,5 @@
             android:targetClass="org.gateshipone.odyssey.activities.OdysseyAboutActivity"
             android:targetPackage="org.gateshipone.odyssey" />
     </Preference>
+    </PreferenceCategory>
 </PreferenceScreen>
