@@ -49,6 +49,9 @@ public class PlaybackServiceStatusHelper {
     public static final String MESSAGE_NEWTRACKINFORMATION = "org.gateshipone.odyssey.newtrackinfo";
     public static final String MESSAGE_WORKING = "org.gateshipone.odyssey.working";
     public static final String MESSAGE_IDLE = "org.gateshipone.odyssey.idle";
+    public static final String MESSAGE_HIDE_ARTWORK_CHANGED = "org.gateshipone.odyssey.hideartworkchanged";
+
+    public static final String MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE = "org.gateshipone.odyssey.hideartwork.changed.value";
 
     private PlaybackService mPlaybackService;
 
@@ -88,6 +91,10 @@ public class PlaybackServiceStatusHelper {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(playbackService);
 
         mHideArtwork = sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_artwork_key), playbackService.getResources().getBoolean(R.bool.pref_hide_artwork_default));
+
+        Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
+        settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
+        mPlaybackService.sendBroadcast(settingChangedIntent);
     }
 
 
@@ -367,6 +374,9 @@ public class PlaybackServiceStatusHelper {
         mHideArtwork = enable;
         mLastTrack = null;
         mNotificationManager.hideArtwork(enable);
+        Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
+        settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
+        mPlaybackService.sendBroadcast(settingChangedIntent);
         updateStatus();
     }
 }

@@ -84,6 +84,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="org.gateshipone.odyssey.newtrackinfo" />
+                <action android:name="org.gateshipone.odyssey.hideartworkchanged" />
                 <action android:name="org.gateshipone.odyssey.togglepause" />
                 <action android:name="org.gateshipone.odyssey.stop" />
                 <action android:name="org.gateshipone.odyssey.previous" />
