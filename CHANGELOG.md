@@ -1,4 +1,7 @@
-### Version: 1.1.0 Tag: release-12 (2016-12-22) ####
+### Version: 1.1.1 Tag: release-13 (2016-12-30) ###
+* Hotfix for crash if not connected to any network.
+
+### Version: 1.1.0 Tag: release-12 (2016-12-22) ###
 * Artwork support with MusicBrainz, Last.fm, Fanart.tv as artwork provider (album, artist images)
 * Album images in playlist view as sections
 * Tablet optimized nowplaying screen
