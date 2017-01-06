@@ -194,6 +194,9 @@
     <string name="preference_artwork_wifi_only_title">Only use WIFI for downloading</string>
     <string name="preference_artwork_wifi_only_text">Artwork downloading will only take place if the device is connected via WIFI.</string>
 
+    <string name="preference_artwork_hide_artwork_title">Hide artwork</string>
+    <string name="preference_artwork_hide_artwork_text">Disables the whole artwork visibility.</string>
+
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>
     <string name="preference_category_artwork_other_actions">Other actions</string>

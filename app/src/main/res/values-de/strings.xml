@@ -153,4 +153,6 @@
     <string name="preference_category_design">Design</string>
     <string name="preference_category_library">Bibliothek</string>
     <string name="preference_category_other">Andere</string>
+    <string name="preference_artwork_hide_artwork_text">Deaktiviert die Sichtbarkeit von Bildern.</string>
+    <string name="preference_artwork_hide_artwork_title">Bilder verstecken</string>
 </resources>
