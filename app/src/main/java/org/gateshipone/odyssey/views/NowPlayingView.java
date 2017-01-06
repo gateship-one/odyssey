@@ -423,6 +423,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 // Hide artwork here
                 showPlaceholderImage();
             }
+            mPlaylistView.hideArtwork(mHideArtwork);
         }
     }
 
@@ -967,6 +968,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         mHideArtwork = sharedPref.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+
+        mPlaylistView.hideArtwork(mHideArtwork);
 
         sharedPref.registerOnSharedPreferenceChangeListener(this);
     }

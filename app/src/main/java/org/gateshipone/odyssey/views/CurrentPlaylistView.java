@@ -43,6 +43,8 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
 
     private PlaybackServiceConnection mPlaybackServiceConnection;
 
+    private boolean mHideArtwork;
+
     public CurrentPlaylistView(Context context) {
         this(context, null);
     }
@@ -70,6 +72,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mPlaybackServiceConnection = playbackServiceConnection;
 
         mCurrentPlaylistAdapter = new CurrentPlaylistAdapter(mContext, mPlaybackServiceConnection);
+        mCurrentPlaylistAdapter.hideArtwork(mHideArtwork);
 
         mListView.setAdapter(mCurrentPlaylistAdapter);
         mListView.setOnScrollListener(new ScrollSpeedListener(mCurrentPlaylistAdapter, mListView));
@@ -159,5 +162,12 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
 
         return clickedTrack.getTrackArtistName();
+    }
+
+    public void hideArtwork(boolean enable) {
+        mHideArtwork = enable;
+        if ( mCurrentPlaylistAdapter != null ) {
+            mCurrentPlaylistAdapter.hideArtwork(enable);
+        }
     }
 }
