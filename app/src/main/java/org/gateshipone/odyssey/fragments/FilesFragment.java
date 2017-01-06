@@ -36,8 +36,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.FilesAdapter;
@@ -47,7 +48,6 @@ import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
-import java.io.File;
 import java.util.List;
 
 public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
@@ -89,10 +89,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_files, container, false);
+        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        ListView filesListView = (ListView) rootView.findViewById(R.id.list_refresh_listview);
+        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
@@ -110,13 +110,17 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         mAdapter = new FilesAdapter(getActivity());
 
-        filesListView.setAdapter(mAdapter);
-        filesListView.setOnItemClickListener(this);
-        // set an empty view if no data is available
-        filesListView.setEmptyView(rootView.findViewById(R.id.empty_view));
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
+
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_directory_message);
 
         // register listview for a context menu
-        registerForContextMenu(filesListView);
+        registerForContextMenu(mListView);
 
         // activate options menu in toolbar
         setHasOptionsMenu(true);

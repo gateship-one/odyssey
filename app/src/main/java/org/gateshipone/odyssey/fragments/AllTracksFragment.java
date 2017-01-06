@@ -29,8 +29,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
@@ -59,7 +61,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        ListView rootList = (ListView) rootView.findViewById(R.id.list_refresh_listview);
+        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
@@ -77,10 +79,16 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
 
         mAdapter = new TracksAdapter(getActivity());
 
-        rootList.setAdapter(mAdapter);
-        rootList.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
-        registerForContextMenu(rootList);
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
+
+        registerForContextMenu(mListView);
 
         return rootView;
     }

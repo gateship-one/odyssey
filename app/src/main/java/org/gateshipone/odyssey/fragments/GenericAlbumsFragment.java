@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.AlbumsAdapter;
@@ -48,11 +49,6 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * Listener to open an album
      */
     protected OnAlbumSelectedListener mAlbumSelectedCallback;
-
-    /**
-     * Save the root List/GridView for later usage.
-     */
-    protected AbsListView mListView;
 
     /**
      * Save the last scroll position to resume there
@@ -101,6 +97,12 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         mListView.setAdapter(mAdapter);
         mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter, mListView));
         mListView.setOnItemClickListener(this);
+
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_albums_message);
 
         // register for context menu
         registerForContextMenu(mListView);

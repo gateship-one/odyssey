@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -33,7 +32,23 @@
         android:fastScrollEnabled="true"
         android:fastScrollStyle="?attr/colorAccent"
         android:nestedScrollingEnabled="true"
-        android:scrollingCache="false"
-        android:scrollbarStyle="outsideOverlay" />
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollingCache="false" />
+
+    <ScrollView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true">
+
+        <TextView
+            android:id="@+id/empty_view_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/material_standard_horizontal_spacing"
+            android:fontFamily="sans-serif-regular"
+            android:textColor="?attr/odyssey_color_text_background_primary"
+            android:textSize="@dimen/material_font_style_size_subheading" />
+    </ScrollView>
 
 </LinearLayout>

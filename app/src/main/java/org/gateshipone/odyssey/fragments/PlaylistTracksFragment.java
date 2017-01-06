@@ -33,8 +33,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
@@ -70,7 +71,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        ListView playlistTracksListView = (ListView) rootView.findViewById(R.id.list_refresh_listview);
+        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
@@ -88,11 +89,17 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         mAdapter = new TracksAdapter(getActivity());
 
-        playlistTracksListView.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
-        playlistTracksListView.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(this);
 
-        registerForContextMenu(playlistTracksListView);
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
+
+        registerForContextMenu(mListView);
 
         // activate options menu in toolbar
         setHasOptionsMenu(true);
@@ -116,13 +123,6 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(mPlaylistTitle, false, false, false);
-            // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playPlaylist(0);
-                }
-            });
         }
     }
 
@@ -136,6 +136,34 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         return new TrackLoader(getActivity(), mPlaylistID);
+    }
+
+    /**
+     * Called when the loader finished loading its data.
+     * <p/>
+     * The refresh indicator will be stopped if a refreshlayout exists.
+     * The FAB will be hidden if the model is empty.
+     *
+     * @param loader The used loader itself
+     * @param model  Data of the loader
+     */
+    @Override
+    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> model) {
+        super.onLoadFinished(loader, model);
+
+        if (mToolbarAndFABCallback != null) {
+            // set up play button
+            if (mAdapter.isEmpty()) {
+                mToolbarAndFABCallback.setupFAB(null);
+            } else {
+                mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        playPlaylist(0);
+                    }
+                });
+            }
+        }
     }
 
     /**

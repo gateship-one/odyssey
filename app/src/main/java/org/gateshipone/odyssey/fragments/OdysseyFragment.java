@@ -25,6 +25,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
+import android.widget.AbsListView;
 
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
@@ -46,6 +48,16 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
+     * The reference to the possible abstract list view
+     */
+    protected AbsListView mListView;
+
+    /**
+     * The reference to the possible empty view which should replace the list view if no data is available
+     */
+    protected View mEmptyView;
+
+    /**
      * ServiceConnection object to communicate with the PlaybackService
      */
     protected PlaybackServiceConnection mServiceConnection;
@@ -55,6 +67,9 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      */
     protected GenericSectionAdapter<T> mAdapter;
 
+    /**
+     * Callback to check the current memory state
+     */
     private OdysseyComponentCallback mComponentCallback;
 
     /**
@@ -161,6 +176,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      * Called when the loader finished loading its data.
      * <p/>
      * The refresh indicator will be stopped if a refreshlayout exists.
+     * If the new model is empty a special empty view will be shown if exists.
      *
      * @param loader The used loader itself
      * @param model  Data of the loader
@@ -181,6 +197,18 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         // Transfer the data to the adapter so that the views can use it
         mAdapter.swapModel(model);
+
+        if (mListView != null && mEmptyView != null) {
+            if (mAdapter.isEmpty()) {
+                // show empty message
+                mListView.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                // show list view
+                mListView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**

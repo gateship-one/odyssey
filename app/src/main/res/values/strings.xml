@@ -40,8 +40,12 @@
     <string name="fragment_title_settings">Settings</string>
     <string name="fragment_title_bookmarks">Bookmarks</string>
 
+    <!-- saved playlists fragment -->
+    <string name="empty_saved_playlists_message">No playlists found.</string>
+
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Tracks</string>
+    <string name="empty_bookmarks_message">No bookmarks found.</string>
 
     <!-- files fragment -->
     <string name="empty_directory_message">No supported formats or .nomedia file found.</string>
@@ -50,6 +54,9 @@
     <string name="fragment_title_artists">Artists</string>
     <string name="fragment_title_albums">Albums</string>
     <string name="fragment_title_all_tracks">Tracks</string>
+    <string name="empty_artists_message">No artists found.</string>
+    <string name="empty_tracks_message">No tracks found.</string>
+    <string name="empty_albums_message">No albums found.</string>
 
     <!-- dialog titles -->
     <string name="dialog_save_playlist">Save Playlist</string>

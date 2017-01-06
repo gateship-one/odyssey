@@ -154,4 +154,10 @@
     <string name="preference_category_library">Bibliothek</string>
     <string name="preference_category_other">Andere</string>
     <string name="empty_directory_message">Keine unterstützten Formate oder .nomedia-Datei gefunden.</string>
+    <string name="empty_albums_message">Keine Alben gefunden.</string>
+    <string name="empty_artists_message">Keine Interpreten gefunden.</string>
+    <string name="empty_bookmarks_message">Keine Lesezeichen gefunden.</string>
+    <string name="empty_current_playlist_message"></string>
+    <string name="empty_saved_playlists_message">Keine Wiedergabelisten gefunden.</string>
+    <string name="empty_tracks_message">Keine Songs gefunden.</string>
 </resources>

@@ -27,8 +27,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
@@ -48,15 +49,21 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        ListView listView = (ListView) rootView.findViewById(R.id.list_linear_listview);
+        mListView = (AbsListView) rootView.findViewById(R.id.list_linear_listview);
 
         mAdapter = new BookmarksAdapter(getActivity());
 
-        listView.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
-        listView.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(this);
 
-        registerForContextMenu(listView);
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_bookmarks_message);
+
+        registerForContextMenu(mListView);
 
         return rootView;
     }

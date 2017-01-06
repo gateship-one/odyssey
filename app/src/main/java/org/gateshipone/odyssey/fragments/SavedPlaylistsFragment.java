@@ -29,8 +29,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
@@ -49,11 +50,6 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     private OnPlaylistSelectedListener mPlaylistSelectedCallback;
 
     /**
-     * Save the root ListView for later usage.
-     */
-    private ListView mRootListView;
-
-    /**
      * Save the last scroll position to resume there
      */
     private int mLastPosition = -1;
@@ -65,15 +61,21 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mRootListView = (ListView) rootView.findViewById(R.id.list_linear_listview);
+        mListView = (AbsListView) rootView.findViewById(R.id.list_linear_listview);
 
         mAdapter = new SavedPlaylistsAdapter(getActivity());
 
-        mRootListView.setAdapter(mAdapter);
-        mRootListView.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
+
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_saved_playlists_message);
 
         // register for context menu
-        registerForContextMenu(mRootListView);
+        registerForContextMenu(mListView);
 
         return rootView;
     }
@@ -127,7 +129,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
-            mRootListView.setSelection(mLastPosition);
+            mListView.setSelection(mLastPosition);
             mLastPosition = -1;
         }
     }
@@ -192,6 +194,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     /**
      * Call the PBS to enqueue the selected playlist.
+     *
      * @param position the position of the selected playlist in the adapter
      */
     private void enqueuePlaylist(int position) {
@@ -209,6 +212,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     /**
      * Call the PBS to play the selected playlist.
+     *
      * @param position the position of the selected playlist in the adapter
      */
     private void playPlaylist(int position) {
@@ -232,6 +236,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     /**
      * Remove the selected playlist from the mediastore.
+     *
      * @param position the position of the selected playlist in the adapter
      */
     private void deletePlaylist(int position) {
