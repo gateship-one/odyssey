@@ -19,10 +19,12 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -74,6 +76,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
     private CoverBitmapLoader mBitmapLoader;
 
+    private boolean mHideArtwork;
+
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -104,6 +108,9 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         setHasOptionsMenu(true);
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
         return rootView;
     }
@@ -151,8 +158,10 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
             });
         }
 
-        AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
-        mBitmapLoader.getAlbumImage(album);
+        if ( !mHideArtwork) {
+            AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
+            mBitmapLoader.getAlbumImage(album);
+        }
     }
 
     /**
