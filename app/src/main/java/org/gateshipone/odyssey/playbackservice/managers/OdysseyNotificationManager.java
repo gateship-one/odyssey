@@ -69,6 +69,8 @@ public class OdysseyNotificationManager {
     private Bitmap mLastBitmap = null;
     private TrackModel mLastTrack = null;
 
+    private boolean mHideArtwork;
+
     public OdysseyNotificationManager(Context context) {
         mContext = context;
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -142,7 +144,7 @@ public class OdysseyNotificationManager {
             }
 
             // Only set image if an saved one is available
-            if (mLastBitmap != null) {
+            if (mLastBitmap != null && !mHideArtwork) {
                 mNotificationBuilder.setLargeIcon(mLastBitmap);
             } else {
                 /**
@@ -221,5 +223,9 @@ public class OdysseyNotificationManager {
             mNotification = mNotificationBuilder.build();
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }
+    }
+
+    public void hideArtwork(boolean enable) {
+        mHideArtwork = enable;
     }
 }

@@ -20,11 +20,15 @@ package org.gateshipone.odyssey.playbackservice.managers;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -57,8 +61,10 @@ public class PlaybackServiceStatusHelper {
     // Save last track to update cover art only if needed
     private TrackModel mLastTrack = null;
 
+    private boolean mHideArtwork;
+
     // Notification manager
-    OdysseyNotificationManager mNotificationManager;
+    private OdysseyNotificationManager mNotificationManager;
 
     public PlaybackServiceStatusHelper(PlaybackService playbackService) {
         mPlaybackService = playbackService;
@@ -78,6 +84,10 @@ public class PlaybackServiceStatusHelper {
 
         // Initialize the notification manager
         mNotificationManager = new OdysseyNotificationManager(mPlaybackService);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(playbackService);
+
+        mHideArtwork = sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_artwork_key), playbackService.getResources().getBoolean(R.bool.pref_hide_artwork_default));
     }
 
 
@@ -130,8 +140,11 @@ public class PlaybackServiceStatusHelper {
 
                 // Only update cover image if album changed to preserve energy
                 if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
-                    mLastTrack = info.getCurrentTrack();
-                    startCoverImageTask();
+                    mLastTrack = currentTrack;
+
+                    if ( !mHideArtwork ) {
+                        startCoverImageTask();
+                    }
                 }
                 break;
             case RESUMED:
@@ -195,6 +208,10 @@ public class PlaybackServiceStatusHelper {
             metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, track.getTrackName());
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, track.getTrackDuration());
+
+            if (mHideArtwork) {
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
+            }
 
             mMediaSession.setMetadata(metaDataBuilder.build());
         }
@@ -343,5 +360,13 @@ public class PlaybackServiceStatusHelper {
                 mNotificationManager.setNotificationImage(bm);
             }
         }
+    }
+
+    public void hideArtwork(boolean enable) {
+        Log.v(PlaybackServiceStatusHelper.class.getSimpleName(),"Hide artwork: " + enable);
+        mHideArtwork = enable;
+        mLastTrack = null;
+        mNotificationManager.hideArtwork(enable);
+        updateStatus();
     }
 }

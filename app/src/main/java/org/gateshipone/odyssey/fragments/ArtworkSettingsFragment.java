@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -32,6 +33,8 @@ import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
+import org.gateshipone.odyssey.views.NowPlayingView;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -39,6 +42,11 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      * Callback to setup toolbar and fab
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
+
+    /**
+     * Connection to the PBS to notify it about artwork hide changes
+     */
+    private PlaybackServiceConnection mServiceConnection = null;
 
     /**
      * Called to do initial creation of a fragment.
@@ -125,6 +133,10 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
+        mServiceConnection.openConnection();
+
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_settings), false, false, false);
@@ -176,6 +188,13 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
                 artworkManager.setArtistProvider(sharedPreferences.getString(artistProviderKey, getString(R.string.pref_artwork_provider_artist_default)));
             } else if (key.equals(downloadWifiOnlyKey)) {
                 artworkManager.setWifiOnly(sharedPreferences.getBoolean(downloadWifiOnlyKey, getResources().getBoolean(R.bool.pref_download_wifi_default)));
+            }
+        } else if ( key.equals(getString(R.string.pref_hide_artwork_key))) {
+            boolean hideArtwork = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_artwork_default));
+            try {
+                mServiceConnection.getPBS().hideArtworkChanged(hideArtwork);
+            } catch (RemoteException e) {
+
             }
         }
     }

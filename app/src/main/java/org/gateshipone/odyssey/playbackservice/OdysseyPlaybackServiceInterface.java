@@ -174,6 +174,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void hideArtworkChanged(boolean enabled) throws RemoteException {
+        mService.get().hideArtwork(enabled);
+    }
+
+    @Override
     public boolean isBusy() throws RemoteException {
         return mService.get().isBusy();
     }
