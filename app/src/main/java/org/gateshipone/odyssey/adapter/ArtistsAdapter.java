@@ -19,11 +19,14 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.GridView;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
@@ -43,6 +46,8 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
 
     private boolean mUseList;
 
+    private boolean mHideArtwork;
+
     public ArtistsAdapter(final Context context, final AbsListView listView, final boolean useList) {
         super();
 
@@ -52,6 +57,9 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
         mUseList = useList;
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mHideArtwork = sharedPreferences.getBoolean(context.getString(R.string.pref_hide_artwork_key), context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
     }
 
     /**
@@ -78,12 +86,14 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
                 listItem = new ListViewItem(mContext, label, this);
             }
 
-            // This will prepare the view for fetching the image from the internet if not already saved in local database.
-            listItem.prepareArtworkFetching(mArtworkManager, artist);
+            if ( !mHideArtwork) {
+                // This will prepare the view for fetching the image from the internet if not already saved in local database.
+                listItem.prepareArtworkFetching(mArtworkManager, artist);
 
-            // Check if the scroll speed currently is already 0, then start the image task right away.
-            if (mScrollSpeed == 0) {
-                listItem.startCoverImageTask();
+                // Check if the scroll speed currently is already 0, then start the image task right away.
+                if (mScrollSpeed == 0) {
+                    listItem.startCoverImageTask();
+                }
             }
             return listItem;
         } else {
@@ -106,12 +116,14 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
             // Make sure to reset the layoutParams in case of change (rotation for example)
             gridItem.setLayoutParams(layoutParams);
 
-            // This will prepare the view for fetching the image from the internet if not already saved in local database.
-            gridItem.prepareArtworkFetching(mArtworkManager, artist);
+            if ( !mHideArtwork) {
+                // This will prepare the view for fetching the image from the internet if not already saved in local database.
+                gridItem.prepareArtworkFetching(mArtworkManager, artist);
 
-            // Check if the scroll speed currently is already 0, then start the image task right away.
-            if (mScrollSpeed == 0) {
-                gridItem.startCoverImageTask();
+                // Check if the scroll speed currently is already 0, then start the image task right away.
+                if (mScrollSpeed == 0) {
+                    gridItem.startCoverImageTask();
+                }
             }
             return gridItem;
         }

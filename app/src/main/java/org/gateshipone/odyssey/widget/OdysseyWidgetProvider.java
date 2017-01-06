@@ -46,6 +46,8 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     private static NowPlayingInformation mLastInfo;
     private static Bitmap mLastCover = null;
 
+    private static boolean mHideArtwork;
+
     private final static int INTENT_OPENGUI = 0;
     private final static int INTENT_PREVIOUS = 1;
     private final static int INTENT_PLAYPAUSE = 2;
@@ -102,6 +104,11 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                 // Save the information for later usage (when the asynchronous bitmap loader finishes)
                 mLastInfo = info;
             }
+        } else if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_HIDE_ARTWORK_CHANGED)) {
+            mHideArtwork = intent.getBooleanExtra(PlaybackServiceStatusHelper.MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
+            mLastCover = null;
+            mLastTrack = null;
+            setWidgetContent(mLastInfo);
         }
     }
 
@@ -128,7 +135,10 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     // If the albumKey changed, then it is necessary to start the image loader
                     mViews.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
                     CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
-                    coverLoader.getImage(item);
+
+                    if (!mHideArtwork) {
+                        coverLoader.getImage(item);
+                    }
                     mLastCover = null;
                 } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null) {
                     // Reuse the image from last calls if the album is the same

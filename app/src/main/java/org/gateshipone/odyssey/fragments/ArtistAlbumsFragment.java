@@ -65,6 +65,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
     private CoverBitmapLoader mBitmapLoader;
 
+    private boolean mHideArtwork;
+
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -80,6 +82,9 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         mArtistID = args.getLong(ARG_ARTISTID);
 
         setHasOptionsMenu(true);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
@@ -107,7 +112,9 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
             });
         }
 
-        mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, mArtistID));
+        if (!mHideArtwork) {
+            mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, mArtistID));
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,6 +41,8 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     private int mPlaylistSize = 0;
 
     private final ArtworkManager mArtworkManager;
+
+    private boolean mHideArtwork;
 
     public CurrentPlaylistAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();
@@ -151,7 +154,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
             } else {
                 if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
                     // Current view has wrong type so reusable is not possible
-                    // clear cover
+                    // clear cover and stop possible loading tasks
                     listViewItem.setImage(null);
                     listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
                 } else {
@@ -168,7 +171,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
         }
 
         // setup cover loading routine if necessary
-        if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
+        if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM && !mHideArtwork) {
             listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
@@ -188,6 +191,11 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     public void updateState(NowPlayingInformation info) {
         mCurrentPlayingIndex = info.getPlayingIndex();
         mPlaylistSize = info.getPlaylistLength();
+        notifyDataSetChanged();
+    }
+
+    public void hideArtwork(boolean enable) {
+        mHideArtwork = enable;
         notifyDataSetChanged();
     }
 }

@@ -139,6 +139,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
             mLoaderTask = null;
 
             mCoverDone = false;
+            mHolder.modelItem = null;
 
             mSwitcher.setOutAnimation(null);
             mSwitcher.setInAnimation(null);

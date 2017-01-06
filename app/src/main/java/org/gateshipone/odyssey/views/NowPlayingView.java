@@ -24,11 +24,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -64,7 +66,8 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener {
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -178,6 +181,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * did not change with a track, there is no need to refetch the cover.
      */
     private String mLastAlbumKey;
+
+    private boolean mHideArtwork = true;
 
     /**
      * The state of the playbackservice.
@@ -399,6 +404,26 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public void newAlbumImage(AlbumModel album) {
         if (mLastAlbumKey.equals(album.getAlbumKey())) {
             mCoverLoader.getAlbumImage(album);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ( key.equals(getContext().getString(R.string.pref_hide_artwork_key))) {
+            mHideArtwork = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+
+            if ( !mHideArtwork ) {
+                // Start cover loading
+                try {
+                    mCoverLoader.getImage(mServiceConnection.getPBS().getCurrentSong());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Hide artwork here
+                showPlaceholderImage();
+            }
+            mPlaylistView.hideArtwork(mHideArtwork);
         }
     }
 
@@ -905,6 +930,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mNowPlayingReceiver = null;
         }
         ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPref.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -935,6 +963,15 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         invalidate();
         ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener(this);
+
+        // Register shared preference listener
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        mHideArtwork = sharedPref.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+
+        mPlaylistView.hideArtwork(mHideArtwork);
+
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -969,27 +1006,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Check if the album title changed. If true, start the cover generator thread.
         if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
-            // get tint color
-            int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+            // Show placeholder until image is loaded
+            showPlaceholderImage();
 
-            Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
-            drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable, tintColor);
-
-            // Show the placeholder image until the cover fetch process finishes
-            mCoverImage.setImageDrawable(drawable);
-
-            tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
-
-            drawable = getResources().getDrawable(R.drawable.cover_placeholder_96dp, null);
-            drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable, tintColor);
-
-
-            // The same for the small header image
-            mTopCoverImage.setImageDrawable(drawable);
-            // Start the cover loader
-            mCoverLoader.getImage(currentTrack);
+            if ( !mHideArtwork ) {
+                // Start the cover loader
+                mCoverLoader.getImage(currentTrack);
+            }
         }
         // Save the name of the album for rechecking later
         mLastAlbumKey = currentTrack.getTrackAlbumKey();
@@ -1270,6 +1293,29 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
             }
         }
+    }
+
+
+    private void showPlaceholderImage() {
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+
+        // Show the placeholder image until the cover fetch process finishes
+        mCoverImage.setImageDrawable(drawable);
+
+        tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+        drawable = getResources().getDrawable(R.drawable.cover_placeholder_96dp, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+
+
+        // The same for the small header image
+        mTopCoverImage.setImageDrawable(drawable);
     }
 
     /**
