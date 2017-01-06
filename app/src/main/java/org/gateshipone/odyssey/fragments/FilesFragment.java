@@ -47,6 +47,7 @@ import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
+import java.io.File;
 import java.util.List;
 
 public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
@@ -88,7 +89,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
+        View rootView = inflater.inflate(R.layout.list_files, container, false);
 
         // get listview
         ListView filesListView = (ListView) rootView.findViewById(R.id.list_refresh_listview);
@@ -111,6 +112,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         filesListView.setAdapter(mAdapter);
         filesListView.setOnItemClickListener(this);
+        // set an empty view if no data is available
+        filesListView.setEmptyView(rootView.findViewById(R.id.empty_view));
 
         // register listview for a context menu
         registerForContextMenu(filesListView);
@@ -176,13 +179,6 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             } else {
                 mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, false, false);
             }
-            // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playCurrentFolderAndSubFolders();
-                }
-            });
         }
     }
 
@@ -196,6 +192,34 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     @Override
     public Loader<List<FileModel>> onCreateLoader(int id, Bundle bundle) {
         return new FileLoader(getActivity(), mCurrentDirectory);
+    }
+
+    /**
+     * Called when the loader finished loading its data.
+     * <p/>
+     * The refresh indicator will be stopped if a refreshlayout exists.
+     * The FAB will be hidden if the model is empty.
+     *
+     * @param loader The used loader itself
+     * @param model  Data of the loader
+     */
+    @Override
+    public void onLoadFinished(Loader<List<FileModel>> loader, List<FileModel> model) {
+        super.onLoadFinished(loader, model);
+
+        if (mToolbarAndFABCallback != null) {
+            // set up play button
+            if (mAdapter.isEmpty()) {
+                mToolbarAndFABCallback.setupFAB(null);
+            } else {
+                mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        playCurrentFolderAndSubFolders();
+                    }
+                });
+            }
+        }
     }
 
     /**

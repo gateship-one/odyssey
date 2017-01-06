@@ -48,7 +48,7 @@ public class FileModel implements GenericModel {
      */
     private static final List<String> fileExtensions = new ArrayList<>(Arrays.asList("3gp", "aac",
             "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus", "ota", "rtttl",
-            "rtx", "ts", "wav", "wma", "xmf"));
+            "rtx", "ts", "wav", "wma", "xmf", "nomedia"));
 
     /**
      * Construct a FileModel instance for the given file object.
@@ -131,6 +131,12 @@ public class FileModel implements GenericModel {
         }
         // create FileModel instances
         for (File file : filesArray) {
+            if (file.getName().equals(".nomedia")) {
+                // .nomedia file found so clear the list and finish
+                files.clear();
+                break;
+            }
+
             files.add(new FileModel(file));
         }
 

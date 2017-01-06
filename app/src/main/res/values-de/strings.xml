@@ -153,4 +153,5 @@
     <string name="preference_category_design">Design</string>
     <string name="preference_category_library">Bibliothek</string>
     <string name="preference_category_other">Andere</string>
+    <string name="empty_directory_message">Keine unterstützten Formate oder .nomedia-Datei gefunden.</string>
 </resources>

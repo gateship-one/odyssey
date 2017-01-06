@@ -43,6 +43,9 @@
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Tracks</string>
 
+    <!-- files fragment -->
+    <string name="empty_directory_message">No supported formats or .nomedia file found.</string>
+
     <!-- my music tab titles -->
     <string name="fragment_title_artists">Artists</string>
     <string name="fragment_title_albums">Albums</string>
