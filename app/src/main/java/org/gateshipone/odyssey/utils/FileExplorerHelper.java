@@ -24,6 +24,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -208,7 +209,7 @@ public class FileExplorerHelper {
             cursor.close();
         }
 
-        List<FileModel> files = folder.listFilesSorted();
+        List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 
         for (FileModel file : files) {
             if (file.isFile()) {
@@ -273,12 +274,12 @@ public class FileExplorerHelper {
     /**
      * add TrackModel objects for the current folder and all subfolders to the tracklist
      */
-    public void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
+    private void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
             tracks.add(getTrackModelForFile(context, folder));
         } else {
-            List<FileModel> files = folder.listFilesSorted();
+            List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 
             for (FileModel file : files) {
                 // call method for all files found in this folder

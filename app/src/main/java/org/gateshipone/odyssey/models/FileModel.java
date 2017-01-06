@@ -127,7 +127,7 @@ public class FileModel implements GenericModel {
         File[] filesArray = mFile.listFiles(mFileExtensionFilter);
 
         if ( null == filesArray ) {
-            return null;
+            return files;
         }
         // create FileModel instances
         for (File file : filesArray) {
