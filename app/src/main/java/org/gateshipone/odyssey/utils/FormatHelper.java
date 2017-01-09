@@ -1,5 +1,9 @@
 /*
- * Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
+ * Copyright (C) 2017 Team Gateship-One
+ * (Hendrik Borghorst & Frederik Luetkes)
+ *
+ * The AUTHORS.md file contains a detailed contributors list:
+ * <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
