@@ -18,9 +18,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingEnd="@dimen/material_screen_edge_spacing"
-    android:paddingStart="@dimen/material_screen_edge_spacing">
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/activity_about_logo"
