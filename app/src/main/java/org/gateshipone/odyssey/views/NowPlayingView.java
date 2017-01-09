@@ -1350,17 +1350,20 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         sharedPrefEditor.putBoolean(getContext().getString(R.string.pref_show_npv_hint), false);
         sharedPrefEditor.apply();
 
-        smoothSlideTo(0.75f);
+        if (mDragOffset == 1.0f) {
+            // show hint only if the npv ist not already dragged up
+            smoothSlideTo(0.75f);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mDragOffset > 0.0f) {
-                    smoothSlideTo(1.0f);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mDragOffset > 0.0f) {
+                        smoothSlideTo(1.0f);
+                    }
                 }
-            }
-        }, 1000);
+            }, 1000);
+        }
     }
 
     /**
