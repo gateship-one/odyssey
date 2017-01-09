@@ -1,3 +1,11 @@
+### Version: 1.1.2 Tag: release-14 (20XX-XX-XX) ###
+* Save search string on device rotation.
+* Add option to set a default directory for the file browser.
+* Don't show directories that contain .nomedia files in the file browser.
+* Fix multiple UI issues.
+* Add categories for the settings.
+* Add option to hide artworks.
+
 ### Version: 1.1.1 Tag: release-13 (2016-12-30) ###
 * Hotfix for crash if not connected to any network.
 
