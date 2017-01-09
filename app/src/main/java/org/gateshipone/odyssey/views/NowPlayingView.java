@@ -1362,7 +1362,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                         smoothSlideTo(1.0f);
                     }
                 }
-            }, 1000);
+            }, 3000);
         }
     }
 
