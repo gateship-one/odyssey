@@ -33,6 +33,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -186,7 +187,15 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     private String mLastAlbumKey;
 
+    /**
+     * Flag whether artworks should be hidden.
+     */
     private boolean mHideArtwork = true;
+
+    /**
+     * Flag whether the nowplaying hint should be shown. This should only be true if the app was used the first time.
+     */
+    private boolean mShowNPVHint = false;
 
     /**
      * The state of the playbackservice.
@@ -413,10 +422,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if ( key.equals(getContext().getString(R.string.pref_hide_artwork_key))) {
+        if (key.equals(getContext().getString(R.string.pref_hide_artwork_key))) {
             mHideArtwork = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
-            if ( !mHideArtwork ) {
+            if (!mHideArtwork) {
                 // Start cover loading
                 try {
                     mCoverLoader.getImage(mServiceConnection.getPBS().getCurrentSong());
@@ -871,7 +880,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // Check if the current view is the cover or the playlist. If it is the playlist hide its actions.
         // If the viewswitcher only has one child the dual pane layout is used
-        if (mViewSwitcher.getDisplayedChild() == 0 && (mViewSwitcher.getChildCount() > 1) ) {
+        if (mViewSwitcher.getDisplayedChild() == 0 && (mViewSwitcher.getChildCount() > 1)) {
             menu.getMenu().setGroupEnabled(R.id.action_group_playlist, false);
             menu.getMenu().setGroupVisible(R.id.action_group_playlist, false);
         }
@@ -973,6 +982,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         mHideArtwork = sharedPref.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+        mShowNPVHint = sharedPref.getBoolean(getContext().getResources().getString(R.string.pref_show_npv_hint), true);
 
         mPlaylistView.hideArtwork(mHideArtwork);
 
@@ -1014,7 +1024,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // Show placeholder until image is loaded
             showPlaceholderImage();
 
-            if ( !mHideArtwork ) {
+            if (!mHideArtwork) {
                 // Start the cover loader
                 mCoverLoader.getImage(currentTrack);
             }
@@ -1057,6 +1067,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             case PLAYING:
                 mTopPlayPauseButton.setImageResource(R.drawable.ic_pause_48dp);
                 mBottomPlayPauseButton.setImageResource(R.drawable.ic_pause_circle_fill_48dp);
+
+                // show the hint if necessary
+                if (mShowNPVHint) {
+                    showHint();
+                }
 
                 // start refresh task if view is visible
                 if (mDragOffset == 0.0f) {
@@ -1146,7 +1161,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Can be used to register an observer to this view, that is notified when a change of the dragstatus,offset happens.
+     * Can be used to register an observer to this view, that is notified when a change of the dragstatus, offset happens.
      *
      * @param receiver Observer to register, only one observer at a time is possible.
      */
@@ -1321,6 +1336,31 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // The same for the small header image
         mTopCoverImage.setImageDrawable(drawable);
+    }
+
+    /**
+     * This method will drag up the NPV a little for 1 second.
+     * <p>
+     * This should be called only the first time music is played with Odyssey.
+     */
+    private void showHint() {
+        mShowNPVHint = false;
+
+        SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+        sharedPrefEditor.putBoolean(getContext().getString(R.string.pref_show_npv_hint), false);
+        sharedPrefEditor.apply();
+
+        smoothSlideTo(0.75f);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mDragOffset > 0.0f) {
+                    smoothSlideTo(1.0f);
+                }
+            }
+        }, 1000);
     }
 
     /**
