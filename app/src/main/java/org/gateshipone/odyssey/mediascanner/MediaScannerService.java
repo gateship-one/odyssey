@@ -150,6 +150,8 @@ public class MediaScannerService extends Service {
 
     private void getNextFolder(final Context context) {
 
+        Log.v(TAG, "get next folder");
+
         if (mRemainingFolders.isEmpty()) {
             finishService();
         } else {
@@ -176,8 +178,12 @@ public class MediaScannerService extends Service {
             }
         }
 
-        // trigger mediascan
-        MediaScannerConnection.scanFile(context, filePaths.toArray(new String[filePaths.size()]), null, new MediaScanCompletedCallback(filePaths.size(), context));
+        if (!filePaths.isEmpty()) {
+            // trigger mediascan
+            MediaScannerConnection.scanFile(context, filePaths.toArray(new String[filePaths.size()]), null, new MediaScanCompletedCallback(filePaths.size(), context));
+        } else {
+            getNextFolder(context);
+        }
     }
 
     private void finishService() {
@@ -207,6 +213,7 @@ public class MediaScannerService extends Service {
         @Override
         public void onScanCompleted(String path, Uri uri) {
             // TODO check uri to give the user feedback
+            Log.v(TAG, "scan completed");
 
             mScannedFiles++;
 
