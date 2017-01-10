@@ -79,6 +79,7 @@ public class MediaScannerService extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(mBroadcastReceiver);
         Log.v(TAG, "Calling super.onDestroy()");
         super.onDestroy();
         Log.v(TAG, "Called super.onDestroy()");
