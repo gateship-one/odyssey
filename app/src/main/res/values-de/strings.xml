@@ -165,6 +165,6 @@
     <string name="empty_bookmarks_message">Keine Lesezeichen gefunden.</string>
     <string name="empty_saved_playlists_message">Keine Wiedergabelisten gefunden.</string>
     <string name="empty_tracks_message">Keine Songs gefunden.</string>
-    <string name="action_start_mediascanner">Mediensuche im Verzeichnis</string>
-    <string name="mediascanner_notification_title">Mediensuche läuft</string>
+    <string name="action_start_mediascanner">Medien-DB hier scannen</string>
+    <string name="mediascanner_notification_title">Medien-DB wird aktualisiert</string>
 </resources>
