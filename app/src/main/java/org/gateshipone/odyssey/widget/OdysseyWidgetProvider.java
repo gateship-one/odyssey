@@ -34,6 +34,7 @@ import android.widget.RemoteViews;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -42,6 +43,7 @@ import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 
 public class
 OdysseyWidgetProvider extends AppWidgetProvider {
+    private static final String TAG = OdysseyWidgetProvider.class.getSimpleName();
     private RemoteViews mViews;
     private AppWidgetManager mAppWidgetManager;
     private Context mContext;
@@ -113,6 +115,17 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             mLastCover = null;
             mLastTrack = null;
             setWidgetContent(mLastInfo);
+        } else if ( intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
+            // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
+            String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
+            if ( mLastTrack != null && mLastTrack.getTrackAlbumKey().equals(albumKey)) {
+                CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
+
+                if (!mHideArtwork) {
+                    coverLoader.getImage(mLastTrack);
+                }
+                mLastCover = null;
+            }
         }
     }
 

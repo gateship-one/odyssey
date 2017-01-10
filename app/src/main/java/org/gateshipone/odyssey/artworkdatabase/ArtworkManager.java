@@ -86,6 +86,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     private boolean mWifiOnly;
 
+    /*
+     * Broadcast constants
+     */
+    public static final String ACTION_NEW_ARTWORK_READY = "org.gateshipone.odyssey.action_new_artwork_ready";
+
+    public static final String INTENT_EXTRA_KEY_ARTIST_ID = "org.gateshipone.odyssey.extra.artist_id";
+    public static final String INTENT_EXTRA_KEY_ARTIST_NAME = "org.gateshipone.odyssey.extra.artist_name";
+
+    public static final String INTENT_EXTRA_KEY_ALBUM_ID = "org.gateshipone.odyssey.extra.album_id";
+    public static final String INTENT_EXTRA_KEY_ALBUM_NAME = "org.gateshipone.odyssey.extra.album_name";
+    public static final String INTENT_EXTRA_KEY_ALBUM_KEY = "org.gateshipone.odyssey.extra.album_key";
+
     private ArtworkManager(Context context) {
 
         mDBManager = ArtworkDatabaseManager.getInstance(context);
@@ -500,6 +512,8 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 mDBManager.insertArtistImage(response.artist, response.image, mContext);
             }
 
+            broadcastNewArtistImageInfo(response, mContext);
+
             return response.artist;
         }
 
@@ -562,6 +576,8 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 mDBManager.insertAlbumImage(response.album, response.image);
             }
 
+            broadcastNewAlbumImageInfo(response, mContext);
+
             return response.album;
         }
 
@@ -577,6 +593,25 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 }
             }
         }
+    }
+
+    private void broadcastNewArtistImageInfo(ArtistImageResponse artistImage, Context context) {
+        Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
+
+        newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST_ID, artistImage.artist.getArtistID());
+        newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST_NAME, artistImage.artist.getArtistName());
+
+        context.sendBroadcast(newImageIntent);
+    }
+
+    private void broadcastNewAlbumImageInfo(AlbumImageResponse albumImage, Context context) {
+        Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
+
+        newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_ID, albumImage.album.getAlbumID());
+        newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_KEY, albumImage.album.getAlbumKey());
+        newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_NAME, albumImage.album.getAlbumName());
+
+        context.sendBroadcast(newImageIntent);
     }
 
     /**
