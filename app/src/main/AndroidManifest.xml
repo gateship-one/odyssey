@@ -93,6 +93,7 @@
                 <action android:name="org.gateshipone.odyssey.stop" />
                 <action android:name="org.gateshipone.odyssey.previous" />
                 <action android:name="org.gateshipone.odyssey.next" />
+                <action android:name="org.gateshipone.odyssey.action_new_artwork_ready" />
             </intent-filter>
 
             <meta-data

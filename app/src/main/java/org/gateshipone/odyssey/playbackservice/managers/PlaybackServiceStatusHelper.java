@@ -373,14 +373,36 @@ public class PlaybackServiceStatusHelper {
         }
     }
 
+    /**
+     * Hides all visible artwork (notification, lockscreen background, widget)
+     * @param enable True to hide artwork, false to show artwork.
+     */
     public void hideArtwork(boolean enable) {
-        Log.v(PlaybackServiceStatusHelper.class.getSimpleName(),"Hide artwork: " + enable);
         mHideArtwork = enable;
         mLastTrack = null;
         mNotificationManager.hideArtwork(enable);
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
+
+        /**
+         * Informs the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider}
+         * to hide its artwork.
+         */
         mPlaybackService.sendBroadcast(settingChangedIntent);
+
+        // Update notification and lockscreen
         updateStatus();
+    }
+
+    /**
+     * Checks if the albumKey for the new artwork is for the currently playing track and
+     * then reloads the artwork to show it in the notification, ... .
+     * @param albumKey Key to identify and compare the artwork with the current track
+     */
+    public void newAlbumArtworkReady(String albumKey) {
+        if ( albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork ) {
+            // Start cover loader
+            startCoverImageTask();
+        }
     }
 }
