@@ -107,7 +107,7 @@
 
         <service android:name=".mediascanner.MediaScannerService"
             android:exported="false"
-            android:process=":serviceProcess"/>
+            android:process=":mediascanProcess"/>
     </application>
 
 </manifest>

@@ -487,6 +487,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         }
     }
 
+    /**
+     * Start the media scan service for the current directory
+     */
     private void startMediaScanning() {
         Intent serviceIntent = new Intent(getActivity(), MediaScannerService.class);
         serviceIntent.setAction(MediaScannerService.ACTION_START_MEDIASCANNING);

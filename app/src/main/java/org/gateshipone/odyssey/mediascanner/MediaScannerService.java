@@ -57,13 +57,14 @@ public class MediaScannerService extends Service {
     private static final int NOTIFICATION_ID = 126;
 
     private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder mBuilder;
 
     private List<FileModel> mRemainingFolders;
 
     private MediaScannerService.ActionReceiver mBroadcastReceiver;
 
     private PowerManager.WakeLock mWakelock;
+
+    private boolean mAbort;
 
     @Nullable
     @Override
@@ -90,7 +91,9 @@ public class MediaScannerService extends Service {
         if (intent != null && intent.getAction().equals(ACTION_START_MEDIASCANNING)) {
             mRemainingFolders = new ArrayList<>();
 
-            // read setting from extras
+            mAbort = false;
+
+            // read path to directory from extras
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String startDirectory = extras.getString(BUNDLE_KEY_DIRECTORY);
@@ -123,21 +126,22 @@ public class MediaScannerService extends Service {
                 registerReceiver(mBroadcastReceiver, intentFilter);
             }
 
-            mBuilder = new NotificationCompat.Builder(this)
+            // create notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setContentTitle(getString(R.string.mediascanner_notification_title))
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText("MEDIASCANNING"))
+                    .setProgress(0, 0, true)
                     .setSmallIcon(R.drawable.odyssey_notification);
 
-            mBuilder.setOngoing(true);
+            builder.setOngoing(true);
 
             // Cancel action
             Intent nextIntent = new Intent(MediaScannerService.ACTION_CANCEL_MEDIASCANNING);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
-            mBuilder.addAction(cancelAction);
+            builder.addAction(cancelAction);
 
-            Notification notification = mBuilder.build();
+            Notification notification = builder.build();
             startForeground(NOTIFICATION_ID, notification);
             mNotificationManager.notify(NOTIFICATION_ID, notification);
 
@@ -152,7 +156,8 @@ public class MediaScannerService extends Service {
 
         Log.v(TAG, "get next folder");
 
-        if (mRemainingFolders.isEmpty()) {
+        if (mRemainingFolders.isEmpty() || mAbort) {
+            // finish scanning if it was aborted or all folders were scanned
             finishService();
         } else {
             // get next directory
@@ -179,9 +184,10 @@ public class MediaScannerService extends Service {
         }
 
         if (!filePaths.isEmpty()) {
-            // trigger mediascan
+            // trigger mediascan for all current files
             MediaScannerConnection.scanFile(context, filePaths.toArray(new String[filePaths.size()]), null, new MediaScanCompletedCallback(filePaths.size(), context));
         } else {
+            // if no files were found continue with the next folder
             getNextFolder(context);
         }
     }
@@ -213,7 +219,7 @@ public class MediaScannerService extends Service {
         @Override
         public void onScanCompleted(String path, Uri uri) {
             // TODO check uri to give the user feedback
-            Log.v(TAG, "scan completed");
+            Log.v(TAG, "scan completed: " + uri);
 
             mScannedFiles++;
 
@@ -231,6 +237,8 @@ public class MediaScannerService extends Service {
             Log.e(TAG, "Broadcast requested");
             if (intent.getAction().equals(ACTION_CANCEL_MEDIASCANNING)) {
                 Log.e(TAG, "Cancel requested");
+                // abort scan after finish scanning current folder
+                mAbort = true;
                 finishService();
             }
         }
