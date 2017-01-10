@@ -239,6 +239,7 @@ public class MediaScannerService extends Service {
                 Log.e(TAG, "Cancel requested");
                 // abort scan after finish scanning current folder
                 mAbort = true;
+                finishService();
             }
         }
     }
