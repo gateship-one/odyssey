@@ -88,7 +88,7 @@
     <string name="action_search">Search</string>
     <string name="action_add_playlist">Add playlist</string>
     <string name="action_set_default_directory">Set as default directory</string>
-    <string name="action_start_mediascanner">Start media scanner</string>
+    <string name="action_start_mediascanner">Scan directory for media files</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
@@ -237,7 +237,7 @@
     <string name="bulk_download_notice_text">Downloading a large amount of images puts heavy load on the servers of the service you chose. It may occur that a server load prevents downloading of images. The downloader will then cancel its action if it detects an overload.\n\nPlease consider donating to the artwork services.</string>
 
     <!-- Media scanner service -->
-    <string name="mediascanner_notification_title">Media scanning running</string>
+    <string name="mediascanner_notification_title">Media scan running</string>
 
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributors</string>
