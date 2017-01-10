@@ -38,5 +38,6 @@ For more comfort you are able to use the launcher widget to have quick control o
  * Mostly optimized for tablets
  * Artwork support with MusicBrainz,Last.fm, Fanart.tv as artwork provider (Album and artist images)
  * Bulkdownloader to download all artwork to local memory
+ * Scrobbling support with [Simple Last.fm Scrobbler](https://github.com/tgwizard/sls)
 
 

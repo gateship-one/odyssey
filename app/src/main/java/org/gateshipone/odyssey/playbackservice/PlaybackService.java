@@ -42,6 +42,7 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
@@ -306,6 +307,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             intentFilter.addAction(ACTION_NEXT);
             intentFilter.addAction(ACTION_STOP);
             intentFilter.addAction(ACTION_QUIT);
+
+            intentFilter.addAction(ArtworkManager.ACTION_NEW_ARTWORK_READY);
 
             // Register the receiver within the system
             registerReceiver(mBroadcastControlReceiver, intentFilter);
@@ -1553,6 +1556,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 togglePause();
             } else if (intent.getAction().equals(ACTION_QUIT)) {
                 stopService();
+            } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
+                // Check if artwork is for currently playing album
+                String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
+                mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
             }
         }
 
