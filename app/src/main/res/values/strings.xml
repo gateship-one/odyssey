@@ -88,6 +88,7 @@
     <string name="action_search">Search</string>
     <string name="action_add_playlist">Add playlist</string>
     <string name="action_set_default_directory">Set as default directory</string>
+    <string name="action_start_mediascanner">Start media scanner</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>

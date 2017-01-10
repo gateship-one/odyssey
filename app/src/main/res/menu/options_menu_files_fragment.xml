@@ -45,4 +45,9 @@
         android:id="@+id/action_set_default_directory"
         android:title="@string/action_set_default_directory"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_start_mediascanner"
+        android:title="@string/action_start_mediascanner"
+        app:showAsAction="never" />
 </menu>

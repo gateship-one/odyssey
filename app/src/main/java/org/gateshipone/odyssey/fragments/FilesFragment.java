@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
+import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
@@ -360,6 +362,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                 sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
                 sharedPrefEditor.apply();
                 return true;
+            case R.id.action_start_mediascanner:
+                startMediaScanning();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -480,6 +485,15 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+    }
+
+    private void startMediaScanning() {
+        Intent serviceIntent = new Intent(getActivity(), MediaScannerService.class);
+        serviceIntent.setAction(MediaScannerService.ACTION_START_MEDIASCANNING);
+
+        serviceIntent.putExtra(MediaScannerService.BUNDLE_KEY_DIRECTORY, mCurrentDirectory.getPath());
+        getActivity().startService(serviceIntent);
+
     }
 
     /**
