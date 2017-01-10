@@ -22,16 +22,24 @@
 
 package org.gateshipone.odyssey.mediascanner;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
@@ -39,8 +47,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaScannerService extends Service {
+    private static final String TAG = MediaScannerService.class.getSimpleName();
 
-    public static final String BUNDLE_KEY_DIRECTORY = "org.gateshipone.odyssey.mediascan.directory";
+    public static final String BUNDLE_KEY_DIRECTORY = "org.gateshipone.odyssey.mediascanner.directory";
+
+    public static final String ACTION_START_MEDIASCANNING = "org.gateshipone.odyssey.mediascanner.start";
+    public static final String ACTION_CANCEL_MEDIASCANNING = "org.gateshipone.odyssey.mediascanner.cancel";
 
     private static final int NOTIFICATION_ID = 126;
 
@@ -48,6 +60,10 @@ public class MediaScannerService extends Service {
     private NotificationCompat.Builder mBuilder;
 
     private List<FileModel> mRemainingFolders;
+
+    private MediaScannerService.ActionReceiver mBroadcastReceiver;
+
+    private PowerManager.WakeLock mWakelock;
 
     @Nullable
     @Override
@@ -63,13 +79,70 @@ public class MediaScannerService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.v(TAG, "Calling super.onDestroy()");
         super.onDestroy();
+        Log.v(TAG, "Called super.onDestroy()");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction().equals(ACTION_START_MEDIASCANNING)) {
+            mRemainingFolders = new ArrayList<>();
 
-        mRemainingFolders = new ArrayList<>();
+            // read setting from extras
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String startDirectory = extras.getString(BUNDLE_KEY_DIRECTORY);
+
+                FileModel directory = new FileModel(startDirectory);
+
+                mRemainingFolders.add(directory);
+            }
+
+            if (mRemainingFolders.isEmpty()) {
+                return START_NOT_STICKY;
+            }
+
+            Log.v(TAG, "start mediascanning");
+
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Odyssey_Mediascanning");
+
+            // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
+            mWakelock.acquire();
+
+            if (mBroadcastReceiver == null) {
+                mBroadcastReceiver = new ActionReceiver();
+
+                // Create a filter to only handle certain actions
+                IntentFilter intentFilter = new IntentFilter();
+
+                intentFilter.addAction(ACTION_CANCEL_MEDIASCANNING);
+
+                registerReceiver(mBroadcastReceiver, intentFilter);
+            }
+
+            mBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.mediascanner_notification_title))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText("MEDIASCANNING"))
+                    .setSmallIcon(R.drawable.odyssey_notification);
+
+            mBuilder.setOngoing(true);
+
+            // Cancel action
+            Intent nextIntent = new Intent(MediaScannerService.ACTION_CANCEL_MEDIASCANNING);
+            PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
+
+            mBuilder.addAction(cancelAction);
+
+            Notification notification = mBuilder.build();
+            startForeground(NOTIFICATION_ID, notification);
+            mNotificationManager.notify(NOTIFICATION_ID, notification);
+
+            // start scanning
+            getNextFolder(getApplicationContext());
+        }
 
         return START_STICKY;
     }
@@ -77,7 +150,7 @@ public class MediaScannerService extends Service {
     private void getNextFolder(final Context context) {
 
         if (mRemainingFolders.isEmpty()) {
-            // TODO finish service
+            finishService();
         } else {
             // get next directory
             FileModel currentDirectory = mRemainingFolders.get(0);
@@ -106,6 +179,16 @@ public class MediaScannerService extends Service {
         MediaScannerConnection.scanFile(context, filePaths.toArray(new String[filePaths.size()]), null, new MediaScanCompletedCallback(filePaths.size(), context));
     }
 
+    private void finishService() {
+        Log.v(TAG, "finish mediascanning");
+        mNotificationManager.cancel(NOTIFICATION_ID);
+        stopForeground(true);
+        stopSelf();
+        if (mWakelock.isHeld()) {
+            mWakelock.release();
+        }
+    }
+
     private class MediaScanCompletedCallback implements MediaScannerConnection.OnScanCompletedListener {
 
         private final Context mContext;
@@ -129,6 +212,18 @@ public class MediaScannerService extends Service {
             if (mScannedFiles == mNumberOfFiles) {
                 // all files scanned so get next directory
                 getNextFolder(mContext);
+            }
+        }
+    }
+
+    private class ActionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "Broadcast requested");
+            if (intent.getAction().equals(ACTION_CANCEL_MEDIASCANNING)) {
+                Log.e(TAG, "Cancel requested");
+                finishService();
             }
         }
     }

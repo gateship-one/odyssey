@@ -103,6 +103,10 @@
         <service android:name=".artworkdatabase.BulkDownloadService"
             android:exported="false"
             android:process=":downloadProcess"/>
+
+        <service android:name=".mediascanner.MediaScannerService"
+            android:exported="false"
+            android:process=":serviceProcess"/>
     </application>
 
 </manifest>
