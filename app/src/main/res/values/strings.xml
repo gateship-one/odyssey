@@ -238,6 +238,7 @@
 
     <!-- Media scanner service -->
     <string name="mediascanner_notification_title">Updating media database</string>
+    <string name="mediascanner_notification_text">Scanning file %1$d/%2$d</string>
 
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributors</string>

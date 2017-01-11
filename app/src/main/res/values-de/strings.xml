@@ -167,4 +167,5 @@
     <string name="empty_tracks_message">Keine Songs gefunden.</string>
     <string name="action_start_mediascanner">Medien-DB hier scannen</string>
     <string name="mediascanner_notification_title">Medien-DB wird aktualisiert</string>
+    <string name="mediascanner_notification_text">Überprüfe Datei %1$d/%2$d</string>
 </resources>

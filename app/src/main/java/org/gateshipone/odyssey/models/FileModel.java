@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FileModel implements GenericModel {
+public class FileModel implements GenericModel,Comparable<FileModel> {
 
     /**
      * The file object for this instance
@@ -192,6 +192,12 @@ public class FileModel implements GenericModel {
         }
         // just compare the two file objects
         return mFile.equals(((FileModel) model).mFile);
+    }
+
+    @Override
+    public int compareTo(FileModel model) {
+        // just compare the two file objects
+        return mFile.compareTo(((FileModel) model).mFile);
     }
 
     /**

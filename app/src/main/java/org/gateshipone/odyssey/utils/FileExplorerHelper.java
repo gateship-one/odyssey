@@ -28,15 +28,17 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
+import android.util.Log;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 public class FileExplorerHelper {
 
@@ -80,11 +82,14 @@ public class FileExplorerHelper {
      * if no entry in the mediadb is found a dummy TrackModel will be created
      */
     public TrackModel getTrackModelForFile(Context context, FileModel file) {
-        TrackModel track = null;
+        TrackModel track;
 
         String urlString = file.getURLString();
 
-        if (mTrackHash.isEmpty()) {
+        // use pre built hash to lookup the file
+        track = mTrackHash.get(urlString);
+
+        if (null == track) {
             // lookup the current file in the media db
             String whereVal[] = {urlString};
 
@@ -108,9 +113,6 @@ public class FileExplorerHelper {
 
                 cursor.close();
             }
-        } else {
-            // use pre built hash to lookup the file
-            track = mTrackHash.get(urlString);
         }
 
         if (track == null) {
@@ -226,6 +228,131 @@ public class FileExplorerHelper {
         mTrackHash.clear();
 
         return tracks;
+    }
+
+    /**
+     * Generates a list of {@link FileModel} objects that are either in the Android DB and not on the FS
+     * or that are on the FS but not in the Android DB.
+     * @param context Context used for DB query
+     * @param basePath Path of files to check
+     * @return List of files that need to be scanned
+     */
+    public List<FileModel> getMissingDBFiles(Context context, FileModel basePath) {
+        List<FileModel> filesFS = new ArrayList<>();
+        List<FileModel> filesDB = new ArrayList<>();
+
+        String whereVal[] = {basePath.getPath() + "%"};
+
+        String where = MediaStore.Audio.Media.DATA + " LIKE ?";
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+
+                    filesDB.add(new FileModel(url));
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        getFilesRecursive(context, basePath, filesFS);
+
+        return generateFileListDiff(filesDB,filesFS);
+    }
+
+    /**
+     * Helper method to create a list of {@link FileModel} objects that are part of one list but not
+     * of the other.
+     * @param list1
+     * @param list2
+     * @return List of {@link FileModel} that are only part of one of the two given lists.
+     */
+    private List<FileModel> generateFileListDiff(List<FileModel> list1, List<FileModel> list2) {
+        List<FileModel> filesDiff = new ArrayList<>();
+
+        // Sort lists so that an easy compare is possible because of given order.
+        Collections.sort(list1);
+        Collections.sort(list2);
+
+        // Create the difference between the to lists
+        ListIterator<FileModel> dbIterartor = list1.listIterator();
+        ListIterator<FileModel> fsIterartor = list2.listIterator();
+
+        // Get the first list elements (if any available)
+        FileModel list1Model = null;
+        if ( dbIterartor.hasNext() ) {
+            list1Model = dbIterartor.next();
+        }
+        FileModel list2Model = null;
+        if ( fsIterartor.hasNext() ) {
+            list2Model = fsIterartor.next();
+        }
+
+        while (dbIterartor.hasNext() || fsIterartor.hasNext()) {
+            int compareVal = 0;
+
+            // Check if files are available and compare them if both are available
+            if ( list1Model != null && list2Model != null ) {
+                compareVal = list1Model.compareTo(list2Model);
+            } else if ( list1Model != null && list2Model == null ) {
+                // No model from the list2 available, make sure remaining list1 models are added
+                compareVal = -1;
+            } else if ( list1Model == null && list2Model != null ) {
+                // No model from the list1 available, make sure remaining list2 models are added
+                compareVal = 1;
+            }
+            if ( compareVal == 0) {
+                // Both are equal, move to next elements on both lists
+                if ( dbIterartor.hasNext()) {
+                    list1Model = dbIterartor.next();
+                }  else {
+                    list1Model = null;
+                }
+                if ( fsIterartor.hasNext() ) {
+                    list2Model = fsIterartor.next();
+                } else {
+                    list2Model = null;
+                }
+            } else if ( compareVal < 0) {
+                // list1Model is less, move it forward and add current file
+                filesDiff.add(list1Model);
+                if ( dbIterartor.hasNext()) {
+                    list1Model = dbIterartor.next();
+                }  else {
+                    list1Model = null;
+                }
+            } else {
+                // list2Model is less, move it forward and add current file
+                filesDiff.add(list2Model);
+                if ( fsIterartor.hasNext() ) {
+                    list2Model = fsIterartor.next();
+                } else {
+                    list2Model = null;
+                }
+            }
+        }
+        return filesDiff;
+    }
+
+    /**
+     * add TrackModel objects for the current folder and all subfolders to the tracklist
+     */
+    private void getFilesRecursive(Context context, FileModel folder, List<FileModel> files) {
+        if (folder.isFile()) {
+            // file is not a directory so create a trackmodel for the file
+            files.add(folder);
+        } else {
+            List<FileModel> filesTmp = PermissionHelper.getFilesForDirectory(context, folder);
+
+            for (FileModel file : filesTmp) {
+                // call method for all files found in this folder
+                getFilesRecursive(context, file, files);
+            }
+        }
     }
 
     /**

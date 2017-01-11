@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -41,10 +42,13 @@ import android.util.Log;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
-import org.gateshipone.odyssey.utils.PermissionHelper;
+import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MediaScannerService extends Service {
     private static final String TAG = MediaScannerService.class.getSimpleName();
@@ -56,9 +60,19 @@ public class MediaScannerService extends Service {
 
     private static final int NOTIFICATION_ID = 126;
 
-    private NotificationManager mNotificationManager;
+    /**
+     * Defines how many tracks are sent at once to the MediaScanner. Should not be to big to avoid creating
+     * to large objects for Binder IPC.
+     */
+    private static final int MEDIASCANNER_BUNCH_SIZE = 100;
 
-    private List<FileModel> mRemainingFolders;
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
+
+    private List<FileModel> mRemainingFiles;
+
+    private int mFilesToScan;
+    private int mScannedFiles;
 
     private MediaScannerService.ActionReceiver mBroadcastReceiver;
 
@@ -89,22 +103,17 @@ public class MediaScannerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction().equals(ACTION_START_MEDIASCANNING)) {
-            mRemainingFolders = new ArrayList<>();
+            mRemainingFiles = new ArrayList<>();
 
             mAbort = false;
+            FileModel directory = null;
 
             // read path to directory from extras
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String startDirectory = extras.getString(BUNDLE_KEY_DIRECTORY);
 
-                FileModel directory = new FileModel(startDirectory);
-
-                mRemainingFolders.add(directory);
-            }
-
-            if (mRemainingFolders.isEmpty()) {
-                return START_NOT_STICKY;
+                directory = new FileModel(startDirectory);
             }
 
             Log.v(TAG, "start mediascanning");
@@ -112,7 +121,6 @@ public class MediaScannerService extends Service {
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Odyssey_Mediascanning");
 
-            // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
             mWakelock.acquire();
 
             if (mBroadcastReceiver == null) {
@@ -127,79 +135,89 @@ public class MediaScannerService extends Service {
             }
 
             // create notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+            mBuilder = new NotificationCompat.Builder(this)
                     .setContentTitle(getString(R.string.mediascanner_notification_title))
                     .setProgress(0, 0, true)
                     .setSmallIcon(R.drawable.odyssey_notification);
 
-            builder.setOngoing(true);
+            mBuilder.setOngoing(true);
 
             // Cancel action
             Intent nextIntent = new Intent(MediaScannerService.ACTION_CANCEL_MEDIASCANNING);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
-            builder.addAction(cancelAction);
+            mBuilder.addAction(cancelAction);
 
-            Notification notification = builder.build();
+            Notification notification = mBuilder.build();
             startForeground(NOTIFICATION_ID, notification);
             mNotificationManager.notify(NOTIFICATION_ID, notification);
 
             // start scanning
-            getNextFolder(getApplicationContext());
-        }
-
-        return START_STICKY;
-    }
-
-    private void getNextFolder(final Context context) {
-
-        Log.v(TAG, "get next folder");
-
-        if (mRemainingFolders.isEmpty() || mAbort) {
-            // finish scanning if it was aborted or all folders were scanned
-            finishService();
-        } else {
-            // get next directory
-            FileModel currentDirectory = mRemainingFolders.get(0);
-            mRemainingFolders.remove(0);
-
-            scanDirectory(context, currentDirectory);
-        }
-    }
-
-    private void scanDirectory(final Context context, final FileModel directory) {
-        List<FileModel> files = PermissionHelper.getFilesForDirectory(context, directory);
-
-        List<String> filePaths = new ArrayList<>();
-
-        for (FileModel file : files) {
-            if (file.isFile()) {
-                // add file to the pathlist
-                filePaths.add(file.getPath());
-            } else {
-                // add subdirectories to remaining folders list
-                mRemainingFolders.add(file);
+            if (null != directory) {
+                scanDirectory(this, directory);
             }
         }
 
-        if (!filePaths.isEmpty()) {
-            // trigger mediascan for all current files
-            MediaScannerConnection.scanFile(context, filePaths.toArray(new String[filePaths.size()]), null, new MediaScanCompletedCallback(filePaths.size(), context));
-        } else {
-            // if no files were found continue with the next folder
-            getNextFolder(context);
+        return START_NOT_STICKY;
+    }
+
+    private void updateNotification() {
+        //  Updates the notification but only every 10 elements to reduce load on the notification view
+        if (mScannedFiles % 10 == 0) {
+            mBuilder.setProgress(mFilesToScan, mScannedFiles, false);
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(getString(R.string.mediascanner_notification_text, mScannedFiles, mFilesToScan)));
+            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
+    }
+
+    private void scanDirectory(final Context context, FileModel basePath) {
+        new ListCreationTask(context).execute(basePath);
+    }
+
+    private void scanFileList(final Context context, List<FileModel> files) {
+        mRemainingFiles = files;
+
+        scanNextBunch(context);
+    }
+
+    /**
+     * Proceeds to the next bunch of files to scan if any available.
+     * @param context Context used for scanning.
+     */
+    private void scanNextBunch(final Context context) {
+        if ( mRemainingFiles.isEmpty() || mAbort) {
+            // No files left to scan, stop service (delayed to allow the ServiceConnection to the MediaScanner to close itself)
+            Timer delayedStopTimer = new Timer();
+            delayedStopTimer.schedule(new DelayedStopTask(), 100);
+            return;
+        }
+
+        String[] bunch = new String[Math.min(MEDIASCANNER_BUNCH_SIZE, mRemainingFiles.size())];
+        int i = 0;
+
+        ListIterator<FileModel> listIterator = mRemainingFiles.listIterator();
+        while ( listIterator.hasNext() && i < MEDIASCANNER_BUNCH_SIZE) {
+            bunch[i] = listIterator.next().getPath();
+            listIterator.remove();
+            i++;
+        }
+        MediaScannerConnection.scanFile(context, bunch, null, new MediaScanCompletedCallback(bunch.length, context));
     }
 
     private void finishService() {
         Log.v(TAG, "finish mediascanning");
+
         mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);
-        stopSelf();
+
         if (mWakelock.isHeld()) {
             mWakelock.release();
         }
+
+        // Stop service.
+        stopSelf();
     }
 
     private class MediaScanCompletedCallback implements MediaScannerConnection.OnScanCompletedListener {
@@ -208,12 +226,12 @@ public class MediaScannerService extends Service {
 
         private final int mNumberOfFiles;
 
-        private int mScannedFiles;
+        private int mBunchScannedFiles;
 
         public MediaScanCompletedCallback(final int numberOfFiles, final Context context) {
             mContext = context;
             mNumberOfFiles = numberOfFiles;
-            mScannedFiles = 0;
+            mBunchScannedFiles = 0;
         }
 
         @Override
@@ -223,9 +241,13 @@ public class MediaScannerService extends Service {
 
             mScannedFiles++;
 
-            if (mScannedFiles == mNumberOfFiles) {
-                // all files scanned so get next directory
-                getNextFolder(mContext);
+            mBunchScannedFiles++;
+
+            updateNotification();
+
+            if (mBunchScannedFiles == mNumberOfFiles) {
+                Log.v(TAG,"Bunch complete, proceed to next one");
+                scanNextBunch(mContext);
             }
         }
     }
@@ -241,6 +263,31 @@ public class MediaScannerService extends Service {
                 mAbort = true;
                 finishService();
             }
+        }
+    }
+
+    private class ListCreationTask extends AsyncTask<FileModel, Integer, List<FileModel>> {
+
+        Context mContext;
+        public ListCreationTask(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected List<FileModel> doInBackground(FileModel... params) {
+            List<FileModel> files = FileExplorerHelper.getInstance().getMissingDBFiles(mContext, params[0]);
+            Log.v(TAG,"Got missing tracks: " + files.size());
+            mFilesToScan = files.size();
+            scanFileList(mContext, files);
+            return files;
+        }
+    }
+
+    private class DelayedStopTask extends TimerTask {
+
+        @Override
+        public void run() {
+            finishService();
         }
     }
 }
