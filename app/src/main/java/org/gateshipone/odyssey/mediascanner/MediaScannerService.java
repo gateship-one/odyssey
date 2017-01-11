@@ -164,7 +164,7 @@ public class MediaScannerService extends Service {
 
     private void updateNotification() {
         //  Updates the notification but only every 10 elements to reduce load on the notification view
-        if (mScannedFiles % 10 == 0) {
+        if (mScannedFiles % 10 == 0 && !mAbort) {
             mBuilder.setProgress(mFilesToScan, mScannedFiles, false);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle()
                     .bigText(getString(R.string.mediascanner_notification_text, mScannedFiles, mFilesToScan)));
@@ -261,7 +261,9 @@ public class MediaScannerService extends Service {
                 Log.e(TAG, "Cancel requested");
                 // abort scan after finish scanning current folder
                 mAbort = true;
-                finishService();
+                // cancel notification
+                mNotificationManager.cancel(NOTIFICATION_ID);
+                stopForeground(true);
             }
         }
     }
