@@ -28,7 +28,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -44,8 +43,6 @@ public class FileExplorerHelper {
 
     private static FileExplorerHelper mInstance = null;
     private HashMap<String, TrackModel> mTrackHash;
-
-    private final static String TAG = "FileExplorerHelper";
 
     private FileExplorerHelper() {
         mTrackHash = new HashMap<>();
@@ -233,7 +230,8 @@ public class FileExplorerHelper {
     /**
      * Generates a list of {@link FileModel} objects that are either in the Android DB and not on the FS
      * or that are on the FS but not in the Android DB.
-     * @param context Context used for DB query
+     *
+     * @param context  Context used for DB query
      * @param basePath Path of files to check
      * @return List of files that need to be scanned
      */
@@ -261,14 +259,15 @@ public class FileExplorerHelper {
 
         getFilesRecursive(context, basePath, filesFS);
 
-        return generateFileListDiff(filesDB,filesFS);
+        return generateFileListDiff(filesDB, filesFS);
     }
 
     /**
      * Helper method to create a list of {@link FileModel} objects that are part of one list but not
      * of the other.
-     * @param list1
-     * @param list2
+     *
+     * @param list1 First list of {@link FileModel} objects.
+     * @param list2 Second list of {@link FileModel} objects.
      * @return List of {@link FileModel} that are only part of one of the two given lists.
      */
     private List<FileModel> generateFileListDiff(List<FileModel> list1, List<FileModel> list2) {
@@ -284,11 +283,11 @@ public class FileExplorerHelper {
 
         // Get the first list elements (if any available)
         FileModel list1Model = null;
-        if ( dbIterartor.hasNext() ) {
+        if (dbIterartor.hasNext()) {
             list1Model = dbIterartor.next();
         }
         FileModel list2Model = null;
-        if ( fsIterartor.hasNext() ) {
+        if (fsIterartor.hasNext()) {
             list2Model = fsIterartor.next();
         }
 
@@ -296,39 +295,39 @@ public class FileExplorerHelper {
             int compareVal = 0;
 
             // Check if files are available and compare them if both are available
-            if ( list1Model != null && list2Model != null ) {
+            if (list1Model != null && list2Model != null) {
                 compareVal = list1Model.compareTo(list2Model);
-            } else if ( list1Model != null && list2Model == null ) {
+            } else if (list1Model != null) {
                 // No model from the list2 available, make sure remaining list1 models are added
                 compareVal = -1;
-            } else if ( list1Model == null && list2Model != null ) {
+            } else if (list2Model != null) {
                 // No model from the list1 available, make sure remaining list2 models are added
                 compareVal = 1;
             }
-            if ( compareVal == 0) {
+            if (compareVal == 0) {
                 // Both are equal, move to next elements on both lists
-                if ( dbIterartor.hasNext()) {
+                if (dbIterartor.hasNext()) {
                     list1Model = dbIterartor.next();
-                }  else {
+                } else {
                     list1Model = null;
                 }
-                if ( fsIterartor.hasNext() ) {
+                if (fsIterartor.hasNext()) {
                     list2Model = fsIterartor.next();
                 } else {
                     list2Model = null;
                 }
-            } else if ( compareVal < 0) {
+            } else if (compareVal < 0) {
                 // list1Model is less, move it forward and add current file
                 filesDiff.add(list1Model);
-                if ( dbIterartor.hasNext()) {
+                if (dbIterartor.hasNext()) {
                     list1Model = dbIterartor.next();
-                }  else {
+                } else {
                     list1Model = null;
                 }
             } else {
                 // list2Model is less, move it forward and add current file
                 filesDiff.add(list2Model);
-                if ( fsIterartor.hasNext() ) {
+                if (fsIterartor.hasNext()) {
                     list2Model = fsIterartor.next();
                 } else {
                     list2Model = null;
@@ -339,11 +338,16 @@ public class FileExplorerHelper {
     }
 
     /**
-     * add TrackModel objects for the current folder and all subfolders to the tracklist
+     * Helper method to create a list of of {@link FileModel} objects that are files for the given folder.
+     * This method will be called recursively for all subfolders.
+     *
+     * @param context The current android context.
+     * @param folder  The current folder.
+     * @param files   List of {@link FileModel} objects that are files and in the folder.
      */
     private void getFilesRecursive(Context context, FileModel folder, List<FileModel> files) {
         if (folder.isFile()) {
-            // file is not a directory so create a trackmodel for the file
+            // file is not a directory so add the filemodel to the list
             files.add(folder);
         } else {
             List<FileModel> filesTmp = PermissionHelper.getFilesForDirectory(context, folder);

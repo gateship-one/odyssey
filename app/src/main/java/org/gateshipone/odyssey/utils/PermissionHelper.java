@@ -47,7 +47,7 @@ public class PermissionHelper {
     public static Cursor query(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
 
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         }
 
@@ -58,7 +58,7 @@ public class PermissionHelper {
      * Permission safe call of the delete method of the content resolver.
      */
     public static void delete(Context context, Uri uri, String where, String[] selectionArgs) {
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             context.getContentResolver().delete(uri, where, selectionArgs);
         }
     }
@@ -71,7 +71,7 @@ public class PermissionHelper {
     public static Uri insert(Context context, Uri uri, ContentValues contentValues) {
         Uri row = null;
 
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             row = context.getContentResolver().insert(uri, contentValues);
         }
 
@@ -86,7 +86,7 @@ public class PermissionHelper {
     public static int bulkInsert(Context context, Uri uri, ContentValues[] values) {
         int rows = -1;
 
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             rows = context.getContentResolver().bulkInsert(uri, values);
         }
 
@@ -96,7 +96,7 @@ public class PermissionHelper {
     public static List<FileModel> getFilesForDirectory(Context context, FileModel directory) {
         List<FileModel> files = new ArrayList<>();
 
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             files = directory.listFilesSorted();
         }
 

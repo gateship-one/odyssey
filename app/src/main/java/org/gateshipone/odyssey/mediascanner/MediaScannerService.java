@@ -184,10 +184,11 @@ public class MediaScannerService extends Service {
 
     /**
      * Proceeds to the next bunch of files to scan if any available.
+     *
      * @param context Context used for scanning.
      */
     private void scanNextBunch(final Context context) {
-        if ( mRemainingFiles.isEmpty() || mAbort) {
+        if (mRemainingFiles.isEmpty() || mAbort) {
             // No files left to scan, stop service (delayed to allow the ServiceConnection to the MediaScanner to close itself)
             Timer delayedStopTimer = new Timer();
             delayedStopTimer.schedule(new DelayedStopTask(), 100);
@@ -198,7 +199,7 @@ public class MediaScannerService extends Service {
         int i = 0;
 
         ListIterator<FileModel> listIterator = mRemainingFiles.listIterator();
-        while ( listIterator.hasNext() && i < MEDIASCANNER_BUNCH_SIZE) {
+        while (listIterator.hasNext() && i < MEDIASCANNER_BUNCH_SIZE) {
             bunch[i] = listIterator.next().getPath();
             listIterator.remove();
             i++;
@@ -236,7 +237,6 @@ public class MediaScannerService extends Service {
 
         @Override
         public void onScanCompleted(String path, Uri uri) {
-            // TODO check uri to give the user feedback
             Log.v(TAG, "scan completed: " + uri);
 
             mScannedFiles++;
@@ -246,7 +246,7 @@ public class MediaScannerService extends Service {
             updateNotification();
 
             if (mBunchScannedFiles == mNumberOfFiles) {
-                Log.v(TAG,"Bunch complete, proceed to next one");
+                Log.v(TAG, "Bunch complete, proceed to next one");
                 scanNextBunch(mContext);
             }
         }
@@ -271,6 +271,7 @@ public class MediaScannerService extends Service {
     private class ListCreationTask extends AsyncTask<FileModel, Integer, List<FileModel>> {
 
         Context mContext;
+
         public ListCreationTask(Context context) {
             mContext = context;
         }
@@ -278,7 +279,7 @@ public class MediaScannerService extends Service {
         @Override
         protected List<FileModel> doInBackground(FileModel... params) {
             List<FileModel> files = FileExplorerHelper.getInstance().getMissingDBFiles(mContext, params[0]);
-            Log.v(TAG,"Got missing tracks: " + files.size());
+            Log.v(TAG, "Got missing tracks: " + files.size());
             mFilesToScan = files.size();
             scanFileList(mContext, files);
             return files;
