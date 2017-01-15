@@ -42,6 +42,7 @@ public class FilesAdapter extends GenericSectionAdapter<FileModel> {
         super();
 
         mContext = context;
+        enableSections(false);
     }
 
     /**

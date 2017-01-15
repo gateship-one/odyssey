@@ -59,6 +59,8 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     private String mFilter;
 
+    private boolean mSectionsEnabled;
+
     public GenericSectionAdapter() {
         super();
 
@@ -71,6 +73,8 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         mFilteredModelData = new ArrayList<>();
 
         mFilter = "";
+
+        mSectionsEnabled = true;
     }
 
     /**
@@ -95,8 +99,10 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         setScrollSpeed(0);
 
         if (mFilter.isEmpty()) {
-            // create sectionlist for fastscrolling
-            createSections();
+            if (mSectionsEnabled) {
+                // create sectionlist for fastscrolling
+                createSections();
+            }
 
             notifyDataSetChanged();
         } else {
@@ -117,7 +123,10 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     @Override
     public int getPositionForSection(int sectionIndex) {
-        return mSectionPositions.get(sectionIndex);
+        if (mSectionsEnabled) {
+            return mSectionPositions.get(sectionIndex);
+        }
+        return 0;
     }
 
     /**
@@ -128,26 +137,28 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     @Override
     public int getSectionForPosition(int pos) {
+        if (mSectionsEnabled) {
+            String sectionTitle;
 
-        String sectionTitle;
-
-        synchronized (mFilteredModelData) {
-            if (!mFilteredModelData.isEmpty()) {
-                sectionTitle = mFilteredModelData.get(pos).getSectionTitle();
-            } else {
-                sectionTitle = mModelData.get(pos).getSectionTitle();
+            synchronized (mFilteredModelData) {
+                if (!mFilteredModelData.isEmpty()) {
+                    sectionTitle = mFilteredModelData.get(pos).getSectionTitle();
+                } else {
+                    sectionTitle = mModelData.get(pos).getSectionTitle();
+                }
             }
-        }
 
-        char itemSection;
-        if (sectionTitle.length() > 0) {
-            itemSection = sectionTitle.toUpperCase().charAt(0);
-        } else {
-            itemSection = ' ';
-        }
+            char itemSection;
+            if (sectionTitle.length() > 0) {
+                itemSection = sectionTitle.toUpperCase().charAt(0);
+            } else {
+                itemSection = ' ';
+            }
 
-        if (mPositionSectionMap.containsKey(itemSection)) {
-            return mPositionSectionMap.get(itemSection);
+            if (mPositionSectionMap.containsKey(itemSection)) {
+                return mPositionSectionMap.get(itemSection);
+            }
+            return 0;
         }
         return 0;
     }
@@ -157,7 +168,10 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     @Override
     public Object[] getSections() {
-        return mSectionList.toArray();
+        if (mSectionsEnabled) {
+            return mSectionList.toArray();
+        }
+        return null;
     }
 
     /**
@@ -235,7 +249,9 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             mFilterTask = null;
         }
 
-        createSections();
+        if (mSectionsEnabled) {
+            createSections();
+        }
         setScrollSpeed(0);
         notifyDataSetChanged();
     }
@@ -318,7 +334,9 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
 
                 mFilteredModelData.addAll(result.second);
 
-                createSections();
+                if (mSectionsEnabled) {
+                    createSections();
+                }
 
                 notifyDataSetChanged();
                 if (mFilterTask == this) {
@@ -326,5 +344,23 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
                 }
             }
         }
+    }
+
+    /**
+     * Allows to enable/disable the support for sections of this adapter.
+     * In case of enabling it creates the sections.
+     * In case of disabling it will clear the data.
+     * @param enabled
+     */
+    public void enableSections(boolean enabled) {
+        mSectionsEnabled = enabled;
+        if (mSectionsEnabled) {
+            createSections();
+        } else {
+            mSectionList.clear();
+            mSectionPositions.clear();
+            mPositionSectionMap.clear();
+        }
+        notifyDataSetChanged();
     }
 }
