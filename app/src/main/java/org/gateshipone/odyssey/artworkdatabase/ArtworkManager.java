@@ -62,28 +62,75 @@ import java.util.List;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
+    /**
+     * Maximmum size for either x or y of an image
+     */
     private static final int MAXIMUM_IMAGE_SIZE = 500;
+
+    /**
+     * Compression level if images are rescaled
+     */
     private static final int IMAGE_COMPRESSION_SETTING = 80;
 
+    /**
+     * Manager for the SQLite database handling
+     */
     private ArtworkDatabaseManager mDBManager;
+
+    /**
+     * List of observers that needs updating if a new ArtistImage is downloaded.
+     */
     private final ArrayList<onNewArtistImageListener> mArtistListeners;
 
+    /**
+     * List of observers that needs updating if a new AlbumImage is downloaded.
+     */
     private final ArrayList<onNewAlbumImageListener> mAlbumListeners;
 
+    /**
+     * Private static singleton instance that can be used by other classes via the
+     * getInstance method.
+     */
     private static ArtworkManager mInstance;
 
+    /**
+     * Lists of {@link AlbumModel} objects used for bulk downloading.
+     */
     private final List<AlbumModel> mAlbumList = new ArrayList<>();
+
+    /**
+     * Lists of {@link ArtistModel} objects used for bulk downloading.
+     */
     private final List<ArtistModel> mArtistList = new ArrayList<>();
 
+    /**
+     * Current {@link AlbumModel} handled by the bulk downloading
+     */
     private AlbumModel mCurrentBulkAlbum = null;
+
+    /**
+     * Current {@link ArtistModel} handled by the bulk downloading
+     */
     private ArtistModel mCurrentBulkArtist = null;
 
+    /**
+     * Callback for the bulkdownload observer (s. {@link BulkDownloadService})
+     */
     private BulkLoadingProgressCallback mBulkProgressCallback;
 
+    /**
+     * Settings string which artist download provider to use
+     */
     private String mArtistProvider;
 
+    /**
+     * Settings string which album download provider to use
+     */
     private String mAlbumProvider;
 
+    /**
+     * Settings value if artwork download is only allowed via wifi/wired connection.
+     */
     private boolean mWifiOnly;
 
     /*
