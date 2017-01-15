@@ -430,11 +430,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             if (networkResponse != null && networkResponse.statusCode == 503) {
                 mAlbumList.clear();
                 cancelAllRequests(context);
-                boolean isEmpty;
+
                 synchronized (mArtistList) {
-                    isEmpty = mArtistList.isEmpty();
+                    mArtistList.clear();
                 }
-                if (isEmpty && mBulkProgressCallback != null) {
+                if (mBulkProgressCallback != null) {
                     mBulkProgressCallback.finishedLoading();
                 }
                 return;
@@ -477,11 +477,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             if (networkResponse != null && networkResponse.statusCode == 503) {
                 mArtistList.clear();
                 cancelAllRequests(context);
-                boolean isEmpty;
+
                 synchronized (mAlbumList) {
-                    isEmpty = mAlbumList.isEmpty();
+                    mAlbumList.clear();
                 }
-                if (isEmpty && mBulkProgressCallback != null) {
+                if (mBulkProgressCallback != null) {
                     mBulkProgressCallback.finishedLoading();
                 }
                 return;
@@ -645,8 +645,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     /**
      * Used to broadcast information about new available artwork to {@link BroadcastReceiver} like
      * the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider} to reload its artwork.
+     *
      * @param artistImage Image response containing the artist that an image was inserted for.
-     * @param context Context used for broadcasting
+     * @param context     Context used for broadcasting
      */
     private void broadcastNewArtistImageInfo(ArtistImageResponse artistImage, Context context) {
         Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
@@ -660,8 +661,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     /**
      * Used to broadcast information about new available artwork to {@link BroadcastReceiver} like
      * the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider} to reload its artwork.
+     *
      * @param albumImage Image response containing the albums that an image was inserted for.
-     * @param context Context used for broadcasting
+     * @param context    Context used for broadcasting
      */
     private void broadcastNewAlbumImageInfo(AlbumImageResponse albumImage, Context context) {
         Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
