@@ -33,6 +33,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -68,6 +69,7 @@ import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -201,6 +203,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * The state of the playbackservice.
      */
     private PlaybackService.PLAYSTATE mPlaybackServiceState;
+
+    /**
+     * Saves the setting if the english or regional wikipedia is requested
+     */
+    private boolean mUseEnglishWikipedia;
 
     public NowPlayingView(Context context) {
         this(context, null, 0);
@@ -377,6 +384,38 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     }
                 }
                 return true;
+            case R.id.action_wikipedia_album: {
+                Intent albumIntent = new Intent(Intent.ACTION_VIEW);
+                TrackModel track;
+                try {
+                    track = mServiceConnection.getPBS().getCurrentSong();
+                } catch (RemoteException e) {
+                    return true;
+                }
+                if (mUseEnglishWikipedia) {
+                    albumIntent.setData(Uri.parse("https://en.wikipedia.org/wiki/" + track.getTrackAlbumName()));
+                } else {
+                    albumIntent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + track.getTrackAlbumName()));
+                }
+                getContext().startActivity(albumIntent);
+                return true;
+            }
+            case R.id.action_wikipedia_artist: {
+                Intent artistIntent = new Intent(Intent.ACTION_VIEW);
+                TrackModel track;
+                try {
+                    track = mServiceConnection.getPBS().getCurrentSong();
+                } catch (RemoteException e) {
+                    return true;
+                }
+                if (mUseEnglishWikipedia) {
+                    artistIntent.setData(Uri.parse("https://en.wikipedia.org/wiki/" + track.getTrackArtistName()));
+                } else {
+                    artistIntent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + track.getTrackArtistName()));
+                }
+                getContext().startActivity(artistIntent);
+                return true;
+            }
             default:
                 return false;
         }
@@ -437,6 +476,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 showPlaceholderImage();
             }
             mPlaylistView.hideArtwork(mHideArtwork);
+        } else if (key.equals(getContext().getString(R.string.pref_use_english_wikipedia_key))) {
+            mUseEnglishWikipedia = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_use_english_wikipedia_default));
         }
     }
 
@@ -987,6 +1028,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mPlaylistView.hideArtwork(mHideArtwork);
 
         sharedPref.registerOnSharedPreferenceChangeListener(this);
+
+        mUseEnglishWikipedia = sharedPref.getBoolean(getContext().getString(R.string.pref_use_english_wikipedia_key), getContext().getResources().getBoolean(R.bool.pref_use_english_wikipedia_default));
     }
 
     /**

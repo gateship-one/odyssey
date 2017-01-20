@@ -39,6 +39,9 @@
     <string name="pref_file_browser_root_dir_key" translatable="false">pref_file_browser_root_dir</string>
     <string name="pref_clear_default_directory_key" translatable="false">pref_set_default_directory</string>
 
+    <string name="pref_use_english_wikipedia_key" translatable="false">pref_use_english_wikipedia_key</string>
+    <bool name="pref_use_english_wikipedia_default" translatable="false">false</bool>
+
     <string name="pref_indigo_key" translatable="false">indigo</string>
     <string name="pref_orange_key" translatable="false">orange</string>
     <string name="pref_deeporange_key" translatable="false">deeporange</string>

@@ -90,6 +90,10 @@
     <string name="action_set_default_directory">Set as default directory</string>
     <string name="action_start_mediascanner">Update media database here</string>
 
+    <string name="action_wikipedia" translatable="false">Wikipedia</string>
+    <string name="action_wikipedia_album">Open album</string>
+    <string name="action_wikipedia_artist">Open artist</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
     <string name="context_menu_action_enqueueasnext">Play after current song</string>
@@ -211,6 +215,9 @@
 
     <string name="preference_artwork_hide_artwork_title">Hide artwork</string>
     <string name="preference_artwork_hide_artwork_text">Disables the whole artwork visibility.</string>
+
+    <string name="preference_use_english_wikipedia_title">Use English Wikipedia</string>
+    <string name="preference_use_english_wikipedia_text">Use the English Wikipedia version to lookup pages</string>
 
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>
