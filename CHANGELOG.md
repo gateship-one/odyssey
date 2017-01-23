@@ -1,3 +1,7 @@
+### Version: 1.1.3 Tag: release-15 (2017-01-23) ###
+* Add option to trigger a mediascan in the file browser for the current folder.
+* Quicklinks to open Wikipedia page for Album & Artists in the NowPlayingView menu.
+
 ### Version: 1.1.2 Tag: release-14 (2017-01-10) ###
 * Save search string on device rotation.
 * Add option to set a default directory for the file browser.
