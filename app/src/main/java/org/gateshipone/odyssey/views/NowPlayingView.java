@@ -37,6 +37,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -414,6 +415,10 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     artistIntent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + track.getTrackArtistName()));
                 }
                 getContext().startActivity(artistIntent);
+                return true;
+            }
+            case R.id.view_nowplaying_action_share_track: {
+                shareCurrentTrack();
                 return true;
             }
             default:
@@ -1358,7 +1363,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
     }
 
-
     private void showPlaceholderImage() {
         // get tint color
         int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
@@ -1407,6 +1411,39 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
             }, 3000);
         }
+    }
+
+    /**
+     * Simple sharing for the current track.
+     * <p>
+     * This will only work if the track can be found in the mediastore.
+     */
+    private void shareCurrentTrack() {
+        TrackModel track;
+        try {
+            track = mServiceConnection.getPBS().getCurrentSong();
+        } catch (RemoteException e) {
+            return;
+        }
+
+        if (track == null) {
+            return;
+        }
+
+        // get mediastore uri
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+        // build the uri for the current track
+        Uri trackUri = Uri.parse(uri.toString() + "/" + track.getTrackId());
+
+        // set up intent for sharing
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, trackUri);
+        shareIntent.setType("audio/*");
+
+        // start sharing
+        getContext().startActivity(Intent.createChooser(shareIntent, "Share music with"));
     }
 
     /**

@@ -119,6 +119,7 @@
     <string name="popup_menu_action_saveplaylist">Save playlist</string>
     <string name="popup_menu_action_createbookmark">Create bookmark</string>
     <string name="popup_menu_action_startequalizer">Open equalizer</string>
+    <string name="popup_menu_action_sharetrack">Share current track</string>
 
     <!-- templates -->
     <string name="track_title_template" translatable="false">%1$s - %2$s</string>
