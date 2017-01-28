@@ -388,12 +388,17 @@ public class OdysseyMainActivity extends AppCompatActivity
                 // current directory is a root directory so handle back press normally
                 super.onBackPressed();
             } else {
-                // no root directory so create a new fragment with the parent directory
-                List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+                if (fragmentManager.getBackStackEntryCount() == 0) {
+                    // if backstack is empty but root directory not reached create an new fragment with the parent directory
+                    List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
-                String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
+                    String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
 
-                onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                    onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                } else {
+                    // back stack not empty so handle back press normally
+                    super.onBackPressed();
+                }
             }
         } else {
             super.onBackPressed();
@@ -429,12 +434,17 @@ public class OdysseyMainActivity extends AppCompatActivity
                             return true;
                         }
                     } else {
-                        // no root directory so create a new fragment with the parent directory
-                        List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+                        if (fragmentManager.getBackStackEntryCount() == 0) {
+                            // if backstack is empty but root directory not reached create an new fragment with the parent directory
+                            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
-                        String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
+                            String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
 
-                        onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                            onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                        } else {
+                            // back stack not empty so just use the standard back press mechanism
+                            onBackPressed();
+                        }
                     }
 
                 } else if (fragmentManager.getBackStackEntryCount() > 0) {
@@ -670,6 +680,10 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         transaction.replace(R.id.fragment_container, newFragment);
+        if (!isRootDirectory) {
+            // add fragment only to the backstack if it's not a root directory
+            transaction.addToBackStack("FilesFragment");
+        }
 
         // Commit the transaction
         transaction.commit();
