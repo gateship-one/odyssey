@@ -178,13 +178,8 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         // identify current album
         AlbumModel currentAlbum = (AlbumModel) mAdapter.getItem(position);
 
-        String albumKey = currentAlbum.getAlbumKey();
-        String albumTitle = currentAlbum.getAlbumName();
-        String albumArtURL = currentAlbum.getAlbumArtURL();
-        String artistName = currentAlbum.getArtistName();
-
         // send the event to the host activity
-        mAlbumSelectedCallback.onAlbumSelected(albumKey, albumTitle, albumArtURL, artistName);
+        mAlbumSelectedCallback.onAlbumSelected(currentAlbum);
     }
 
     /**

@@ -37,6 +37,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
@@ -137,6 +138,6 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
     }
 }

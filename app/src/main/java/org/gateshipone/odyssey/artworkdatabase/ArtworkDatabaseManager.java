@@ -319,4 +319,26 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         database.close();
     }
 
+    public synchronized void removeArtistImage(ArtistModel artist) {
+        SQLiteDatabase database = getWritableDatabase();
+
+        String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " +ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
+        String whereArgs[] = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
+
+        database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
+
+        database.close();
+    }
+
+    public synchronized void removeAlbumImage(AlbumModel album) {
+        SQLiteDatabase database = getWritableDatabase();
+
+        String where = AlbumArtTable.COLUMN_ALBUM_ID+ "=?";
+        String whereArgs[] = {String.valueOf(album.getAlbumID())};
+
+        database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
+
+        database.close();
+    }
+
 }

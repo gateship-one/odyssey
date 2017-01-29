@@ -45,10 +45,12 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -56,7 +58,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener {
+public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewAlbumImageListener {
 
     /**
      * Listener to open an artist
@@ -67,18 +69,13 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * Key values for arguments of the fragment
      */
     // FIXME move to separate class to get unified constants?
-    public final static String ARG_ALBUMKEY = "albumkey";
-    public final static String ARG_ALBUMTITLE = "albumtitle";
-    public final static String ARG_ALBUMART = "albumart";
-    public final static String ARG_ALBUMARTIST = "albumartist";
+    public final static String EXTRA_ALBUMMODEL = "albummodel";
 
     /**
      * The information of the displayed album
      */
-    private String mAlbumTitle = "";
-    private String mAlbumArtURL = "";
-    private String mArtistName = "";
-    private String mAlbumKey = "";
+
+    private AlbumModel mAlbum;
 
     private CoverBitmapLoader mBitmapLoader;
 
@@ -112,10 +109,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // set up toolbar
         Bundle args = getArguments();
 
-        mAlbumTitle = args.getString(ARG_ALBUMTITLE);
-        mArtistName = args.getString(ARG_ALBUMARTIST);
-        mAlbumArtURL = args.getString(ARG_ALBUMART);
-        mAlbumKey = args.getString(ARG_ALBUMKEY);
+        mAlbum = args.getParcelable(EXTRA_ALBUMMODEL);
 
         setHasOptionsMenu(true);
 
@@ -160,7 +154,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, false);
+            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
                 @Override
@@ -170,10 +164,18 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
             });
         }
 
-        if ( !mHideArtwork) {
-            AlbumModel album = new AlbumModel(mAlbumTitle, mAlbumArtURL, mArtistName, mAlbumKey, -1);
-            mBitmapLoader.getAlbumImage(album);
+        if (!mHideArtwork) {
+            mBitmapLoader.getAlbumImage(mAlbum);
         }
+
+        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
     }
 
     /**
@@ -185,7 +187,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mAlbumKey);
+        return new TrackLoader(getActivity(), mAlbum.getAlbumKey());
     }
 
     /**
@@ -267,6 +269,10 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_reset_artwork:
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
+                ArtworkManager.getInstance(getContext()).resetAlbumImage(mAlbum, getContext());
+                return true;
             case R.id.action_add_album:
                 enqueueAlbum();
                 return true;
@@ -289,7 +295,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
     }
 
     /**
@@ -317,7 +323,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // Enqueue complete album
 
         try {
-            mServiceConnection.getPBS().enqueueAlbum(mAlbumKey);
+            mServiceConnection.getPBS().enqueueAlbum(mAlbum.getAlbumKey());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -350,11 +356,20 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 @Override
                 public void run() {
                     // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mAlbumTitle, false, false, true);
+                    mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
                     // set toolbar image
                     mToolbarAndFABCallback.setupToolbarImage(bm);
                 }
             });
+        }
+    }
+
+    @Override
+    public void newAlbumImage(AlbumModel album) {
+        if (album.equals(mAlbum)) {
+            if (!mHideArtwork) {
+                mBitmapLoader.getAlbumImage(mAlbum);
+            }
         }
     }
 }

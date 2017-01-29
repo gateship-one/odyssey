@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.listener;
 
+import org.gateshipone.odyssey.models.ArtistModel;
+
 public interface OnArtistSelectedListener {
-    void onArtistSelected(String artist, long artistID);
+    void onArtistSelected(ArtistModel artist);
 }

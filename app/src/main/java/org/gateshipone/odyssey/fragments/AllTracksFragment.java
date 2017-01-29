@@ -42,6 +42,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
@@ -200,7 +201,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artistTitle, artistID);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
     }
 
     /**

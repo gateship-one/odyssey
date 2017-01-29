@@ -192,13 +192,15 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
 
+        // If no artist ID is available get one (it is probably missing because of which method was used
+        // to query artists. AlbumArtists vs. Artists MediaStore table.
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         // send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(artist, artistID);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artist, artistID));
     }
 
     /**

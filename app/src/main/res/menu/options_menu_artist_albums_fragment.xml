@@ -24,6 +24,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_reset_artwork"
+        android:orderInCategory="100"
+        android:title="@string/action_reset_artwork"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_add_artist_albums"
         android:orderInCategory="100"
         android:icon="@drawable/ic_queue_24dp"

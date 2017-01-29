@@ -188,6 +188,39 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         mWifiOnly = wifiOnly;
     }
 
+    /**
+     * Removes the image for the album and tries to reload it from the internet
+     * @param album {@link AlbumModel} to reload the image for
+     */
+    public void resetAlbumImage(final AlbumModel album, final Context context) {
+        if (null == album) {
+            return;
+        }
+
+        // Clear the old image
+        mDBManager.removeAlbumImage(album);
+
+        // Reload the image from the internet
+        fetchAlbumImage(album,context);
+    }
+
+
+    /**
+     * Removes the image for the artist and tries to reload it from the internet
+     * @param artist {@link ArtistModel} to reload the image for
+     */
+    public void resetArtistImage(final ArtistModel artist, final Context context) {
+        if (null == artist) {
+            return;
+        }
+
+        // Clear the old image
+        mDBManager.removeArtistImage(artist);
+
+        // Reload the image from the internet
+        fetchArtistImage(artist, context);
+    }
+
     public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotFoundException {
         if (null == artist) {
             return null;

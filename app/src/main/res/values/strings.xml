@@ -90,6 +90,8 @@
     <string name="action_set_default_directory">Set as default directory</string>
     <string name="action_start_mediascanner">Update media database here</string>
 
+    <string name="action_reset_artwork">Reset artwork</string>
+
     <string name="action_wikipedia" translatable="false">Wikipedia</string>
     <string name="action_wikipedia_album">Open album</string>
     <string name="action_wikipedia_artist">Open artist</string>

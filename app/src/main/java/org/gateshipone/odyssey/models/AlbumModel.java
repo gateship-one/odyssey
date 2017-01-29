@@ -22,7 +22,10 @@
 
 package org.gateshipone.odyssey.models;
 
-public class AlbumModel implements GenericModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class AlbumModel implements GenericModel, Parcelable {
 
     /**
      * The name of the album
@@ -81,6 +84,44 @@ public class AlbumModel implements GenericModel {
 
         mAlbumID = albumID;
     }
+
+    protected AlbumModel(Parcel in) {
+        mAlbumName = in.readString();
+        mAlbumArtURL = in.readString();
+        mArtistName = in.readString();
+        mAlbumKey = in.readString();
+        mAlbumID = in.readLong();
+        mMBID = in.readString();
+        mImageFetching = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mAlbumName);
+        dest.writeString(mAlbumArtURL);
+        dest.writeString(mArtistName);
+        dest.writeString(mAlbumKey);
+        dest.writeLong(mAlbumID);
+        dest.writeString(mMBID);
+        dest.writeByte((byte) (mImageFetching ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<AlbumModel> CREATOR = new Creator<AlbumModel>() {
+        @Override
+        public AlbumModel createFromParcel(Parcel in) {
+            return new AlbumModel(in);
+        }
+
+        @Override
+        public AlbumModel[] newArray(int size) {
+            return new AlbumModel[size];
+        }
+    };
 
     /**
      * Return the name of the album

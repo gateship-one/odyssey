@@ -22,7 +22,10 @@
 
 package org.gateshipone.odyssey.models;
 
-public class ArtistModel implements GenericModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ArtistModel implements GenericModel, Parcelable {
 
     /**
      * The name of the artist
@@ -56,6 +59,38 @@ public class ArtistModel implements GenericModel {
         mArtistID = artist.mArtistID;
 
     }
+
+    protected ArtistModel(Parcel in) {
+        mArtistName = in.readString();
+        mArtistID = in.readLong();
+        mMBID = in.readString();
+        mImageFetching = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mArtistName);
+        dest.writeLong(mArtistID);
+        dest.writeString(mMBID);
+        dest.writeByte((byte) (mImageFetching ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ArtistModel> CREATOR = new Creator<ArtistModel>() {
+        @Override
+        public ArtistModel createFromParcel(Parcel in) {
+            return new ArtistModel(in);
+        }
+
+        @Override
+        public ArtistModel[] newArray(int size) {
+            return new ArtistModel[size];
+        }
+    };
 
     /**
      * Return the name of the artist

@@ -173,4 +173,5 @@
     <string name="preference_use_english_wikipedia_title">Verwende englische Wikipedia</string>
     <string name="preference_use_english_wikipedia_text">Verwende englische Wikipedia-Version um Seiten zu finden</string>
     <string name="popup_menu_action_sharetrack">Teile aktuellen Song</string>
+    <string name="action_reset_artwork">Bild neuladen</string>
 </resources>

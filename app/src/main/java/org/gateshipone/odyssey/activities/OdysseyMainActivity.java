@@ -81,6 +81,8 @@ import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
@@ -499,21 +501,22 @@ public class OdysseyMainActivity extends AppCompatActivity
                 case R.id.view_current_playlist_action_remove:
                     currentPlaylistView.removeTrack(info.position);
                     return true;
-                case R.id.view_current_playlist_action_showalbum:
+                case R.id.view_current_playlist_action_showalbum: {
                     String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                    ArrayList<String> albumInformations = MusicLibraryHelper.getAlbumInformationFromKey(albumKey, this);
-                    if (albumInformations.size() == 3) {
-                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-                        coordinatorLayout.setVisibility(View.VISIBLE);
+                    AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
 
-                        NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
-                        if (nowPlayingView != null) {
-                            nowPlayingView.minimize();
-                        }
-                        onAlbumSelected(albumKey, albumInformations.get(0), albumInformations.get(1), albumInformations.get(2));
+                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                    coordinatorLayout.setVisibility(View.VISIBLE);
+
+                    NowPlayingView nowPlayingView = (NowPlayingView) findViewById(R.id.now_playing_layout);
+                    if (nowPlayingView != null) {
+                        nowPlayingView.minimize();
                     }
+
+                    onAlbumSelected(tmpAlbum);
                     return true;
-                case R.id.view_current_playlist_action_showartist:
+                }
+                case R.id.view_current_playlist_action_showartist: {
                     String artistTitle = currentPlaylistView.getArtistTitle(info.position);
                     long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
@@ -524,8 +527,9 @@ public class OdysseyMainActivity extends AppCompatActivity
                     if (nowPlayingView != null) {
                         nowPlayingView.minimize();
                     }
-                    onArtistSelected(artistTitle, artistID);
+                    onArtistSelected(new ArtistModel(artistTitle, artistID));
                     return true;
+                }
                 default:
                     return super.onContextItemSelected(item);
             }
@@ -604,12 +608,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onArtistSelected(String artist, long artistID) {
+    public void onArtistSelected(ArtistModel artist) {
         // Create fragment and give it an argument for the selected article
         ArtistAlbumsFragment newFragment = new ArtistAlbumsFragment();
         Bundle args = new Bundle();
-        args.putString(ArtistAlbumsFragment.ARG_ARTISTNAME, artist);
-        args.putLong(ArtistAlbumsFragment.ARG_ARTISTID, artistID);
+        args.putParcelable(ArtistAlbumsFragment.ARG_ARTISTMODEL, artist);
 
         newFragment.setArguments(args);
 
@@ -631,14 +634,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAlbumSelected(String albumKey, String albumTitle, String albumArtURL, String artistName) {
+    public void onAlbumSelected(AlbumModel album) {
         // Create fragment and give it an argument for the selected article
         AlbumTracksFragment newFragment = new AlbumTracksFragment();
         Bundle args = new Bundle();
-        args.putString(AlbumTracksFragment.ARG_ALBUMKEY, albumKey);
-        args.putString(AlbumTracksFragment.ARG_ALBUMTITLE, albumTitle);
-        args.putString(AlbumTracksFragment.ARG_ALBUMART, albumArtURL);
-        args.putString(AlbumTracksFragment.ARG_ALBUMARTIST, artistName);
+        args.putParcelable(AlbumTracksFragment.EXTRA_ALBUMMODEL, album);
 
         newFragment.setArguments(args);
 

@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
@@ -48,24 +49,17 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener {
-
+public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewArtistImageListener {
     /**
-     * The name of the artist showed in the fragment.
+     * {@link ArtistModel} to show albums for
      */
-    private String mArtistName = "";
-
-    /**
-     * The id of the artist showed in the fragment.
-     */
-    private long mArtistID = -1;
+    private ArtistModel mArtist;
 
     /**
      * key values for arguments of the fragment
      */
     // FIXME move to separate class to get unified constants?
-    public final static String ARG_ARTISTNAME = "artistname";
-    public final static String ARG_ARTISTID = "artistid";
+    public final static String ARG_ARTISTMODEL = "artistmodel";
 
     private CoverBitmapLoader mBitmapLoader;
 
@@ -82,8 +76,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // read arguments
         Bundle args = getArguments();
-        mArtistName = args.getString(ARG_ARTISTNAME);
-        mArtistID = args.getLong(ARG_ARTISTID);
+        mArtist = args.getParcelable(ARG_ARTISTMODEL);
 
         setHasOptionsMenu(true);
 
@@ -106,7 +99,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, false);
+            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
                 @Override
@@ -117,8 +110,17 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         }
 
         if (!mHideArtwork) {
-            mBitmapLoader.getArtistImage(new ArtistModel(mArtistName, mArtistID));
+            mBitmapLoader.getArtistImage(mArtist);
         }
+
+        ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
     }
 
     /**
@@ -130,7 +132,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
      */
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        return new AlbumLoader(getActivity(), mArtistID);
+        return new AlbumLoader(getActivity(), mArtist.getArtistID());
     }
 
     /**
@@ -201,6 +203,10 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_reset_artwork:
+                mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
+                ArtworkManager.getInstance(getContext()).resetArtistImage(mArtist, getContext());
+                return true;
             case R.id.action_add_artist_albums:
                 enqueueArtist();
                 return true;
@@ -219,7 +225,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(mArtistID, orderKey);
+            mServiceConnection.getPBS().enqueueArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -261,11 +267,20 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
                 @Override
                 public void run() {
                     // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mArtistName, false, false, true);
+                    mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
                     // set toolbar image
                     mToolbarAndFABCallback.setupToolbarImage(bm);
                 }
             });
+        }
+    }
+
+    @Override
+    public void newArtistImage(ArtistModel artist) {
+        if (artist.equals(mArtist)) {
+            if (!mHideArtwork) {
+                mBitmapLoader.getArtistImage(mArtist);
+            }
         }
     }
 }

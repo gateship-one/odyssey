@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.listener;
 
+import org.gateshipone.odyssey.models.AlbumModel;
+
 public interface OnAlbumSelectedListener {
-    void onAlbumSelected(String albumKey, String albumTitle, String albumArtURL, String artistName);
+    void onAlbumSelected(AlbumModel album);
 }
