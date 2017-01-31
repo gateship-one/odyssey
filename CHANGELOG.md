@@ -1,3 +1,10 @@
+### Version: 1.1.4 Tag: release-16 (2017-xx-yy) ###
+* Optionally show artist image alternating to cover image in NowPlayingView
+* Option to reload album / artist image in the corresponing fragments
+* Fixes in FileBrowser when filtering is active
+* Podcast filtering
+* Song sharing in NowPlayingView
+
 ### Version: 1.1.3 Tag: release-15 (2017-01-23) ###
 * Add option to trigger a mediascan in the file browser for the current folder.
 * Quicklinks to open Wikipedia page for Album & Artists in the NowPlayingView menu.
