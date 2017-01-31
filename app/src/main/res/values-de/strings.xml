@@ -176,4 +176,5 @@
     <string name="action_reset_artwork">Bild neuladen</string>
     <string name="preference_show_artist_image_title">Interpretenbild anzeigen</string>
     <string name="preference_show_artist_image_text">Abwechselnd das Albumcover und ein Bild des Interpreten in der aktuellen Liedansicht anzeigen</string>
+    <string name="share_chooser_title">Teile Song über</string>
 </resources>
