@@ -38,6 +38,9 @@
     <string name="nav_menu_bookmarks">Bookmarks</string>
     <string name="nav_menu_files">Files</string>
 
+    <!-- acitivty titles -->
+    <string name="share_chooser_title">Share track with</string>
+
     <!-- fragment titles -->
     <string name="fragment_title_my_music">My Music</string>
     <string name="fragment_title_saved_playlists">Playlists</string>

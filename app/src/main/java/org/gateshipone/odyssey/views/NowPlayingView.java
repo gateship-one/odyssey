@@ -1475,7 +1475,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         shareIntent.setType("audio/*");
 
         // start sharing
-        getContext().startActivity(Intent.createChooser(shareIntent, "Share music with"));
+        getContext().startActivity(Intent.createChooser(shareIntent, getContext().getString(R.string.share_chooser_title)));
     }
 
     /**
