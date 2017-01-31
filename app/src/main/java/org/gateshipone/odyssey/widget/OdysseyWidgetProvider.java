@@ -226,9 +226,9 @@ OdysseyWidgetProvider extends AppWidgetProvider {
          * @param bm Bitmap fetched for the currently running track.
          */
         @Override
-        public void receiveBitmap(Bitmap bm) {
+        public void receiveBitmap(Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
             // Check if a valid image was found.
-            if (bm != null) {
+            if (type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE && bm != null) {
                 // Set the globally used variable
                 mLastCover = bm;
 

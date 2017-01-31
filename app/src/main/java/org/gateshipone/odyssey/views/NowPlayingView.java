@@ -111,7 +111,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Main cover imageview
      */
-    private ImageView mCoverImage;
+    private AlbumArtistView mCoverImage;
 
     /**
      * Small cover image, part of the draggable header
@@ -188,7 +188,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * Name of the last played album. This is used for a optimization of cover fetching. If album
      * did not change with a track, there is no need to refetch the cover.
      */
-    private String mLastAlbumKey;
+    private TrackModel mLastTrack;
 
     /**
      * Flag whether artworks should be hidden.
@@ -199,6 +199,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * Flag whether the nowplaying hint should be shown. This should only be true if the app was used the first time.
      */
     private boolean mShowNPVHint = false;
+
+    /**
+     * Flag whether the views switches between album cover and artist image
+     */
+    private boolean mShowArtistImage = false;
 
     /**
      * The state of the playbackservice.
@@ -222,6 +227,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         super(context, attrs, defStyle);
         mDragHelper = ViewDragHelper.create(this, 1f, new BottomDragCallbackHelper());
         mPlaybackServiceState = PlaybackService.PLAYSTATE.STOPPED;
+
+        mLastTrack = new TrackModel();
     }
 
     /**
@@ -459,7 +466,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        if (mLastAlbumKey.equals(album.getAlbumKey())) {
+        if (mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
             mCoverLoader.getAlbumImage(album);
         }
     }
@@ -479,10 +486,21 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             } else {
                 // Hide artwork here
                 showPlaceholderImage();
+                mCoverImage.clearArtistImage();
             }
             mPlaylistView.hideArtwork(mHideArtwork);
         } else if (key.equals(getContext().getString(R.string.pref_use_english_wikipedia_key))) {
             mUseEnglishWikipedia = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_use_english_wikipedia_default));
+        } else if (key.equals(getContext().getString(R.string.pref_show_npv_artist_image_key))) {
+            mShowArtistImage = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_show_npv_artist_image_default));
+
+            // Show artist image if artwork is requested
+            if ( mShowArtistImage && !mHideArtwork ) {
+                mCoverLoader.getArtistImage(mLastTrack);
+            } else {
+                // Hide artist image
+                mCoverImage.clearArtistImage();
+            }
         }
     }
 
@@ -749,7 +767,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
 
         // Main cover image
-        mCoverImage = (ImageView) findViewById(R.id.now_playing_cover);
+        mCoverImage = (AlbumArtistView) findViewById(R.id.now_playing_cover);
         // Small header cover image
         mTopCoverImage = (ImageView) findViewById(R.id.now_playing_topCover);
 
@@ -1035,6 +1053,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         sharedPref.registerOnSharedPreferenceChangeListener(this);
 
         mUseEnglishWikipedia = sharedPref.getBoolean(getContext().getString(R.string.pref_use_english_wikipedia_key), getContext().getResources().getBoolean(R.bool.pref_use_english_wikipedia_default));
+
+        mShowArtistImage = sharedPref.getBoolean(getContext().getString(R.string.pref_show_npv_artist_image_key), getContext().getResources().getBoolean(R.bool.pref_show_npv_artist_image_default));
     }
 
     /**
@@ -1068,7 +1088,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
 
         // Check if the album title changed. If true, start the cover generator thread.
-        if (!currentTrack.getTrackAlbumKey().equals(mLastAlbumKey)) {
+        if (!currentTrack.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
             // Show placeholder until image is loaded
             showPlaceholderImage();
 
@@ -1077,8 +1097,17 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 mCoverLoader.getImage(currentTrack);
             }
         }
-        // Save the name of the album for rechecking later
-        mLastAlbumKey = currentTrack.getTrackAlbumKey();
+
+        // If artist name changed check for a new image
+        if (!currentTrack.getTrackArtistName().equals(mLastTrack.getTrackArtistName())) {
+            mCoverImage.clearArtistImage();
+            if (!mHideArtwork && mShowArtistImage) {
+                // Start the cover loader
+                mCoverLoader.getArtistImage(currentTrack);
+            }
+        }
+        // Save the last track
+        mLastTrack = currentTrack;
 
         // Set the artist of the track
         String trackInformation = "";
@@ -1107,8 +1136,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         // save the state
         mPlaybackServiceState = info.getPlayState();
-
-        // update buttons
 
         // update play buttons
         switch (mPlaybackServiceState) {
@@ -1343,7 +1370,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param bm Bitmap ready for use in the UI
          */
         @Override
-        public void receiveBitmap(final Bitmap bm) {
+        public void receiveBitmap(final Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
             if (bm != null) {
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
@@ -1352,16 +1379,21 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
                         @Override
                         public void run() {
-                            // Set the main cover image
-                            mCoverImage.setImageBitmap(bm);
-                            // Set the small header image
-                            mTopCoverImage.setImageBitmap(bm);
+                            if ( type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE) {
+                                // Set the main cover image
+                                mCoverImage.setAlbumImage(bm);
+                                // Set the small header image
+                                mTopCoverImage.setImageBitmap(bm);
+                            } else if ( type == CoverBitmapLoader.IMAGE_TYPE.ARTIST_IMAGE) {
+                                mCoverImage.setArtistImage(bm);
+                            }
                         }
                     });
                 }
             }
         }
     }
+
 
     private void showPlaceholderImage() {
         // get tint color
@@ -1372,7 +1404,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         DrawableCompat.setTint(drawable, tintColor);
 
         // Show the placeholder image until the cover fetch process finishes
-        mCoverImage.setImageDrawable(drawable);
+        mCoverImage.clearAlbumImage();
 
         tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
 

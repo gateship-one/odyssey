@@ -45,6 +45,14 @@ public class CoverBitmapLoader {
     }
 
     /**
+     * Enum to define the type of the image that was retrieved
+     */
+    public enum IMAGE_TYPE {
+        ALBUM_IMAGE,
+        ARTIST_IMAGE,
+    }
+
+    /**
      * Load the image for the given track from the mediastore.
      */
     public void getImage(TrackModel track) {
@@ -76,6 +84,16 @@ public class CoverBitmapLoader {
         loaderThread.start();
     }
 
+    public void getArtistImage(TrackModel track) {
+        if (track==null) {
+            return;
+        }
+
+        // start the loader thread to load the image async
+        Thread loaderThread = new Thread(new TrackArtistImageRunner(track));
+        loaderThread.start();
+    }
+
     private class TrackAlbumImageRunner implements Runnable {
 
         /**
@@ -96,7 +114,7 @@ public class CoverBitmapLoader {
                 }
                 if (coverPath != null && !coverPath.isEmpty()) {
                     Bitmap cover = BitmapFactory.decodeFile(coverPath);
-                    mListener.receiveBitmap(cover);
+                    mListener.receiveBitmap(cover,IMAGE_TYPE.ALBUM_IMAGE);
                     cursor.close();
                     return;
                 }
@@ -107,7 +125,7 @@ public class CoverBitmapLoader {
             // If we reach this, we obviously don't have a local image. Try the database of downloaded images
             try {
                 Bitmap image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mTrack);
-                mListener.receiveBitmap(image);
+                mListener.receiveBitmap(image,IMAGE_TYPE.ALBUM_IMAGE);
             } catch (ImageNotFoundException e) {
                 // Try to fetch the image here
                 ArtworkManager.getInstance(mContext.getApplicationContext()).fetchAlbumImage(mTrack, mContext);
@@ -130,7 +148,30 @@ public class CoverBitmapLoader {
         public void run() {
             try {
                 Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mArtist);
-                mListener.receiveBitmap(artistImage);
+                mListener.receiveBitmap(artistImage, IMAGE_TYPE.ARTIST_IMAGE);
+            } catch (ImageNotFoundException e) {
+                ArtworkManager.getInstance(mContext.getApplicationContext()).fetchArtistImage(mArtist, mContext);
+            }
+        }
+    }
+
+    private class TrackArtistImageRunner implements Runnable {
+
+        private ArtistModel mArtist;
+
+        public TrackArtistImageRunner(TrackModel trackModel) {
+            long artistID = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mContext);
+            mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistID );
+        }
+
+        /**
+         * Load the image for the given artist from the mediastore.
+         */
+        @Override
+        public void run() {
+            try {
+                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mArtist);
+                mListener.receiveBitmap(artistImage,IMAGE_TYPE.ARTIST_IMAGE);
             } catch (ImageNotFoundException e) {
                 ArtworkManager.getInstance(mContext.getApplicationContext()).fetchArtistImage(mArtist, mContext);
             }
@@ -157,14 +198,14 @@ public class CoverBitmapLoader {
                 // Check if local image (tagged in album) is available
                 if ( mAlbum.getAlbumArtURL() != null && !mAlbum.getAlbumArtURL().isEmpty() ) {
                     Bitmap cover = BitmapFactory.decodeFile(mAlbum.getAlbumArtURL());
-                    mListener.receiveBitmap(cover);
+                    mListener.receiveBitmap(cover,IMAGE_TYPE.ALBUM_IMAGE);
                 } else {
                     if ( mAlbum.getAlbumID() == -1 ) {
                         mAlbum.setAlbumID(MusicLibraryHelper.getAlbumIDFromKey(mAlbum.getAlbumKey(), mContext));
                     }
                     // No tagged album image available, check download database
-                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mAlbum);
-                    mListener.receiveBitmap(artistImage);
+                    Bitmap albumImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mAlbum);
+                    mListener.receiveBitmap(albumImage, IMAGE_TYPE.ALBUM_IMAGE);
                 }
             } catch (ImageNotFoundException e) {
                 ArtworkManager.getInstance(mContext.getApplicationContext()).fetchAlbumImage(mAlbum, mContext);
@@ -176,6 +217,6 @@ public class CoverBitmapLoader {
      * Callback if image was loaded.
      */
     public interface CoverBitmapListener {
-        void receiveBitmap(Bitmap bm);
+        void receiveBitmap(Bitmap bm, IMAGE_TYPE type);
     }
 }

@@ -162,7 +162,7 @@
                     android:inAnimation="@anim/fadein"
                     android:outAnimation="@anim/fadeout">
 
-                    <ImageView
+                    <org.gateshipone.odyssey.views.AlbumArtistView
                         android:id="@+id/now_playing_cover"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

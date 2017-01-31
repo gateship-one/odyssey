@@ -166,7 +166,7 @@
                     android:outAnimation="@anim/fadeout"
                     android:visibility="gone" />
 
-                <ImageView
+                <org.gateshipone.odyssey.views.AlbumArtistView
                     android:id="@+id/now_playing_cover"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

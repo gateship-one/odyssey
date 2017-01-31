@@ -177,6 +177,9 @@
     <string name="preference_library_view_grid">Grid</string>
     <string name="preference_library_view_list">List</string>
 
+    <string name="preference_show_artist_image_title">Show artist image</string>
+    <string name="preference_show_artist_image_text">Alternate between the album cover and an image of the artist in the view for the currently playing song</string>
+
     <string name="artwork_settings">Artwork settings</string>
 
     <string name="preference_clear_default_directory_title">Clear default directory</string>

@@ -261,8 +261,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     }
 
     @Override
-    public void receiveBitmap(final Bitmap bm) {
-        if (bm != null && mToolbarAndFABCallback != null) {
+    public void receiveBitmap(final Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
+        if (type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE && bm != null && mToolbarAndFABCallback != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

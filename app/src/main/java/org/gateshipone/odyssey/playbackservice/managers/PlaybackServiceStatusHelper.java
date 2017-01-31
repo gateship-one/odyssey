@@ -361,8 +361,8 @@ public class PlaybackServiceStatusHelper {
     private class BitmapCoverListener implements CoverBitmapLoader.CoverBitmapListener {
 
         @Override
-        public void receiveBitmap(Bitmap bm) {
-            if (bm != null) {
+        public void receiveBitmap(Bitmap bm, CoverBitmapLoader.IMAGE_TYPE type) {
+            if (bm != null && type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE) {
                 // Try to get old metadata to save image retrieval.
                 MediaMetadataCompat.Builder metaDataBuilder;
                 metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
