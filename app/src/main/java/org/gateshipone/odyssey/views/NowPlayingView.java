@@ -61,6 +61,7 @@ import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -74,7 +75,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener, ArtworkManager.onNewArtistImageListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final ViewDragHelper mDragHelper;
@@ -466,7 +467,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        if (mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
+        if (!mHideArtwork && mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
             mCoverLoader.getAlbumImage(album);
         }
     }
@@ -501,6 +502,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 // Hide artist image
                 mCoverImage.clearArtistImage();
             }
+        }
+    }
+
+    @Override
+    public void newArtistImage(ArtistModel artist) {
+        if (mShowArtistImage && !mHideArtwork && mLastTrack.getTrackArtistName().equals(artist.getArtistName())) {
+            mCoverLoader.getArtistImage(artist);
         }
     }
 
@@ -1008,6 +1016,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mNowPlayingReceiver = null;
         }
         ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener(this);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         sharedPref.unregisterOnSharedPreferenceChangeListener(this);
@@ -1041,6 +1050,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         invalidate();
         ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener(this);
 
         // Register shared preference listener
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
