@@ -44,7 +44,7 @@ public class AlbumArtistView extends ViewSwitcher {
     /**
      * Constant value of the period used to switch images
      */
-    private static final int VIEW_SWITCH_TIME = 5000;
+    private static final int VIEW_SWITCH_TIME = 7500;
 
     ImageView mAlbumImage;
     ImageView mArtistImage;
@@ -149,10 +149,11 @@ public class AlbumArtistView extends ViewSwitcher {
         if (mAlbumImageAvailable && mArtistImageAvailable) {
             if (mSwitchTimer == null) {
                 mSwitchTimer = new Timer();
-                mSwitchTimer.schedule(new SwitchTask(), 0, VIEW_SWITCH_TIME);
+                mSwitchTimer.schedule(new SwitchTask(), VIEW_SWITCH_TIME, VIEW_SWITCH_TIME);
+            } else {
+                // Toggle displayed image
+                setDisplayedChild(getDisplayedChild() == 0 ? 1 : 0);
             }
-            // Toggle displayed image
-            setDisplayedChild(getDisplayedChild() == 0 ? 1 : 0);
         } else if (mAlbumImageAvailable) {
             // Only one image available
             if (mSwitchTimer != null) {
@@ -160,7 +161,9 @@ public class AlbumArtistView extends ViewSwitcher {
                 mSwitchTimer.purge();
                 mSwitchTimer = null;
             }
-            setDisplayedChild(0);
+            if (getDisplayedChild() == 1) {
+                setDisplayedChild(0);
+            }
         } else if (mArtistImageAvailable) {
             // Only one image available
             if (mSwitchTimer != null) {
@@ -168,7 +171,9 @@ public class AlbumArtistView extends ViewSwitcher {
                 mSwitchTimer.purge();
                 mSwitchTimer = null;
             }
-            setDisplayedChild(1);
+            if (getDisplayedChild() == 0) {
+                setDisplayedChild(1);
+            }
         } else {
             // Show placeholder image instead and cancel switching
             setDisplayedChild(0);
