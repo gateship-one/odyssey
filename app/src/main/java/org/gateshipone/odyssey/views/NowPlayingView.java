@@ -331,6 +331,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // top
             mDraggedDownButtons.setVisibility(INVISIBLE);
             mDraggedUpButtons.setVisibility(VISIBLE);
+            mCoverImage.setVisibility(VISIBLE);
             if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
             }
@@ -338,6 +339,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             // bottom
             mDraggedDownButtons.setVisibility(VISIBLE);
             mDraggedUpButtons.setVisibility(INVISIBLE);
+            mCoverImage.setVisibility(INVISIBLE);
             if (mDragStatusReceiver != null) {
                 mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
             }
@@ -649,6 +651,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     // Called when dragged up
                     mDraggedDownButtons.setVisibility(INVISIBLE);
                     mDraggedUpButtons.setVisibility(VISIBLE);
+                    mCoverImage.setVisibility(VISIBLE);
                     if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_UP);
                     }
@@ -656,6 +659,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     // Called when dragged down
                     mDraggedDownButtons.setVisibility(VISIBLE);
                     mDraggedUpButtons.setVisibility(INVISIBLE);
+                    mCoverImage.setVisibility(INVISIBLE);
                     if (mDragStatusReceiver != null) {
                         mDragStatusReceiver.onStatusChanged(NowPlayingDragStatusReceiver.DRAG_STATUS.DRAGGED_DOWN);
                     }
@@ -670,6 +674,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                  */
                 mDraggedDownButtons.setVisibility(VISIBLE);
                 mDraggedUpButtons.setVisibility(VISIBLE);
+                mCoverImage.setVisibility(VISIBLE);
             }
         }
     }

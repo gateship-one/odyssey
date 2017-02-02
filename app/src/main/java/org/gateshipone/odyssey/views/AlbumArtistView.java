@@ -25,8 +25,10 @@ package org.gateshipone.odyssey.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
@@ -94,8 +96,28 @@ public class AlbumArtistView extends ViewSwitcher {
                 mSwitchTimer = null;
             }
         }
-
     }
+
+    /**
+     * Stops the image switching if the window is not visible to the user anymore.
+     *
+     * @param visibility Visibility value of the view View.VISIBLE, ...
+     */
+    @Override
+    public void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        if (visibility == VISIBLE) {
+            // Start the switching
+            imagesChanged();
+        } else {
+            // Window hidden, stop switching
+            if (mSwitchTimer != null) {
+                mSwitchTimer.cancel();
+                mSwitchTimer.purge();
+                mSwitchTimer = null;
+            }
+        }
+    }
+
 
     /**
      * Sets the album image to the given bitmap
