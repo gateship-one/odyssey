@@ -76,6 +76,9 @@ public class AlbumArtistView extends ViewSwitcher {
         addView(mArtistImage);
 
         mSwitchTimer = null;
+
+        // Make sure the placeholder image is shown
+        clearAlbumImage();
     }
 
     /**
