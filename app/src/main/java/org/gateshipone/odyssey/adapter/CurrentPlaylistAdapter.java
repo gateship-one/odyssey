@@ -149,7 +149,6 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
             if (isNewAlbum) {
                 if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
                     // clear cover
-                    listViewItem.setImage(null);
                     listViewItem.setTrack(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
                 } else {
                     // Current view has wrong type so reusable is not possible
@@ -159,7 +158,6 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
                 if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
                     // Current view has wrong type so reusable is not possible
                     // clear cover and stop possible loading tasks
-                    listViewItem.setImage(null);
                     listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
                 } else {
                     listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);

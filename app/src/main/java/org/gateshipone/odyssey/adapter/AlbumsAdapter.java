@@ -82,7 +82,6 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
             // Check if a view can be recycled
             if (convertView != null) {
                 listItem = (ListViewItem) convertView;
-                listItem.setImage(null);
                 listItem.setTitle(label);
             } else {
                 listItem = new ListViewItem(mContext, label, this);

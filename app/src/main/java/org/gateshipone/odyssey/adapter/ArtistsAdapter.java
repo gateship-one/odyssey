@@ -84,7 +84,6 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
             // Check if a view can be recycled
             if (convertView != null) {
                 listItem = (ListViewItem) convertView;
-                listItem.setImage(null);
                 listItem.setTitle(label);
             } else {
                 listItem = new ListViewItem(mContext, label, this);
