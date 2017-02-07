@@ -37,6 +37,11 @@ import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
+    public enum VIEW_TYPES {
+        TYPE_TRACK_ITEM,
+        TYPE_SECTION_TRACK_ITEM,
+        TYPE_COUNT
+    }
 
     private final Context mContext;
     private final PlaybackServiceConnection mPlayBackServiceConnection;
@@ -105,6 +110,41 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     }
 
     /**
+     * Returns the type (section track or normal track) of the item at the given position
+     * @param position Position of the item in question
+     * @return the int value of the enum {@link VIEW_TYPES}
+     */
+    @Override
+    public int getItemViewType(int position) {
+        // Get MPDTrack at the given index used for this item.
+        TrackModel track = (TrackModel)getItem(position);
+        boolean newAlbum = false;
+
+        // Check if the track was available in local data set already (or is currently fetching)
+        if (track != null) {
+            TrackModel previousTrack;
+            if (position > 0) {
+                previousTrack = (TrackModel)getItem(position - 1);
+                if (previousTrack != null) {
+                    newAlbum = !previousTrack.getTrackAlbumKey().equals(track.getTrackAlbumKey());
+                }
+            } else {
+                return VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal();
+            }
+        }
+        return newAlbum ? VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal() :VIEW_TYPES.TYPE_TRACK_ITEM.ordinal();
+    }
+
+    /**
+     *
+     * @return The count of values in the enum {@link VIEW_TYPES}.
+     */
+    @Override
+    public int getViewTypeCount() {
+        return VIEW_TYPES.TYPE_COUNT.ordinal();
+    }
+
+    /**
      * Get a View that displays the data at the specified position in the data set.
      *
      * @param position    The position of the item within the adapter's data set.
@@ -117,63 +157,37 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
         // get the trackmodel for the current position from the PBS
         TrackModel currentTrack;
-        TrackModel previousTrack;
         try {
             if (mPlayBackServiceConnection != null) {
                 currentTrack = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
-                if (position > 0) {
-                    previousTrack = mPlayBackServiceConnection.getPBS().getPlaylistSong(position - 1);
-                } else {
-                    previousTrack = null;
-                }
             } else {
                 currentTrack = new TrackModel();
-                previousTrack = null;
             }
         } catch (RemoteException e) {
             currentTrack = new TrackModel();
-            previousTrack = null;
         }
 
-        // check if track belongs to an new album
-        boolean isNewAlbum = true;
-        if (previousTrack != null) {
-            isNewAlbum = !previousTrack.getTrackAlbumKey().equals(currentTrack.getTrackAlbumKey());
-        }
+        // Get the view type for the current position
+        VIEW_TYPES type = VIEW_TYPES.values()[getItemViewType(position)];
 
         ListViewItem listViewItem;
-        // Check if a view can be recycled
-        if (convertView != null) {
-            listViewItem = ((ListViewItem) convertView);
-
-            if (isNewAlbum) {
-                if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
-                    // clear cover
-                    listViewItem.setTrack(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
-                } else {
-                    // Current view has wrong type so reusable is not possible
-                    listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
-                }
-            } else {
-                if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM) {
-                    // Current view has wrong type so reusable is not possible
-                    // clear cover and stop possible loading tasks
-                    listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
-                } else {
-                    listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);
-                }
-            }
-        } else {
-            // Create new view if no reusable is available
-            if (isNewAlbum) {
-                listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
+        // Check if section view type or normal track
+        if(type == VIEW_TYPES.TYPE_TRACK_ITEM) {
+            // Check if view is recyclable
+            if (convertView != null) {
+                listViewItem = (ListViewItem)convertView;
+                listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);
             } else {
                 listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
             }
-        }
-
-        // setup cover loading routine if necessary
-        if (listViewItem.getViewType() == ListViewItem.LISTVIEWTYPE.SECTION_TRACK_ITEM && !mHideArtwork) {
+        } else {
+            // Check if view is recyclable
+            if (convertView != null){
+                listViewItem = (ListViewItem)convertView;
+                listViewItem.setTrack(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
+            }else {
+                listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
+            }
             listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
