@@ -741,7 +741,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
