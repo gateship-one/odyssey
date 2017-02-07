@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.os.RemoteException;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,10 @@ import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
-    public enum VIEW_TYPES {
+    private static final int CACHE_SIZE = 250;
+    private static final String TAG = CurrentPlaylistAdapter.class.getSimpleName();
+
+    private enum VIEW_TYPES {
         TYPE_TRACK_ITEM,
         TYPE_SECTION_TRACK_ITEM,
         TYPE_COUNT
@@ -52,6 +56,11 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     private final ArtworkManager mArtworkManager;
 
     private boolean mHideArtwork;
+
+    /**
+     * {@link LruCache} to reduce load on the IPC between GUI and PBS.
+     */
+    private LruCache<Integer, TrackModel> mTrackCache;
 
     public CurrentPlaylistAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();
@@ -68,6 +77,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
         }
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
+        mTrackCache = new LruCache<>(250);
     }
 
     /**
@@ -89,7 +99,13 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     public Object getItem(int position) {
         try {
             if (mPlayBackServiceConnection != null) {
-                return mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+                // Check cache first for a hit
+                TrackModel track = mTrackCache.get(position);
+                if (track == null) {
+                    track = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+                    mTrackCache.put(position, track);
+                }
+                return track;
             } else {
                 return null;
             }
@@ -111,20 +127,21 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
     /**
      * Returns the type (section track or normal track) of the item at the given position
+     *
      * @param position Position of the item in question
      * @return the int value of the enum {@link VIEW_TYPES}
      */
     @Override
     public int getItemViewType(int position) {
         // Get MPDTrack at the given index used for this item.
-        TrackModel track = (TrackModel)getItem(position);
+        TrackModel track = (TrackModel) getItem(position);
         boolean newAlbum = false;
 
         // Check if the track was available in local data set already (or is currently fetching)
         if (track != null) {
             TrackModel previousTrack;
             if (position > 0) {
-                previousTrack = (TrackModel)getItem(position - 1);
+                previousTrack = (TrackModel) getItem(position - 1);
                 if (previousTrack != null) {
                     newAlbum = !previousTrack.getTrackAlbumKey().equals(track.getTrackAlbumKey());
                 }
@@ -132,11 +149,10 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
                 return VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal();
             }
         }
-        return newAlbum ? VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal() :VIEW_TYPES.TYPE_TRACK_ITEM.ordinal();
+        return newAlbum ? VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal() : VIEW_TYPES.TYPE_TRACK_ITEM.ordinal();
     }
 
     /**
-     *
      * @return The count of values in the enum {@link VIEW_TYPES}.
      */
     @Override
@@ -172,23 +188,28 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
         ListViewItem listViewItem;
         // Check if section view type or normal track
-        if(type == VIEW_TYPES.TYPE_TRACK_ITEM) {
+        if (type == VIEW_TYPES.TYPE_TRACK_ITEM) {
             // Check if view is recyclable
             if (convertView != null) {
-                listViewItem = (ListViewItem)convertView;
+                listViewItem = (ListViewItem) convertView;
                 listViewItem.setTrack(mContext, currentTrack, position == mCurrentPlayingIndex);
             } else {
                 listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
             }
         } else {
             // Check if view is recyclable
-            if (convertView != null){
-                listViewItem = (ListViewItem)convertView;
+            if (convertView != null) {
+                listViewItem = (ListViewItem) convertView;
                 listViewItem.setTrack(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
-            }else {
+            } else {
                 listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
             }
-            listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
+            if ( !mHideArtwork ) {
+                listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
+            } else {
+                // Instead reset image
+                listViewItem.setImage(null);
+            }
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
             if (mScrollSpeed == 0) {
@@ -207,6 +228,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     public void updateState(NowPlayingInformation info) {
         mCurrentPlayingIndex = info.getPlayingIndex();
         mPlaylistSize = info.getPlaylistLength();
+        mTrackCache.evictAll();
         notifyDataSetChanged();
     }
 
