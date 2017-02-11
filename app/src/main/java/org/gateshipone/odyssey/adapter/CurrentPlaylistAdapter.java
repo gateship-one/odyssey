@@ -25,16 +25,13 @@ package org.gateshipone.odyssey.adapter;
 import android.content.Context;
 import android.os.RemoteException;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
-import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
@@ -77,7 +74,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
         }
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
-        mTrackCache = new LruCache<>(250);
+        mTrackCache = new LruCache<>(CACHE_SIZE);
     }
 
     /**
