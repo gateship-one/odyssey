@@ -44,18 +44,6 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 public class ListViewItem extends GenericImageViewItem {
 
     /**
-     * Enum that specifies the current type of the item.
-     */
-    public enum LISTVIEWTYPE {
-        SIMPLE_TRACK_ITEM,
-        SECTION_TRACK_ITEM,
-        IMAGE_ITEM,
-        BOOKMARK_ITEM,
-        PLAYLIST_ITEM,
-        FILE_ITEM
-    }
-
-    /**
      * TextView for the title of the item.
      */
     private TextView mTitleView;
@@ -79,11 +67,6 @@ public class ListViewItem extends GenericImageViewItem {
      * TextView for the section title of the item.
      */
     private TextView mSectionTitleView;
-
-    /**
-     * The type of the item.
-     */
-    private LISTVIEWTYPE mViewType;
 
     /**
      * Base constructor to create a non section-type element.
@@ -134,8 +117,6 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_image, R.id.item_image, R.id.item_image_switcher, adapter);
 
-        mViewType = LISTVIEWTYPE.IMAGE_ITEM;
-
         mTitleView = (TextView) findViewById(R.id.item_title);
         mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
         mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
@@ -161,8 +142,6 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final TrackModel track, final String sectionTitle, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
         this(context, adapter);
 
-        mViewType = LISTVIEWTYPE.SECTION_TRACK_ITEM;
-
         setTrack(context, track, sectionTitle, isPlaying);
     }
 
@@ -177,8 +156,6 @@ public class ListViewItem extends GenericImageViewItem {
      */
     public ListViewItem(final Context context, final TrackModel track, final ScrollSpeedAdapter adapter) {
         this(context, false, adapter);
-
-        mViewType = LISTVIEWTYPE.SIMPLE_TRACK_ITEM;
 
         setTrack(context, track);
     }
@@ -196,8 +173,6 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final TrackModel track, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
         this(context, false, adapter);
 
-        mViewType = LISTVIEWTYPE.SIMPLE_TRACK_ITEM;
-
         setTrack(context, track, isPlaying);
     }
 
@@ -213,8 +188,6 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final FileModel file, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
 
-        mViewType = LISTVIEWTYPE.FILE_ITEM;
-
         setFile(context, file);
     }
 
@@ -229,8 +202,6 @@ public class ListViewItem extends GenericImageViewItem {
      */
     public ListViewItem(final Context context, final PlaylistModel playlist, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
-
-        mViewType = LISTVIEWTYPE.PLAYLIST_ITEM;
 
         setPlaylist(context, playlist);
 
@@ -250,8 +221,6 @@ public class ListViewItem extends GenericImageViewItem {
      */
     public ListViewItem(final Context context, final BookmarkModel bookmark, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
-
-        mViewType = LISTVIEWTYPE.BOOKMARK_ITEM;
 
         setBookmark(context, bookmark);
     }
@@ -420,15 +389,6 @@ public class ListViewItem extends GenericImageViewItem {
         setSubtitle(lastModifiedDateString);
 
         setIcon(icon);
-    }
-
-    /**
-     * Getter for the view type of the item.
-     *
-     * @return The view type of the item as a LISTVIEWTYPE
-     */
-    public LISTVIEWTYPE getViewType() {
-        return mViewType;
     }
 
     /**
