@@ -38,7 +38,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     private static final int CACHE_SIZE = 250;
     private static final String TAG = CurrentPlaylistAdapter.class.getSimpleName();
 
-    private enum VIEW_TYPES {
+    public enum VIEW_TYPES {
         TYPE_TRACK_ITEM,
         TYPE_SECTION_TRACK_ITEM,
         TYPE_COUNT

@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -64,6 +63,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
 import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
 import org.gateshipone.odyssey.fragments.ArtworkSettingsFragment;
@@ -83,7 +83,6 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -93,7 +92,6 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
@@ -473,12 +471,19 @@ public class OdysseyMainActivity extends AppCompatActivity
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu_current_playlist, menu);
 
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
             try {
-                if (mServiceConnection.getPBS().getCurrentIndex() == ((AdapterView.AdapterContextMenuInfo) menuInfo).position) {
+                if (mServiceConnection.getPBS().getCurrentIndex() == info.position) {
                     menu.findItem(R.id.view_current_playlist_action_playnext).setVisible(false);
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
+            }
+
+            CurrentPlaylistView currentPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
+            if (currentPlaylistView.getItemViewType(info.position) == CurrentPlaylistAdapter.VIEW_TYPES.TYPE_SECTION_TRACK_ITEM) {
+                menu.findItem(R.id.view_current_playlist_action_remove_section).setVisible(true);
             }
         }
     }
@@ -498,8 +503,11 @@ public class OdysseyMainActivity extends AppCompatActivity
                 case R.id.view_current_playlist_action_playnext:
                     currentPlaylistView.enqueueTrackAsNext(info.position);
                     return true;
-                case R.id.view_current_playlist_action_remove:
+                case R.id.view_current_playlist_action_remove_track:
                     currentPlaylistView.removeTrack(info.position);
+                    return true;
+                case R.id.view_current_playlist_action_remove_section:
+                    currentPlaylistView.removeSection(info.position);
                     return true;
                 case R.id.view_current_playlist_action_showalbum: {
                     String albumKey = currentPlaylistView.getAlbumKey(info.position);

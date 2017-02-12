@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.playbackservice;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 import android.app.AlarmManager;
@@ -972,6 +973,97 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
+    }
+
+    /**
+     * Dequeues a section from a playlist
+     * A section is defined as a bunch of tracks from the same album.
+     *
+     * @param index start position of the section to remove
+     */
+    public void dequeueTracks(int index) {
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
+
+        int endIndex = index + 1;
+
+        String albumKey = mCurrentList.get(index).getTrackAlbumKey();
+
+        // get endindex for section
+        while (endIndex < mCurrentList.size()) {
+            if (albumKey.equals(mCurrentList.get(endIndex).getTrackAlbumKey())) {
+                endIndex++;
+            } else {
+                break;
+            }
+        }
+
+        if (mCurrentPlayingIndex >= index && mCurrentPlayingIndex < endIndex) {
+            // current song is in section so stop playing
+            stop();
+
+            // remove section and update endindex accordingly
+            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+
+            while (iterator.hasNext()) {
+                TrackModel track = iterator.next();
+
+                if (albumKey.equals(track.getTrackAlbumKey())) {
+                    iterator.remove();
+                    endIndex--;
+                } else {
+                    break;
+                }
+            }
+
+            // Jump to next song which should be at endIndex now
+            // Jump is secured to check playlist bounds
+            jumpToIndex(endIndex);
+        } else if ((mCurrentPlayingIndex + 1) == index) {
+            // Deletion of next song which requires extra handling
+            // because of gapless playback, set next song to next one
+
+            // remove section
+            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+
+            while (iterator.hasNext()) {
+                TrackModel track = iterator.next();
+
+                if (albumKey.equals(track.getTrackAlbumKey())) {
+                    iterator.remove();
+                } else {
+                    break;
+                }
+            }
+
+            setNextTrackForMP();
+        } else if (index >= 0 && index < mCurrentList.size()) {
+            // check if section is before current song
+            boolean beforeCurrentTrack = endIndex <= mCurrentPlayingIndex;
+
+            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+
+            while (iterator.hasNext()) {
+                TrackModel track = iterator.next();
+
+                if (albumKey.equals(track.getTrackAlbumKey())) {
+                    iterator.remove();
+                    if (beforeCurrentTrack) {
+                        // if section is before current song update mCurrentPlayingIndex and mNextPlayingIndex
+                        mCurrentPlayingIndex--;
+                        mNextPlayingIndex--;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // Send new NowPlaying because playlist changed
+        mPlaybackServiceStatusHelper.updateStatus();
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
     }
 
     /**

@@ -99,24 +99,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void dequeueTrack(TrackModel track) throws RemoteException {
-        // Create dequeuetrack control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACK, track);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void dequeueTracks(List<TrackModel> tracks) throws RemoteException {
-        // Create dequeuetracks control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACKS, (ArrayList<TrackModel>) tracks);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
     public void getCurrentList(List<TrackModel> list) throws RemoteException {
         for (TrackModel track : mService.get().getCurrentList()) {
             list.add(track);
@@ -263,8 +245,16 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void dequeueTrackIndex(int index) throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUEINDEX, index);
+    public void dequeueTrack(int index) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACK, index);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void dequeueTracks(int index) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACKS, index);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

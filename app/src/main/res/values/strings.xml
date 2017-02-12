@@ -108,6 +108,7 @@
     <string name="context_menu_action_showartist">Show artist</string>
     <string name="context_menu_action_showalbum">Show album</string>
     <string name="context_menu_action_removetrack">Remove track</string>
+    <string name="context_menu_action_removesection">Remove section</string>
     <string name="context_menu_action_playplaylist">Play playlist</string>
     <string name="context_menu_action_enqueueplaylist">Add playlist</string>
     <string name="context_menu_action_deleteplaylist">Delete playlist</string>

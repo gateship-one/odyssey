@@ -103,6 +103,16 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     }
 
     /**
+     * Return the type (section track or normal track) of the view for the selected item.
+     *
+     * @param position The position of the selected item.
+     * @return The {@link CurrentPlaylistAdapter.VIEW_TYPES} of the view for the selected item.
+     */
+    public CurrentPlaylistAdapter.VIEW_TYPES getItemViewType(int position) {
+        return CurrentPlaylistAdapter.VIEW_TYPES.values()[mCurrentPlaylistAdapter.getItemViewType(position)];
+    }
+
+    /**
      * The playlist has changed so update the view.
      */
     public void playlistChanged(NowPlayingInformation info) {
@@ -118,7 +128,21 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void removeTrack(int position) {
         try {
-            mPlaybackServiceConnection.getPBS().dequeueTrackIndex(position);
+            mPlaybackServiceConnection.getPBS().dequeueTrack(position);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Removes the selected section from the playlist.
+     *
+     * @param position The position of the section in the playlist.
+     */
+    public void removeSection(int position) {
+        try {
+            mPlaybackServiceConnection.getPBS().dequeueTracks(position);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -170,7 +194,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
 
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;
-        if ( mCurrentPlaylistAdapter != null ) {
+        if (mCurrentPlaylistAdapter != null) {
             mCurrentPlaylistAdapter.hideArtwork(enable);
         }
     }

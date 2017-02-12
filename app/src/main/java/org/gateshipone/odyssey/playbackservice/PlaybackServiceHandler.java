@@ -89,11 +89,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().enqueueTracks(msgObj.getTrackList());
                     break;
                 case ODYSSEY_DEQUEUETRACK:
-                    break;
-                case ODYSSEY_DEQUEUEINDEX:
                     mService.get().dequeueTrack(msgObj.getIntParam());
                     break;
                 case ODYSSEY_DEQUEUETRACKS:
+                    mService.get().dequeueTracks(msgObj.getIntParam());
                     break;
                 case ODYSSEY_SETNEXTRACK:
                     break;
