@@ -959,14 +959,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             jumpToIndex(index);
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
-            // because of gapless playback, set next song to next on
+            // because of gapless playback, set next song to next one
             mCurrentList.remove(index);
             setNextTrackForMP();
         } else if (index >= 0 && index < mCurrentList.size()) {
             mCurrentList.remove(index);
-            // mCurrentIndex is now moved one position up so set variable
+            // mCurrentIndex and mNextPlayingIndex is now moved one position up so update variables
             if (index < mCurrentPlayingIndex) {
                 mCurrentPlayingIndex--;
+                mNextPlayingIndex--;
             }
         }
         // Send new NowPlaying because playlist changed
