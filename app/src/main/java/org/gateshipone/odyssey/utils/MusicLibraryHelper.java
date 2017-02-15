@@ -49,7 +49,7 @@ public class MusicLibraryHelper {
     public static final String[] projectionArtists = {MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
 
     public static final String[] projectionTracks = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.TRACK, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.IS_PODCAST};
+            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID};
 
     public static final String[] projectionPlaylistTracks = {MediaStore.Audio.Playlists.Members.TITLE, MediaStore.Audio.Playlists.Members.DISPLAY_NAME, MediaStore.Audio.Playlists.Members.TRACK, MediaStore.Audio.Playlists.Members.ALBUM_KEY,
             MediaStore.Audio.Playlists.Members.DURATION, MediaStore.Audio.Playlists.Members.ALBUM, MediaStore.Audio.Playlists.Members.ARTIST, MediaStore.Audio.Playlists.Members.DATA, MediaStore.Audio.Playlists.Members._ID, MediaStore.Audio.Playlists.Members.AUDIO_ID};
@@ -95,7 +95,6 @@ public class MusicLibraryHelper {
 
         return artistID;
     }
-
 
     /**
      * Return an album model created by the given album key.
@@ -273,21 +272,107 @@ public class MusicLibraryHelper {
         return playlistTracks;
     }
 
+    public static List<AlbumModel> getRecentAlbums(Context context) {
+        List<AlbumModel> recentAlbums = new ArrayList<>();
+
+        // get recent tracks
+        // filter non music and tracks older than 4 weeks
+        long fourWeeksAgo = (System.currentTimeMillis() / 1000) - (4 * 3600 * 24 * 7);
+
+        String whereVal[] = {"1", String.valueOf(fourWeeksAgo)};
+
+        String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?" + ") GROUP BY (" + MediaStore.Audio.Media.ALBUM_KEY;
+
+        Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
+
+        // get all albums
+        Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
+
+        if (recentTracksCursor != null && albumsCursor != null) {
+            if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
+
+                int albumKeyColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
+                int albumTitleColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
+                int imagePathColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+                int artistTitleColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+                int albumIDColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+
+                int recentTracksAlbumKeyColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
+
+                do {
+                    if (albumsCursor.getString(albumKeyColumnIndex).equals(recentTracksCursor.getString(recentTracksAlbumKeyColumnIndex))) {
+                        String albumKey = albumsCursor.getString(albumKeyColumnIndex);
+                        String albumTitle = albumsCursor.getString(albumTitleColumnIndex);
+                        String imagePath = albumsCursor.getString(imagePathColumnIndex);
+                        String artistTitle = albumsCursor.getString(artistTitleColumnIndex);
+                        long albumID = albumsCursor.getLong(albumIDColumnIndex);
+
+                        // add the album
+                        recentAlbums.add(new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID));
+
+                        if (!recentTracksCursor.moveToNext()) {
+                            break;
+                        }
+                    }
+
+                } while (albumsCursor.moveToNext());
+            }
+        }
+
+        return recentAlbums;
+    }
+
+    public static List<TrackModel> getRecentTracks(Context context) {
+        List<TrackModel> recentTracks = new ArrayList<>();
+
+        // filter non music and tracks older than 4 weeks
+        long fourWeeksAgo = (System.currentTimeMillis() / 1000) - (4 * 3600 * 24 * 7);
+
+        String whereVal[] = {"1", String.valueOf(fourWeeksAgo)};
+
+        String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?";
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY + " COLLATE NOCASE");
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+
+                do {
+                    String trackName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                    int number = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                    String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                    // add the track
+                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        return recentTracks;
+    }
+
     /**
      * Return a list of all tracks in the mediastore.
      */
     public static List<TrackModel> getAllTracks(Context context) {
         List<TrackModel> allTracks = new ArrayList<>();
 
-        // filter podcasts
-        String whereVal[] = {"0"};
+        // filter non music
+        String whereVal[] = {"1"};
 
-        String where = MediaStore.Audio.Media.IS_PODCAST + "=?";
+        String where = MediaStore.Audio.Media.IS_MUSIC + "=?";
 
         Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, MediaStore.Audio.Media.TITLE + " COLLATE NOCASE");
 
         if (cursor != null) {
-            // add all tracks to playlist
             if (cursor.moveToFirst()) {
 
                 do {
