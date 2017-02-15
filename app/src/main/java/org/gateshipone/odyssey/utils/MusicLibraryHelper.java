@@ -332,7 +332,7 @@ public class MusicLibraryHelper {
 
         String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?";
 
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY + " COLLATE NOCASE");
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

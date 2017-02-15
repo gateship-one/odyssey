@@ -42,16 +42,23 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
      */
     private final long mArtistID;
 
-    public AlbumLoader(Context context) {
-        super(context);
-        mContext = context;
-        mArtistID = -1;
-    }
+    /**
+     * Load only the recent albums.
+     */
+    private final boolean mLoadRecent;
 
     public AlbumLoader(Context context, long artist) {
         super(context);
         mContext = context;
         mArtistID = artist;
+        mLoadRecent = false;
+    }
+
+    public AlbumLoader(Context context, boolean loadRecent) {
+        super(context);
+        mContext = context;
+        mArtistID = -1;
+        mLoadRecent = loadRecent;
     }
 
     /**
@@ -60,8 +67,13 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
     @Override
     public List<AlbumModel> loadInBackground() {
         if (mArtistID == -1) {
-            // load all albums
-            return MusicLibraryHelper.getAllAlbums(mContext);
+            if (mLoadRecent) {
+                // load recent albums
+                return MusicLibraryHelper.getRecentAlbums(mContext);
+            } else {
+                // load all albums
+                return MusicLibraryHelper.getAllAlbums(mContext);
+            }
         } else {
             // load all albums from the given artist
 

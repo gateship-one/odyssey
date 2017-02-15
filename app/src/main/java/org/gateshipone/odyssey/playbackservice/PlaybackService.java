@@ -861,6 +861,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mBusy = false;
     }
 
+    public void enqueueRecentAlbums() {
+        // TODO check if this is working properly
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
+
+        List<TrackModel> tracks = MusicLibraryHelper.getRecentTracks(getApplicationContext());
+
+        enqueueTracks(tracks);
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
+    }
+
     /**
      * Enqueue all tracks of an artist identified by the artistId.
      *

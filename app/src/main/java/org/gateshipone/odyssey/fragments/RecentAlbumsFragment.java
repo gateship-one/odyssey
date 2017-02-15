@@ -23,10 +23,14 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,15 +38,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumsFragment extends GenericAlbumsFragment {
+public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * Listener to open an artist
@@ -56,7 +62,33 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        setHasOptionsMenu(true);
+
+        return rootView;
+    }
+
+    /**
+     * Called when the fragment resumes.
+     * <p/>
+     * Set up toolbar and play button.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_recent_albums), false, true, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playAllAlbums();
+                }
+            });
+        }
     }
 
     /**
@@ -84,8 +116,8 @@ public class AlbumsFragment extends GenericAlbumsFragment {
      */
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        // all albums
-        return new AlbumLoader(getActivity(), false);
+        // recents albums
+        return new AlbumLoader(getActivity(), true);
     }
 
     /**
@@ -128,6 +160,47 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     }
 
     /**
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
+     *
+     * @param menu         The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        // TODO use own optionsmenu
+        menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
+
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+        Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+        menu.findItem(R.id.action_add_playlist_tracks).setIcon(drawable);
+
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_playlist_tracks:
+                enqueueAllAlbums();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
      * Open a fragment for the artist of the selected album.
      *
      * @param position the position of the selected album in the adapter
@@ -142,5 +215,34 @@ public class AlbumsFragment extends GenericAlbumsFragment {
 
         // Send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
+    }
+
+    private void enqueueAllAlbums() {
+        try {
+            mServiceConnection.getPBS().enqueueRecentAlbums();
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private void playAllAlbums() {
+        // Remove old tracks
+        try {
+            mServiceConnection.getPBS().clearPlaylist();
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        enqueueAllAlbums();
+
+        // play recent albums
+        try {
+            mServiceConnection.getPBS().jumpTo(0);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
