@@ -47,17 +47,18 @@ public class AlbumModel implements GenericModel, Parcelable {
      */
     private final String mAlbumKey;
 
+    /**
+     * The date as an integer when this album was added to the device
+     */
+    private final int mDateAdded;
+
     private long mAlbumID;
 
     private String mMBID;
 
     private boolean mImageFetching;
 
-
-    /**
-     * Constructs a AlbumModel instance with the given parameters.
-     */
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
+    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID, int dateAdded) {
         if (name != null) {
             mAlbumName = name;
         } else {
@@ -83,34 +84,38 @@ public class AlbumModel implements GenericModel, Parcelable {
         }
 
         mAlbumID = albumID;
+
+        mDateAdded = dateAdded;
     }
 
+    /**
+     * Constructs a AlbumModel instance with the given parameters.
+     */
+    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
+        this(name, albumArtURL, artistName, albumKey, albumID, -1);
+    }
+
+    /**
+     * Constructs a AlbumModel from a Parcel.
+     * <p>
+     * see {@link Parcelable}
+     */
     protected AlbumModel(Parcel in) {
         mAlbumName = in.readString();
         mAlbumArtURL = in.readString();
         mArtistName = in.readString();
         mAlbumKey = in.readString();
+        mDateAdded = in.readInt();
         mAlbumID = in.readLong();
         mMBID = in.readString();
         mImageFetching = in.readByte() != 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mAlbumName);
-        dest.writeString(mAlbumArtURL);
-        dest.writeString(mArtistName);
-        dest.writeString(mAlbumKey);
-        dest.writeLong(mAlbumID);
-        dest.writeString(mMBID);
-        dest.writeByte((byte) (mImageFetching ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
+    /**
+     * Provide CREATOR field that generates a AlbumModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
     public static final Creator<AlbumModel> CREATOR = new Creator<AlbumModel>() {
         @Override
         public AlbumModel createFromParcel(Parcel in) {
@@ -149,6 +154,10 @@ public class AlbumModel implements GenericModel, Parcelable {
      */
     public String getAlbumKey() {
         return mAlbumKey;
+    }
+
+    public int getDateAdded() {
+        return mDateAdded;
     }
 
     public long getAlbumID() {
@@ -207,5 +216,31 @@ public class AlbumModel implements GenericModel, Parcelable {
         return mImageFetching;
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    /**
+     * Flatten this object in to a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mAlbumName);
+        dest.writeString(mAlbumArtURL);
+        dest.writeString(mArtistName);
+        dest.writeString(mAlbumKey);
+        dest.writeInt(mDateAdded);
+        dest.writeLong(mAlbumID);
+        dest.writeString(mMBID);
+        dest.writeByte((byte) (mImageFetching ? 1 : 0));
+    }
 }

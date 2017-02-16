@@ -68,9 +68,11 @@ public class TrackModel implements GenericModel, Parcelable {
     private final long mTrackId;
 
     /**
-     * Constructs a TrackModel instance with the given parameters.
+     * The date as an integer when this track was added to the device
      */
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
+    private final int mDateAdded;
+
+    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId, int dateAdded) {
         if (name != null) {
             mTrackName = name;
         } else {
@@ -103,21 +105,57 @@ public class TrackModel implements GenericModel, Parcelable {
         }
 
         mTrackId = trackId;
+
+        mDateAdded = dateAdded;
+    }
+
+    /**
+     * Constructs a TrackModel instance with the given parameters.
+     */
+    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
+        this(name, artistName, albumName, albumKey, duration, trackNumber, url, trackId, -1);
     }
 
     /**
      * Constructs a TrackModel with default values
      */
     public TrackModel() {
-        mTrackName = "";
-        mTrackArtistName = "";
-        mTrackAlbumName = "";
-        mTrackAlbumKey = "";
-        mTrackDuration = 0;
-        mTrackNumber = 0;
-        mTrackURL = "";
-        mTrackId = -1;
+        this(null, null, null, null, 0, 0, null, -1, -1);
     }
+
+    /**
+     * Constructs a TrackModel from a Parcel.
+     * <p>
+     * see {@link Parcelable}
+     */
+    protected TrackModel(Parcel in) {
+        mTrackName = in.readString();
+        mTrackArtistName = in.readString();
+        mTrackAlbumName = in.readString();
+        mTrackAlbumKey = in.readString();
+        mTrackURL = in.readString();
+        mTrackDuration = in.readLong();
+        mTrackNumber = in.readInt();
+        mTrackId = in.readLong();
+        mDateAdded = in.readInt();
+    }
+
+    /**
+     * Provide CREATOR field that generates a TrackModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    public static final Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
+        @Override
+        public TrackModel createFromParcel(Parcel in) {
+            return new TrackModel(in);
+        }
+
+        @Override
+        public TrackModel[] newArray(int size) {
+            return new TrackModel[size];
+        }
+    };
 
     /**
      * Return the name of the track
@@ -156,6 +194,7 @@ public class TrackModel implements GenericModel, Parcelable {
 
     /**
      * Set the duration of the track
+     *
      * @param trackDuration the new duration in ms
      */
     public void setTrackDuration(long trackDuration) {
@@ -191,6 +230,10 @@ public class TrackModel implements GenericModel, Parcelable {
     @Override
     public String getSectionTitle() {
         return mTrackName;
+    }
+
+    public int getDateAdded() {
+        return mDateAdded;
     }
 
     /**
@@ -235,37 +278,11 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeString(mTrackName);
         dest.writeString(mTrackArtistName);
         dest.writeString(mTrackAlbumName);
-        dest.writeString(mTrackURL);
-        dest.writeInt(mTrackNumber);
-        dest.writeLong(mTrackDuration);
         dest.writeString(mTrackAlbumKey);
+        dest.writeString(mTrackURL);
+        dest.writeLong(mTrackDuration);
+        dest.writeInt(mTrackNumber);
         dest.writeLong(mTrackId);
+        dest.writeInt(mDateAdded);
     }
-
-    /**
-     * Provide CREATOR field that generates a TrackModel instance from a Parcel.
-     * <p/>
-     * see {@link Parcelable}
-     */
-    public static Parcelable.Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
-
-        @Override
-        public TrackModel[] newArray(int size) {
-            return new TrackModel[size];
-        }
-
-        @Override
-        public TrackModel createFromParcel(Parcel source) {
-            String trackName = source.readString();
-            String artistName = source.readString();
-            String albumName = source.readString();
-            String url = source.readString();
-            int number = source.readInt();
-            long duration = source.readLong();
-            String albumKey = source.readString();
-            long trackId = source.readLong();
-
-            return new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, trackId);
-        }
-    };
 }

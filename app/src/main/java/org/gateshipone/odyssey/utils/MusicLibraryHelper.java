@@ -35,6 +35,9 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MusicLibraryHelper {
@@ -49,7 +52,7 @@ public class MusicLibraryHelper {
     public static final String[] projectionArtists = {MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
 
     public static final String[] projectionTracks = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.TRACK, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID};
+            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATE_ADDED};
 
     public static final String[] projectionPlaylistTracks = {MediaStore.Audio.Playlists.Members.TITLE, MediaStore.Audio.Playlists.Members.DISPLAY_NAME, MediaStore.Audio.Playlists.Members.TRACK, MediaStore.Audio.Playlists.Members.ALBUM_KEY,
             MediaStore.Audio.Playlists.Members.DURATION, MediaStore.Audio.Playlists.Members.ALBUM, MediaStore.Audio.Playlists.Members.ARTIST, MediaStore.Audio.Playlists.Members.DATA, MediaStore.Audio.Playlists.Members._ID, MediaStore.Audio.Playlists.Members.AUDIO_ID};
@@ -283,7 +286,7 @@ public class MusicLibraryHelper {
 
         String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?" + ") GROUP BY (" + MediaStore.Audio.Media.ALBUM_KEY;
 
-        Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
+        Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DATE_ADDED}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
 
         // get all albums
         Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
@@ -298,6 +301,7 @@ public class MusicLibraryHelper {
                 int albumIDColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums._ID);
 
                 int recentTracksAlbumKeyColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
+                int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
 
                 do {
                     if (albumsCursor.getString(albumKeyColumnIndex).equals(recentTracksCursor.getString(recentTracksAlbumKeyColumnIndex))) {
@@ -307,8 +311,10 @@ public class MusicLibraryHelper {
                         String artistTitle = albumsCursor.getString(artistTitleColumnIndex);
                         long albumID = albumsCursor.getLong(albumIDColumnIndex);
 
+                        int dateInMillis = recentTracksCursor.getInt(recentTracksDateAddedColumnIndex);
+
                         // add the album
-                        recentAlbums.add(new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID));
+                        recentAlbums.add(new AlbumModel(albumTitle, imagePath, artistTitle, albumKey, albumID, dateInMillis));
 
                         if (!recentTracksCursor.moveToNext()) {
                             break;
@@ -318,6 +324,22 @@ public class MusicLibraryHelper {
                 } while (albumsCursor.moveToNext());
             }
         }
+
+        // sort the recent albums
+        Collections.sort(recentAlbums, new Comparator<AlbumModel>() {
+            @Override
+            public int compare(AlbumModel o1, AlbumModel o2) {
+                // sort by date descending
+                if (o1.getDateAdded() < o2.getDateAdded()) {
+                    return 1;
+                } else if (o1.getDateAdded() == o2.getDateAdded()) {
+                    // if equal date sort by key
+                    return o1.getAlbumKey().compareTo(o2.getAlbumKey());
+                } else {
+                    return -1;
+                }
+            }
+        });
 
         return recentAlbums;
     }
@@ -346,15 +368,43 @@ public class MusicLibraryHelper {
                     String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                    int dateAdded = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
 
                     // add the track
-                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id, dateAdded));
 
                 } while (cursor.moveToNext());
             }
 
             cursor.close();
         }
+
+        Collections.sort(recentTracks, new Comparator<TrackModel>() {
+            @Override
+            public int compare(TrackModel o1, TrackModel o2) {
+                // sort tracks by albumkey
+                if (o1.getTrackAlbumKey().equals(o2.getTrackAlbumKey())) {
+                    // sort by tracknumber
+                    if (o1.getTrackNumber() < o2.getTrackNumber()) {
+                        return -1;
+                    } else if (o1.getTrackNumber() == o2.getTrackNumber()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    // sort tracks by date descending
+                    if (o1.getDateAdded() < o2.getDateAdded()) {
+                        return 1;
+                    } else if (o1.getDateAdded() == o2.getDateAdded()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        });
+
 
         return recentTracks;
     }
