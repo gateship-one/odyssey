@@ -242,7 +242,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
         if (networkInfo == null) {
             return false;
         } else {
-            boolean isWifi = cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI || cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET;
+            boolean isWifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
 
             return !(mWifiOnly && !isWifi);
         }
