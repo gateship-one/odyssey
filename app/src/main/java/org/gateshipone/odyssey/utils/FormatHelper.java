@@ -64,6 +64,21 @@ public class FormatHelper {
     }
 
     /**
+     * Helper method to format the mediastore track number to a disc number string
+     *
+     * @param trackNumber the tracknumber from the mediastore
+     * @return the formatted string, usable in the ui
+     */
+    public static String formatDiscNumber(final int trackNumber) {
+
+        if (trackNumber == -1) {
+            return "";
+        }
+
+        return String.format("%02d", trackNumber / 1000);
+    }
+
+    /**
      * Helper method to format the mediastore track number to a track number string
      *
      * @param trackNumber the tracknumber from the mediastore
@@ -75,14 +90,7 @@ public class FormatHelper {
             return "";
         }
 
-        String trackNumberString = String.valueOf(trackNumber);
-
-        // mediastore combines track and cd number in one string so cut off the first two literals
-        if (trackNumberString.length() >= 4) {
-            trackNumberString = trackNumberString.substring(2);
-        }
-
-        return trackNumberString;
+        return String.format("%02d", trackNumber % 1000);
     }
 
     /**
