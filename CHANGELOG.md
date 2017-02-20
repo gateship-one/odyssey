@@ -5,6 +5,8 @@
 * Podcast filtering
 * Song sharing in NowPlayingView
 * Add option to remove an entire section from the current playlist
+* Show disc number if album contains more than one disc
+* Add french translation (thanks to KowalskiOmniROM)
 
 ### Version: 1.1.3 Tag: release-15 (2017-01-23) ###
 * Add option to trigger a mediascan in the file browser for the current folder.
