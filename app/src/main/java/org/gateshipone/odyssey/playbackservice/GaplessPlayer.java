@@ -563,10 +563,6 @@ public class GaplessPlayer {
         public void onCompletion(MediaPlayer mp) {
             // Sequentially execute all critical operations on the MP objects
             synchronized (GaplessPlayer.this) {
-                // Check if the callback happened from the current media player
-                if(!mp.equals(mCurrentMediaPlayer)) {
-                    return;
-                }
                 // Get audio session id to close the audioFX session
                 int audioSessionID = mp.getAudioSessionId();
 
