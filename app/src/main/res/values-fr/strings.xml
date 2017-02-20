@@ -21,7 +21,6 @@
   -->
 
 <resources>
-    <string name="app_name">Odyssey</string>
 
     <!-- permission request -->
     <string name="permission_request_snackbar_explanation">Autorisation \"Stockage\" nécessaire pour pouvoir charger les fichiers de musique</string>
@@ -254,4 +253,5 @@
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licences tierces</string>
+    <string name="contributor_translator_french">Traduction française</string>
 </resources>
