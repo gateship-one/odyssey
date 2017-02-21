@@ -1,4 +1,4 @@
 - Hendrik Borghorst - Team Gateship One
 - Frederik Lütkes - Team Gateship One
 - Alessandra Ghiazza - Italian Translation
-- KowalskiOmniROM (GitHub user) - French Translation
+- Kévin Minions - French Translation
