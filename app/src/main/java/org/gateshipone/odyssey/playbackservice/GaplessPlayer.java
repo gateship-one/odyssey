@@ -599,18 +599,13 @@ public class GaplessPlayer {
 
                 // Reset the current MediaPlayer variable
                 mCurrentMediaPlayer = null;
-                /*
-                 * Signal android desire to close audio effect session
-                 */
-                Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-                audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
-                audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-                mPlaybackService.sendBroadcast(audioEffectIntent);
 
                 // Notify connected listeners that the last track is now finished
                 for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
                     listener.onTrackFinished();
                 }
+
+                mp.release();
 
                 // Set current MP to next MP if one is ready
                 if (mNextMediaPlayer != null && (mSecondPrepared || mSecondPreparing)) {
@@ -627,23 +622,30 @@ public class GaplessPlayer {
                     mNextMediaPlayer = null;
 
                     if (mSecondPrepared) {
-                    /*
-                     * Signal audio effect desire to android
-                    */
-                        Intent audioEffectOpenIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-                        audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-                        audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-                        mPlaybackService.sendBroadcast(audioEffectOpenIntent);
                         mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
 
                         // Notify connected listeners that playback has started
                         for (OnTrackStartedListener listener : mTrackStartListeners) {
                             listener.onTrackStarted(mPrimarySource);
                         }
+                    } else {
+                        /*
+                         * Signal android desire to close audio effect session
+                         */
+                        Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                        audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
+                        audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                        mPlaybackService.sendBroadcast(audioEffectIntent);
                     }
+                } else {
+                    /*
+                     * Signal android desire to close audio effect session
+                     */
+                    Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                    mPlaybackService.sendBroadcast(audioEffectIntent);
                 }
-
-                mp.release();
             }
         }
     }
