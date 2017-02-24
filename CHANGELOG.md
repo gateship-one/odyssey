@@ -1,12 +1,13 @@
-### Version: 1.1.4 Tag: release-16 (2017-xx-yy) ###
+### Version: 1.1.4 Tag: release-16 (2017-02-24) ###
 * Optionally show artist image alternating to cover image in NowPlayingView
 * Option to reload album / artist image in the corresponing fragments
 * Fixes in FileBrowser when filtering is active
-* Podcast filtering
+* Non music filtering
 * Song sharing in NowPlayingView
 * Add option to remove an entire section from the current playlist
 * Show disc number if album contains more than one disc
 * Add french translation (thanks to Kévin Minions)
+* Fix rare GaplessPlayer crash ([Issue #48](https://github.com/gateship-one/odyssey/issues/48)) 
 
 ### Version: 1.1.3 Tag: release-15 (2017-01-23) ###
 * Add option to trigger a mediascan in the file browser for the current folder.
