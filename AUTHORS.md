@@ -1,3 +1,4 @@
 - Hendrik Borghorst - Team Gateship One
 - Frederik Lütkes - Team Gateship One
 - Alessandra Ghiazza - Italian Translation
+- Kévin Minions - French Translation

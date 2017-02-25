@@ -25,12 +25,14 @@
         <item>Hendrik Borghorst</item>
         <item>Frederik Lütkes</item>
         <item>Alessandra Ghiazza</item>
+        <item>Kévin Minions</item>
     </string-array>
 
     <string-array name="odyssey_contributors_type">
         <item>@string/contributor_team</item>
         <item>@string/contributor_team</item>
         <item>@string/contributor_translator_italian</item>
+        <item>@string/contributor_translator_french</item>
     </string-array>
 
     <string-array name="preference_artwork_artist_provider_entries">

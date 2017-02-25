@@ -21,7 +21,6 @@
   -->
 
 <resources>
-    <string name="app_name">Odyssey</string>
     <!-- permission request -->
     <string name="permission_request_snackbar_explanation">Per caricare dei file di musica è necessario il permesso di Storage.</string>
     <!-- nav drawer -->
@@ -175,4 +174,5 @@
     <string name="preference_library_view_message">Seleziona vista biblioteca</string>
     <string name="preference_library_view_title">Seleziona vista biblioteca</string>
     <string name="preference_library_view_summary">Selezionare il tipo di visualizzazione che viene utilizzato per gli album e gli artisti.</string>
+    <string name="contributor_translator_french">Traduzione in francese</string>
 </resources>

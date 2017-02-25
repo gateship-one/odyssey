@@ -31,14 +31,35 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
+import java.util.List;
+
 public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
 
     private final Context mContext;
 
+    private boolean mShowDiscNumber;
+
+    private final boolean mShouldShowDiscNumber;
+
     public TracksAdapter(Context context) {
+        this(context, false);
+    }
+
+    public TracksAdapter(Context context, boolean shouldShowDiscNumber) {
         super();
 
         mContext = context;
+        mShouldShowDiscNumber = shouldShowDiscNumber;
+    }
+
+    @Override
+    public void swapModel(List<TrackModel> data) {
+        super.swapModel(data);
+
+        // check if list contains multiple discs
+        if (mShouldShowDiscNumber && data != null && !data.isEmpty()) {
+            mShowDiscNumber = (data.get(0).getTrackNumber() / 1000) != (data.get(data.size() - 1).getTrackNumber() / 1000);
+        }
     }
 
     /**
@@ -58,10 +79,11 @@ public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
         // Check if a view can be recycled
         if (convertView != null) {
             listViewItem = (ListViewItem) convertView;
-            listViewItem.setTrack(mContext, track);
         } else {
-            listViewItem = new ListViewItem(mContext, track, this);
+            listViewItem = new ListViewItem(mContext, false, this);
         }
+
+        listViewItem.setAlbumTrack(mContext, track, mShowDiscNumber);
 
         return listViewItem;
     }

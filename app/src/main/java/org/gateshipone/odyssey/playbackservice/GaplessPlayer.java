@@ -196,7 +196,7 @@ public class GaplessPlayer {
      * the playback
      */
     public synchronized void togglePause() {
-        // Check if a Mediaplayer exits and if it is actual plaiyng
+        // Check if a Mediaplayer exits and if it is actual playing
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             // In this case pause the playback
             mCurrentMediaPlayer.pause();
@@ -214,7 +214,7 @@ public class GaplessPlayer {
      * Just pauses currently running player
      */
     public synchronized void pause() {
-        // Check if a Mediaplayer exits and if it is actual plaiyng
+        // Check if a MediaPlayer exits and if it is actual playing
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             mCurrentMediaPlayer.pause();
         }
@@ -231,7 +231,7 @@ public class GaplessPlayer {
     }
 
     /**
-     * Stops mediaplayback
+     * Stops media playback
      */
     public synchronized void stop() {
         // Check if a player exists otherwise there is nothing to do.
@@ -373,7 +373,7 @@ public class GaplessPlayer {
         if (mNextMediaPlayer != null) {
             // Remove this player from the currently active one as a next one
             mCurrentMediaPlayer.setNextMediaPlayer(null);
-            // Release the player that is not needed anylonger
+            // Release the player that is not needed any longer
             mNextMediaPlayer.release();
 
             // Reset internal state variables
@@ -429,48 +429,54 @@ public class GaplessPlayer {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
-            // If mp equals currentMediaPlayback it should start playing
-            mCurrentPrepared = true;
+            // Sequentially execute all critical operations on the MP objects
+            synchronized (GaplessPlayer.this) {
+                // Check if the callback happened from the current media player
+                if (!mp.equals(mCurrentMediaPlayer)) {
+                    return;
+                }
+                // If mp equals currentMediaPlayback it should start playing
+                mCurrentPrepared = true;
 
-            // only start playing if its desired
+                // only start playing if its desired
 
-            // Check if an immediate jump is requested
-            if (mPrepareTime > 0) {
-                mp.seekTo(mPrepareTime);
-                mPrepareTime = 0;
+                // Check if an immediate jump is requested
+                if (mPrepareTime > 0) {
+                    mp.seekTo(mPrepareTime);
+                    mPrepareTime = 0;
+                }
+                mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                mp.start();
+
+                /*
+                 * Signal audio effect desire to android
+                 */
+                Intent audioEffectIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+                audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+                audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                mPlaybackService.sendBroadcast(audioEffectIntent);
+                mp.setAuxEffectSendLevel(1.0f);
+
+                // Notify connected listeners
+                for (OnTrackStartedListener listener : mTrackStartListeners) {
+                    listener.onTrackStarted(mPrimarySource);
+                }
+
+                try {
+                    mSecondPreparingLock.acquire();
+                } catch (InterruptedException e) {
+                    // FIXME some handling? Not sure if necessary
+                }
+
+                // If second MediaPlayer exists and is not already prepared and not already preparing
+                // Start preparing the second MP here.
+                if (!mSecondPrepared && mNextMediaPlayer != null && !mSecondPreparing) {
+                    mSecondPreparing = true;
+                    // Delayed initialization second mediaplayer
+                    mNextMediaPlayer.prepareAsync();
+                }
+                mSecondPreparingLock.release();
             }
-            mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-            mp.start();
-
-            /*
-             * Signal audio effect desire to android
-             */
-            Intent audioEffectIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-            mPlaybackService.sendBroadcast(audioEffectIntent);
-            mp.setAuxEffectSendLevel(1.0f);
-            Log.v(TAG, "Opened audio effects for first player");
-
-            // Notify connected listeners
-            for (OnTrackStartedListener listener : mTrackStartListeners) {
-                listener.onTrackStarted(mPrimarySource);
-            }
-
-            try {
-                mSecondPreparingLock.acquire();
-            } catch (InterruptedException e) {
-                // FIXME some handling? Not sure if necessary
-            }
-
-            // If second MediaPlayer exists and is not already prepared and not already preparing
-            // Starte preparing the second MP here.
-            if (mSecondPrepared == false && mNextMediaPlayer != null && !mSecondPreparing) {
-                mSecondPreparing = true;
-                // Delayed initialization second mediaplayer
-                mNextMediaPlayer.prepareAsync();
-            }
-            mSecondPreparingLock.release();
         }
     };
 
@@ -478,18 +484,56 @@ public class GaplessPlayer {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
-            // Second MediaPlayer is now ready to be used and can be set as a next MediaPlayer to the current one
-            mSecondPreparing = false;
+            // Sequentially execute all critical operations on the MP objects
+            synchronized (GaplessPlayer.this) {
+                // Check if the callback happened from the current second media player, it can
+                // happen that callbacks are called when the MP is no longer relevant, abort then.
+                if (!mp.equals(mNextMediaPlayer) && !mp.equals(mCurrentMediaPlayer)) {
+                    return;
+                }
 
-            // If it is nextMediaPlayer it should be set for currentMP
-            mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                if (mp == mCurrentMediaPlayer) {
+                    // MediaPlayer got primary MP before finishing preparing, start playback
+                    // Workaround for issue #48
 
-            // Set the internal state
-            mSecondPrepared = true;
+                    // Enable wakelock
+                    mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
-            // Set this now prepared MediaPlayer as the next one
-            mCurrentMediaPlayer.setNextMediaPlayer(mp);
+                    // Playback start
+                    mCurrentMediaPlayer.start();
 
+                    /*
+                     * Signal audio effect desire to android
+                     */
+                    Intent audioEffectOpenIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+                    audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
+                    audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                    mPlaybackService.sendBroadcast(audioEffectOpenIntent);
+                    mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
+
+
+                    // Notify connected listeners that playback has started
+                    for (OnTrackStartedListener listener : mTrackStartListeners) {
+                        listener.onTrackStarted(mPrimarySource);
+                    }
+                } else {
+                    // Normal case. Second is prepared while primary MP is playing.
+                    // Set as next player
+
+
+                    // Second MediaPlayer is now ready to be used and can be set as a next MediaPlayer to the current one
+                    mSecondPreparing = false;
+
+                    // If it is nextMediaPlayer it should be set for currentMP
+                    mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+                    // Set the internal state
+                    mSecondPrepared = true;
+
+                    // Set this now prepared MediaPlayer as the next one
+                    mCurrentMediaPlayer.setNextMediaPlayer(mp);
+                }
+            }
         }
     };
 
@@ -548,54 +592,61 @@ public class GaplessPlayer {
 
         @Override
         public void onCompletion(MediaPlayer mp) {
-            // Get audio session id to close the audioFX session
-            int audioSessionID = mp.getAudioSessionId();
+            // Sequentially execute all critical operations on the MP objects
+            synchronized (GaplessPlayer.this) {
+                // Get audio session id to close the audioFX session
+                int audioSessionID = mp.getAudioSessionId();
 
-            // Reset the current MediaPlayer variable
-            mCurrentMediaPlayer = null;
-            /*
-             * Signal android desire to close audio effect session
-             */
-            Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
-            audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-            mPlaybackService.sendBroadcast(audioEffectIntent);
+                // Reset the current MediaPlayer variable
+                mCurrentMediaPlayer = null;
 
-            // Notify connected listeners that the last track is now finished
-            for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
-                listener.onTrackFinished();
-            }
+                // Notify connected listeners that the last track is now finished
+                for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
+                    listener.onTrackFinished();
+                }
 
-            // Set current MP to next MP if one is ready
-            if (mNextMediaPlayer != null && mSecondPrepared) {
-                // Next media player should now be playing already, so make this the current one.
-                mCurrentMediaPlayer = mNextMediaPlayer;
-                // Register this listener to the now playing MediaPlayer also
-                mCurrentMediaPlayer.setOnCompletionListener(new TrackCompletionListener());
+                mp.release();
 
-                // Move the second to primary source (URI)
-                mPrimarySource = mSecondarySource;
+                // Set current MP to next MP if one is ready
+                if (mNextMediaPlayer != null && (mSecondPrepared || mSecondPreparing)) {
+                    // Next media player should now be playing already, so make this the current one.
+                    mCurrentMediaPlayer = mNextMediaPlayer;
+                    // Register this listener to the now playing MediaPlayer also
+                    mCurrentMediaPlayer.setOnCompletionListener(new TrackCompletionListener());
 
-                // Reset the now obsolete second MediaPlayer state variables
-                mSecondarySource = null;
-                mNextMediaPlayer = null;
+                    // Move the second to primary source (URI)
+                    mPrimarySource = mSecondarySource;
 
-                /*
-                 * Signal audio effect desire to android
-                */
-                Intent audioEffectOpenIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-                audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
-                audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-                mPlaybackService.sendBroadcast(audioEffectOpenIntent);
-                mp.setAuxEffectSendLevel(1.0f);
+                    // Reset the now obsolete second MediaPlayer state variables
+                    mSecondarySource = null;
+                    mNextMediaPlayer = null;
 
-                // Notify connected listeners that playback has started
-                for (OnTrackStartedListener listener : mTrackStartListeners) {
-                    listener.onTrackStarted(mPrimarySource);
+                    if (mSecondPrepared) {
+                        mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
+
+                        // Notify connected listeners that playback has started
+                        for (OnTrackStartedListener listener : mTrackStartListeners) {
+                            listener.onTrackStarted(mPrimarySource);
+                        }
+                    } else {
+                        /*
+                         * Signal android desire to close audio effect session
+                         */
+                        Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                        audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
+                        audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                        mPlaybackService.sendBroadcast(audioEffectIntent);
+                    }
+                } else {
+                    /*
+                     * Signal android desire to close audio effect session
+                     */
+                    Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                    mPlaybackService.sendBroadcast(audioEffectIntent);
                 }
             }
-
-            mp.release();
         }
     }
 
@@ -617,7 +668,7 @@ public class GaplessPlayer {
     }
 
     /**
-     * Returns whether Gaplessplayer is active or inactive so it can receive commands
+     * Returns whether {@link GaplessPlayer} is active or inactive so it can receive commands
      *
      * @return True if this class is busy and false if it is not doing important work.
      */

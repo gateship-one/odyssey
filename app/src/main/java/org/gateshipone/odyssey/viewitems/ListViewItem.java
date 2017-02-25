@@ -75,7 +75,7 @@ public class ListViewItem extends GenericImageViewItem {
      * @param showIcon If the icon of the item should be shown. It is not changeable after creation.
      * @param adapter  The scroll speed adapter for cover loading.
      */
-    private ListViewItem(final Context context, final boolean showIcon, final ScrollSpeedAdapter adapter) {
+    public ListViewItem(final Context context, final boolean showIcon, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_file, 0, 0, adapter);
 
         mTitleView = (TextView) findViewById(R.id.item_title);
@@ -98,7 +98,7 @@ public class ListViewItem extends GenericImageViewItem {
      * @param context The current context.
      * @param adapter The scroll speed adapter for cover loading.
      */
-    private ListViewItem(final Context context, final ScrollSpeedAdapter adapter) {
+    public ListViewItem(final Context context, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_section, R.id.section_header_image, R.id.section_header_image_switcher, adapter);
 
         mTitleView = (TextView) findViewById(R.id.item_title);
@@ -143,21 +143,6 @@ public class ListViewItem extends GenericImageViewItem {
         this(context, adapter);
 
         setTrack(context, track, sectionTitle, isPlaying);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a basic item for the given track (without currently played track indicator).
-     *
-     * @param context The current context.
-     * @param track   The current track model.
-     * @param adapter The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final TrackModel track, final ScrollSpeedAdapter adapter) {
-        this(context, false, adapter);
-
-        setTrack(context, track);
     }
 
     /**
@@ -231,22 +216,38 @@ public class ListViewItem extends GenericImageViewItem {
      * @param context The current context.
      * @param track   The current track model.
      */
-    public void setTrack(final Context context, final TrackModel track) {
+    public void setAlbumTrack(final Context context, final TrackModel track, final boolean showDiscNumber) {
         // title (number + name)
-        String trackTitle = track.getTrackName();
-        String trackNumber = FormatHelper.formatTrackNumber(track.getTrackNumber());
-        if (!trackTitle.isEmpty() && !trackNumber.isEmpty()) {
-            trackTitle = context.getString(R.string.track_title_template, trackNumber, trackTitle);
-        } else if (!trackNumber.isEmpty()) {
-            trackTitle = trackNumber;
+        String trackTitle = "";
+        int trackNumber = track.getTrackNumber();
+        String trackName = track.getTrackName();
+        String formattedTrackNumber = FormatHelper.formatTrackNumber(trackNumber);
+        String albumName = track.getTrackAlbumName();
+        String artistName = track.getTrackArtistName();
+
+        if (showDiscNumber) {
+            String discNumber = FormatHelper.formatDiscNumber(trackNumber);
+
+            if (!discNumber.isEmpty()) {
+                trackTitle = discNumber + ".";
+            }
+        }
+
+        if (!formattedTrackNumber.isEmpty()) {
+            trackTitle += formattedTrackNumber + " - ";
+        }
+
+        if (!trackName.isEmpty()) {
+            trackTitle += trackName;
         }
 
         // subtitle (artist + album)
-        String trackSubtitle = track.getTrackAlbumName();
-        if (!track.getTrackArtistName().isEmpty() && !trackSubtitle.isEmpty()) {
-            trackSubtitle = context.getString(R.string.track_title_template, track.getTrackArtistName(), trackSubtitle);
-        } else if (!track.getTrackArtistName().isEmpty()) {
-            trackSubtitle = track.getTrackArtistName();
+        String trackSubtitle = artistName;
+
+        if (!trackSubtitle.isEmpty()) {
+            trackSubtitle += " - " + albumName;
+        } else {
+            trackSubtitle = albumName;
         }
 
         // duration
@@ -265,7 +266,7 @@ public class ListViewItem extends GenericImageViewItem {
      * @param isPlaying Flag if the current item should be marked as currently played track.
      */
     public void setTrack(final Context context, final TrackModel track, final boolean isPlaying) {
-        setTrack(context, track);
+        setAlbumTrack(context, track, false);
 
         setPlaying(isPlaying);
     }
@@ -279,7 +280,7 @@ public class ListViewItem extends GenericImageViewItem {
      * @param isPlaying    Flag if the current item should be marked as currently played track.
      */
     public void setTrack(final Context context, final TrackModel track, final String sectionTitle, final boolean isPlaying) {
-        setTrack(context, track);
+        setAlbumTrack(context, track, false);
 
         setSectionTitle(sectionTitle);
 
