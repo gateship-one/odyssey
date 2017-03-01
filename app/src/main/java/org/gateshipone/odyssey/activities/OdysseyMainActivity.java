@@ -64,6 +64,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
+import org.gateshipone.odyssey.dialogs.SaveDialog;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
 import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
 import org.gateshipone.odyssey.fragments.ArtworkSettingsFragment;
@@ -72,13 +73,14 @@ import org.gateshipone.odyssey.fragments.FilesFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
 import org.gateshipone.odyssey.fragments.OdysseyFragment;
 import org.gateshipone.odyssey.fragments.PlaylistTracksFragment;
-import org.gateshipone.odyssey.dialogs.SaveDialog;
+import org.gateshipone.odyssey.fragments.RecentAlbumsFragment;
 import org.gateshipone.odyssey.fragments.SavedPlaylistsFragment;
 import org.gateshipone.odyssey.fragments.SettingsFragment;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
+import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -96,7 +98,8 @@ import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
-        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback, ToolbarAndFABCallback {
+        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback, ToolbarAndFABCallback,
+        OnRecentAlbumsSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -944,6 +947,28 @@ public class OdysseyMainActivity extends AppCompatActivity
         if (collapsingImage != null) {
             collapsingImage.setImageBitmap(bm);
         }
+    }
+
+    @Override
+    public void onRecentAlbumsSelected() {
+        // Create fragment
+        RecentAlbumsFragment newFragment = new RecentAlbumsFragment();
+
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // set enter / exit animation
+        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+        newFragment.setExitTransition(new Slide(Gravity.TOP));
+
+        // Replace whatever is in the fragment_container view with this
+        // fragment,
+        // and add the transaction to the back stack so the user can navigate
+        // back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack("RecentAlbumsFragment");
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     private MyMusicFragment.DEFAULTTAB getDefaultTab() {

@@ -66,6 +66,9 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
         setHasOptionsMenu(true);
 
+        // disable sections for this fragment
+        mAdapter.enableSections(false);
+
         return rootView;
     }
 
@@ -80,7 +83,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_recent_albums), false, true, false);
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_recent_albums), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
                 @Override

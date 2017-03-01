@@ -100,6 +100,8 @@
     <string name="action_wikipedia_album">Open album</string>
     <string name="action_wikipedia_artist">Open artist</string>
 
+    <string name="action_show_recent_albums">Recent albums</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
     <string name="context_menu_action_enqueueasnext">Play after current song</string>
