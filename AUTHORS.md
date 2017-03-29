@@ -2,3 +2,4 @@
 - Frederik Lütkes - Team Gateship One
 - Alessandra Ghiazza - Italian Translation
 - Kévin Minions - French Translation
+- mray (GitHub user) - Image tweaks
