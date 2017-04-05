@@ -98,6 +98,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         mAdapter = new TracksAdapter(getActivity());
 
+        // Disable sections
+        mAdapter.enableSections(false);
+
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(this);
