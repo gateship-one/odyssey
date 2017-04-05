@@ -52,7 +52,9 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      */
     private static final List<String> fileExtensions = new ArrayList<>(Arrays.asList("3gp", "aac",
             "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus", "ota", "rtttl",
-            "rtx", "ts", "wav", "wma", "xmf", "nomedia"));
+            "rtx", "ts", "wav", "wma", "xmf", "nomedia", "m3u", "pls"));
+
+    private static final List<String> playlistExtensions = new ArrayList<>(Arrays.asList("m3u", "pls"));
 
     /**
      * Construct a FileModel instance for the given file object.
@@ -114,6 +116,15 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      */
     public boolean isFile() {
         return mFile.isFile();
+    }
+
+    public boolean isPlaylist() {
+        for (String ext: playlistExtensions) {
+            if(mFile.getPath().toLowerCase().endsWith(ext)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getParent() {

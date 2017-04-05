@@ -52,6 +52,8 @@ import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.utils.PlaylistParser;
+import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -242,6 +244,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         if (selectedFile.isDirectory()) {
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
+        } else if (selectedFile.isPlaylist()) {
+            PlaylistParser parser = PlaylistParserFactory.getParser(selectedFile);
+            parser.parseList(getContext());
         } else {
             if (mSearchString != null) {
                 // search is active so just play the current file
