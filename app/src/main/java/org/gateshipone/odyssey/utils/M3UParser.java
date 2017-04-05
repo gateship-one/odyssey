@@ -80,10 +80,14 @@ public class M3UParser extends PlaylistParser {
 
         ArrayList<String> urls = new ArrayList<>();
         while(line != null) {
+            String tmpUrl;
             if (!mPathPrefix.isEmpty()) {
-                urls.add(mPathPrefix + '/' + line);
+                tmpUrl = mPathPrefix + '/' + line;
             } else {
-                urls.add(line);
+                tmpUrl = line;
+            }
+            if (new File(tmpUrl).exists()) {
+                urls.add(tmpUrl);
             }
             try {
                 line = bufReader.readLine();
