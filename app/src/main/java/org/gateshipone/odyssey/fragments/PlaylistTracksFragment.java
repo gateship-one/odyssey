@@ -196,6 +196,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
+
+        if(mPlaylistPath != null) {
+            // Hide remove track for playlist files as it is unsupported
+            menu.findItem(R.id.fragment_playlist_tracks_action_remove).setVisible(false);
+        }
     }
 
     /**
@@ -273,8 +278,12 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     private void enqueuePlaylist() {
         try {
-            // add playlist
-            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            // add the playlist
+            if (mPlaylistPath == null) {
+                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            } else {
+                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+            }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -295,7 +304,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             mServiceConnection.getPBS().clearPlaylist();
 
             // add the playlist
-            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            if (mPlaylistPath == null) {
+                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            } else {
+                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+            }
 
             // jump to selected track
             mServiceConnection.getPBS().jumpTo(position);

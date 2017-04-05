@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -50,6 +51,8 @@ import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHel
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PlaylistParser;
+import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
@@ -1244,6 +1247,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // get playlist from mediastore
         List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
+
+        // add tracks to current playlist
+        enqueueTracks(playlistTracks);
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
+    }
+
+    /**
+     * enqueue a selected playlist from mediastore
+     *
+     * @param path the path to a playlistfile
+     */
+    public void enqueuePlaylistFile(String path) {
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
+
+        // Parse the playlist file with a parser
+        PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(path));
+        if (parser == null) {
+            return;
+        }
+        ArrayList<TrackModel> playlistTracks = parser.parseList(this);
 
         // add tracks to current playlist
         enqueueTracks(playlistTracks);

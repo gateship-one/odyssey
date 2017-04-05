@@ -316,6 +316,14 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void enqueuePlaylistFile(String path) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLISTFILE, path);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
     public void enqueueAlbum(String albumKey) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumKey);
         Message msg = mService.get().getHandler().obtainMessage();
