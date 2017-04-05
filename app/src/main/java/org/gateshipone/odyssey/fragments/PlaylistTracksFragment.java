@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
+import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -60,11 +61,15 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     public final static String ARG_PLAYLISTTITLE = "playlisttitle";
     public final static String ARG_PLAYLISTID = "playlistid";
 
+    public final static String ARG_PLAYLISTPATH = "playlistpath";
+
     /**
      * The information of the displayed playlist
      */
     private String mPlaylistTitle = "";
     private long mPlaylistID = -1;
+
+    private String mPlaylistPath;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -112,6 +117,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         mPlaylistTitle = args.getString(ARG_PLAYLISTTITLE);
         mPlaylistID = args.getLong(ARG_PLAYLISTID);
+        mPlaylistPath = args.getString(ARG_PLAYLISTPATH);
 
         return rootView;
     }
@@ -139,7 +145,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mPlaylistID);
+        if (mPlaylistPath == null) {
+            return new TrackLoader(getActivity(), mPlaylistID);
+        } else {
+            return new PlaylistTrackLoader(getActivity(), mPlaylistPath);
+        }
     }
 
     /**
