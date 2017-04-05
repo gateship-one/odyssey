@@ -56,20 +56,26 @@ public class M3UParser extends PlaylistParser {
 
         // Try to check if file paths in playlist are relativ or absolute
         String line = "";
+
+
         try {
             line = bufReader.readLine();
+            while (line.startsWith("#")) {
+                line = bufReader.readLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
         File tmpFile = new File(line);
-        if ( !tmpFile.exists()) {
+        if (!tmpFile.exists()) {
             String plPath = mFile.getPath();
-            plPath = plPath.substring(0,plPath.lastIndexOf('/') );
-            while(!plPath.isEmpty()) {
-                tmpFile = new File (plPath + '/' + line);
-                if ( !tmpFile.exists()) {
-                    plPath = plPath.substring(0,plPath.lastIndexOf('/') );
+            plPath = plPath.substring(0, plPath.lastIndexOf('/'));
+            while (!plPath.isEmpty()) {
+                tmpFile = new File(plPath + '/' + line);
+                if (!tmpFile.exists()) {
+                    plPath = plPath.substring(0, plPath.lastIndexOf('/'));
                 } else {
                     mPathPrefix = plPath;
                     break;
@@ -79,7 +85,15 @@ public class M3UParser extends PlaylistParser {
         }
 
         ArrayList<String> urls = new ArrayList<>();
-        while(line != null) {
+        while (line != null) {
+            if (line.startsWith("#")) {
+                try {
+                    line = bufReader.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
             String tmpUrl;
             if (!mPathPrefix.isEmpty()) {
                 tmpUrl = mPathPrefix + '/' + line;
@@ -97,6 +111,6 @@ public class M3UParser extends PlaylistParser {
         }
 
 
-        return createTrackModels(context,urls);
+        return createTrackModels(context, urls);
     }
 }
