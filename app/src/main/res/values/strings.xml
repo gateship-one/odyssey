@@ -46,6 +46,7 @@
     <string name="fragment_title_saved_playlists">Playlists</string>
     <string name="fragment_title_settings">Settings</string>
     <string name="fragment_title_bookmarks">Bookmarks</string>
+    <string name="fragment_title_recent_albums">Recently Added</string>
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">No playlists found.</string>
@@ -98,6 +99,8 @@
     <string name="action_wikipedia" translatable="false">Wikipedia</string>
     <string name="action_wikipedia_album">Open album</string>
     <string name="action_wikipedia_artist">Open artist</string>
+
+    <string name="action_show_recent_albums">Recent albums</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
