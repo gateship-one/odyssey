@@ -86,7 +86,7 @@ public class OdysseyAboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_about);
 
-        String versionName = " " + BuildConfig.VERSION_NAME;
+        String versionName = getString(R.string.activity_about_version_template, BuildConfig.VERSION_NAME);
 
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
         getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this,R.attr.odyssey_color_primary_dark));

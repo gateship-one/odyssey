@@ -228,7 +228,7 @@
     <string name="artwork_provided_by">Illustrations fournies par :</string>
     <string name="license_text">Cette application est sous licence GPLv3.\nLes icônes \"Material icons\" de Google sont sous licence CC-BY.</string>
     <string name="sources_text">Le code source est disponible sur GitHub :\nhttps://github.com/gateship-one/odyssey</string>
-    <string name="activity_about_version">Version :</string>
+    <string name="activity_about_version_template">Version : %1$s</string>
 
     <!-- strings name="url_musicbrainz" | "url_lastfm" | "url_fanarttv" : translatable="false" -->
 

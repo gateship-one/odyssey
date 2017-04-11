@@ -240,7 +240,7 @@
     <string name="artwork_provided_by">Artwork provided by:</string>
     <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
     <string name="sources_text">The source code is available on GitHub:\nhttps://github.com/gateship-one/odyssey</string>
-    <string name="activity_about_version">Version:</string>
+    <string name="activity_about_version_template">Version: %1$s</string>
 
     <string name="url_musicbrainz" translatable="false">https://www.musicbrainz.org</string>
     <string name="url_lastfm" translatable="false">http://www.last.fm</string>

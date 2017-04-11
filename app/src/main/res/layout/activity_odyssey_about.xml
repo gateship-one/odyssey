@@ -20,6 +20,7 @@
   ~
   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -52,31 +53,15 @@
                 android:textColor="?attr/odyssey_color_accent"
                 android:textSize="@dimen/material_font_style_size_headline" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/activity_about_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="center"
-                    android:text="@string/activity_about_version"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading" />
-
-                <TextView
-                    android:id="@+id/activity_about_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="center"
-                    android:text="@string/app_name"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading" />
-            </LinearLayout>
+                android:fontFamily="sans-serif-light"
+                android:textColor="?attr/odyssey_color_text_background_secondary"
+                android:textSize="@dimen/material_font_style_size_subheading"
+                tools:text="Version: 1.1.4"/>
 
             <Button
                 android:id="@+id/odyssey_contributors"

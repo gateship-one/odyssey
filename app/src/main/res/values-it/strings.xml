@@ -155,7 +155,7 @@
     <string name="artwork_provided_by">Artwork forniti da:</string>
     <string name="license_text">Quest’applicazione è sotto licenza GPLv3. Le icone \nMaterial sono sotto licenza CC-BY di Google.</string>
     <string name="sources_text">Il source code è disponibile su GitHub:\nhttps://github.com/gateship-one/odyssey</string>
-    <string name="activity_about_version">Versione: </string>
+    <string name="activity_about_version_template">Versione: %1$s</string>
     <!-- PBS working message -->
     <string name="playbackservice_working">Attendere prego</string>
     <!-- Bulk downloader service -->
