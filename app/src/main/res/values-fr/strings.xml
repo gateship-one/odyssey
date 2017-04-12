@@ -44,6 +44,7 @@
     <string name="fragment_title_saved_playlists">Listes de lecture</string>
     <string name="fragment_title_settings">Paramètres</string>
     <string name="fragment_title_bookmarks">Marque-pages</string>
+    <string name="fragment_title_recent_albums">Ajouté récemment</string>
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">Aucune liste de lecture trouvée</string>
@@ -94,6 +95,8 @@
 
     <string name="action_wikipedia_album">Ouvrir l\'album</string>
     <string name="action_wikipedia_artist">Ouvrir l\'artiste</string>
+
+    <string name="action_show_recent_albums">Albums récents</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Ajouter à la liste de lecture</string>
