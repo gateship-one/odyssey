@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;

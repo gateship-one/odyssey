@@ -28,7 +28,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Pair;
 
-import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
@@ -37,8 +36,6 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.viewitems.CoverLoadable;
-
-import java.util.List;
 
 /**
  * Loader class for covers

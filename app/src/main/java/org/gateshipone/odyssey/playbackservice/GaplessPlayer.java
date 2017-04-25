@@ -31,7 +31,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
-import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
 
