@@ -1,4 +1,4 @@
-### Version: 1.1.5 Tag: release-XX (2017-XX-XX) ###
+### Version: 1.1.5 Tag: release-17 (2017-05-17) ###
 * Add recent albums view
 * Fix equalizer issues ([Issue #61](https://github.com/gateship-one/odyssey/issues/61))
 * Improve placeholder for cover (thanks to mray)
