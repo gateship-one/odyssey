@@ -178,12 +178,24 @@ public class FileExplorerHelper {
         if (Uri.parse(track.getTrackURL()).getScheme() != null) {
             Uri uri = FormatHelper.encodeURI(track.getTrackURL());
 
-            String path = uri.getPath();
-
             // lookup the current file in the media db
-            String whereVal[] = {path};
+            String whereVal[] = {uri.getPath()};
 
             String where = MediaStore.Audio.Media.DATA + "=?";
+
+            if (uri.getScheme().equals("content")){
+                final String parts[] = uri.getLastPathSegment().split(":");
+
+                if (parts.length > 1) {
+                    if (parts[0].equals("audio")) {
+                        whereVal = new String[]{parts[1]};
+                        where = MediaStore.Audio.Media._ID + "=?";
+                    } else {
+                        whereVal = new String[]{"%" + parts[1]};
+                        where = MediaStore.Audio.Media.DATA + " LIKE ?";
+                    }
+                }
+            }
 
             Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
 
