@@ -119,7 +119,7 @@ public class FileExplorerHelper {
 
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
-                retriever.setDataSource(context, Uri.parse(FormatHelper.encodeFileURI(urlString)));
+                retriever.setDataSource(context, FormatHelper.encodeURI(urlString));
 
                 String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 
@@ -168,6 +168,93 @@ public class FileExplorerHelper {
             } catch (Exception e) {
                 String albumKey = "" + file.getName().hashCode();
                 track = new TrackModel(file.getName(), "", "", albumKey, 0, -1, urlString, -1);
+            }
+        }
+
+        return track;
+    }
+
+    public TrackModel readMetaData(final Context context, final TrackModel track) {
+        if (Uri.parse(track.getTrackURL()).getScheme() != null) {
+            Uri uri = FormatHelper.encodeURI(track.getTrackURL());
+
+            String path = uri.getPath();
+
+            // lookup the current file in the media db
+            String whereVal[] = {path};
+
+            String where = MediaStore.Audio.Media.DATA + "=?";
+
+            Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                    int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                    cursor.close();
+
+                    return new TrackModel(title, artist, album, albumKey, duration, no, url, id);
+                }
+
+                cursor.close();
+            }
+
+            try {
+                // try to read the file metadata
+
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+                retriever.setDataSource(context, uri);
+
+                String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+
+                String durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+
+                long duration = 0;
+
+                if (durationString != null) {
+                    try {
+                        duration = Long.valueOf(durationString);
+                    } catch (NumberFormatException e) {
+                        duration = 0;
+                    }
+                }
+
+                String noString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+
+                int no = -1;
+
+                if (noString != null) {
+                    try {
+                        if (noString.contains("/")) {
+                            // if string has the format (trackNumber / numberOfTracks)
+                            String[] components = noString.split("/");
+                            if (components.length > 0) {
+                                no = Integer.valueOf(components[0]);
+                            }
+                        } else {
+                            no = Integer.valueOf(noString);
+                        }
+                    } catch (NumberFormatException e) {
+                        no = -1;
+                    }
+                }
+
+                String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+
+                String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
+
+                return new TrackModel(title, artist, album, albumKey, duration, no, track.getTrackURL(), -1);
+            } catch (Exception e) {
+                return track;
             }
         }
 

@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -85,6 +86,7 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -122,6 +124,10 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     private PlaybackServiceConnection mServiceConnection;
 
+    private Uri mSendedUri;
+
+    private boolean mShowNPV = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -129,6 +135,22 @@ public class OdysseyMainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
             mSavedNowPlayingViewSwitcherStatus = VIEW_SWITCHER_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW)];
+        } else {
+            // if no savedInstanceState is present the activity is started for the first time so check the intent
+            final Intent intent = getIntent();
+            if (intent != null) {
+                if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
+                    // odyssey was opened by a file
+                    mSendedUri = intent.getData();
+                } else {
+                    // odyssey was opened by widget or notification
+                    final Bundle extras = intent.getExtras();
+
+                    if (extras != null && extras.getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, "").equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
+                        mShowNPV = true;
+                    }
+                }
+            }
         }
 
         // Read theme preference
@@ -311,10 +333,9 @@ public class OdysseyMainActivity extends AppCompatActivity
              * If yes then pre set the dragoffset of the draggable helper.
              */
             Intent resumeIntent = getIntent();
-            if (resumeIntent != null && resumeIntent.getExtras() != null && resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW) != null &&
-                    resumeIntent.getExtras().getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW).equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
+            if (mShowNPV) {
                 nowPlayingView.setDragOffset(0.0f);
-                getIntent().removeExtra(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW);
+                mShowNPV = false;
             } else {
                 // set drag status
                 if (mSavedNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
@@ -1015,6 +1036,20 @@ public class OdysseyMainActivity extends AppCompatActivity
         return navId;
     }
 
+    private void checkUri() {
+        if (mSendedUri != null) {
+            TrackModel model = new TrackModel(null, null, null, null, 0, 0, mSendedUri.toString(), -1, -1);
+
+            try {
+                mServiceConnection.getPBS().play(model);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            mSendedUri = null;
+        }
+    }
+
     private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
 
         @Override
@@ -1026,6 +1061,8 @@ public class OdysseyMainActivity extends AppCompatActivity
                 } else {
                     // pbs is not working so dismiss the progress dialog
                     mProgressDialog.dismiss();
+
+                    checkUri();
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
