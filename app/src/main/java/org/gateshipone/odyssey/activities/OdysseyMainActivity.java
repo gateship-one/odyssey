@@ -485,6 +485,20 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
 
             CurrentPlaylistView currentPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
+
+            // check if track has a valid album key
+            String albumKey = currentPlaylistView.getAlbumKey(info.position);
+            AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+
+            menu.findItem(R.id.view_current_playlist_action_showalbum).setVisible(tmpAlbum != null);
+
+            // check if track has a valid artist id
+            String artistTitle = currentPlaylistView.getArtistTitle(info.position);
+            long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+
+            menu.findItem(R.id.view_current_playlist_action_showartist).setVisible(artistID != -1);
+
+            // check the view type
             if (currentPlaylistView.getItemViewType(info.position) == CurrentPlaylistAdapter.VIEW_TYPES.TYPE_SECTION_TRACK_ITEM) {
                 menu.findItem(R.id.view_current_playlist_action_remove_section).setVisible(true);
             }
