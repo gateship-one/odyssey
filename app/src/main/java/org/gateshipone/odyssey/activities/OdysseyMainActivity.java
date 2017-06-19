@@ -140,7 +140,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             final Intent intent = getIntent();
             if (intent != null) {
                 if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
-                    // odyssey was opened by a file
+                    // odyssey was opened by a file so save the uri for later usage when the service is running
                     mSendedUri = intent.getData();
                 } else {
                     // odyssey was opened by widget or notification
@@ -332,7 +332,6 @@ public class OdysseyMainActivity extends AppCompatActivity
              * Check if the activity got an extra in its intend to show the nowplayingview directly.
              * If yes then pre set the dragoffset of the draggable helper.
              */
-            Intent resumeIntent = getIntent();
             if (mShowNPV) {
                 nowPlayingView.setDragOffset(0.0f);
                 mShowNPV = false;
@@ -740,7 +739,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         mNowPlayingDragStatus = status;
         if (status == DRAG_STATUS.DRAGGED_UP) {
             View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-            /**
+            /*
              * Use View.GONE instead INVISIBLE to hide view behind NowPlayingView,
              * fixes overlaying Fragments on FragmentTransaction combined with minimizing the NPV in one action
              */
@@ -1036,9 +1035,14 @@ public class OdysseyMainActivity extends AppCompatActivity
         return navId;
     }
 
+    /**
+     * Check if odyssey was opened via a file.
+     * <p>
+     * This method will play the selected file if the mSendedUri is valid.
+     */
     private void checkUri() {
         if (mSendedUri != null) {
-            TrackModel model = new TrackModel(null, null, null, null, 0, 0, mSendedUri.toString(), -1, -1);
+            TrackModel model = new TrackModel(mSendedUri.getLastPathSegment(), null, null, null, 0, 0, mSendedUri.toString(), -1, -1);
 
             try {
                 mServiceConnection.getPBS().play(model);
@@ -1062,6 +1066,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                     // pbs is not working so dismiss the progress dialog
                     mProgressDialog.dismiss();
 
+                    // the service is ready so check if odyssey was opened by a file
                     checkUri();
                 }
             } catch (RemoteException e) {
