@@ -405,10 +405,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Directly plays uri
      */
     public void playURI(TrackModel track) {
+        // Notify the user about the possible long running operation
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
+
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
         enqueueTrack(track);
         jumpToIndex(0);
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
+
+        // TODO this is unsecure
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -873,8 +883,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public void enqueueRecentAlbums() {
-        // TODO check if this is working properly
-
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -942,8 +950,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
-
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1366,13 +1372,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         final FileModel currentFile = new FileModel(filePath);
 
-        // TODO make this async
         TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(currentFile);
 
         enqueueTrack(track, asNext);
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;

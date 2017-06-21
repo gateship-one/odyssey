@@ -52,7 +52,7 @@ public class MetaDataLoader {
      * Updates the meta data of the tracks in the given list.
      *
      * @param context The {@link Context} used to open the file and access the mediadb.
-     * @param tracks The track list. The elements of the list will be replaced.
+     * @param tracks  The track list. The elements of the list will be replaced.
      */
     public void getTrackListMetaData(final Context context, final List<TrackModel> tracks) {
         if (null == tracks || tracks.isEmpty()) {
@@ -76,6 +76,14 @@ public class MetaDataLoader {
 
         @Override
         public void run() {
+            // TODO for testing purposes
+            // prevent the ui from receiving to many update calls
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             boolean tracksChanged = false;
 
             for (int i = 0; i < mTracks.size(); i++) {
