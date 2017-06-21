@@ -50,6 +50,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
+import org.gateshipone.odyssey.utils.MetaDataLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
@@ -226,6 +227,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private boolean mBusy = false;
 
+    private MetaDataLoader mMetaDataLoader;
 
     /**
      * Called when the PlaybackService is bound by an activity.
@@ -328,6 +330,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);
+
+        mMetaDataLoader = new MetaDataLoader(new MetaDataLoader.MetaDataLoaderListener() {
+            @Override
+            public void metaDataLoaderFinished() {
+                // Send new NowPlaying because playlist changed
+                mPlaybackServiceStatusHelper.updateStatus();
+            }
+        });
     }
 
     /**
@@ -920,11 +930,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // gapless playback
         int oldSize = mCurrentList.size();
 
-        if (track.getTrackAlbumKey().isEmpty()) {
-            mCurrentList.add(FileExplorerHelper.getInstance().readTrackMetaData(getApplicationContext(), track.getTrackName(), track.getTrackURL()));
-        } else {
-            mCurrentList.add(track);
-        }
+        mCurrentList.add(track);
         /*
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
@@ -936,6 +942,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
+
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1359,7 +1367,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         final FileModel currentFile = new FileModel(filePath);
 
         // TODO make this async
-        TrackModel track = FileExplorerHelper.getInstance().readTrackMetaData(getApplicationContext(), currentFile.getName(), currentFile.getURLString());
+        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(currentFile);
 
         enqueueTrack(track, asNext);
 
@@ -1368,6 +1376,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+
+        // TODO this is unsecure
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1390,17 +1401,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mBusy = false;
 
         // TODO this is unsecure
-        HandlerThread thread = new HandlerThread("thread");
-        thread.start();
-        Handler handler = new Handler(thread.getLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                FileExplorerHelper.getInstance().updateTrackModels(getApplicationContext(), mCurrentList);
-
-                mPlaybackServiceStatusHelper.updateStatus();
-            }
-        });
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1423,18 +1424,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mBusy = false;
 
         // TODO this is unsecure
-        HandlerThread thread = new HandlerThread("thread");
-        thread.start();
-        Handler handler = new Handler(thread.getLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                // TODO this is unsecure
-                FileExplorerHelper.getInstance().updateTrackModels(getApplicationContext(), mCurrentList);
-
-                mPlaybackServiceStatusHelper.updateStatus();
-            }
-        });
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
