@@ -39,15 +39,22 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+
+    /**
+     * Callback to open the recent albums fragment
+     */
+    private OnRecentAlbumsSelectedListener mRecentAlbumsSelectedListener;
 
     /**
      * Callback to setup toolbar and fab
@@ -197,11 +204,18 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
+        // the callback interfaces. If not, it throws an exception
+
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
+
+        try {
+            mRecentAlbumsSelectedListener = (OnRecentAlbumsSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
     }
 
@@ -262,6 +276,9 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             // set up play button
             mToolbarAndFABCallback.setupFAB(listener);
         }
+
+        // force to recreate the optionsmenu
+        getActivity().invalidateOptionsMenu();
 
         OdysseyFragment fragment = mMyMusicPagerAdapter.getRegisteredFragment(tab.getPosition());
         if (fragment != null) {
@@ -353,7 +370,27 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         mSearchView.setOnQueryTextListener(new SearchTextObserver());
 
+        // show recents options only for the albums fragment
+        menu.findItem(R.id.action_show_recent_albums).setVisible(mMyMusicViewPager.getCurrentItem() == 1);
+
         super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_recent_albums:
+                mRecentAlbumsSelectedListener.onRecentAlbumsSelected();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**

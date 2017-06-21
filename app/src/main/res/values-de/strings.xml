@@ -178,4 +178,6 @@
     <string name="share_chooser_title">Teile Song über</string>
     <string name="context_menu_action_removesection">Abschnitt entfernen</string>
     <string name="contributor_translator_french">Französische Übersetzung</string>
+    <string name="fragment_title_recent_albums">Zuletzt Hinzugefügt</string>
+    <string name="action_show_recent_albums">Zuletzt hinzugefügt</string>
 </resources>

@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.fragments;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.DataSetObserver;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -77,6 +78,11 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     private OdysseyComponentCallback mComponentCallback;
 
     /**
+     * Observer to be notified if the dataset of the adapter changed.
+     */
+    private OdysseyDataSetObserver mDataSetObserver;
+
+    /**
      * Holds if data is ready of has to be refetched (e.g. after memory trimming)
      */
     private boolean mDataReady;
@@ -90,7 +96,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if ( null == mComponentCallback ) {
+        if (null == mComponentCallback) {
             mComponentCallback = new OdysseyComponentCallback();
         }
 
@@ -113,6 +119,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         // Unregister the memory trim callback with the system.
         getActivity().getApplicationContext().unregisterComponentCallbacks(mComponentCallback);
     }
+
     /**
      * Called when the fragment resumes.
      * <p/>
@@ -121,6 +128,12 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     @Override
     public void onResume() {
         super.onResume();
+
+        if (null == mDataSetObserver) {
+            mDataSetObserver = new OdysseyDataSetObserver();
+        }
+
+        mAdapter.registerDataSetObserver(mDataSetObserver);
 
         mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
@@ -134,6 +147,8 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     public void onPause() {
         super.onPause();
         mTrimmingEnabled = true;
+
+        mAdapter.unregisterDataSetObserver(mDataSetObserver);
     }
 
     /**
@@ -161,7 +176,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      */
     public void getContent() {
         // Check if data was fetched already or not (or removed because of trimming)
-        if ( !mDataReady) {
+        if (!mDataReady) {
             if (mSwipeRefreshLayout != null) {
                 mSwipeRefreshLayout.post(new Runnable() {
                     @Override
@@ -201,18 +216,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         // Transfer the data to the adapter so that the views can use it
         mAdapter.swapModel(model);
-
-        if (mListView != null && mEmptyView != null) {
-            if (mAdapter.isEmpty()) {
-                // show empty message
-                mListView.setVisibility(View.GONE);
-                mEmptyView.setVisibility(View.VISIBLE);
-            } else {
-                // show list view
-                mListView.setVisibility(View.VISIBLE);
-                mEmptyView.setVisibility(View.GONE);
-            }
-        }
     }
 
     /**
@@ -250,6 +253,23 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     }
 
     /**
+     * Method to show or hide the listview according to the state of the adapter.
+     */
+    private void updateView() {
+        if (mListView != null && mEmptyView != null) {
+            if (mAdapter.isEmpty()) {
+                // show empty message
+                mListView.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                // show list view
+                mListView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
      * Private callback class used to monitor the memory situation of the system.
      * If memory reaches a certain point, we will relinquish our data.
      */
@@ -257,7 +277,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         @Override
         public void onTrimMemory(int level) {
-            if ( mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW ) {
+            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
                 getLoaderManager().destroyLoader(0);
                 mDataReady = false;
             }
@@ -270,6 +290,27 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         @Override
         public void onLowMemory() {
+        }
+    }
+
+    /**
+     * Private observer class to keep informed if the dataset of the adapter has changed.
+     * This will trigger an update of the view.
+     */
+    private class OdysseyDataSetObserver extends DataSetObserver {
+
+        @Override
+        public void onInvalidated() {
+            super.onInvalidated();
+
+            updateView();
+        }
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+
+            updateView();
         }
     }
 }

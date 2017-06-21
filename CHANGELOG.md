@@ -1,3 +1,10 @@
+### Version: 1.1.5 Tag: release-17 (2017-05-17) ###
+* Add recent albums view
+* Fix equalizer issues ([Issue #61](https://github.com/gateship-one/odyssey/issues/61))
+* Improve placeholder for cover (thanks to mray)
+* Remove sections from playlist
+* Filtering fixes
+
 ### Version: 1.1.4 Tag: release-16 (2017-02-24) ###
 * Optionally show artist image alternating to cover image in NowPlayingView
 * Option to reload album / artist image in the corresponing fragments

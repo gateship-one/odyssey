@@ -27,24 +27,29 @@ public class BookmarkModel implements GenericModel {
     /**
      * Unique id to identify the bookmark
      */
-    private long mId;
+    private final long mId;
 
     /**
      * The name of the bookmark
      */
-    private String mTitle;
+    private final String mTitle;
 
     /**
      * The number of tracks in the bookmark
      */
-    private int mNumberOfTracks;
+    private final int mNumberOfTracks;
 
     /**
      * Constructs a BookmarkModel instance with the given parameters.
      */
     public BookmarkModel(long id, String title, int numberOfTracks) {
+        if (title != null) {
+            mTitle = title;
+        } else {
+            mTitle = "";
+        }
+
         mId = id;
-        mTitle = title;
         mNumberOfTracks = numberOfTracks;
     }
 

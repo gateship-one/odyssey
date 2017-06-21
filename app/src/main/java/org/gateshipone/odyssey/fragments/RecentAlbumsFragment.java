@@ -23,32 +23,31 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
-import org.gateshipone.odyssey.loaders.TrackLoader;
+import org.gateshipone.odyssey.loaders.AlbumLoader;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AllTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
+public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     /**
      * Listener to open an artist
@@ -62,39 +61,36 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        // get listview
-        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+        setHasOptionsMenu(true);
 
-        // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
-        // set swipe colors
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
-                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
-        // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
-
-        mAdapter = new TracksAdapter(getActivity());
-
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(this);
-
-        // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
-
-        // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
-
-        registerForContextMenu(mListView);
+        // disable sections for this fragment
+        mAdapter.enableSections(false);
 
         return rootView;
+    }
+
+    /**
+     * Called when the fragment resumes.
+     * <p/>
+     * Set up toolbar and play button.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mToolbarAndFABCallback != null) {
+            // set toolbar behaviour and title
+            mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_recent_albums), false, false, false);
+            // set up play button
+            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playAllAlbums();
+                }
+            });
+        }
     }
 
     /**
@@ -121,27 +117,9 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity());
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        super.onLoadFinished(loader, data);
-    }
-
-    /**
-     * Play the clicked track.
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playTrack(position);
+    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
+        // recents albums
+        return new AlbumLoader(getActivity(), true);
     }
 
     /**
@@ -151,7 +129,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.context_menu_all_tracks_fragment, menu);
+        inflater.inflate(R.menu.context_menu_albums_fragment, menu);
     }
 
     /**
@@ -169,16 +147,13 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         }
 
         switch (item.getItemId()) {
-            case R.id.fragment_all_tracks_action_enqueue:
-                enqueueTrack(info.position, false);
+            case R.id.fragment_albums_action_enqueue:
+                enqueueAlbum(info.position);
                 return true;
-            case R.id.fragment_all_tracks_action_enqueueasnext:
-                enqueueTrack(info.position, true);
+            case R.id.fragment_albums_action_play:
+                playAlbum(info.position);
                 return true;
-            case R.id.fragment_all_tracks_action_play:
-                playTrack(info.position);
-                return true;
-            case R.id.fragment_all_tracks_showartist:
+            case R.id.fragment_albums_action_showartist:
                 showArtist(info.position);
                 return true;
             default:
@@ -187,53 +162,86 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     }
 
     /**
-     * Callback to open a view for the artist of the selected track.
+     * Initialize the options menu.
+     * Be sure to call {@link #setHasOptionsMenu} before.
      *
-     * @param position the position of the selected track in the adapter
+     * @param menu         The container for the custom options menu.
+     * @param menuInflater The inflater to instantiate the layout.
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        // TODO use own optionsmenu
+        menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
+
+        // get tint color
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+        Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tintColor);
+        menu.findItem(R.id.action_add_playlist_tracks).setIcon(drawable);
+
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    /**
+     * Hook called when an menu item in the options menu is selected.
+     *
+     * @param item The menu item that was selected.
+     * @return True if the hook was consumed here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_playlist_tracks:
+                enqueueAllAlbums();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Open a fragment for the artist of the selected album.
+     *
+     * @param position the position of the selected album in the adapter
      */
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
-        String artistTitle = clickedTrack.getTrackArtistName();
+        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
 
+        String artistTitle = clickedAlbum.getArtistName();
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
         mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
     }
 
-    /**
-     * Call the PBS to play the selected track.
-     * A previous playlist will be cleared.
-     *
-     * @param position the position of the selected track in the adapter
-     */
-    private void playTrack(int position) {
-        // clear playlist and play current track
+    private void enqueueAllAlbums() {
+        try {
+            mServiceConnection.getPBS().enqueueRecentAlbums();
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
+    private void playAllAlbums() {
+        // Remove old tracks
         try {
             mServiceConnection.getPBS().clearPlaylist();
-            enqueueTrack(position, false);
-            mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-    }
 
-    /**
-     * Call the PBS to enqueue the selected track.
-     *
-     * @param position the position of the selected track in the adapter
-     * @param asNext   flag if the track should be enqueued as next
-     */
-    private void enqueueTrack(int position, boolean asNext) {
+        enqueueAllAlbums();
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
-
+        // play recent albums
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            mServiceConnection.getPBS().jumpTo(0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

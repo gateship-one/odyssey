@@ -62,6 +62,8 @@ interface IOdysseyPlaybackService {
     // enqueue all tracks of an album from mediastore
     void enqueueAlbum(String albumKey);
 
+    void enqueueRecentAlbums();
+
     // enqueue all tracks of an artist from mediastore
     void enqueueArtist(long artistId, String orderKey);
 

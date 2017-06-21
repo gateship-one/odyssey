@@ -30,7 +30,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;

@@ -38,7 +38,6 @@ import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
-import org.gateshipone.odyssey.views.NowPlayingView;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 

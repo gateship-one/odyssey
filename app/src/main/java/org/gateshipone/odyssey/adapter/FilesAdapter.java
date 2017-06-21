@@ -23,15 +23,10 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
-import org.gateshipone.odyssey.utils.FormatHelper;
-import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class FilesAdapter extends GenericSectionAdapter<FileModel> {

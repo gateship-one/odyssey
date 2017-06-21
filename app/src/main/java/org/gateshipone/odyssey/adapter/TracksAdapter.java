@@ -26,9 +26,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 import java.util.List;
