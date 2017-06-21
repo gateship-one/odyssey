@@ -35,18 +35,12 @@ import org.gateshipone.odyssey.models.TrackModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
 public class FileExplorerHelper {
 
     private static FileExplorerHelper mInstance = null;
-    private HashMap<String, TrackModel> mTrackHash;
-
-    private FileExplorerHelper() {
-        mTrackHash = new HashMap<>();
-    }
 
     public static synchronized FileExplorerHelper getInstance() {
         if (mInstance == null) {
@@ -75,27 +69,13 @@ public class FileExplorerHelper {
     }
 
     /**
-     * Create a {@link TrackModel} for the given {@link FileModel}.
-     * <p>
-     * If no meta data can be extracted a dummy {@link TrackModel} will be created.
+     * Create a dummy {@link TrackModel} for the given {@link FileModel}.
      *
-     * @param context The {@link Context} used to open the file and access the mediadb.
-     * @param file    The given {@link FileModel}.
-     * @return A valid {@link TrackModel}.
+     * @param file The given {@link FileModel}.
+     * @return A dummy {@link TrackModel} that only contains the file name and the uri.
      */
-    public TrackModel getTrackModelForFile(Context context, FileModel file) {
-        TrackModel track;
-
-        String urlString = file.getURLString();
-
-        // use pre built hash to lookup the file
-        track = mTrackHash.get(urlString);
-
-        if (null == track) {
-            return readTrackMetaData(context, file.getName(), file.getURLString());
-        }
-
-        return track;
+    public TrackModel getTrackModelForFile(FileModel file) {
+        return new TrackModel(file.getName(), null, null, null, 0, -1, file.getURLString(), -1);
     }
 
     /**
@@ -204,7 +184,19 @@ public class FileExplorerHelper {
         } catch (Exception e) {
             // something went wrong so just create a dummy track with the given title
             String albumKey = "" + trackTitle.hashCode();
-            return new TrackModel(trackTitle, "", "", albumKey, 0, -1, trackUrl, -1);
+            return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUrl, -1);
+        }
+    }
+
+    /**
+     * Updates the meta data of the tracks in the given list.
+     *
+     * @param context The {@link Context} used to open the file and access the mediadb.
+     * @param tracks The track list. The elements of the list will be replaced.
+     */
+    public void updateTrackModels(final Context context, final List<TrackModel> tracks) {
+        for (int i = 0; i < tracks.size(); i++) {
+            tracks.set(i, readTrackMetaData(context, tracks.get(i).getTrackName(), tracks.get(i).getTrackURL()));
         }
     }
 
@@ -215,48 +207,14 @@ public class FileExplorerHelper {
     public List<TrackModel> getTrackModelsForFolder(Context context, FileModel folder) {
         List<TrackModel> tracks = new ArrayList<>();
 
-        // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
-        mTrackHash.clear();
-
-        String urlString = folder.getURLString();
-        String whereVal[] = {urlString + "%"};
-
-        String where = MediaStore.Audio.Media.DATA + " LIKE ?";
-
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                    TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
-
-                    mTrackHash.put(url, track);
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
-        }
-
         List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 
         for (FileModel file : files) {
             if (file.isFile()) {
                 // file is not a directory so create a trackmodel for the file
-                tracks.add(getTrackModelForFile(context, file));
+                tracks.add(getTrackModelForFile(file));
             }
         }
-
-        // clear the hash
-        mTrackHash.clear();
 
         return tracks;
     }
@@ -399,43 +357,8 @@ public class FileExplorerHelper {
      */
     public List<TrackModel> getTrackModelsForFolderAndSubFolders(Context context, FileModel folder) {
         List<TrackModel> tracks = new ArrayList<>();
-
-        // get all tracks from the mediadb related to the current folder and store the tracks in a hashmap
-        mTrackHash.clear();
-
-        String urlString = folder.getURLString();
-        String whereVal[] = {urlString + "%"};
-
-        String where = MediaStore.Audio.Media.DATA + " LIKE ?";
-
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                    long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                    String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                    TrackModel track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
-
-                    mTrackHash.put(url, track);
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
-        }
-
         // check current folder and subfolders for music files
         getTrackModelsForFolderAndSubFolders(context, folder, tracks);
-
-        // clear the hash
-        mTrackHash.clear();
 
         return tracks;
     }
@@ -446,7 +369,7 @@ public class FileExplorerHelper {
     private void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
-            tracks.add(getTrackModelForFile(context, folder));
+            tracks.add(getTrackModelForFile(folder));
         } else {
             List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 

@@ -35,6 +35,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -1355,8 +1356,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        FileModel currentFile = new FileModel(filePath);
-        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(), currentFile);
+        final FileModel currentFile = new FileModel(filePath);
+
+        // TODO make this async
+        TrackModel track = FileExplorerHelper.getInstance().readTrackMetaData(getApplicationContext(), currentFile.getName(), currentFile.getURLString());
 
         enqueueTrack(track, asNext);
 
@@ -1376,7 +1379,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        FileModel currentDirectory = new FileModel(directoryPath);
+        final FileModel currentDirectory = new FileModel(directoryPath);
 
         List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(), currentDirectory);
 
@@ -1385,6 +1388,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+
+        // TODO this is unsecure
+        HandlerThread thread = new HandlerThread("thread");
+        thread.start();
+        Handler handler = new Handler(thread.getLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                FileExplorerHelper.getInstance().updateTrackModels(getApplicationContext(), mCurrentList);
+
+                mPlaybackServiceStatusHelper.updateStatus();
+            }
+        });
     }
 
     /**
@@ -1396,7 +1412,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        FileModel currentDirectory = new FileModel(directoryPath);
+        final FileModel currentDirectory = new FileModel(directoryPath);
 
         List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory);
 
@@ -1405,6 +1421,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+
+        // TODO this is unsecure
+        HandlerThread thread = new HandlerThread("thread");
+        thread.start();
+        Handler handler = new Handler(thread.getLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO this is unsecure
+                FileExplorerHelper.getInstance().updateTrackModels(getApplicationContext(), mCurrentList);
+
+                mPlaybackServiceStatusHelper.updateStatus();
+            }
+        });
     }
 
     /**
