@@ -463,8 +463,6 @@ public class GaplessPlayer {
                 mp.start();
 
 
-                //mp.setAuxEffectSendLevel(1.0f);
-
                 // Notify connected listeners
                 for (OnTrackStartedListener listener : mTrackStartListeners) {
                     listener.onTrackStarted(mPrimarySource);
@@ -507,9 +505,6 @@ public class GaplessPlayer {
                     // Enable wakelock
                     mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
-                    // Playback start
-                    mCurrentMediaPlayer.start();
-
                     /*
                      * Signal audio effect desire to android
                      */
@@ -519,7 +514,9 @@ public class GaplessPlayer {
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
                     Log.v(TAG,"Opening effect for session: " + mp.getAudioSessionId());
                     mPlaybackService.sendBroadcast(audioEffectOpenIntent);
-                    //mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
+
+                    // Playback start
+                    mCurrentMediaPlayer.start();
 
 
                     // Notify connected listeners that playback has started
@@ -529,7 +526,6 @@ public class GaplessPlayer {
                 } else {
                     // Normal case. Second is prepared while primary MP is playing.
                     // Set as next player
-
 
                     // Second MediaPlayer is now ready to be used and can be set as a next MediaPlayer to the current one
                     mSecondPreparing = false;
@@ -542,9 +538,6 @@ public class GaplessPlayer {
 
                     // Set this now prepared MediaPlayer as the next one
                     mCurrentMediaPlayer.setNextMediaPlayer(mp);
-
-                  //  mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
-
                 }
             }
         }
@@ -616,16 +609,8 @@ public class GaplessPlayer {
                 }
 
                 int audioSessionID = mp.getAudioSessionId();
-//
-//                /*
-//                * Signal android desire to close audio effect session
-//                */
-//                Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-//                audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
-//                audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-//                Log.v(TAG,"Closing effect for session: " + audioSessionID);
-//                mPlaybackService.sendBroadcast(audioEffectIntent);
 
+                // Release old MediaPlayer
                 mp.release();
 
 
@@ -650,19 +635,17 @@ public class GaplessPlayer {
                             listener.onTrackStarted(mPrimarySource);
                         }
                     }
-//
-//                    /*
-//                     * Signal audio effect desire to android
-//                     */
-//
-//                    Intent audioEffectOpenIntent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-//                    audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
-//                    audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-//                    audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-//                    Log.v(TAG,"Opening effect for session: " + mCurrentMediaPlayer.getAudioSessionId());
-//                    mPlaybackService.sendBroadcast(audioEffectOpenIntent);
-//                    mCurrentMediaPlayer.setAuxEffectSendLevel(1.0f);
 
+
+                } else {
+                    /*
+                    * Playback stopped. Signal android desire to close audio effect session
+                    */
+                    Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
+                    audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
+                    Log.v(TAG,"Closing effect for session: " + audioSessionID + " because playback ended");
+                    mPlaybackService.sendBroadcast(audioEffectIntent);
                 }
             }
         }
@@ -698,6 +681,14 @@ public class GaplessPlayer {
         }
 
         return false;
+    }
+
+    private void dumpAudioEffectsState() {
+        AudioEffect.Descriptor effects[] = AudioEffect.queryEffects();
+        Log.v(TAG,"Found audio effects: " + effects.length);
+        for(AudioEffect.Descriptor effect : effects) {
+            Log.v(TAG,"AudioEffect: " + effect.name + " connect mode: " + effect.connectMode + " implementor: " + effect.implementor);
+        }
     }
 
 }
