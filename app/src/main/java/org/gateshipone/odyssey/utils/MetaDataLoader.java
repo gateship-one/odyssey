@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Helper to load meta data of tracks async.
@@ -86,9 +87,12 @@ public class MetaDataLoader {
 
             boolean tracksChanged = false;
 
-            for (int i = 0; i < mTracks.size(); i++) {
-                if (TextUtils.isEmpty(mTracks.get(i).getTrackAlbumKey())) {
-                    mTracks.set(i, readTrackMetaData(mContext, mTracks.get(i).getTrackName(), mTracks.get(i).getTrackURL()));
+            ListIterator<TrackModel> iterator = mTracks.listIterator();
+
+            while (iterator.hasNext()) {
+                final TrackModel track = iterator.next();
+                if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
+                    iterator.set(readTrackMetaData(mContext, track.getTrackName(), track.getTrackURL()));
                     tracksChanged = true;
                 }
             }
