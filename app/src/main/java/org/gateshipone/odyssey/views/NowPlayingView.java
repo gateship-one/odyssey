@@ -43,6 +43,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -287,13 +288,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Called if the user ends moving the seekbar. We do not handle this for now.
+     * Called if the user ends moving the seekbar. 
      *
      * @param seekBar SeekBar that is used for dragging.
      */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
+        updateTrackPosition();
     }
 
     /**
