@@ -1506,6 +1506,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
+    public int getAudioSessionID() {
+        return mPlayer.getAudioSessionID();
+    }
+
     /**
      * Listener class for playback begin of the GaplessPlayer. Handles the
      * different scenarios: If no random playback is active, check if new track

@@ -388,6 +388,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
+
+                    try {
+                        startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         activity.startActivityForResult(startEqualizerIntent, 0);
