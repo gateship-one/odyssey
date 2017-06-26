@@ -53,7 +53,7 @@ import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MetaDataLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
-public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
+public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 
     /**
      * enums for random, repeat state
@@ -331,13 +331,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);
 
-        mMetaDataLoader = new MetaDataLoader(new MetaDataLoader.MetaDataLoaderListener() {
-            @Override
-            public void metaDataLoaderFinished() {
-                // Send new NowPlaying because playlist changed
-                mPlaybackServiceStatusHelper.updateStatus();
-            }
-        });
+        mMetaDataLoader = new MetaDataLoader(this);
     }
 
     /**
@@ -1656,6 +1650,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 break;
         }
 
+    }
+
+    /**
+     * Callback method if the update of the meta data of all tracks in the current playlist has finished.
+     *
+     * @param listChanged Boolean flag if an element in the current playlist has been updated.
+     */
+    @Override
+    public void metaDataLoaderFinished(boolean listChanged) {
+        if (listChanged) {
+            // Send new NowPlaying because playlist changed
+            mPlaybackServiceStatusHelper.updateStatus();
+        }
     }
 
     /**

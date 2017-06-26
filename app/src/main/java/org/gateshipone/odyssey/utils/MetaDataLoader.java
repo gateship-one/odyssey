@@ -40,7 +40,7 @@ import java.util.ListIterator;
 public class MetaDataLoader {
 
     public interface MetaDataLoaderListener {
-        void metaDataLoaderFinished();
+        void metaDataLoaderFinished(boolean listChanged);
     }
 
     private final MetaDataLoaderListener mMetaDataLoaderListener;
@@ -97,9 +97,7 @@ public class MetaDataLoader {
                 }
             }
 
-            if (tracksChanged) {
-                mMetaDataLoaderListener.metaDataLoaderFinished();
-            }
+            mMetaDataLoaderListener.metaDataLoaderFinished(tracksChanged);
         }
     }
 
