@@ -802,8 +802,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param position Position in milliseconds to seek to
      */
     public void seekTo(int position) {
-        if (mPlayer.isRunning()) {
-            mPlayer.seekTo(position);
+        switch (getPlaybackState()) {
+            case PLAYING:
+            case PAUSE:
+                mLastPosition = position;
+                mPlayer.seekTo(position);
+                break;
+            case RESUMED:
+                mLastPosition = position;
+                break;
+            case STOPPED:
+                return;
         }
     }
 
@@ -1516,6 +1525,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
             }
         }
+    }
+
+    public int getAudioSessionID() {
+        return mPlayer.getAudioSessionID();
     }
 
     /**

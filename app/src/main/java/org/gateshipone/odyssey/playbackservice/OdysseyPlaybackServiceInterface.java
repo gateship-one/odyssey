@@ -160,6 +160,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public int getAudioSessionID() throws RemoteException {
+        return mService.get().getAudioSessionID();
+    }
+
+    @Override
     public void hideArtworkChanged(boolean enabled) throws RemoteException {
         mService.get().hideArtwork(enabled);
     }
