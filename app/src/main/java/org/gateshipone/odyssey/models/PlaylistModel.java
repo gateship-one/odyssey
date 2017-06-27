@@ -38,7 +38,11 @@ public class PlaylistModel implements GenericModel {
      * Constructs a PlaylistModel instance with the given parameters.
      */
     public PlaylistModel(String playlistName, long playlistID) {
-        mPlaylistName = playlistName;
+        if (playlistName != null) {
+            mPlaylistName = playlistName;
+        } else {
+            mPlaylistName = "";
+        }
         mPlaylistID = playlistID;
     }
 

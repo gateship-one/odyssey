@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
@@ -36,7 +37,9 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
+import org.gateshipone.odyssey.views.NowPlayingView;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -49,6 +52,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      * Callback to setup toolbar and fab
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
+
+    /**
+     * Connection to the PBS for requesting information about current song/status.
+     */
+    private PlaybackServiceConnection mServiceConnection;
+
 
     /**
      * Called to do initial creation of a fragment.
@@ -64,11 +73,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                // start the audio equalizer
-                Intent viewIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                // Start the equalizer
+                Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
                 try {
-                    getActivity().startActivity(viewIntent);
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+
+                try {
+                    getActivity().startActivityForResult(startEqualizerIntent, 0);
                 } catch (ActivityNotFoundException e) {
                     ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
                     equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
@@ -132,6 +150,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
+
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
+        mServiceConnection.openConnection();
+
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         if (mToolbarAndFABCallback != null) {

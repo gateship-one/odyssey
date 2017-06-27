@@ -106,6 +106,8 @@ interface IOdysseyPlaybackService {
 	String getTrackname();
 	int getTrackNo();
 
+	int getAudioSessionID();
+
 	void hideArtworkChanged(boolean enabled);
 
     // return the working state of the pbs
