@@ -254,7 +254,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
         } else if (selectedFile.isPlaylist()) {
-            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getPath());
+            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getNameWithoutExtension(), selectedFile.getPath());
         } else {
             if (mSearchString != null) {
                 // search is active so just play the current file

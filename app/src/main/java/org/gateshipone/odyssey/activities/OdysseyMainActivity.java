@@ -1032,10 +1032,11 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPlaylistFileSelected(String path) {
+    public void onPlaylistFileSelected(String name, String path) {
         // Create fragment and give it an argument for the selected playlist
         PlaylistTracksFragment newFragment = new PlaylistTracksFragment();
         Bundle args = new Bundle();
+        args.putString(PlaylistTracksFragment.ARG_PLAYLISTTITLE, name);
         args.putString(PlaylistTracksFragment.ARG_PLAYLISTPATH, path);
 
         newFragment.setArguments(args);

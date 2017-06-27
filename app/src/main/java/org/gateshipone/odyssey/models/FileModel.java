@@ -84,6 +84,16 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
     }
 
     /**
+     * Return the name of the file without a file extension if present
+     */
+    public String getNameWithoutExtension() {
+        String fileName = mFile.getName();
+        int pos = fileName.lastIndexOf(".");
+
+        return pos > 0 ? fileName.substring(0, pos) : fileName;
+    }
+
+    /**
      * Return the name of the file object
      */
     public String getName() {

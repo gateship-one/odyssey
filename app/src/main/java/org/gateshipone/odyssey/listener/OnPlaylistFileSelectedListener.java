@@ -24,5 +24,5 @@ package org.gateshipone.odyssey.listener;
 
 
 public interface OnPlaylistFileSelectedListener {
-    void onPlaylistFileSelected(String path);
+    void onPlaylistFileSelected(String name, String path);
 }
