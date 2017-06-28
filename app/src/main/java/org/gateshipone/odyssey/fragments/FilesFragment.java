@@ -49,9 +49,12 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
+import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.utils.PlaylistParser;
+import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -62,6 +65,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Listener to open a child directory
      */
     private OnDirectorySelectedListener mOnDirectorySelectedCallback;
+
+    private OnPlaylistFileSelectedListener mOnPlaylistFileSelectedCallback;
 
     /**
      * the current directory that is displayed by the fragment
@@ -173,6 +178,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnDirectorySelectedListener");
         }
+
+        try {
+            mOnPlaylistFileSelectedCallback = (OnPlaylistFileSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnPlaylistFileSelectedListener");
+        }
     }
 
     /**
@@ -242,6 +253,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         if (selectedFile.isDirectory()) {
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
+        } else if (selectedFile.isPlaylist()) {
+            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getNameWithoutExtension(), selectedFile.getPath());
         } else {
             if (mSearchString != null) {
                 // search is active so just play the current file

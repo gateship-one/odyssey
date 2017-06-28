@@ -32,7 +32,7 @@ import java.util.List;
 
 public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
-    private final Context mContext;
+    protected final Context mContext;
 
     /**
      * The album key if tracks of a specific album should be loaded.
