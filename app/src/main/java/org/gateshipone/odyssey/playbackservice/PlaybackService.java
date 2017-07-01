@@ -1279,7 +1279,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * enqueue a selected playlist from mediastore
+     * enqueue a selected playlist from the selected file path
      *
      * @param path the path to a playlistfile
      */
@@ -1386,12 +1386,22 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mBusy = true;
 
         FileModel currentFile = new FileModel(filePath);
-        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(), currentFile);
 
-        enqueueTrack(track, asNext);
+        if (currentFile.isPlaylist()) {
+            // Parse the playlist file with a parser
+            PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
+            if (parser == null) {
+                return;
+            }
+            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
 
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
+            // add tracks to current playlist
+            enqueueTracks(playlistTracks);
+        } else {
+            TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(getApplicationContext(), currentFile);
+
+            enqueueTrack(track, asNext);
+        }
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;

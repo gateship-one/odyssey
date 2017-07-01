@@ -280,6 +280,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         if (currentFile.isFile()) {
             // show context menu for files
             inflater.inflate(R.menu.context_menu_files_files_fragment, menu);
+
+            // hide enqueue as next for playlist files
+            menu.findItem(R.id.fragment_files_action_enqueueasnext).setVisible(!currentFile.isPlaylist());
         } else {
             // show context menu for directories
             inflater.inflate(R.menu.context_menu_directories_files_fragment, menu);

@@ -217,7 +217,16 @@ public class FileExplorerHelper {
         for (FileModel file : files) {
             if (file.isFile()) {
                 // file is not a directory so create a trackmodel for the file
-                tracks.add(getTrackModelForFile(context, file));
+                if (file.isPlaylist()) {
+                    // Parse the playlist file with a parser
+                    PlaylistParser parser = PlaylistParserFactory.getParser(file);
+                    if (parser != null) {
+
+                        tracks.addAll(parser.parseList(context));
+                    }
+                } else {
+                    tracks.add(getTrackModelForFile(context, file));
+                }
             }
         }
 
@@ -412,7 +421,16 @@ public class FileExplorerHelper {
     private void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
         if (folder.isFile()) {
             // file is not a directory so create a trackmodel for the file
-            tracks.add(getTrackModelForFile(context, folder));
+            if (folder.isPlaylist()) {
+                // Parse the playlist file with a parser
+                PlaylistParser parser = PlaylistParserFactory.getParser(folder);
+                if (parser != null) {
+
+                    tracks.addAll(parser.parseList(context));
+                }
+            } else {
+                tracks.add(getTrackModelForFile(context, folder));
+            }
         } else {
             List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 
