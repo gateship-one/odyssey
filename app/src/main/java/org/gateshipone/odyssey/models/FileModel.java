@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -128,6 +130,9 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
         return mFile.isFile();
     }
 
+    /**
+     * Return if the file object is a playlist
+     */
     public boolean isPlaylist() {
         for (String ext: playlistExtensions) {
             if(mFile.getPath().toLowerCase().endsWith(ext)) {
@@ -216,9 +221,9 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
     }
 
     @Override
-    public int compareTo(FileModel model) {
+    public int compareTo(@NonNull FileModel model) {
         // just compare the two file objects
-        return mFile.compareTo(((FileModel) model).mFile);
+        return mFile.compareTo(model.mFile);
     }
 
     /**
@@ -255,7 +260,7 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
 
         private List<String> mExtensions;
 
-        public FileExtensionFilter(List<String> extensions) {
+        FileExtensionFilter(List<String> extensions) {
             mExtensions = extensions;
         }
 
