@@ -1085,10 +1085,8 @@ public class OdysseyMainActivity extends AppCompatActivity
      */
     private void checkUri() {
         if (mSendedUri != null) {
-            TrackModel model = new TrackModel(mSendedUri.getLastPathSegment(), null, null, null, 0, 0, mSendedUri.toString(), -1, -1);
-
             try {
-                mServiceConnection.getPBS().play(model);
+                mServiceConnection.getPBS().playURI(mSendedUri.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

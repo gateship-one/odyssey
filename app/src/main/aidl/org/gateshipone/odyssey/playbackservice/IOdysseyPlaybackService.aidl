@@ -26,7 +26,7 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 interface IOdysseyPlaybackService {
 
 	// Controls the player with predefined actions
-	void play(in TrackModel track);
+	void playURI(String uri);
 	void pause();
 	void resume();
 	void stop();

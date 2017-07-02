@@ -396,10 +396,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Directly plays uri
      */
-    public void playURI(TrackModel track) {
+    public void playURI(String uri) {
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
-        enqueueTrack(track);
+        enqueueFile(uri, false);
         jumpToIndex(0);
     }
 
