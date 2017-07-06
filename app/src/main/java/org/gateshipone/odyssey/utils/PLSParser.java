@@ -78,7 +78,7 @@ public class PLSParser extends PlaylistParser {
 
         File tmpFile = new File(tmpPath);
         if (!tmpFile.exists()) {
-            String plPath = uri.getEncodedPath();
+            String plPath = uri.getPath();
             plPath = plPath.substring(0, plPath.lastIndexOf('/'));
             while (!plPath.isEmpty()) {
                 tmpFile = new File(plPath + '/' + tmpPath);

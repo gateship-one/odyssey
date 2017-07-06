@@ -47,6 +47,7 @@ public class M3UParser extends PlaylistParser {
     @Override
     public ArrayList<TrackModel> parseList(Context context) {
         Uri uri = FormatHelper.encodeURI(mFile.getPath());
+
         InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
@@ -76,7 +77,7 @@ public class M3UParser extends PlaylistParser {
 
         File tmpFile = new File(line);
         if (!tmpFile.exists()) {
-            String plPath = uri.getEncodedPath();
+            String plPath = uri.getPath();
             plPath = plPath.substring(0, plPath.lastIndexOf('/'));
             while (!plPath.isEmpty()) {
                 tmpFile = new File(plPath + '/' + line);
