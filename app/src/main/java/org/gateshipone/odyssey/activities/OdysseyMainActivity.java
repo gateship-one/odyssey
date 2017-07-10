@@ -79,6 +79,7 @@ import org.gateshipone.odyssey.fragments.SettingsFragment;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
+import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
@@ -97,9 +98,10 @@ import org.gateshipone.odyssey.views.NowPlayingView;
 import java.util.List;
 
 public class OdysseyMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnArtistSelectedListener, OnAlbumSelectedListener, OnPlaylistSelectedListener, OnSaveDialogListener,
-        OnDirectorySelectedListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback, ToolbarAndFABCallback,
-        OnRecentAlbumsSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
+        OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
+        OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
+        OnPlaylistSelectedListener, OnPlaylistFileSelectedListener, OnDirectorySelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -1027,6 +1029,33 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         return navId;
+    }
+
+    @Override
+    public void onPlaylistFileSelected(String name, String path) {
+        // Create fragment and give it an argument for the selected playlist
+        PlaylistTracksFragment newFragment = new PlaylistTracksFragment();
+        Bundle args = new Bundle();
+        args.putString(PlaylistTracksFragment.ARG_PLAYLISTTITLE, name);
+        args.putString(PlaylistTracksFragment.ARG_PLAYLISTPATH, path);
+
+        newFragment.setArguments(args);
+
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // set enter / exit animation
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+
+        // Replace whatever is in the fragment_container view with this
+        // fragment,
+        // and add the transaction to the back stack so the user can navigate
+        // back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack("PlaylistTracksFragment");
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {

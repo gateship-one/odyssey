@@ -160,6 +160,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public int getAudioSessionID() throws RemoteException {
+        return mService.get().getAudioSessionID();
+    }
+
+    @Override
     public void hideArtworkChanged(boolean enabled) throws RemoteException {
         mService.get().hideArtwork(enabled);
     }
@@ -310,6 +315,14 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void enqueuePlaylist(long playlistId) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlistId);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void enqueuePlaylistFile(String path) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLISTFILE, path);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

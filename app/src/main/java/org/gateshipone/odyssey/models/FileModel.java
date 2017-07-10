@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -52,7 +54,9 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      */
     private static final List<String> fileExtensions = new ArrayList<>(Arrays.asList("3gp", "aac",
             "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus", "ota", "rtttl",
-            "rtx", "ts", "wav", "wma", "xmf", "nomedia"));
+            "rtx", "ts", "wav", "wma", "xmf", "nomedia", "m3u", "pls"));
+
+    private static final List<String> playlistExtensions = new ArrayList<>(Arrays.asList("m3u", "pls"));
 
     /**
      * Construct a FileModel instance for the given file object.
@@ -79,6 +83,16 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      */
     public long getLastModified() {
         return mFile.lastModified();
+    }
+
+    /**
+     * Return the name of the file without a file extension if present
+     */
+    public String getNameWithoutExtension() {
+        String fileName = mFile.getName();
+        int pos = fileName.lastIndexOf(".");
+
+        return pos > 0 ? fileName.substring(0, pos) : fileName;
     }
 
     /**
@@ -114,6 +128,18 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      */
     public boolean isFile() {
         return mFile.isFile();
+    }
+
+    /**
+     * Return if the file object is a playlist
+     */
+    public boolean isPlaylist() {
+        for (String ext: playlistExtensions) {
+            if(mFile.getPath().toLowerCase().endsWith(ext)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getParent() {
@@ -195,9 +221,9 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
     }
 
     @Override
-    public int compareTo(FileModel model) {
+    public int compareTo(@NonNull FileModel model) {
         // just compare the two file objects
-        return mFile.compareTo(((FileModel) model).mFile);
+        return mFile.compareTo(model.mFile);
     }
 
     /**
@@ -234,7 +260,7 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
 
         private List<String> mExtensions;
 
-        public FileExtensionFilter(List<String> extensions) {
+        FileExtensionFilter(List<String> extensions) {
             mExtensions = extensions;
         }
 

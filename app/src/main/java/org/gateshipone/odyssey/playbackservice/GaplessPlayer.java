@@ -452,6 +452,7 @@ public class GaplessPlayer {
                 Log.v(TAG,"Opening effect session: " + mp.getAudioSessionId());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
 
+
                 // only start playing if its desired
 
                 // Check if an immediate jump is requested
@@ -689,6 +690,13 @@ public class GaplessPlayer {
         for(AudioEffect.Descriptor effect : effects) {
             Log.v(TAG,"AudioEffect: " + effect.name + " connect mode: " + effect.connectMode + " implementor: " + effect.implementor);
         }
+    }
+
+    public int getAudioSessionID() {
+        if ( mCurrentMediaPlayer != null && mCurrentPrepared) {
+            return mCurrentMediaPlayer.getAudioSessionId();
+        }
+        return -1;
     }
 
 }

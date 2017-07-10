@@ -57,6 +57,8 @@ interface IOdysseyPlaybackService {
     // enqueue a playlist from mediastore
     void enqueuePlaylist(long playlistId);
 
+    void enqueuePlaylistFile(String path);
+
     // enqueue all tracks of an album from mediastore
     void enqueueAlbum(String albumKey);
 
@@ -105,6 +107,8 @@ interface IOdysseyPlaybackService {
 	String getAlbum();
 	String getTrackname();
 	int getTrackNo();
+
+	int getAudioSessionID();
 
 	void hideArtworkChanged(boolean enabled);
 

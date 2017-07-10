@@ -43,6 +43,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -287,13 +288,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Called if the user ends moving the seekbar. We do not handle this for now.
+     * Called if the user ends moving the seekbar. 
      *
      * @param seekBar SeekBar that is used for dragging.
      */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
+        updateTrackPosition();
     }
 
     /**
@@ -386,6 +388,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
+
+                    try {
+                        startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         activity.startActivityForResult(startEqualizerIntent, 0);

@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
+import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -60,11 +61,15 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     public final static String ARG_PLAYLISTTITLE = "playlisttitle";
     public final static String ARG_PLAYLISTID = "playlistid";
 
+    public final static String ARG_PLAYLISTPATH = "playlistpath";
+
     /**
      * The information of the displayed playlist
      */
     private String mPlaylistTitle = "";
     private long mPlaylistID = -1;
+
+    private String mPlaylistPath;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -115,6 +120,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         mPlaylistTitle = args.getString(ARG_PLAYLISTTITLE);
         mPlaylistID = args.getLong(ARG_PLAYLISTID);
+        mPlaylistPath = args.getString(ARG_PLAYLISTPATH);
 
         return rootView;
     }
@@ -142,7 +148,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mPlaylistID);
+        if (mPlaylistPath == null) {
+            return new TrackLoader(getActivity(), mPlaylistID);
+        } else {
+            return new PlaylistTrackLoader(getActivity(), mPlaylistPath);
+        }
     }
 
     /**
@@ -189,6 +199,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
+
+        if(mPlaylistPath != null) {
+            // Hide remove track for playlist files as it is unsupported
+            menu.findItem(R.id.fragment_playlist_tracks_action_remove).setVisible(false);
+        }
     }
 
     /**
@@ -266,8 +281,12 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     private void enqueuePlaylist() {
         try {
-            // add playlist
-            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            // add the playlist
+            if (mPlaylistPath == null) {
+                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            } else {
+                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+            }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -288,7 +307,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             mServiceConnection.getPBS().clearPlaylist();
 
             // add the playlist
-            mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            if (mPlaylistPath == null) {
+                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+            } else {
+                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+            }
 
             // jump to selected track
             mServiceConnection.getPBS().jumpTo(position);
