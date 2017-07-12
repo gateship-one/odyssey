@@ -48,10 +48,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.OdysseyMainActivity"
-            android:label="@string/app_name">
             <intent-filter tools:ignore="GoogleAppIndexingWarning">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -103,6 +99,9 @@
                 <data android:mimeType="audio/flac" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.OdysseyMainActivity"
+            android:label="@string/app_name" />
         <activity
             android:name=".activities.OdysseyAboutActivity"
             android:label="About"

@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -34,13 +35,23 @@ public class OdysseySplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final Intent intent = getIntent();
         Bundle extras = getIntent().getExtras();
+        Uri data = getIntent().getData();
+        String action = getIntent().getAction();
 
-        Intent intent = new Intent(this, OdysseyMainActivity.class);
+        Intent startIntent = new Intent(this, OdysseyMainActivity.class);
         if (extras != null) {
             intent.putExtras(extras);
         }
-        startActivity(intent);
+        if (data != null) {
+            intent.setData(data);
+        }
+        if (action != null) {
+            intent.setAction(action);
+        }
+
+        startActivity(startIntent);
         finish();
     }
 }
