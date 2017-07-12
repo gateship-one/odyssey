@@ -313,7 +313,7 @@ public class ListViewItem extends GenericImageViewItem {
         String dateString = "";
         if (id > 0) {
             // set date string only if id of this bookmark is valid
-            dateString = FormatHelper.formatTimeStampToString(context, bookmark.getId());
+            dateString = FormatHelper.formatTimeStampToString(bookmark.getId());
         }
 
         // get icon
@@ -384,7 +384,7 @@ public class ListViewItem extends GenericImageViewItem {
         }
 
         // last modified
-        String lastModifiedDateString = FormatHelper.formatTimeStampToString(context, file.getLastModified());
+        String lastModifiedDateString = FormatHelper.formatTimeStampToString(file.getLastModified());
 
         setTitle(title);
         setSubtitle(lastModifiedDateString);
