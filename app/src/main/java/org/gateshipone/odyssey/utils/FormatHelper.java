@@ -28,6 +28,7 @@ import android.net.Uri;
 
 import org.gateshipone.odyssey.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -102,7 +103,8 @@ public class FormatHelper {
      */
     public static String formatTimeStampToString(final Context context, final long timestamp) {
         Date date = new Date(timestamp);
-        return new SimpleDateFormat(context.getString(R.string.timestamp_format_pattern), Locale.getDefault()).format(date);
+        // Create a locale based formatted DateTime string
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM, Locale.getDefault()).format(date);
     }
 
     /**
