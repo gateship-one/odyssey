@@ -26,7 +26,7 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 interface IOdysseyPlaybackService {
 
 	// Controls the player with predefined actions
-	void play(in TrackModel track);
+	void playURI(String uri);
 	void pause();
 	void resume();
 	void stop();
@@ -56,6 +56,8 @@ interface IOdysseyPlaybackService {
 
     // enqueue a playlist from mediastore
     void enqueuePlaylist(long playlistId);
+
+    void enqueuePlaylistFile(String path);
 
     // enqueue all tracks of an album from mediastore
     void enqueueAlbum(String albumKey);

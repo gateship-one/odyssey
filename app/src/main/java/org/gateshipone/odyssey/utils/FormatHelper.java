@@ -28,6 +28,7 @@ import android.net.Uri;
 
 import org.gateshipone.odyssey.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -96,13 +97,13 @@ public class FormatHelper {
     /**
      * Helper method to format a timestamp to a uniformly format date string in Odyssey.
      *
-     * @param context   the current context to resolve the string id of the pattern
      * @param timestamp The timestamp in milliseconds
      * @return the formatted string, usable in the ui
      */
-    public static String formatTimeStampToString(final Context context, final long timestamp) {
+    public static String formatTimeStampToString(final long timestamp) {
         Date date = new Date(timestamp);
-        return new SimpleDateFormat(context.getString(R.string.timestamp_format_pattern), Locale.getDefault()).format(date);
+        // Create a locale based formatted DateTime string
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM, Locale.getDefault()).format(date);
     }
 
     /**

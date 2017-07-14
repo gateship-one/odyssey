@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -52,6 +53,8 @@ import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManag
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MetaDataLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PlaylistParser;
+import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 
@@ -398,14 +401,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Directly plays uri
      */
-    public void playURI(TrackModel track) {
+    public void playURI(String uri) {
         // Notify the user about the possible long running operation
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
-        enqueueTrack(track);
+        enqueueFile(uri, false);
         jumpToIndex(0);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
@@ -1290,6 +1293,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * enqueue a selected playlist from the selected file path
+     *
+     * @param path the path to a playlistfile
+     */
+    public void enqueuePlaylistFile(String path) {
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
+
+        // Parse the playlist file with a parser
+        PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(path));
+        if (parser == null) {
+            return;
+        }
+        ArrayList<TrackModel> playlistTracks = parser.parseList(this);
+
+        // add tracks to current playlist
+        enqueueTracks(playlistTracks);
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
+    }
+
+    /**
      * Resume the bookmark with the given timestamp
      */
     public void resumeBookmark(long timestamp) {
@@ -1373,11 +1399,23 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        final FileModel currentFile = new FileModel(filePath);
+        FileModel currentFile = new FileModel(filePath);
 
-        TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(currentFile);
+        if (currentFile.isPlaylist()) {
+            // Parse the playlist file with a parser
+            PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
+            if (parser == null) {
+                return;
+            }
+            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
 
-        enqueueTrack(track, asNext);
+            // add tracks to current playlist
+            enqueueTracks(playlistTracks);
+        } else {
+            TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(currentFile);
+
+            enqueueTrack(track, asNext);
+        }
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
