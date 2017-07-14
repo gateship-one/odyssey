@@ -1313,6 +1313,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+
+        // TODO this is unsecure
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
