@@ -36,19 +36,24 @@ public class OdysseySplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final Intent intent = getIntent();
-        Bundle extras = getIntent().getExtras();
-        Uri data = getIntent().getData();
-        String action = getIntent().getAction();
+        Bundle extras = null;
+        Uri data = null;
+        String action = null;
+        if (intent != null) {
+            extras = intent.getExtras();
+            data = intent.getData();
+            action = intent.getAction();
+        }
 
         Intent startIntent = new Intent(this, OdysseyMainActivity.class);
         if (extras != null) {
-            intent.putExtras(extras);
+            startIntent.putExtras(extras);
         }
         if (data != null) {
-            intent.setData(data);
+            startIntent.setData(data);
         }
         if (action != null) {
-            intent.setAction(action);
+            startIntent.setAction(action);
         }
 
         startActivity(startIntent);
