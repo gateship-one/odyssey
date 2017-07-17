@@ -224,14 +224,8 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
 
         try {
-            // clear the playlist
-            mServiceConnection.getPBS().clearPlaylist();
-
             // add playlist
-            mServiceConnection.getPBS().enqueuePlaylist(clickedPlaylist.getPlaylistID());
-
-            // start playback
-            mServiceConnection.getPBS().jumpTo(0);
+            mServiceConnection.getPBS().playPlaylist(clickedPlaylist.getPlaylistID(), 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
