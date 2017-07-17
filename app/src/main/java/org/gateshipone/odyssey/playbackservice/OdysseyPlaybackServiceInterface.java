@@ -28,8 +28,6 @@ import android.os.RemoteException;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stub {
     // Holds the actual playback service for handling reasons

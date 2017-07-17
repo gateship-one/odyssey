@@ -24,8 +24,6 @@ package org.gateshipone.odyssey.playbackservice;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
-import java.util.ArrayList;
-
 /**
  * Message object which get passed between PlaybackServiceInterface ->
  * PlaybackServiceHandler
@@ -54,7 +52,6 @@ public class ControlObject {
     private String mStringparam;
     private TrackModel mTrack;
     private long mLongParam;
-    private ArrayList<TrackModel> mTrackList = null;
 
     public ControlObject(PLAYBACK_ACTION action) {
         mAction = action;
@@ -74,11 +71,6 @@ public class ControlObject {
         mAction = action;
         mStringparam = param;
         mBoolparam = asNext;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, ArrayList<TrackModel> list) {
-        mTrackList = list;
-        mAction = action;
     }
 
     public ControlObject(PLAYBACK_ACTION action, TrackModel track) {
@@ -121,10 +113,6 @@ public class ControlObject {
 
     public String getStringParam() {
         return mStringparam;
-    }
-
-    public ArrayList<TrackModel> getTrackList() {
-        return mTrackList;
     }
 
     public int getIntParam() {
