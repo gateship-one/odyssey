@@ -53,8 +53,6 @@ import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
-import org.gateshipone.odyssey.utils.PlaylistParser;
-import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -407,15 +405,13 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFile(int position) {
 
-        // clear playlist and play selected file
+        FileModel currentFile = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            enqueueFile(position, false);
-            mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e1) {
+            mServiceConnection.getPBS().playFile(currentFile.getPath());
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 

@@ -1472,6 +1472,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * Creates a trackmodel for a given filepath and plays the track.
+     * A previous playlist will be cleared.
+     *
+     * @param filePath the path to the selected file
+     */
+    public void playFile(String filePath) {
+        clearPlaylist();
+
+        enqueueFile(filePath, false);
+
+        jumpToIndex(0);
+    }
+
+    /**
      * creates trackmodels for a given directorypath and adds the tracks to the playlist
      *
      * @param directoryPath the path to the selected directory
