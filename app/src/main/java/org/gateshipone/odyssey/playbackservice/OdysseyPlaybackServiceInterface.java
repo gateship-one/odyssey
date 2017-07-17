@@ -62,6 +62,13 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         mService.get().getHandler().sendMessage(msg);
     }
 
+    public void playTrack(TrackModel track) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYTRACK, track);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
     @Override
     public void toggleRandom() throws RemoteException {
         // Create random control object

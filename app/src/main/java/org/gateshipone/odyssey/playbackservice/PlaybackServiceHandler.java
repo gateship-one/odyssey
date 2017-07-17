@@ -77,6 +77,9 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_ENQUEUETRACK:
                     mService.get().enqueueTrack(msgObj.getTrack(), msgObj.getBoolParam());
                     break;
+                case ODYSSEY_PLAYTRACK:
+                    mService.get().playTrack(msgObj.getTrack());
+                    break;
                 case ODYSSEY_DEQUEUETRACK:
                     mService.get().dequeueTrack(msgObj.getIntParam());
                     break;

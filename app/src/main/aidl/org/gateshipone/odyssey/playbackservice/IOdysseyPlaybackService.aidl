@@ -65,6 +65,8 @@ interface IOdysseyPlaybackService {
 	void toggleRepeat();
 
 	void enqueueTrack(in TrackModel track, boolean asNext);
+	void playTrack(in TrackModel track);
+
 	void dequeueTrack(int index);
 	void dequeueTracks(int index);
 	void clearPlaylist();

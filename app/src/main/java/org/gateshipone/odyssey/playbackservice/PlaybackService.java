@@ -965,6 +965,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * Plays the given track.
+     * A previous playlist will be cleared.
+     *
+     * @param track  the current trackmodel
+     */
+    public void playTrack(TrackModel track) {
+        clearPlaylist();
+
+        enqueueTrack(track);
+
+        jumpToIndex(0);
+    }
+
+    /**
      * Enqueue the given track.
      *
      * @param track the current trackmodel

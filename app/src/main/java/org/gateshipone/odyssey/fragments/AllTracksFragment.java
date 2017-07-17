@@ -210,15 +210,13 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
-        // clear playlist and play current track
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            enqueueTrack(position, false);
-            mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e1) {
+            mServiceConnection.getPBS().playTrack(track);
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 
