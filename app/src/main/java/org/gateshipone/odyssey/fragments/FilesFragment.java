@@ -444,9 +444,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // compute position
             int index = position - mCurrentDirectory.getNumberOfSubFolders();
             mServiceConnection.getPBS().playDirectory(mCurrentDirectory.getPath(), index);
-        } catch (RemoteException e1) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -458,13 +458,13 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFolderAndSubFolders(int position) {
 
+        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
+
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            enqueueFolderAndSubFolders(position);
-            mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e1) {
+            mServiceConnection.getPBS().playDirectoryAndSubDirectories(currentFolder.getPath());
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -479,9 +479,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         try {
             mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath());
-        } catch (RemoteException e1) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -492,12 +492,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void playCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            enqueueCurrentFolderAndSubFolders();
-            mServiceConnection.getPBS().jumpTo(0);
-        } catch (RemoteException e1) {
+            mServiceConnection.getPBS().playDirectoryAndSubDirectories(mCurrentDirectory.getPath());
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -520,9 +518,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         try {
             mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath());
-        } catch (RemoteException e1) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 

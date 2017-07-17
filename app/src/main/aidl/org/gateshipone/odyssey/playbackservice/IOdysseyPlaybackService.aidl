@@ -82,6 +82,7 @@ interface IOdysseyPlaybackService {
 
 	void playDirectory(String directoryPath, int position);
 	void enqueueDirectoryAndSubDirectories(String directoryPath);
+	void playDirectoryAndSubDirectories(String directoryPath);
 
 	// Information getters
 

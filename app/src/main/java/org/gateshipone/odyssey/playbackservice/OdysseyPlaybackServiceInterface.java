@@ -333,4 +333,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
+
+    public void playDirectoryAndSubDirectories(String directoryPath) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES, directoryPath);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
 }
