@@ -189,7 +189,6 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      */
     protected void enqueueAlbum(int position) {
         // identify current album
-
         AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
@@ -209,20 +208,13 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * @param position the position of the selected album in the adapter
      */
     protected void playAlbum(int position) {
-        // Remove old tracks
-        try {
-            mServiceConnection.getPBS().clearPlaylist();
-        } catch (RemoteException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        // get and enqueue albumtracks
-        enqueueAlbum(position);
+        // identify current album
+        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
+        String albumKey = clickedAlbum.getAlbumKey();
 
         // play album
         try {
-            mServiceConnection.getPBS().jumpTo(0);
+            mServiceConnection.getPBS().playAlbum(albumKey, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

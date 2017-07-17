@@ -342,9 +342,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // clear playlist and play current album
 
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            enqueueAlbum();
-            mServiceConnection.getPBS().jumpTo(position);
+            mServiceConnection.getPBS().playAlbum(mAlbum.getAlbumKey(), position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

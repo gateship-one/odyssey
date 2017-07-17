@@ -888,6 +888,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mBusy = false;
     }
 
+    /**
+     * Play all tracks of an album identified by the albumkey.
+     * A previous playlist will be cleared.
+     *
+     * @param albumKey The key of the album
+     * @param position The position to start playback
+     */
+    public void playAlbum(String albumKey, int position) {
+        clearPlaylist();
+
+        enqueueAlbum(albumKey);
+
+        jumpToIndex(position);
+    }
+
     public void enqueueRecentAlbums() {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
