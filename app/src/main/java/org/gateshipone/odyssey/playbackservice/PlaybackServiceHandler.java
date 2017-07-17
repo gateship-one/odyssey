@@ -149,6 +149,9 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_ENQUEUERECENTALBUMS:
                     mService.get().enqueueRecentAlbums();
                     break;
+                case ODYSSEY_PLAYRECENTALBUMS:
+                    mService.get().playRecentAlbums();
+                    break;
             }
 
             mLock.release();

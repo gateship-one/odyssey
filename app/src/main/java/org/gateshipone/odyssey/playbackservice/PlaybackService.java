@@ -903,6 +903,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         jumpToIndex(position);
     }
 
+    /**
+     * Enqueue all recent albums from the mediastore.
+     */
     public void enqueueRecentAlbums() {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
@@ -913,6 +916,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+    }
+
+    /**
+     * Play all recent albums from the mediastore.
+     * A previous playlist will be cleared.
+     */
+    public void playRecentAlbums() {
+        clearPlaylist();
+
+        enqueueRecentAlbums();
+
+        jumpToIndex(0);
     }
 
     /**

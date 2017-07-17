@@ -229,19 +229,8 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
     }
 
     private void playAllAlbums() {
-        // Remove old tracks
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-        } catch (RemoteException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        enqueueAllAlbums();
-
-        // play recent albums
-        try {
-            mServiceConnection.getPBS().jumpTo(0);
+            mServiceConnection.getPBS().playRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
