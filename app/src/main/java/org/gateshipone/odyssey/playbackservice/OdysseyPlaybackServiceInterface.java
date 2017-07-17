@@ -54,55 +54,12 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void pause() throws RemoteException {
-        // Create pause control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PAUSE);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void stop() throws RemoteException {
-        // Create stop control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_STOP);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void setNextTrack(String uri) throws RemoteException {
-        // Create nexttrack control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SETNEXTRACK, uri);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void enqueueTracks(List<TrackModel> tracks) throws RemoteException {
-        // Create enqueuetracks control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUETRACKS, (ArrayList<TrackModel>) tracks);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
     public void enqueueTrack(TrackModel track, boolean asNext) throws RemoteException {
         // Create enqueuetrack control object
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUETRACK, track, asNext);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void getCurrentList(List<TrackModel> list) throws RemoteException {
-        for (TrackModel track : mService.get().getCurrentList()) {
-            list.add(track);
-        }
     }
 
     @Override
@@ -121,42 +78,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public String getArtist() throws RemoteException {
-        TrackModel track = mService.get().getCurrentTrack();
-        if (track != null) {
-            return track.getTrackArtistName();
-        }
-        return "";
-    }
-
-    @Override
-    public String getAlbum() throws RemoteException {
-        TrackModel track = mService.get().getCurrentTrack();
-        if (track != null) {
-            return track.getTrackAlbumName();
-        }
-        return "";
-    }
-
-    @Override
-    public String getTrackname() throws RemoteException {
-        TrackModel track = mService.get().getCurrentTrack();
-        if (track != null) {
-            return track.getTrackName();
-        }
-        return "";
-    }
-
-    @Override
-    public int getTrackNo() throws RemoteException {
-        TrackModel track = mService.get().getCurrentTrack();
-        if (track != null) {
-            return track.getTrackNumber();
-        }
-        return 0;
     }
 
     @Override
@@ -199,14 +120,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void resume() throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_RESUME);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
     public void next() throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_NEXT);
         Message msg = mService.get().getHandler().obtainMessage();
@@ -233,11 +146,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public int getTrackPosition() throws RemoteException {
         return mService.get().getTrackPosition();
-    }
-
-    @Override
-    public int getTrackDuration() throws RemoteException {
-        return mService.get().getTrackDuration();
     }
 
     @Override
@@ -278,14 +186,6 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void shufflePlaylist() throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SHUFFLEPLAYLIST);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void playAllTracksShuffled() throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALLTRACKSSHUFFLED);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

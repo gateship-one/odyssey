@@ -53,16 +53,8 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_PLAY:
                     mService.get().playURI(msgObj.getStringParam());
                     break;
-                case ODYSSEY_PAUSE:
-                    break;
-                case ODYSSEY_RESUME:
-                    mService.get().resume();
-                    break;
                 case ODYSSEY_TOGGLEPAUSE:
                     mService.get().togglePause();
-                    break;
-                case ODYSSEY_STOP:
-                    mService.get().stop();
                     break;
                 case ODYSSEY_NEXT:
                     mService.get().setNextTrack();
@@ -85,16 +77,11 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_ENQUEUETRACK:
                     mService.get().enqueueTrack(msgObj.getTrack(), msgObj.getBoolParam());
                     break;
-                case ODYSSEY_ENQUEUETRACKS:
-                    mService.get().enqueueTracks(msgObj.getTrackList());
-                    break;
                 case ODYSSEY_DEQUEUETRACK:
                     mService.get().dequeueTrack(msgObj.getIntParam());
                     break;
                 case ODYSSEY_DEQUEUETRACKS:
                     mService.get().dequeueTracks(msgObj.getIntParam());
-                    break;
-                case ODYSSEY_SETNEXTRACK:
                     break;
                 case ODYSSEY_CLEARPLAYLIST:
                     mService.get().clearPlaylist();
@@ -104,9 +91,6 @@ public class PlaybackServiceHandler extends Handler {
                     break;
                 case ODYSSEY_PLAYALLTRACKS:
                     mService.get().playAllTracks();
-                    break;
-                case ODYSSEY_PLAYALLTRACKSSHUFFLED:
-                    mService.get().playAllTracksShuffled();
                     break;
                 case ODYSSEY_SAVEPLAYLIST:
                     mService.get().savePlaylist(msgObj.getStringParam());
