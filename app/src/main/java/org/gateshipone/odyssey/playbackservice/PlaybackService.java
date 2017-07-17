@@ -968,7 +968,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Plays the given track.
      * A previous playlist will be cleared.
      *
-     * @param track  the current trackmodel
+     * @param track the current trackmodel
      */
     public void playTrack(TrackModel track) {
         clearPlaylist();
@@ -1486,11 +1486,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * creates trackmodels for a given directorypath and adds the tracks to the playlist
+     * Creates trackmodels for a given directorypath and plays the tracks.
+     * A previous playlist will be cleared.
      *
      * @param directoryPath the path to the selected directory
+     * @param position the position to start the playback
      */
-    public void enqueueDirectory(String directoryPath) {
+    public void playDirectory(String directoryPath, int position) {
+        clearPlaylist();
+
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -1506,6 +1510,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // TODO this is unsecure
         mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+
+        jumpToIndex(position);
     }
 
     /**

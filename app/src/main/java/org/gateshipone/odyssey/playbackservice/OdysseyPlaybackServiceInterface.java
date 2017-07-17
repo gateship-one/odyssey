@@ -274,6 +274,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
+
     @Override
     public void resumeBookmark(long timestamp) throws RemoteException {
         // create resume bookmark control object
@@ -318,8 +319,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueDirectory(String directoryPath) throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEDIRECTORY, directoryPath);
+    public void playDirectory(String directoryPath, int position) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYDIRECTORY, directoryPath, position);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

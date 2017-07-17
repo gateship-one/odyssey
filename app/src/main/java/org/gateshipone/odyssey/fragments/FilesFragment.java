@@ -441,12 +441,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFolder(int position) {
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-            mServiceConnection.getPBS().enqueueDirectory(mCurrentDirectory.getPath());
-
             // compute position
             int index = position - mCurrentDirectory.getNumberOfSubFolders();
-            mServiceConnection.getPBS().jumpTo(index);
+            mServiceConnection.getPBS().playDirectory(mCurrentDirectory.getPath(), position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

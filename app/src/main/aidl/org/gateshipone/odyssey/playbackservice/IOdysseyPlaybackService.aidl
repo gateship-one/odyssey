@@ -80,7 +80,7 @@ interface IOdysseyPlaybackService {
 	void enqueueFile(String filePath, boolean asNext);
 	void playFile(String filePath);
 
-	void enqueueDirectory(String directoryPath);
+	void playDirectory(String directoryPath, int position);
 	void enqueueDirectoryAndSubDirectories(String directoryPath);
 
 	// Information getters

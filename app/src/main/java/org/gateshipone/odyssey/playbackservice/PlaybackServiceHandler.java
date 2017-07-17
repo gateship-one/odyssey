@@ -119,8 +119,8 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_PLAYFILE:
                     mService.get().playFile(msgObj.getStringParam());
                     break;
-                case ODYSSEY_ENQUEUEDIRECTORY:
-                    mService.get().enqueueDirectory(msgObj.getStringParam());
+                case ODYSSEY_PLAYDIRECTORY:
+                    mService.get().playDirectory(msgObj.getStringParam(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES:
                     mService.get().enqueueDirectoryAndSubDirectories(msgObj.getStringParam());
