@@ -43,8 +43,10 @@ interface IOdysseyPlaybackService {
 
     // enqueue a playlist from mediastore
     void enqueuePlaylist(long playlistId);
+    void playPlaylist(long playlistId, int position);
 
     void enqueuePlaylistFile(String path);
+    void playPlaylistFile(String path, int position);
 
     // enqueue all tracks of an album from mediastore
     void enqueueAlbum(String albumKey);

@@ -101,8 +101,14 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_ENQUEUEPLAYLIST:
                     mService.get().enqueuePlaylist(msgObj.getLongParam());
                     break;
+                case ODYSSEY_PLAYPLAYLIST:
+                    mService.get().playPlaylist(msgObj.getLongParam(), msgObj.getIntParam());
+                    break;
                 case ODYSSEY_ENQUEUEPLAYLISTFILE:
                     mService.get().enqueuePlaylistFile(msgObj.getStringParam());
+                    break;
+                case ODYSSEY_PLAYPLAYLISTFILE:
+                    mService.get().playPlaylistFile(msgObj.getStringParam(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_RESUMEBOOKMARK:
                     mService.get().resumeBookmark(msgObj.getLongParam());

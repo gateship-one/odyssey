@@ -303,21 +303,14 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void playPlaylist(int position) {
 
         try {
-            // clear the current playlist
-            mServiceConnection.getPBS().clearPlaylist();
-
-            // add the playlist
             if (mPlaylistPath == null) {
-                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+                mServiceConnection.getPBS().playPlaylist(mPlaylistID, position);
             } else {
-                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+                mServiceConnection.getPBS().playPlaylistFile(mPlaylistPath, position);
             }
-
-            // jump to selected track
-            mServiceConnection.getPBS().jumpTo(position);
-        } catch (RemoteException e1) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
     }
 

@@ -1337,6 +1337,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * Play a selected playlist from mediastore.
+     * A previous playlist will be cleared.
+     *
+     * @param playlistId the id of the selected playlist
+     * @param position   the position to start the playback
+     */
+    public void playPlaylist(long playlistId, int position) {
+        clearPlaylist();
+
+        enqueuePlaylist(playlistId);
+
+        jumpToIndex(position);
+    }
+
+    /**
      * enqueue a selected playlist from the selected file path
      *
      * @param path the path to a playlistfile
@@ -1360,6 +1375,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // TODO this is unsecure
         mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+    }
+
+    /**
+     * Play a selected playlist from the selected file path.
+     * A previous playlist will be cleared.
+     *
+     * @param path     the path to a playlistfile
+     * @param position the position to start the playback
+     */
+    public void playPlaylistFile(String path, int position) {
+        clearPlaylist();
+
+        enqueuePlaylistFile(path);
+
+        jumpToIndex(position);
     }
 
     /**

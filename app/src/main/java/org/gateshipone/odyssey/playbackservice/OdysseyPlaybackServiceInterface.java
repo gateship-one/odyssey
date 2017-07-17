@@ -228,8 +228,24 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void playPlaylist(long playlistId, int position) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST, playlistId, position);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
     public void enqueuePlaylistFile(String path) throws RemoteException {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLISTFILE, path);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
+    public void playPlaylistFile(String path, int position) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLISTFILE, path, position);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
