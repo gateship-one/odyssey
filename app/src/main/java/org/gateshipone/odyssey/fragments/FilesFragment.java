@@ -443,7 +443,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         try {
             // compute position
             int index = position - mCurrentDirectory.getNumberOfSubFolders();
-            mServiceConnection.getPBS().playDirectory(mCurrentDirectory.getPath(), position);
+            mServiceConnection.getPBS().playDirectory(mCurrentDirectory.getPath(), index);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
