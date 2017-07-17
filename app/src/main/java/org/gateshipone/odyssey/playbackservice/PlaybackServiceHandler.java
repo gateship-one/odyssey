@@ -128,6 +128,9 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_ENQUEUEARTIST:
                     mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam());
                     break;
+                case ODYSSEY_PLAYARTIST:
+                    mService.get().playArtist(msgObj.getLongParam(), msgObj.getStringParam());
+                    break;
                 case ODYSSEY_ENQUEUERECENTALBUMS:
                     mService.get().enqueueRecentAlbums();
                     break;

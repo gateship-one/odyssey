@@ -936,6 +936,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * Play all tracks of an artist identified by the artistId.
+     * A previous playlist will be cleared.
+     *
+     * @param artistId The id of the artist
+     * @param orderKey String to specify the order of the tracks
+     */
+    public void playArtist(long artistId, String orderKey) {
+        clearPlaylist();
+
+        enqueueArtist(artistId, orderKey);
+
+        jumpToIndex(0);
+    }
+
+    /**
      * Enqueue the given track.
      *
      * @param track  the current trackmodel

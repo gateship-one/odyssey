@@ -237,23 +237,13 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
      * A previous playlist will be cleared.
      */
     private void playArtist() {
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
 
-        // play all album of current artist if exists
-
-        // Remove old tracks
+        // play artist
         try {
-            mServiceConnection.getPBS().clearPlaylist();
-        } catch (RemoteException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        // enqueue artist
-        enqueueArtist();
-
-        // play album
-        try {
-            mServiceConnection.getPBS().jumpTo(0);
+            mServiceConnection.getPBS().playArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

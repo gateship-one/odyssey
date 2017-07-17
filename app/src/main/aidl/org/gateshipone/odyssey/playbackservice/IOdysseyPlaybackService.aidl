@@ -54,6 +54,7 @@ interface IOdysseyPlaybackService {
 
     // enqueue all tracks of an artist from mediastore
     void enqueueArtist(long artistId, String orderKey);
+    void playArtist(long artistId, String orderKey);
 
 	/**
 	 * position = playlist position of jump target
