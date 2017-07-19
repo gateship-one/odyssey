@@ -1504,7 +1504,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // add tracks to current playlist
             enqueueTracks(playlistTracks);
         } else {
-            TrackModel track = FileExplorerHelper.getInstance().getTrackModelForFile(currentFile);
+            TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
 
             enqueueTrack(track, asNext);
         }

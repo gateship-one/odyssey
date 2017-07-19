@@ -120,6 +120,6 @@ public class PLSParser extends PlaylistParser {
         }
         
 
-        return createTrackModels(urls);
+        return createTrackModels(context, urls);
     }
 }

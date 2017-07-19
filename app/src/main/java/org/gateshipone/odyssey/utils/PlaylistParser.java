@@ -29,13 +29,13 @@ import java.util.ArrayList;
 
 public abstract class PlaylistParser {
 
-    protected ArrayList<TrackModel> createTrackModels(ArrayList<String> urls) {
+    protected ArrayList<TrackModel> createTrackModels(Context context, ArrayList<String> urls) {
         ArrayList<TrackModel> retList = new ArrayList<>();
 
         for (String url: urls) {
             FileModel tmpFile = new FileModel(url);
 
-            TrackModel tmpModel = FileExplorerHelper.getInstance().getTrackModelForFile(tmpFile);
+            TrackModel tmpModel = FileExplorerHelper.getInstance().getTrackModelForFile(context, tmpFile);
             retList.add(tmpModel);
         }
 

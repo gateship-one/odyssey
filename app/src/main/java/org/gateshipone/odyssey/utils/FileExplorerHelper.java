@@ -67,12 +67,53 @@ public class FileExplorerHelper {
     }
 
     /**
+     * create a TrackModel for the given File
+     * if no entry in the mediadb is found a dummy TrackModel will be created
+     */
+    public TrackModel getTrackModelForFile(Context context, FileModel file) {
+        TrackModel track = null;
+
+        String urlString = file.getURLString();
+
+        // lookup the current file in the media db
+        String whereVal[] = {urlString};
+
+        String where = MediaStore.Audio.Media.DATA + "=?";
+
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
+            }
+
+            cursor.close();
+        }
+
+
+        if (null == track) {
+            return getDummyTrackModelForFile(file);
+        }
+
+        return track;
+    }
+
+    /**
      * Create a dummy {@link TrackModel} for the given {@link FileModel}.
      *
      * @param file The given {@link FileModel}.
      * @return A dummy {@link TrackModel} that only contains the file name and the uri.
      */
-    public TrackModel getTrackModelForFile(FileModel file) {
+    public TrackModel getDummyTrackModelForFile(FileModel file) {
         return new TrackModel(file.getName(), null, null, null, 0, -1, file.getURLString(), -1);
     }
 
@@ -92,11 +133,10 @@ public class FileExplorerHelper {
                     // Parse the playlist file with a parser
                     PlaylistParser parser = PlaylistParserFactory.getParser(file);
                     if (parser != null) {
-
                         tracks.addAll(parser.parseList(context));
                     }
                 } else {
-                    tracks.add(getTrackModelForFile(file));
+                    tracks.add(getDummyTrackModelForFile(file));
                 }
             }
         }
@@ -262,7 +302,7 @@ public class FileExplorerHelper {
                     tracks.addAll(parser.parseList(context));
                 }
             } else {
-                tracks.add(getTrackModelForFile(folder));
+                tracks.add(getDummyTrackModelForFile(folder));
             }
         } else {
             List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
