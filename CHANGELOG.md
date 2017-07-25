@@ -1,9 +1,11 @@
 ### Version: 1.X Tag: release-XX (2017-XX-XX) ###
+* Add ability to open music files from a file browser ([Issue #41](https://github.com/gateship-one/odyssey/issues/41), [Issue #58](https://github.com/gateship-one/odyssey/issues/58))
+* Improve playback speed if started from file browser ([Issue #53](https://github.com/gateship-one/odyssey/issues/53))
+
+### Version: 1.1.6 Tag: release-18 (2017-07-25) ###
 * Allow horizontal resizing of homescreen widget
 * Experimental support for .m3u and .pls files
-* Add ability to open music files from a file browser ([Issue #41](https://github.com/gateship-one/odyssey/issues/41), [Issue #58](https://github.com/gateship-one/odyssey/issues/58))
 * Fix equalizer issues ([Issue #69](https://github.com/gateship-one/odyssey/issues/69))
-* Improve playback speed if started from file browser ([Issue #53](https://github.com/gateship-one/odyssey/issues/53))
 
 ### Version: 1.1.5 Tag: release-17 (2017-05-17) ###
 * Add recent albums view
