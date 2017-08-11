@@ -204,8 +204,6 @@ public class GaplessPlayer {
             // If a MediaPlayer exists and is also prepared the toggle command should start playback.
             mCurrentMediaPlayer.start();
 
-            // Enable wakelock during playback.
-            mCurrentMediaPlayer.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         }
 
     }
@@ -461,7 +459,6 @@ public class GaplessPlayer {
                     mp.seekTo(mPrepareTime);
                     mPrepareTime = 0;
                 }
-                mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
                 mp.start();
 
 
@@ -504,8 +501,6 @@ public class GaplessPlayer {
                     // MediaPlayer got primary MP before finishing preparing, start playback
                     // Workaround for issue #48
 
-                    // Enable wakelock
-                    mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
                     /*
                      * Signal audio effect desire to android
@@ -532,8 +527,6 @@ public class GaplessPlayer {
                     // Second MediaPlayer is now ready to be used and can be set as a next MediaPlayer to the current one
                     mSecondPreparing = false;
 
-                    // If it is nextMediaPlayer it should be set for currentMP
-                    mp.setWakeMode(mPlaybackService.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
                     // Set the internal state
                     mSecondPrepared = true;
