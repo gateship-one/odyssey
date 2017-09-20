@@ -268,17 +268,18 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_skip_next_48dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"/>
 
                     <ImageButton
-                        android:id="@+id/now_playing_bottomRandomButton"
+                        android:id="@+id/now_playing_bottomShuffleButton"
                         android:layout_width="0px"
                         android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="?android:selectableItemBackground"
                         android:scaleType="center"
                         android:src="@drawable/ic_shuffle_24dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@string/contentDescriptions_shuffle" />
 
                 </LinearLayout>
             </LinearLayout>

@@ -262,7 +262,7 @@
                         android:tint="?attr/odyssey_color_text_accent" />
 
                     <ImageButton
-                        android:id="@+id/now_playing_bottomRandomButton"
+                        android:id="@+id/now_playing_bottomShuffleButton"
                         android:layout_width="0px"
                         android:layout_height="48dp"
                         android:layout_weight="1"
