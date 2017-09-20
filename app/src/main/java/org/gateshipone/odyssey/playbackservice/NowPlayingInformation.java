@@ -42,8 +42,10 @@ public final class NowPlayingInformation implements Parcelable {
     private final int mPlayingIndex;
     private final PlaybackService.REPEATSTATE mRepeat;
     private final PlaybackService.RANDOMSTATE mRandom;
+    private final PlaybackService.SHUFFLESTATE mShuffle;
     private final int mPlaylistLength;
     private final TrackModel mCurrentTrack;
+
 
     public static Parcelable.Creator<NowPlayingInformation> CREATOR = new Parcelable.Creator<NowPlayingInformation>() {
 
@@ -53,9 +55,10 @@ public final class NowPlayingInformation implements Parcelable {
             int playingIndex = source.readInt();
             PlaybackService.REPEATSTATE repeat = PlaybackService.REPEATSTATE.values()[source.readInt()];
             PlaybackService.RANDOMSTATE random = PlaybackService.RANDOMSTATE.values()[source.readInt()];
+            PlaybackService.SHUFFLESTATE shuffle = PlaybackService.SHUFFLESTATE.values()[source.readInt()];
             int playlistlength = source.readInt();
             TrackModel currentTrack = source.readParcelable(TrackModel.class.getClassLoader());
-            return new NowPlayingInformation(playState, playingIndex, repeat, random, playlistlength, currentTrack);
+            return new NowPlayingInformation(playState, playingIndex, repeat, random, shuffle, playlistlength, currentTrack);
         }
 
         @Override
@@ -75,15 +78,17 @@ public final class NowPlayingInformation implements Parcelable {
         mPlayingIndex = -1;
         mRepeat = PlaybackService.REPEATSTATE.REPEAT_OFF;
         mRandom = PlaybackService.RANDOMSTATE.RANDOM_OFF;
+        mShuffle = PlaybackService.SHUFFLESTATE.SHUFFLE_OFF;
         mPlaylistLength = 0;
         mCurrentTrack = new TrackModel();
     }
 
-    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, PlaybackService.REPEATSTATE repeat, PlaybackService.RANDOMSTATE random, int playlistlength, TrackModel currentTrack) {
+    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, PlaybackService.REPEATSTATE repeat, PlaybackService.RANDOMSTATE random, PlaybackService.SHUFFLESTATE shuffle, int playlistlength, TrackModel currentTrack) {
         mPlayState = playing;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
         mRandom = random;
+        mShuffle = shuffle;
         mPlaylistLength = playlistlength;
         mCurrentTrack = currentTrack;
     }
@@ -94,16 +99,17 @@ public final class NowPlayingInformation implements Parcelable {
         dest.writeInt(mPlayingIndex);
         dest.writeInt(mRepeat.ordinal());
         dest.writeInt(mRandom.ordinal());
+        dest.writeInt(mShuffle.ordinal());
         dest.writeInt(mPlaylistLength);
         dest.writeParcelable(mCurrentTrack, flags);
     }
 
-    public PlaybackService.PLAYSTATE getPlayState() {
-        return mPlayState;
+    public String toString() {
+        return " Playstate:" + mPlayState.name() + ", index:" + mPlayingIndex + ", repeat:" + mRepeat + ", random:" + mRandom + ", shuffle:" + mShuffle + ", playlistlength:" + mPlaylistLength + ", track:" + mCurrentTrack.toString();
     }
 
-    public String toString() {
-        return "Playstate: " + mPlayState.name() + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom + "playlistlength: " + mPlaylistLength + "track: " + mCurrentTrack.toString();
+    public PlaybackService.PLAYSTATE getPlayState() {
+        return mPlayState;
     }
 
     public int getPlayingIndex() {
@@ -116,6 +122,10 @@ public final class NowPlayingInformation implements Parcelable {
 
     public PlaybackService.RANDOMSTATE getRandom() {
         return mRandom;
+    }
+
+    public PlaybackService.SHUFFLESTATE getShuffle() {
+        return mShuffle;
     }
 
     public int getPlaylistLength() {

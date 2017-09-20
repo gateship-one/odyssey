@@ -82,7 +82,7 @@
     <string name="context_menu_action_enqueue_file">Aggiungi file alla playlist</string>
     <string name="context_menu_action_play_file">Riproduci file</string>
     <!-- popup menu titles -->
-    <string name="popup_menu_action_shuffleplaylist">Riproduzione casuale playlist</string>
+    <string name="popup_menu_action_randomtoggle">Arbitrario</string>
     <string name="popup_menu_action_clearplaylist">Svuota playlist</string>
     <string name="popup_menu_action_saveplaylist">Salva playlist</string>
     <string name="popup_menu_action_createbookmark">Crea segnalibro</string>

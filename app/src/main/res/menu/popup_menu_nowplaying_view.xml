@@ -24,9 +24,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:id="@+id/action_group_playlist">
         <item
-            android:id="@+id/view_nowplaying_action_shuffleplaylist"
+            android:id="@+id/view_nowplaying_action_randomtoggle"
             android:orderInCategory="100"
-            android:title="@string/popup_menu_action_shuffleplaylist"
+            android:title="@string/popup_menu_action_randomtoggle"
             app:showAsAction="never" />
 
         <item

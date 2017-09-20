@@ -49,7 +49,7 @@
     <string name="navigation_drawer_open">Navigationsschieber öffnen</string>
     <string name="popup_menu_action_clearplaylist">Playlist löschen</string>
     <string name="popup_menu_action_saveplaylist">Playlist speichern</string>
-    <string name="popup_menu_action_shuffleplaylist">Playlist durchmischen</string>
+    <string name="popup_menu_action_randomtoggle">Zufällig</string>
     <string name="activity_about_version">Version:</string>
     <string name="preference_launch_about">Über</string>
     <string name="preference_show_album_artists_only_title">Zeige nur Albenintepreten</string>

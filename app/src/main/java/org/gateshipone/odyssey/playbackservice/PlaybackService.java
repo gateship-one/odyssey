@@ -38,6 +38,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Parcel;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
@@ -47,6 +48,7 @@ import android.widget.Toast;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.playbackservice.managers.OdysseyNotificationManager;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -57,13 +59,20 @@ import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
     /**
-     * enums for random, repeat state
+     * enums for random, shuffle, repeat state
      */
     public enum RANDOMSTATE {
         // If random mode is off
         RANDOM_OFF,
         // If random mode is on
         RANDOM_ON
+    }
+
+    public enum SHUFFLESTATE {
+        // If shuffle mode is off
+        SHUFFLE_OFF,
+        // If shuffle mode is on
+        SHUFFLE_ON
     }
 
     public enum REPEATSTATE {
@@ -164,6 +173,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private List<TrackModel> mCurrentList;
 
     /**
+     * holding playlist for shuffle.
+     */
+    List<TrackModel> mUnshuffledList = new ArrayList<TrackModel>();
+
+    /**
      * Index of the currently active track.
      */
     private int mCurrentPlayingIndex;
@@ -198,6 +212,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Saves if random playback is active
      */
     private RANDOMSTATE mRandom = RANDOMSTATE.RANDOM_OFF;
+
+    /**
+     * Saves if shuffle playback is active
+     */
+    private SHUFFLESTATE mShuffle = SHUFFLESTATE.SHUFFLE_OFF;
 
     /**
      * Saves if repeat is active
@@ -433,6 +452,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
 
+        //turn off shuffle
+        if (mShuffle == SHUFFLESTATE.SHUFFLE_ON) {
+            mUnshuffledList.clear();
+            shufflePlaylist();
+        }
+
         // Request to stop the service
         stopService();
     }
@@ -569,37 +594,72 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Shuffles the current playlist
      */
     public void shufflePlaylist() {
-        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-            // get the current TrackModel and remove it from playlist
-            TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
-            mCurrentList.remove(mCurrentPlayingIndex);
+        // get all random states
+        SHUFFLESTATE[] shuffleStates = SHUFFLESTATE.values();
 
-            // shuffle playlist and set currentitem as first element
-            Collections.shuffle(mCurrentList);
-            mCurrentList.add(0, currentItem);
+        // toggle the shuffle state
+        mShuffle = shuffleStates[(mShuffle.ordinal() + 1) % shuffleStates.length];
+        // update the status
+        mPlaybackServiceStatusHelper.updateStatus();
 
-            // reset index
-            mCurrentPlayingIndex = 0;
 
-            mPlaybackServiceStatusHelper.updateStatus();
 
-            // set next track for the GaplessPlayer which has now changed
-            try {
-                if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
-                    mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
-                } else {
-                    mPlayer.setNextTrack(null);
+        if (mShuffle == SHUFFLESTATE.SHUFFLE_ON) {
+            if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
+
+                // save the current list for when the list is unshuffled
+                mUnshuffledList.clear();
+                mUnshuffledList.addAll(mCurrentList);
+
+                // get the current TrackModel and remove it from playlist
+                TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
+                mCurrentList.remove(mCurrentPlayingIndex);
+
+                // shuffle playlist and set current item as first element
+                Collections.shuffle(mCurrentList);
+                mCurrentList.add(0, currentItem);
+
+                // reset index
+                mCurrentPlayingIndex = 0;
+
+                mPlaybackServiceStatusHelper.updateStatus();
+
+                // set next track for the GaplessPlayer which has now changed
+                try {
+                    if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                        mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                    } else {
+                        mPlayer.setNextTrack(null);
+                    }
+                } catch (GaplessPlayer.PlaybackException e) {
+                    handlePlaybackException(e);
                 }
-            } catch (GaplessPlayer.PlaybackException e) {
-                handlePlaybackException(e);
-            }
-        } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
-            // service stopped just shuffle playlist
-            Collections.shuffle(mCurrentList);
+            } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
+                // service stopped just shuffle playlist
+                Collections.shuffle(mCurrentList);
 
-            // sent broadcast
+                // sent broadcast
+                mPlaybackServiceStatusHelper.updateStatus();
+            }
+        } else {
+            // if (mShuffle == SHUFFLESTATE.SHUFFLE_OFF)
+
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            // Get the Current Track so that the NowPlayingInfo can be set to the proper track
+            TrackModel currentPlayingTrack = mCurrentList.get(mCurrentPlayingIndex);
+            // Clear the current track list
+            mCurrentList.clear();
+            // Set the unshuffled list as the new track list
+            enqueueTracks(mUnshuffledList);
+            // Set the CurrentPlayingIndex to the index of current playing track
+            mCurrentPlayingIndex = mCurrentList.indexOf(currentPlayingTrack);
+            // Update the helper
             mPlaybackServiceStatusHelper.updateStatus();
+
         }
+        setNextTrackForMP();
+
     }
 
     /**
@@ -862,6 +922,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void enqueueAlbum(String albumKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
+
 
         // get all tracks for the current albumkey from mediastore
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
@@ -1136,6 +1197,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
+     * @return The current shuffle state of this service
+     */
+    public SHUFFLESTATE getShuffle() {
+        return mShuffle;
+    }
+
+    /**
      * @return The current repeat state of this service
      */
     public REPEATSTATE getRepeat() {
@@ -1238,11 +1306,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         PLAYSTATE state = getPlaybackState();
 
         if (state == PLAYSTATE.STOPPED) {
-            return new NowPlayingInformation();
+            NowPlayingInformation x = new NowPlayingInformation();
+            TrackModel nowPlayingTrack = x.getCurrentTrack();
+            Log.v(TAG, "PLAYSTATE.STOPPED | NowPlayingInformation"+ x.toString()+ " | Now Playing Track Info: " + nowPlayingTrack.getTrackName());
+            return x;
         } else {
             TrackModel currentTrack = mCurrentList.get(mCurrentPlayingIndex);
 
-            return new NowPlayingInformation(state, mCurrentPlayingIndex, mRepeat, mRandom, mCurrentList.size(), currentTrack);
+            Log.v(TAG, "PLAYSTATE != STOPPED | mCurrentPlayingIndex = " + mCurrentPlayingIndex);
+
+            return new NowPlayingInformation(state, mCurrentPlayingIndex, mRepeat, mRandom, mShuffle, mCurrentList.size(), currentTrack);
         }
     }
 

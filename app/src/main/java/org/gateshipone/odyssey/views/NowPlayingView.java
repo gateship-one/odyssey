@@ -169,7 +169,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     private ImageButton mBottomRepeatButton;
     private ImageButton mBottomPlayPauseButton;
-    private ImageButton mBottomRandomButton;
+    private ImageButton mBottonShuffleButton;
 
     /**
      * Seekbar used for seeking and informing the user of the current playback position.
@@ -357,9 +357,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.view_nowplaying_action_shuffleplaylist:
+            case R.id.view_nowplaying_action_randomtoggle:
                 try {
-                    mServiceConnection.getPBS().shufflePlaylist();
+                    mServiceConnection.getPBS().toggleRandom();
                 } catch (RemoteException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -410,6 +410,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 TrackModel track;
                 try {
                     track = mServiceConnection.getPBS().getCurrentSong();
+
                 } catch (RemoteException e) {
                     return true;
                 }
@@ -787,7 +788,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // bottom buttons
         mBottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
         mBottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
-        mBottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
+        mBottonShuffleButton = (ImageButton) findViewById(R.id.now_playing_bottomShuffleButton);
         ImageButton bottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
         ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
 
@@ -937,12 +938,12 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             }
         });
 
-        // Add listener to bottom random button
-        mBottomRandomButton.setOnClickListener(new OnClickListener() {
+        // Add listener to bottom shuffle button
+        mBottonShuffleButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 try {
-                    mServiceConnection.getPBS().toggleRandom();
+                    mServiceConnection.getPBS().shufflePlaylist();
                 } catch (RemoteException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -1113,7 +1114,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // set tracktitle, album, artist and albumcover
         mTrackTitle.setText(currentTrack.getTrackName());
 
-
         // Check if the album title changed. If true, start the cover generator thread.
         if (!currentTrack.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
             // Show placeholder until image is loaded
@@ -1209,13 +1209,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 break;
         }
 
-        // update random button
-        switch (info.getRandom()) {
-            case RANDOM_OFF:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
+        // update shuffle button
+        switch (info.getShuffle()) {
+            case SHUFFLE_OFF:
+                mBottonShuffleButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
                 break;
-            case RANDOM_ON:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+            case SHUFFLE_ON:
+                mBottonShuffleButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
                 break;
         }
     }

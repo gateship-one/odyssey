@@ -102,6 +102,9 @@
 
     <string name="action_show_recent_albums">Recent albums</string>
 
+    <!-- contentDescriptions -->
+    <string name="contentDescriptions_shuffle">Shuffle</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
     <string name="context_menu_action_enqueueasnext">Play after current song</string>
@@ -123,7 +126,7 @@
     <string name="context_menu_action_play_file">Play file</string>
 
     <!-- popup menu titles -->
-    <string name="popup_menu_action_shuffleplaylist">Shuffle playlist</string>
+    <string name="popup_menu_action_randomtoggle">Randomize</string>
     <string name="popup_menu_action_clearplaylist">Clear playlist</string>
     <string name="popup_menu_action_saveplaylist">Save playlist</string>
     <string name="popup_menu_action_createbookmark">Create bookmark</string>
@@ -268,4 +271,5 @@
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>
+
 </resources>

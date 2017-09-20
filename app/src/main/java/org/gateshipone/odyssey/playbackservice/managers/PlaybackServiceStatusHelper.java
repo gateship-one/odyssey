@@ -30,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -126,6 +127,7 @@ public class PlaybackServiceStatusHelper {
      */
     public synchronized void updateStatus() {
         NowPlayingInformation info = mPlaybackService.getNowPlayingInformation();
+
         TrackModel currentTrack = info.getCurrentTrack();
 
         // Get duration from PBS if no duration was set before
@@ -141,6 +143,7 @@ public class PlaybackServiceStatusHelper {
             case PAUSE:
                 // Call the notification manager, it handles the rest.
                 mNotificationManager.updateNotification(currentTrack, currentState, mMediaSession.getSessionToken());
+
 
                 // Update MediaSession metadata.
                 updateMetadata(currentTrack, currentState);
@@ -206,10 +209,11 @@ public class PlaybackServiceStatusHelper {
             // Try to get old metadata to save image retrieval.
             MediaMetadataCompat oldData = mMediaSession.getController().getMetadata();
             MediaMetadataCompat.Builder metaDataBuilder;
+
             if (oldData == null) {
                 metaDataBuilder = new MediaMetadataCompat.Builder();
             } else {
-                metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
+               metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
             }
             metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, track.getTrackName());
             metaDataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, track.getTrackAlbumName());
@@ -222,7 +226,6 @@ public class PlaybackServiceStatusHelper {
             if (mHideArtwork) {
                 metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
             }
-
             mMediaSession.setMetadata(metaDataBuilder.build());
         }
     }

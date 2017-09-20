@@ -119,7 +119,7 @@
     <string name="context_menu_action_play_file">Écouter le fichier</string>
 
     <!-- popup menu titles -->
-    <string name="popup_menu_action_shuffleplaylist">Liste de lecture aléatoire</string>
+    <string name="popup_menu_action_randomtoggle">Aléatoire</string>
     <string name="popup_menu_action_clearplaylist">Effacer la liste de lecture</string>
     <string name="popup_menu_action_saveplaylist">Enregistrer la liste de lecture</string>
     <string name="popup_menu_action_createbookmark">Créer un marque-page</string>
