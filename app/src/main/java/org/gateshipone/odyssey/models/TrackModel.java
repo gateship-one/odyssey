@@ -285,4 +285,9 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeLong(mTrackId);
         dest.writeInt(mDateAdded);
     }
+
+    @Override
+    public String toString() {
+        return "Track: " + getTrackNumber() + ':' + getTrackName() + '-' + getTrackAlbumName();
+    }
 }
