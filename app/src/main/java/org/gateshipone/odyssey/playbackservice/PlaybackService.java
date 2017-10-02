@@ -227,6 +227,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private MetaDataLoader mMetaDataLoader;
 
     /**
+     * Flag indicating if the meta data loader is running in that case modifying
+     * the current playlist is not allowed.
+     */
+    private boolean mMetaDataLoaderRunning = false;
+
+    /**
      * Called when the PlaybackService is bound by an activity.
      *
      * @param intent Intent used for binding.
@@ -396,20 +402,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Directly plays uri
      */
     public void playURI(String uri) {
-        // Notify the user about the possible long running operation
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            // Notify the user about the possible long running operation
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // Clear playlist, enqueue uri, jumpto 0
-        clearPlaylist();
-        enqueueFile(uri, false);
-        jumpToIndex(0);
+            // Clear playlist, enqueue uri, jumpto 0
+            clearPlaylist();
+            enqueueFile(uri, false);
+            jumpToIndex(0);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
 
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+        }
     }
 
     /**
@@ -545,69 +552,65 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Add all tracks to the playlist and start playing them
      */
     public void playAllTracks() {
-        // Notify the user about the possible long running operation
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            // Notify the user about the possible long running operation
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // clear the playlist before adding all tracks
-        clearPlaylist();
+            // clear the playlist before adding all tracks
+            clearPlaylist();
 
 
-        // Get a list of all available tracks from the MusicLibraryHelper
-        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(getApplicationContext());
+            // Get a list of all available tracks from the MusicLibraryHelper
+            List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(getApplicationContext());
 
-        mCurrentList.addAll(allTracks);
+            mCurrentList.addAll(allTracks);
 
-        // Start playing the first item in the list
-        jumpToIndex(0);
+            // Start playing the first item in the list
+            jumpToIndex(0);
 
-        // Notify the user that the operation is now finished
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
-    }
-
-    /**
-     * Adds all tracks to playlist, play and then shuffle
-     */
-    public void playAllTracksShuffled() {
-        playAllTracks();
-        shufflePlaylist();
+            // Notify the user that the operation is now finished
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+        }
     }
 
     /**
      * Shuffles the current playlist
      */
     public void shufflePlaylist() {
-        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-            // get the current TrackModel and remove it from playlist
-            TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
-            mCurrentList.remove(mCurrentPlayingIndex);
+        if (!mMetaDataLoaderRunning) {
+            if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
+                // get the current TrackModel and remove it from playlist
+                TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
+                mCurrentList.remove(mCurrentPlayingIndex);
 
-            // shuffle playlist and set currentitem as first element
-            Collections.shuffle(mCurrentList);
-            mCurrentList.add(0, currentItem);
+                // shuffle playlist and set currentitem as first element
+                Collections.shuffle(mCurrentList);
+                mCurrentList.add(0, currentItem);
 
-            // reset index
-            mCurrentPlayingIndex = 0;
+                // reset index
+                mCurrentPlayingIndex = 0;
 
-            mPlaybackServiceStatusHelper.updateStatus();
+                mPlaybackServiceStatusHelper.updateStatus();
 
-            // set next track for the GaplessPlayer which has now changed
-            try {
-                if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
-                    mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
-                } else {
-                    mPlayer.setNextTrack(null);
+                // set next track for the GaplessPlayer which has now changed
+                try {
+                    if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                        mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                    } else {
+                        mPlayer.setNextTrack(null);
+                    }
+                } catch (GaplessPlayer.PlaybackException e) {
+                    handlePlaybackException(e);
                 }
-            } catch (GaplessPlayer.PlaybackException e) {
-                handlePlaybackException(e);
-            }
-        } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
-            // service stopped just shuffle playlist
-            Collections.shuffle(mCurrentList);
+            } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
+                // service stopped just shuffle playlist
+                Collections.shuffle(mCurrentList);
 
-            // sent broadcast
-            mPlaybackServiceStatusHelper.updateStatus();
+                // sent broadcast
+                mPlaybackServiceStatusHelper.updateStatus();
+            }
         }
     }
 
@@ -615,53 +618,57 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Jumps to the next song that is set in mNextPlayingIndex
      */
     public void setNextTrack() {
-        // Keep device at least for 5 seconds turned on
-        mSongTransitionWakelock.acquire(5000);
+        if (!mMetaDataLoaderRunning) {
+            // Keep device at least for 5 seconds turned on
+            mSongTransitionWakelock.acquire(5000);
 
-        // Save the last playing index, to allow the user to jump back
-        mLastPlayingIndex = mCurrentPlayingIndex;
+            // Save the last playing index, to allow the user to jump back
+            mLastPlayingIndex = mCurrentPlayingIndex;
 
-        // Jump to the mNextPlayingIndex
-        jumpToIndex(mNextPlayingIndex);
+            // Jump to the mNextPlayingIndex
+            jumpToIndex(mNextPlayingIndex);
+        }
     }
 
     /**
      * Sets nextplayback track to preceding on in playlist
      */
     public void setPreviousTrack() {
-        // Keep device at least for 5 seconds turned on
-        mSongTransitionWakelock.acquire(5000);
+        if (!mMetaDataLoaderRunning) {
+            // Keep device at least for 5 seconds turned on
+            mSongTransitionWakelock.acquire(5000);
 
-        // Logic to restart the song if playback is not progressed beyond 2000ms.
-        // This enables the behavior of CD-players which a user is used to.
-        if (getTrackPosition() > 2000) {
-            // Check if current song should be restarted
-            jumpToIndex(mCurrentPlayingIndex);
-        } else if (mRandom == RANDOMSTATE.RANDOM_ON) {
-            // handle random mode
-            if (mLastPlayingIndex == -1) {
-                // if no mLastPlayingIndex reuse mCurrentPlayingIndex and restart the song
+            // Logic to restart the song if playback is not progressed beyond 2000ms.
+            // This enables the behavior of CD-players which a user is used to.
+            if (getTrackPosition() > 2000) {
+                // Check if current song should be restarted
                 jumpToIndex(mCurrentPlayingIndex);
-            } else if (mLastPlayingIndex >= 0 && mLastPlayingIndex < mCurrentList.size()) {
-                // If a song was played before this one, jump back to it
-                jumpToIndex(mLastPlayingIndex);
-            }
-        } else {
-            // Check if the repeat track mode is activated which means that the user is stuck to the current song
-            if (mRepeat == REPEATSTATE.REPEAT_TRACK) {
-                // repeat the current track again
-                jumpToIndex(mCurrentPlayingIndex);
+            } else if (mRandom == RANDOMSTATE.RANDOM_ON) {
+                // handle random mode
+                if (mLastPlayingIndex == -1) {
+                    // if no mLastPlayingIndex reuse mCurrentPlayingIndex and restart the song
+                    jumpToIndex(mCurrentPlayingIndex);
+                } else if (mLastPlayingIndex >= 0 && mLastPlayingIndex < mCurrentList.size()) {
+                    // If a song was played before this one, jump back to it
+                    jumpToIndex(mLastPlayingIndex);
+                }
             } else {
-                // Check if the first playlist element is reached
-                if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
-                    // Jump to the previous song (sequential back jump)
-                    jumpToIndex(mCurrentPlayingIndex - 1);
-                } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
-                    // In repeat mode next track is last track of playlist
-                    jumpToIndex(mCurrentList.size() - 1);
+                // Check if the repeat track mode is activated which means that the user is stuck to the current song
+                if (mRepeat == REPEATSTATE.REPEAT_TRACK) {
+                    // repeat the current track again
+                    jumpToIndex(mCurrentPlayingIndex);
                 } else {
-                    // If repeat all is not activated just stop playback if we try to move to position -1
-                    stop();
+                    // Check if the first playlist element is reached
+                    if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
+                        // Jump to the previous song (sequential back jump)
+                        jumpToIndex(mCurrentPlayingIndex - 1);
+                    } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
+                        // In repeat mode next track is last track of playlist
+                        jumpToIndex(mCurrentList.size() - 1);
+                    } else {
+                        // If repeat all is not activated just stop playback if we try to move to position -1
+                        stop();
+                    }
                 }
             }
         }
@@ -675,15 +682,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     protected PlaybackServiceHandler getHandler() {
         return mHandler;
-    }
-
-    /**
-     * Returns a reference to the playlist. DO NOT MODIFY THE LIST!!!
-     *
-     * @return Reference to mCurrentList
-     */
-    public List<TrackModel> getCurrentList() {
-        return mCurrentList;
     }
 
     /**
@@ -710,13 +708,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Clears the current playlist and stops playback afterwards. Also resets repeat, random state
      */
     public void clearPlaylist() {
-        // Clear the list
-        mCurrentList.clear();
-        // reset random and repeat state
-        mRandom = RANDOMSTATE.RANDOM_OFF;
-        mRepeat = REPEATSTATE.REPEAT_OFF;
-        // Stop the playback
-        stop();
+        if (!mMetaDataLoaderRunning) {
+            // Clear the list
+            mCurrentList.clear();
+            // reset random and repeat state
+            mRandom = RANDOMSTATE.RANDOM_OFF;
+            mRepeat = REPEATSTATE.REPEAT_OFF;
+            // Stop the playback
+            stop();
+        }
     }
 
     /**
@@ -725,7 +725,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index Position of song to play
      */
     public void jumpToIndex(int index) {
-        jumpToIndex(index, 0);
+        if (!mMetaDataLoaderRunning) {
+            jumpToIndex(index, 0);
+        }
     }
 
     /**
@@ -735,62 +737,62 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param jumpTime Position inside the song (milliseconds)
      */
     public void jumpToIndex(int index, int jumpTime) {
+        if (!mMetaDataLoaderRunning) {
+            // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
+            if (mPlayer.getActive()) {
+                // Abort here if the player is still active
+                return;
+            }
 
-        // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
-        if (mPlayer.getActive()) {
-            // Abort here if the player is still active
-            return;
-        }
+            // Cancel possible alerts registered within the AlarmManager
+            cancelQuitAlert();
 
-        // Cancel possible alerts registered within the AlarmManager
-        cancelQuitAlert();
+            // Stop playback before starting a new song. This ensures state safety
+            mPlayer.stop();
 
-        // Stop playback before starting a new song. This ensures state safety
-        mPlayer.stop();
-
-        // Set mCurrentPlayingIndex to new song after checking the bounds
-        if (index < mCurrentList.size() && index >= 0) {
-            mCurrentPlayingIndex = index;
+            // Set mCurrentPlayingIndex to new song after checking the bounds
+            if (index < mCurrentList.size() && index >= 0) {
+                mCurrentPlayingIndex = index;
 
             /*
              * Make sure service is "started" so android doesn't handle it as a
              * "bound service"
              */
-            Intent serviceStartIntent = new Intent(this, PlaybackService.class);
-            serviceStartIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-            startService(serviceStartIntent);
+                Intent serviceStartIntent = new Intent(this, PlaybackService.class);
+                serviceStartIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                startService(serviceStartIntent);
 
-            // Get the item that is requested to be played.
-            TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
+                // Get the item that is requested to be played.
+                TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
 
-            // Request audio focus before doing anything
-            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Abort command if audio focus was not granted
-                return;
+                // Request audio focus before doing anything
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    // Abort command if audio focus was not granted
+                    return;
+                }
+
+                // Notify the PlaybackServiceStatusHelper that a new media session is started
+                mPlaybackServiceStatusHelper.startMediaSession();
+
+                // Try to start playback of the track url.
+                try {
+                    mPlayer.play(item.getTrackURL(), jumpTime);
+                } catch (GaplessPlayer.PlaybackException e) {
+                    // Handle an error of the play commant
+                    handlePlaybackException(e);
+                }
+
+                // Sets the mNextPlayingIndex to the index just startet, because the PlaybackStartListener will
+                // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
+                // is necessary to handle playback start
+                mNextPlayingIndex = index;
+            } else if (index < 0) {
+                // If index < 0 is requested for whatever reason stop the playback
+                stop();
             }
-
-            // Notify the PlaybackServiceStatusHelper that a new media session is started
-            mPlaybackServiceStatusHelper.startMediaSession();
-
-            // Try to start playback of the track url.
-            try {
-                mPlayer.play(item.getTrackURL(), jumpTime);
-            } catch (GaplessPlayer.PlaybackException e) {
-                // Handle an error of the play commant
-                handlePlaybackException(e);
-            }
-
-            // Sets the mNextPlayingIndex to the index just startet, because the PlaybackStartListener will
-            // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
-            // is necessary to handle playback start
-            mNextPlayingIndex = index;
-        } else if (index < 0) {
-            // If index < 0 is requested for whatever reason stop the playback
-            stop();
         }
-
     }
 
     /**
@@ -809,7 +811,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 mLastPosition = position;
                 break;
             case STOPPED:
-                return;
+                break;
         }
     }
 
@@ -843,24 +845,26 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Prepare the next track for playback if needed.
      */
     public void enqueueTracks(List<TrackModel> tracklist) {
-        // Saved to check if we played the last song of the list
-        int oldSize = mCurrentList.size();
+        if (!mMetaDataLoaderRunning) {
+            // Saved to check if we played the last song of the list
+            int oldSize = mCurrentList.size();
 
-        // Add the tracks to the actual list
-        mCurrentList.addAll(tracklist);
+            // Add the tracks to the actual list
+            mCurrentList.addAll(tracklist);
 
         /*
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
          */
-        if (mCurrentPlayingIndex == (oldSize - 1) && (mCurrentPlayingIndex >= 0)) {
-            // Next song for MP has to be set for gapless mediaplayback
-            mNextPlayingIndex = mCurrentPlayingIndex + 1;
-            setNextTrackForMP();
-        }
+            if (mCurrentPlayingIndex == (oldSize - 1) && (mCurrentPlayingIndex >= 0)) {
+                // Next song for MP has to be set for gapless mediaplayback
+                mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                setNextTrackForMP();
+            }
 
-        // Inform the helper that the state has changed
-        mPlaybackServiceStatusHelper.updateStatus();
+            // Inform the helper that the state has changed
+            mPlaybackServiceStatusHelper.updateStatus();
+        }
     }
 
     /**
@@ -869,17 +873,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param albumKey The key of the album
      */
     public void enqueueAlbum(String albumKey) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // get all tracks for the current albumkey from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
+            // get all tracks for the current albumkey from mediastore
+            List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
 
-        // add tracks to current playlist
-        enqueueTracks(tracks);
+            // add tracks to current playlist
+            enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+        }
     }
 
     /**
@@ -890,26 +896,30 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param position The position to start playback
      */
     public void playAlbum(String albumKey, int position) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueAlbum(albumKey);
+            enqueueAlbum(albumKey);
 
-        jumpToIndex(position);
+            jumpToIndex(position);
+        }
     }
 
     /**
      * Enqueue all recent albums from the mediastore.
      */
     public void enqueueRecentAlbums() {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        List<TrackModel> tracks = MusicLibraryHelper.getRecentTracks(getApplicationContext());
+            List<TrackModel> tracks = MusicLibraryHelper.getRecentTracks(getApplicationContext());
 
-        enqueueTracks(tracks);
+            enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+        }
     }
 
     /**
@@ -917,11 +927,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * A previous playlist will be cleared.
      */
     public void playRecentAlbums() {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueRecentAlbums();
+            enqueueRecentAlbums();
 
-        jumpToIndex(0);
+            jumpToIndex(0);
+        }
     }
 
     /**
@@ -931,17 +943,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param orderKey String to specify the order of the tracks
      */
     public void enqueueArtist(long artistId, String orderKey) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // get all tracks for the current artistId from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
+            // get all tracks for the current artistId from mediastore
+            List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
 
-        // add tracks to current playlist
-        enqueueTracks(tracks);
+            // add tracks to current playlist
+            enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+        }
     }
 
     /**
@@ -952,11 +966,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param orderKey String to specify the order of the tracks
      */
     public void playArtist(long artistId, String orderKey) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueArtist(artistId, orderKey);
+            enqueueArtist(artistId, orderKey);
 
-        jumpToIndex(0);
+            jumpToIndex(0);
+        }
     }
 
     /**
@@ -966,10 +982,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param asNext flag if the track should be enqueued as next
      */
     public void enqueueTrack(TrackModel track, boolean asNext) {
-        if (asNext) {
-            enqueueAsNextTrack(track);
-        } else {
-            enqueueTrack(track);
+        if (!mMetaDataLoaderRunning) {
+            if (asNext) {
+                enqueueAsNextTrack(track);
+            } else {
+                enqueueTrack(track);
+            }
         }
     }
 
@@ -980,11 +998,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     public void playTrack(TrackModel track) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueTrack(track);
+            enqueueTrack(track);
 
-        jumpToIndex(0);
+            jumpToIndex(0);
+        }
     }
 
     /**
@@ -993,22 +1013,24 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueTrack(TrackModel track) {
-        // Check if current song is old last one, if so set next song to MP for
-        // gapless playback
-        int oldSize = mCurrentList.size();
+        if (!mMetaDataLoaderRunning) {
+            // Check if current song is old last one, if so set next song to MP for
+            // gapless playback
+            int oldSize = mCurrentList.size();
 
-        mCurrentList.add(track);
+            mCurrentList.add(track);
         /*
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
          */
-        if (mCurrentPlayingIndex == (oldSize - 1) && (oldSize != 0)) {
-            // Next song for MP has to be set for gapless mediaplayback
-            mNextPlayingIndex = mCurrentPlayingIndex + 1;
-            setNextTrackForMP();
+            if (mCurrentPlayingIndex == (oldSize - 1) && (oldSize != 0)) {
+                // Next song for MP has to be set for gapless mediaplayback
+                mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                setNextTrackForMP();
+            }
+            // Send new NowPlaying because playlist changed
+            mPlaybackServiceStatusHelper.updateStatus();
         }
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
     }
 
     /**
@@ -1017,23 +1039,24 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueAsNextTrack(TrackModel track) {
+        if (!mMetaDataLoaderRunning) {
+            // Check if currently playing index is set to a valid value
+            if (mCurrentPlayingIndex >= 0) {
+                // Enqueue in list structure
+                mCurrentList.add(mCurrentPlayingIndex + 1, track);
+                mNextPlayingIndex = mCurrentPlayingIndex + 1;
+                // Set next track to new one
+                setNextTrackForMP();
+            } else {
+                // If not playing just add it to the beginning of the playlist
+                mCurrentList.add(0, track);
+                // Start playback which is probably intended
+                jumpToIndex(0);
+            }
 
-        // Check if currently playing index is set to a valid value
-        if (mCurrentPlayingIndex >= 0) {
-            // Enqueue in list structure
-            mCurrentList.add(mCurrentPlayingIndex + 1, track);
-            mNextPlayingIndex = mCurrentPlayingIndex + 1;
-            // Set next track to new one
-            setNextTrackForMP();
-        } else {
-            // If not playing just add it to the beginning of the playlist
-            mCurrentList.add(0, track);
-            // Start playback which is probably intended
-            jumpToIndex(0);
+            // Send new NowPlaying because playlist changed
+            mPlaybackServiceStatusHelper.updateStatus();
         }
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
     }
 
     /**
@@ -1042,30 +1065,32 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index Position of the track to remove
      */
     public void dequeueTrack(int index) {
-        // Check if track is currently playing, if so stop it
-        if (mCurrentPlayingIndex == index) {
-            // Stop playback of currentsong
-            stop();
-            // Delete song at index
-            mCurrentList.remove(index);
-            // Jump to next song which should be at index now
-            // Jump is secured to check playlist bounds
-            jumpToIndex(index);
-        } else if ((mCurrentPlayingIndex + 1) == index) {
-            // Deletion of next song which requires extra handling
-            // because of gapless playback, set next song to next one
-            mCurrentList.remove(index);
-            setNextTrackForMP();
-        } else if (index >= 0 && index < mCurrentList.size()) {
-            mCurrentList.remove(index);
-            // mCurrentIndex and mNextPlayingIndex is now moved one position up so update variables
-            if (index < mCurrentPlayingIndex) {
-                mCurrentPlayingIndex--;
-                mNextPlayingIndex--;
+        if (!mMetaDataLoaderRunning) {
+            // Check if track is currently playing, if so stop it
+            if (mCurrentPlayingIndex == index) {
+                // Stop playback of currentsong
+                stop();
+                // Delete song at index
+                mCurrentList.remove(index);
+                // Jump to next song which should be at index now
+                // Jump is secured to check playlist bounds
+                jumpToIndex(index);
+            } else if ((mCurrentPlayingIndex + 1) == index) {
+                // Deletion of next song which requires extra handling
+                // because of gapless playback, set next song to next one
+                mCurrentList.remove(index);
+                setNextTrackForMP();
+            } else if (index >= 0 && index < mCurrentList.size()) {
+                mCurrentList.remove(index);
+                // mCurrentIndex and mNextPlayingIndex is now moved one position up so update variables
+                if (index < mCurrentPlayingIndex) {
+                    mCurrentPlayingIndex--;
+                    mNextPlayingIndex--;
+                }
             }
+            // Send new NowPlaying because playlist changed
+            mPlaybackServiceStatusHelper.updateStatus();
         }
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
     }
 
     /**
@@ -1075,88 +1100,90 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index start position of the section to remove
      */
     public void dequeueTracks(int index) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        int endIndex = index + 1;
+            int endIndex = index + 1;
 
-        String albumKey = mCurrentList.get(index).getTrackAlbumKey();
+            String albumKey = mCurrentList.get(index).getTrackAlbumKey();
 
-        // get endindex for section
-        while (endIndex < mCurrentList.size()) {
-            if (albumKey.equals(mCurrentList.get(endIndex).getTrackAlbumKey())) {
-                endIndex++;
-            } else {
-                break;
-            }
-        }
-
-        if (mCurrentPlayingIndex >= index && mCurrentPlayingIndex < endIndex) {
-            // current song is in section so stop playing
-            stop();
-
-            // remove section and update endindex accordingly
-            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
-
-            while (iterator.hasNext()) {
-                TrackModel track = iterator.next();
-
-                if (albumKey.equals(track.getTrackAlbumKey())) {
-                    iterator.remove();
-                    endIndex--;
+            // get endindex for section
+            while (endIndex < mCurrentList.size()) {
+                if (albumKey.equals(mCurrentList.get(endIndex).getTrackAlbumKey())) {
+                    endIndex++;
                 } else {
                     break;
                 }
             }
 
-            // Jump to next song which should be at endIndex now
-            // Jump is secured to check playlist bounds
-            jumpToIndex(endIndex);
-        } else if ((mCurrentPlayingIndex + 1) == index) {
-            // Deletion of next song which requires extra handling
-            // because of gapless playback, set next song to next one
+            if (mCurrentPlayingIndex >= index && mCurrentPlayingIndex < endIndex) {
+                // current song is in section so stop playing
+                stop();
 
-            // remove section
-            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+                // remove section and update endindex accordingly
+                ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
 
-            while (iterator.hasNext()) {
-                TrackModel track = iterator.next();
+                while (iterator.hasNext()) {
+                    TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
-                    iterator.remove();
-                } else {
-                    break;
-                }
-            }
-
-            setNextTrackForMP();
-        } else if (index >= 0 && index < mCurrentList.size()) {
-            // check if section is before current song
-            boolean beforeCurrentTrack = endIndex <= mCurrentPlayingIndex;
-
-            ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
-
-            while (iterator.hasNext()) {
-                TrackModel track = iterator.next();
-
-                if (albumKey.equals(track.getTrackAlbumKey())) {
-                    iterator.remove();
-                    if (beforeCurrentTrack) {
-                        // if section is before current song update mCurrentPlayingIndex and mNextPlayingIndex
-                        mCurrentPlayingIndex--;
-                        mNextPlayingIndex--;
+                    if (albumKey.equals(track.getTrackAlbumKey())) {
+                        iterator.remove();
+                        endIndex--;
+                    } else {
+                        break;
                     }
-                } else {
-                    break;
+                }
+
+                // Jump to next song which should be at endIndex now
+                // Jump is secured to check playlist bounds
+                jumpToIndex(endIndex);
+            } else if ((mCurrentPlayingIndex + 1) == index) {
+                // Deletion of next song which requires extra handling
+                // because of gapless playback, set next song to next one
+
+                // remove section
+                ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+
+                while (iterator.hasNext()) {
+                    TrackModel track = iterator.next();
+
+                    if (albumKey.equals(track.getTrackAlbumKey())) {
+                        iterator.remove();
+                    } else {
+                        break;
+                    }
+                }
+
+                setNextTrackForMP();
+            } else if (index >= 0 && index < mCurrentList.size()) {
+                // check if section is before current song
+                boolean beforeCurrentTrack = endIndex <= mCurrentPlayingIndex;
+
+                ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
+
+                while (iterator.hasNext()) {
+                    TrackModel track = iterator.next();
+
+                    if (albumKey.equals(track.getTrackAlbumKey())) {
+                        iterator.remove();
+                        if (beforeCurrentTrack) {
+                            // if section is before current song update mCurrentPlayingIndex and mNextPlayingIndex
+                            mCurrentPlayingIndex--;
+                            mNextPlayingIndex--;
+                        }
+                    } else {
+                        break;
+                    }
                 }
             }
+
+            // Send new NowPlaying because playlist changed
+            mPlaybackServiceStatusHelper.updateStatus();
+
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
         }
-
-        // Send new NowPlaying because playlist changed
-        mPlaybackServiceStatusHelper.updateStatus();
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
     }
 
     /**
@@ -1193,20 +1220,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Stops the service itself.
         stopSelf();
-    }
-
-    /**
-     * @return The current random state of this service
-     */
-    public RANDOMSTATE getRandom() {
-        return mRandom;
-    }
-
-    /**
-     * @return The current repeat state of this service
-     */
-    public REPEATSTATE getRepeat() {
-        return mRepeat;
     }
 
     /**
@@ -1332,17 +1345,19 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param playlistId the id of the selected playlist
      */
     public void enqueuePlaylist(long playlistId) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // get playlist from mediastore
-        List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
+            // get playlist from mediastore
+            List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
 
-        // add tracks to current playlist
-        enqueueTracks(playlistTracks);
+            // add tracks to current playlist
+            enqueueTracks(playlistTracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+        }
     }
 
     /**
@@ -1353,11 +1368,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param position   the position to start the playback
      */
     public void playPlaylist(long playlistId, int position) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueuePlaylist(playlistId);
+            enqueuePlaylist(playlistId);
 
-        jumpToIndex(position);
+            jumpToIndex(position);
+        }
     }
 
     /**
@@ -1366,24 +1383,26 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param path the path to a playlistfile
      */
     public void enqueuePlaylistFile(String path) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // Parse the playlist file with a parser
-        PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(path));
-        if (parser == null) {
-            return;
+            // Parse the playlist file with a parser
+            PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(path));
+            if (parser == null) {
+                return;
+            }
+            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
+
+            // add tracks to current playlist
+            enqueueTracks(playlistTracks);
+
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
+
+            mMetaDataLoaderRunning = true;
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
         }
-        ArrayList<TrackModel> playlistTracks = parser.parseList(this);
-
-        // add tracks to current playlist
-        enqueueTracks(playlistTracks);
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1394,48 +1413,52 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param position the position to start the playback
      */
     public void playPlaylistFile(String path, int position) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueuePlaylistFile(path);
+            enqueuePlaylistFile(path);
 
-        jumpToIndex(position);
+            jumpToIndex(position);
+        }
     }
 
     /**
      * Resume the bookmark with the given timestamp
      */
     public void resumeBookmark(long timestamp) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        // clear current playlist
-        clearPlaylist();
+            // clear current playlist
+            clearPlaylist();
 
-        // get playlist from database
-        mCurrentList = mDatabaseManager.readPlaylist(timestamp);
+            // get playlist from database
+            mCurrentList = mDatabaseManager.readPlaylist(timestamp);
 
-        // get state from database
-        OdysseyServiceState state = mDatabaseManager.getState(timestamp);
+            // get state from database
+            OdysseyServiceState state = mDatabaseManager.getState(timestamp);
 
-        // Copy the loaded state to internal state
-        mCurrentPlayingIndex = state.mTrackNumber;
-        mLastPosition = state.mTrackPosition;
-        mRandom = state.mRandomState;
-        mRepeat = state.mRepeatState;
+            // Copy the loaded state to internal state
+            mCurrentPlayingIndex = state.mTrackNumber;
+            mLastPosition = state.mTrackPosition;
+            mRandom = state.mRandomState;
+            mRepeat = state.mRepeatState;
 
-        // Check if playlist bounds match loaded indices
-        if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
-            mCurrentPlayingIndex = -1;
+            // Check if playlist bounds match loaded indices
+            if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
+                mCurrentPlayingIndex = -1;
+            }
+
+            mLastPlayingIndex = -1;
+            mNextPlayingIndex = -1;
+
+            // call resume and start playback
+            resume();
+
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
         }
-
-        mLastPlayingIndex = -1;
-        mNextPlayingIndex = -1;
-
-        // call resume and start playback
-        resume();
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
     }
 
     /**
@@ -1482,32 +1505,34 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param asNext   flag if the file should be enqueued as next
      */
     public void enqueueFile(String filePath, boolean asNext) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        FileModel currentFile = new FileModel(filePath);
+            FileModel currentFile = new FileModel(filePath);
 
-        if (currentFile.isPlaylist()) {
-            // Parse the playlist file with a parser
-            PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
-            if (parser == null) {
-                return;
+            if (currentFile.isPlaylist()) {
+                // Parse the playlist file with a parser
+                PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
+                if (parser == null) {
+                    return;
+                }
+                ArrayList<TrackModel> playlistTracks = parser.parseList(this);
+
+                // add tracks to current playlist
+                enqueueTracks(playlistTracks);
+            } else {
+                TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
+
+                enqueueTrack(track, asNext);
             }
-            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
 
-            // add tracks to current playlist
-            enqueueTracks(playlistTracks);
-        } else {
-            TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
 
-            enqueueTrack(track, asNext);
+            mMetaDataLoaderRunning = true;
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
         }
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1517,11 +1542,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param filePath the path to the selected file
      */
     public void playFile(String filePath) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueFile(filePath, false);
+            enqueueFile(filePath, false);
 
-        jumpToIndex(0);
+            jumpToIndex(0);
+        }
     }
 
     /**
@@ -1532,25 +1559,27 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param position      the position to start the playback
      */
     public void playDirectory(String directoryPath, int position) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        final FileModel currentDirectory = new FileModel(directoryPath);
+            final FileModel currentDirectory = new FileModel(directoryPath);
 
-        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(), currentDirectory);
+            List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolder(getApplicationContext(), currentDirectory);
 
-        // add tracks to current playlist
-        enqueueTracks(tracks);
+            // add tracks to current playlist
+            enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
 
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+            mMetaDataLoaderRunning = true;
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
 
-        jumpToIndex(position);
+            jumpToIndex(position);
+        }
     }
 
     /**
@@ -1559,21 +1588,23 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param directoryPath the path to the selected directory
      */
     public void enqueueDirectoryAndSubDirectories(String directoryPath) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
+        if (!mMetaDataLoaderRunning) {
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+            mBusy = true;
 
-        final FileModel currentDirectory = new FileModel(directoryPath);
+            final FileModel currentDirectory = new FileModel(directoryPath);
 
-        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory);
+            List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory);
 
-        // add tracks to current playlist
-        enqueueTracks(tracks);
+            // add tracks to current playlist
+            enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
+            mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+            mBusy = false;
 
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+            mMetaDataLoaderRunning = true;
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
+        }
     }
 
     /**
@@ -1583,11 +1614,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param directoryPath the path to the selected directory
      */
     public void playDirectoryAndSubDirectories(String directoryPath) {
-        clearPlaylist();
+        if (!mMetaDataLoaderRunning) {
+            clearPlaylist();
 
-        enqueueDirectoryAndSubDirectories(directoryPath);
+            enqueueDirectoryAndSubDirectories(directoryPath);
 
-        jumpToIndex(0);
+            jumpToIndex(0);
+        }
     }
 
     /**
@@ -1830,6 +1863,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     @Override
     public void metaDataLoaderFinished(boolean listChanged) {
+        mMetaDataLoaderRunning = false;
         if (listChanged) {
             // Send new NowPlaying because playlist changed
             mPlaybackServiceStatusHelper.updateStatus();
