@@ -466,7 +466,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // Broadcast simple.last.fm.scrobble broadcast to inform about pause state
             if (mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-                TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
+                mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_PAUSE);
             }
         }
 
