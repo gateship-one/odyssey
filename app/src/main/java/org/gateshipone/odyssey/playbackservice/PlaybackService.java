@@ -36,7 +36,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -137,11 +136,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * hits the currently running track
      */
     private final static int RANDOM_RETRIES = 20;
-
-    /**
-     * Thread in which messages are handled
-     */
-    private HandlerThread mHandlerThread;
 
     /**
      * Handler that executes action requested by a message
@@ -263,9 +257,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         super.onCreate();
 
         // Start Handlerthread which is used for the asynchronous handler.
-        mHandlerThread = new HandlerThread(HANDLER_THREAD_NAME, Process.THREAD_PRIORITY_DEFAULT);
-        mHandlerThread.start();
-        mHandler = new PlaybackServiceHandler(mHandlerThread.getLooper(), this);
+        HandlerThread handlerThread = new HandlerThread(HANDLER_THREAD_NAME, Process.THREAD_PRIORITY_DEFAULT);
+        handlerThread.start();
+        mHandler = new PlaybackServiceHandler(handlerThread.getLooper(), this);
 
         // Create MediaPlayer object used throughout the complete runtime of this service
         mPlayer = new GaplessPlayer(this);
