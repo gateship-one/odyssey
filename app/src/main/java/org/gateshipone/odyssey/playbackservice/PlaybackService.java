@@ -337,7 +337,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param intent  Intent used for starting the PlaybackService
      * @param flags   Some flags (not used)
      * @param startId Id (not used)
-     * @return
+     * @return See {@link Service#onStartCommand}
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -567,14 +567,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Adds all tracks to playlist, play and then shuffle
-     */
-    public void playAllTracksShuffled() {
-        playAllTracks();
-        shufflePlaylist();
-    }
-
-    /**
      * Shuffles the current playlist
      */
     public void shufflePlaylist() {
@@ -675,15 +667,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     protected PlaybackServiceHandler getHandler() {
         return mHandler;
-    }
-
-    /**
-     * Returns a reference to the playlist. DO NOT MODIFY THE LIST!!!
-     *
-     * @return Reference to mCurrentList
-     */
-    public List<TrackModel> getCurrentList() {
-        return mCurrentList;
     }
 
     /**
@@ -809,7 +792,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 mLastPosition = position;
                 break;
             case STOPPED:
-                return;
+                break;
         }
     }
 
@@ -1193,20 +1176,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Stops the service itself.
         stopSelf();
-    }
-
-    /**
-     * @return The current random state of this service
-     */
-    public RANDOMSTATE getRandom() {
-        return mRandom;
-    }
-
-    /**
-     * @return The current repeat state of this service
-     */
-    public REPEATSTATE getRepeat() {
-        return mRepeat;
     }
 
     /**
