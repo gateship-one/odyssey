@@ -77,14 +77,6 @@ public class MetaDataLoader {
 
         @Override
         public void run() {
-            // TODO for testing purposes
-            // prevent the ui from receiving to many update calls
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             boolean tracksChanged = false;
 
             ListIterator<TrackModel> iterator = mTracks.listIterator();
