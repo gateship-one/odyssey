@@ -1513,13 +1513,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(tracks);
 
+        jumpToIndex(position);
+
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
 
         // TODO this is unsecure
         mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
-
-        jumpToIndex(position);
     }
 
     /**
