@@ -82,6 +82,13 @@ public class MetaDataLoader {
             ListIterator<TrackModel> iterator = mTracks.listIterator();
 
             while (iterator.hasNext()) {
+                // TODO remove me after finished
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 final TrackModel track = iterator.next();
                 if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
                     iterator.set(readTrackMetaData(mContext, track.getTrackName(), track.getTrackURL()));
