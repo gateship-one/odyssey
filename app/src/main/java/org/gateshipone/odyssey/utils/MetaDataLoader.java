@@ -31,8 +31,9 @@ import android.text.TextUtils;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Helper to load meta data of tracks async.
@@ -40,7 +41,7 @@ import java.util.ListIterator;
 public class MetaDataLoader {
 
     public interface MetaDataLoaderListener {
-        void metaDataLoaderFinished(boolean listChanged);
+        void metaDataLoaderFinished(Map<String, TrackModel> parsedTracks);
     }
 
     private final MetaDataLoaderListener mMetaDataLoaderListener;
@@ -53,14 +54,23 @@ public class MetaDataLoader {
      * Updates the meta data of the tracks in the given list.
      *
      * @param context The {@link Context} used to open the file and access the mediadb.
-     * @param tracks  The track list. The elements of the list will be replaced.
+     * @param tracks  The track list to check for unknown tracks.
      */
     public void getTrackListMetaData(final Context context, final List<TrackModel> tracks) {
         if (null == tracks || tracks.isEmpty()) {
             return;
         }
 
-        Thread loaderThread = new Thread(new TrackListMetaDataExtractorRunner(context, tracks));
+        Map<String, String> unknownTracks = new HashMap<>();
+
+        for (TrackModel track : tracks) {
+            if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
+                // add only tracks with an empty albumkey
+                unknownTracks.put(track.getTrackURL(), track.getTrackName());
+            }
+        }
+
+        Thread loaderThread = new Thread(new TrackListMetaDataExtractorRunner(context, unknownTracks));
         loaderThread.start();
     }
 
@@ -68,35 +78,29 @@ public class MetaDataLoader {
 
         private final Context mContext;
 
-        private final List<TrackModel> mTracks;
+        private final Map<String, String> mUnknownTracks;
 
-        TrackListMetaDataExtractorRunner(final Context context, final List<TrackModel> tracks) {
+        TrackListMetaDataExtractorRunner(final Context context, final Map<String, String> unknownTracks) {
             mContext = context;
-            mTracks = tracks;
+            mUnknownTracks = unknownTracks;
         }
 
         @Override
         public void run() {
-            boolean tracksChanged = false;
+            Map<String, TrackModel> mParsedTracks = new HashMap<>();
 
-            ListIterator<TrackModel> iterator = mTracks.listIterator();
+            for (Map.Entry<String, String> unknownTrack : mUnknownTracks.entrySet()) {
+//                // TODO remove me after finished
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 
-            while (iterator.hasNext()) {
-                // TODO remove me after finished
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                final TrackModel track = iterator.next();
-                if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
-                    iterator.set(readTrackMetaData(mContext, track.getTrackName(), track.getTrackURL()));
-                    tracksChanged = true;
-                }
+                mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
             }
 
-            mMetaDataLoaderListener.metaDataLoaderFinished(tracksChanged);
+            mMetaDataLoaderListener.metaDataLoaderFinished(mParsedTracks);
         }
     }
 

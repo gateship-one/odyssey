@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Random;
 
 import android.app.AlarmManager;
@@ -1793,14 +1794,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Callback method if the update of the meta data of all tracks in the current playlist has finished.
+     * Callback if the parsing of all unknown tracks has finished.
+     * This will update all unknown tracks in the current playlist if they still exist.
      *
-     * @param listChanged Boolean flag if an element in the current playlist has been updated.
+     * @param parsedTracks A Map of parsed tracks.
      */
     @Override
-    public void metaDataLoaderFinished(boolean listChanged) {
-        if (listChanged) {
-            // Send new NowPlaying because playlist changed
+    public void metaDataLoaderFinished(Map<String, TrackModel> parsedTracks) {
+        ListIterator<TrackModel> iterator = mCurrentList.listIterator();
+
+        boolean updatedNeeded = false;
+
+        while (iterator.hasNext()) {
+            final TrackModel track = iterator.next();
+
+            if (parsedTracks.containsKey(track.getTrackURL())) {
+                // if the track is in the map replace it in the playlist
+                iterator.set(parsedTracks.get(track.getTrackURL()));
+                updatedNeeded = true;
+            }
+        }
+
+        if (updatedNeeded) {
+            // notify the UI if an update has occurred
             mPlaybackServiceStatusHelper.updateStatus();
         }
     }
