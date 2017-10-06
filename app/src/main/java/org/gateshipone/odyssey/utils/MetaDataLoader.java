@@ -26,6 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -46,6 +47,8 @@ public class MetaDataLoader {
 
     private final MetaDataLoaderListener mMetaDataLoaderListener;
 
+    private AsyncMetaDataExtractor mAsyncMetaDataExtractor;
+
     public MetaDataLoader(final MetaDataLoaderListener metaDataLoaderListener) {
         mMetaDataLoaderListener = metaDataLoaderListener;
     }
@@ -61,7 +64,7 @@ public class MetaDataLoader {
             return;
         }
 
-        Map<String, String> unknownTracks = new HashMap<>();
+        HashMap<String, String> unknownTracks = new HashMap<>();
 
         for (TrackModel track : tracks) {
             if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
@@ -70,38 +73,12 @@ public class MetaDataLoader {
             }
         }
 
-        Thread loaderThread = new Thread(new TrackListMetaDataExtractorRunner(context, unknownTracks));
-        loaderThread.start();
-    }
-
-    private class TrackListMetaDataExtractorRunner implements Runnable {
-
-        private final Context mContext;
-
-        private final Map<String, String> mUnknownTracks;
-
-        TrackListMetaDataExtractorRunner(final Context context, final Map<String, String> unknownTracks) {
-            mContext = context;
-            mUnknownTracks = unknownTracks;
+        if (mAsyncMetaDataExtractor != null) {
+            mAsyncMetaDataExtractor.cancel(true);
         }
 
-        @Override
-        public void run() {
-            Map<String, TrackModel> mParsedTracks = new HashMap<>();
-
-            for (Map.Entry<String, String> unknownTrack : mUnknownTracks.entrySet()) {
-//                // TODO remove me after finished
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
-                mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
-            }
-
-            mMetaDataLoaderListener.metaDataLoaderFinished(mParsedTracks);
-        }
+        mAsyncMetaDataExtractor = new AsyncMetaDataExtractor(context);
+        mAsyncMetaDataExtractor.execute(unknownTracks);
     }
 
     /**
@@ -211,6 +188,47 @@ public class MetaDataLoader {
             // something went wrong so just create a dummy track with the given title
             String albumKey = "" + trackTitle.hashCode();
             return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUrl, -1);
+        }
+    }
+
+    private class AsyncMetaDataExtractor extends AsyncTask<Map<String, String>, Void, Map<String, TrackModel>> {
+
+        private final Context mContext;
+
+        AsyncMetaDataExtractor(final Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected final Map<String, TrackModel> doInBackground(Map<String, String>... params) {
+
+            Map<String, TrackModel> parsedTracks = new HashMap<>();
+
+            for (Map.Entry<String, String> unknownTrack : params[0].entrySet()) {
+//                // TODO remove me after finished
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+
+                if (isCancelled()) {
+                    return null;
+                }
+
+                parsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
+            }
+
+            return parsedTracks;
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, TrackModel> parsedTracks) {
+            super.onPostExecute(parsedTracks);
+
+            if (!isCancelled()) {
+                mMetaDataLoaderListener.metaDataLoaderFinished(parsedTracks);
+            }
         }
     }
 }
