@@ -397,20 +397,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Directly plays uri
      */
     public void playURI(String uri) {
-        // Notify the user about the possible long running operation
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
-
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
         enqueueFile(uri, false);
         jumpToIndex(0);
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1349,11 +1339,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(playlistTracks);
 
+        // start meta data extraction for new tracks
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), playlistTracks);
+
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1467,17 +1457,20 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // add tracks to current playlist
             enqueueTracks(playlistTracks);
+
+            // start meta data extraction for new tracks
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), playlistTracks);
         } else {
             TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
 
             enqueueTrack(track, asNext);
+
+            // start meta data extraction for new tracks
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), Collections.singletonList(track));
         }
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1514,13 +1507,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(tracks);
 
+        // start meta data extraction for new tracks
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), tracks);
+
         jumpToIndex(position);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**
@@ -1539,11 +1532,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(tracks);
 
+        // start meta data extraction for new tracks
+        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), tracks);
+
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
-
-        // TODO this is unsecure
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), mCurrentList);
     }
 
     /**

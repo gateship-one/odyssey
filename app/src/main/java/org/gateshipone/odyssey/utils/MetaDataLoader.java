@@ -26,7 +26,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -46,8 +45,6 @@ public class MetaDataLoader {
     }
 
     private final MetaDataLoaderListener mMetaDataLoaderListener;
-
-    private AsyncMetaDataExtractor mAsyncMetaDataExtractor;
 
     public MetaDataLoader(final MetaDataLoaderListener metaDataLoaderListener) {
         mMetaDataLoaderListener = metaDataLoaderListener;
@@ -73,12 +70,8 @@ public class MetaDataLoader {
             }
         }
 
-        if (mAsyncMetaDataExtractor != null) {
-            mAsyncMetaDataExtractor.cancel(true);
-        }
-
-        mAsyncMetaDataExtractor = new AsyncMetaDataExtractor(context);
-        mAsyncMetaDataExtractor.execute(unknownTracks);
+        Thread loaderThread = new Thread(new TrackListMetaDataExtractorRunner(context, unknownTracks));
+        loaderThread.start();
     }
 
     /**
@@ -191,20 +184,22 @@ public class MetaDataLoader {
         }
     }
 
-    private class AsyncMetaDataExtractor extends AsyncTask<Map<String, String>, Void, Map<String, TrackModel>> {
+    private class TrackListMetaDataExtractorRunner implements Runnable {
 
         private final Context mContext;
 
-        AsyncMetaDataExtractor(final Context context) {
+        private final Map<String, String> mUnknownTracks;
+
+        TrackListMetaDataExtractorRunner(final Context context, final Map<String, String> unknownTracks) {
             mContext = context;
+            mUnknownTracks = unknownTracks;
         }
 
         @Override
-        protected final Map<String, TrackModel> doInBackground(Map<String, String>... params) {
+        public void run() {
+            Map<String, TrackModel> mParsedTracks = new HashMap<>();
 
-            Map<String, TrackModel> parsedTracks = new HashMap<>();
-
-            for (Map.Entry<String, String> unknownTrack : params[0].entrySet()) {
+            for (Map.Entry<String, String> unknownTrack : mUnknownTracks.entrySet()) {
 //                // TODO remove me after finished
 //                try {
 //                    Thread.sleep(1000);
@@ -212,23 +207,10 @@ public class MetaDataLoader {
 //                    e.printStackTrace();
 //                }
 
-                if (isCancelled()) {
-                    return null;
-                }
-
-                parsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
+                mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
             }
 
-            return parsedTracks;
-        }
-
-        @Override
-        protected void onPostExecute(Map<String, TrackModel> parsedTracks) {
-            super.onPostExecute(parsedTracks);
-
-            if (!isCancelled()) {
-                mMetaDataLoaderListener.metaDataLoaderFinished(parsedTracks);
-            }
+            mMetaDataLoaderListener.metaDataLoaderFinished(mParsedTracks);
         }
     }
 }
