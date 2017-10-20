@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.mediascanner;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,6 +34,7 @@ import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -59,6 +61,8 @@ public class MediaScannerService extends Service {
     public static final String ACTION_CANCEL_MEDIASCANNING = "org.gateshipone.odyssey.mediascanner.cancel";
 
     private static final int NOTIFICATION_ID = 126;
+
+    private static final String NOTIFICATION_CHANNEL_ID = "MediaScanner";
 
     /**
      * Defines how many tracks are sent at once to the MediaScanner. Should not be to big to avoid creating
@@ -135,10 +139,12 @@ public class MediaScannerService extends Service {
             }
 
             // create notification
-            mBuilder = new NotificationCompat.Builder(this)
+            mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(getString(R.string.mediascanner_notification_title))
                     .setProgress(0, 0, true)
                     .setSmallIcon(R.drawable.odyssey_notification);
+
+            openChannel();
 
             mBuilder.setOngoing(true);
 
@@ -219,6 +225,22 @@ public class MediaScannerService extends Service {
 
         // Stop service.
         stopSelf();
+    }
+
+    /**
+     * Opens a notification channel and disables the LED and vibration
+     */
+    private void openChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, this.getResources().getString(R.string.notification_channel_library_scanner), android.app.NotificationManager.IMPORTANCE_LOW);
+            // Disable lights & vibration
+            channel.enableVibration(false);
+            channel.enableLights(false);
+            channel.setVibrationPattern(null);
+
+            // Register the channel
+            mNotificationManager.createNotificationChannel(channel);
+        }
     }
 
     private class MediaScanCompletedCallback implements MediaScannerConnection.OnScanCompletedListener {
