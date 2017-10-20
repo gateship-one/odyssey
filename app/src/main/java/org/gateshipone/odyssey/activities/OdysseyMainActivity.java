@@ -959,19 +959,16 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         if (scrollingEnabled && !showImage) {
             toolbar.setTitleEnabled(false);
-            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             setTitle(title);
 
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         } else if (!scrollingEnabled && showImage && collapsingImage != null) {
             toolbar.setTitleEnabled(true);
-            toolbar.setPadding(0, 0, 0, 0);
             toolbar.setTitle(title);
 
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED + AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
         } else {
             toolbar.setTitleEnabled(false);
-            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             setTitle(title);
             params.setScrollFlags(0);
         }
