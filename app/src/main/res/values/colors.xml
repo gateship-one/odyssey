@@ -195,4 +195,5 @@
 
     <!-- Fixed colors -->
     <color name="colorWidgetBackground">#424242</color>
+    <color name="colorIconBackground">#2194ef</color>
 </resources>
