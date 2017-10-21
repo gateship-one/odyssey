@@ -62,8 +62,8 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(layoutID, this, true);
 
-        mImageView = (ImageView) findViewById(imageviewID);
-        mSwitcher = (ViewSwitcher) findViewById(switcherID);
+        mImageView = findViewById(imageviewID);
+        mSwitcher = findViewById(switcherID);
 
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverLoadable = this;

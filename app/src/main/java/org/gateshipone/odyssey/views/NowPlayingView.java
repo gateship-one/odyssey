@@ -780,49 +780,49 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mMainView = findViewById(R.id.now_playing_bodyLayout);
 
         // header buttons
-        mTopPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_topPlayPauseButton);
-        mTopPlaylistButton = (ImageButton) findViewById(R.id.now_playing_topPlaylistButton);
-        ImageButton topMenuButton = (ImageButton) findViewById(R.id.now_playing_topMenuButton);
+        mTopPlayPauseButton = findViewById(R.id.now_playing_topPlayPauseButton);
+        mTopPlaylistButton = findViewById(R.id.now_playing_topPlaylistButton);
+        ImageButton topMenuButton = findViewById(R.id.now_playing_topMenuButton);
 
         // bottom buttons
-        mBottomRepeatButton = (ImageButton) findViewById(R.id.now_playing_bottomRepeatButton);
-        mBottomPlayPauseButton = (ImageButton) findViewById(R.id.now_playing_bottomPlayPauseButton);
-        mBottomRandomButton = (ImageButton) findViewById(R.id.now_playing_bottomRandomButton);
-        ImageButton bottomPreviousButton = (ImageButton) findViewById(R.id.now_playing_bottomPreviousButton);
-        ImageButton bottomNextButton = (ImageButton) findViewById(R.id.now_playing_bottomNextButton);
+        mBottomRepeatButton = findViewById(R.id.now_playing_bottomRepeatButton);
+        mBottomPlayPauseButton = findViewById(R.id.now_playing_bottomPlayPauseButton);
+        mBottomRandomButton = findViewById(R.id.now_playing_bottomRandomButton);
+        ImageButton bottomPreviousButton = findViewById(R.id.now_playing_bottomPreviousButton);
+        ImageButton bottomNextButton = findViewById(R.id.now_playing_bottomNextButton);
 
         // Main cover image
-        mCoverImage = (AlbumArtistView) findViewById(R.id.now_playing_cover);
+        mCoverImage = findViewById(R.id.now_playing_cover);
         // Small header cover image
-        mTopCoverImage = (ImageView) findViewById(R.id.now_playing_topCover);
+        mTopCoverImage = findViewById(R.id.now_playing_topCover);
 
         // View with the ListView of the playlist
-        mPlaylistView = (CurrentPlaylistView) findViewById(R.id.now_playing_playlist);
+        mPlaylistView = findViewById(R.id.now_playing_playlist);
 
         // view switcher for cover and playlist view
-        mViewSwitcher = (ViewSwitcher) findViewById(R.id.now_playing_view_switcher);
+        mViewSwitcher = findViewById(R.id.now_playing_view_switcher);
 
         // Button container for the buttons shown if dragged up
-        mDraggedUpButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_up);
+        mDraggedUpButtons = findViewById(R.id.now_playing_layout_dragged_up);
         // Button container for the buttons shown if dragged down
-        mDraggedDownButtons = (LinearLayout) findViewById(R.id.now_playing_layout_dragged_down);
+        mDraggedDownButtons = findViewById(R.id.now_playing_layout_dragged_down);
 
         // textviews
-        mTrackTitle = (TextView) findViewById(R.id.now_playing_track_title);
+        mTrackTitle = findViewById(R.id.now_playing_track_title);
         // For marquee scrolling the TextView need selected == true
         mTrackTitle.setSelected(true);
-        mTrackSubtitle = (TextView) findViewById(R.id.now_playing_track_subtitle);
+        mTrackSubtitle = findViewById(R.id.now_playing_track_subtitle);
         // For marquee scrolling the TextView need selected == true
         mTrackSubtitle.setSelected(true);
 
         // Textviews directly under the seekbar
-        mElapsedTime = (TextView) findViewById(R.id.now_playing_elapsedTime);
-        mDuration = (TextView) findViewById(R.id.now_playing_duration);
+        mElapsedTime = findViewById(R.id.now_playing_elapsedTime);
+        mDuration = findViewById(R.id.now_playing_duration);
 
-        mHeaderTextLayout = (LinearLayout) findViewById(R.id.now_playing_header_textLayout);
+        mHeaderTextLayout = findViewById(R.id.now_playing_header_textLayout);
 
         // seekbar (position)
-        mPositionSeekbar = (SeekBar) findViewById(R.id.now_playing_seekBar);
+        mPositionSeekbar = findViewById(R.id.now_playing_seekBar);
         mPositionSeekbar.setOnSeekBarChangeListener(this);
 
         // set dragging part default to bottom

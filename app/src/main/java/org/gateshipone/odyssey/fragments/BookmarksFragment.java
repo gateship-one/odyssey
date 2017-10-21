@@ -53,7 +53,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mListView = (AbsListView) rootView.findViewById(R.id.list_linear_listview);
+        mListView = rootView.findViewById(R.id.list_linear_listview);
 
         mAdapter = new BookmarksAdapter(getActivity());
 

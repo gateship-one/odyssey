@@ -118,7 +118,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
 
         // create tabs
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.my_music_tab_layout);
+        TabLayout tabLayout = rootView.findViewById(R.id.my_music_tab_layout);
 
         // setup icons for tabs
         final ColorStateList tabColors = tabLayout.getTabTextColors();
@@ -144,7 +144,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         // setup viewpager
-        mMyMusicViewPager = (ViewPager) rootView.findViewById(R.id.my_music_viewpager);
+        mMyMusicViewPager = rootView.findViewById(R.id.my_music_viewpager);
         mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
         mMyMusicViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
