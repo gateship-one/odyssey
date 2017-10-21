@@ -534,8 +534,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     /**
      * Add all tracks to the playlist and start playing them
+     *
+     * @param filterString A filter that is used to exclude tracks that didn't contain this String.
      */
-    public void playAllTracks(String searchString) {
+    public void playAllTracks(String filterString) {
         // Notify the user about the possible long running operation
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
@@ -545,7 +547,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         // Get a list of all available tracks from the MusicLibraryHelper
-        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(searchString, getApplicationContext());
+        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(filterString, getApplicationContext());
 
         mCurrentList.addAll(allTracks);
 
