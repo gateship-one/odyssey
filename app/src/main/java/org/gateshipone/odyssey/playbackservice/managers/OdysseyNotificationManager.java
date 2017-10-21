@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.playbackservice.managers;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -36,7 +37,7 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.R;
@@ -60,6 +61,8 @@ public class OdysseyNotificationManager {
     // Just a constant
     private static final int NOTIFICATION_ID = 42;
 
+    private static final String NOTIFICATION_CHANNEL_ID = "Playback";
+
     // Notification objects
     private final android.app.NotificationManager mNotificationManager;
     private NotificationCompat.Builder mNotificationBuilder = null;
@@ -70,6 +73,10 @@ public class OdysseyNotificationManager {
     // Save last track and last image
     private Bitmap mLastBitmap = null;
     private TrackModel mLastTrack = null;
+
+    private PlaybackService.PLAYSTATE mLastState;
+
+    private MediaSessionCompat.Token mLastToken;
 
     private boolean mHideArtwork;
 
@@ -83,9 +90,12 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    public void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
+    public synchronized void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
+        mLastState = state;
+        mLastToken = mediaSessionToken;
         if (track != null) {
-            mNotificationBuilder = new NotificationCompat.Builder(mContext);
+            openChannel();
+            mNotificationBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
 
             // Open application intent
             Intent contentIntent = new Intent(mContext, OdysseyMainActivity.class);
@@ -129,7 +139,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.addAction(prevAction);
             mNotificationBuilder.addAction(playPauseAction);
             mNotificationBuilder.addAction(nextAction);
-            NotificationCompat.MediaStyle notificationStyle = new NotificationCompat.MediaStyle();
+            android.support.v4.media.app.NotificationCompat.MediaStyle notificationStyle = new android.support.v4.media.app.NotificationCompat.MediaStyle();
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
@@ -217,17 +227,36 @@ public class OdysseyNotificationManager {
      * notification controls. Sets it and notifies the system that the
      * notification has changed
      */
-    public void setNotificationImage(Bitmap bm) {
+    public synchronized void setNotificationImage(Bitmap bm) {
         // Check if notification exists and set picture
         mLastBitmap = bm;
+
+        // Completely redo the notification otherwise the image is not shown sometimes
         if (mNotification != null && bm != null) {
-            mNotificationBuilder.setLargeIcon(bm);
-            mNotification = mNotificationBuilder.build();
-            mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+            updateNotification(mLastTrack, mLastState, mLastToken);
         }
     }
 
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;
+    }
+
+    /**
+     * Creates the {@link NotificationChannel} for devices running Android O or higher
+     */
+    private void openChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, mContext.getResources().getString(R.string.notification_channel_playback), android.app.NotificationManager.IMPORTANCE_LOW);
+            // Disable lights & vibration
+            channel.enableVibration(false);
+            channel.enableLights(false);
+            channel.setVibrationPattern(null);
+
+            // Allow lockscreen playback control
+            channel.setLockscreenVisibility(android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC);
+
+            // Register the channel
+            mNotificationManager.createNotificationChannel(channel);
+        }
     }
 }

@@ -48,7 +48,7 @@ public class OdysseyContributorsActivity extends Activity {
 
         getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_primary_dark));
 
-        ListView contributors = (ListView) findViewById(R.id.contributors_listview);
+        ListView contributors = findViewById(R.id.contributors_listview);
 
         String[] contributors_names = getResources().getStringArray(R.array.odyssey_contributors);
         String[] contributors_types = getResources().getStringArray(R.array.odyssey_contributors_type);

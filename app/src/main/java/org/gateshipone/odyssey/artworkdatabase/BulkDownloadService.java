@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.artworkdatabase;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -32,6 +33,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -49,6 +51,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
     private static final String TAG = BulkDownloadService.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 84;
+    private static final String NOTIFICATION_CHANNEL_ID = "BulkDownloader";
 
     public static final String ACTION_CANCEL_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.cancel";
     public static final String ACTION_START_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.start";
@@ -157,19 +160,21 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             registerReceiver(mBroadcastReceiver, intentFilter);
         }
 
-        mBuilder = new NotificationCompat.Builder(this)
+        mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(getString(R.string.downloader_notification_title))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) + '/' + String.valueOf(mSumImageDownloads)))
                 .setProgress(mSumImageDownloads, mSumImageDownloads - (mRemainingArtists + mRemainingAlbums), false)
                 .setSmallIcon(R.drawable.odyssey_notification);
 
+        openChannel();
+
         mBuilder.setOngoing(true);
 
         // Cancel action
         Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
         PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
+        android.support.v4.app.NotificationCompat.Action cancelAction = new android.support.v4.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
         mBuilder.addAction(cancelAction);
 
@@ -245,6 +250,22 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             boolean isWifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
 
             return !(mWifiOnly && !isWifi);
+        }
+    }
+
+    /**
+     * Opens a notification channel and disables the LED and vibration
+     */
+    private void openChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, this.getResources().getString(R.string.notification_channel_downloader), android.app.NotificationManager.IMPORTANCE_LOW);
+            // Disable lights & vibration
+            channel.enableVibration(false);
+            channel.enableLights(false);
+            channel.setVibrationPattern(null);
+
+            // Register the channel
+            mNotificationManager.createNotificationChannel(channel);
         }
     }
 

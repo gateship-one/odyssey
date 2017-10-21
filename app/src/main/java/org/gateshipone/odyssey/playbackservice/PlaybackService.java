@@ -396,10 +396,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Directly plays uri
      */
-    public void playURI(TrackModel track) {
+    public void playURI(String uri) {
         // Clear playlist, enqueue uri, jumpto 0
         clearPlaylist();
-        enqueueTrack(track);
+        enqueueFile(uri, false);
         jumpToIndex(0);
     }
 
@@ -930,7 +930,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Check if current song is old last one, if so set next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();
-        mCurrentList.add(track);
+
+        if (track.getTrackAlbumKey().isEmpty()) {
+            mCurrentList.add(FileExplorerHelper.getInstance().readTrackMetaData(getApplicationContext(), track.getTrackName(), track.getTrackURL()));
+        } else {
+            mCurrentList.add(track);
+        }
         /*
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback

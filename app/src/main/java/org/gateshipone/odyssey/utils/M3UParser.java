@@ -20,7 +20,7 @@ package org.gateshipone.odyssey.utils;
 
 
 import android.content.Context;
-import android.util.Log;
+import android.net.Uri;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -28,16 +28,15 @@ import org.gateshipone.odyssey.models.TrackModel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class M3UParser extends PlaylistParser {
     private static final String TAG = M3UParser.class.getSimpleName();
 
-    FileModel mFile;
-
-    String mPathPrefix = "";
+    private final FileModel mFile;
 
     public M3UParser(FileModel playlistFile) {
         mFile = playlistFile;
@@ -45,19 +44,24 @@ public class M3UParser extends PlaylistParser {
 
     @Override
     public ArrayList<TrackModel> parseList(Context context) {
-        FileReader fileReader;
+        Uri uri = FormatHelper.encodeURI(mFile.getPath());
+
+        InputStream inputStream;
         try {
-            fileReader = new FileReader(mFile.getPath());
+            inputStream = context.getContentResolver().openInputStream(uri);
         } catch (FileNotFoundException e) {
-            return null;
+            e.printStackTrace();
+            return new ArrayList<>();
         }
 
-        BufferedReader bufReader = new BufferedReader(fileReader);
+        if (null == inputStream) {
+            return new ArrayList<>();
+        }
+
+        BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
 
         // Try to check if file paths in playlist are relativ or absolute
         String line = "";
-
-
         try {
             line = bufReader.readLine();
             while (line.startsWith("#")) {
@@ -67,21 +71,21 @@ public class M3UParser extends PlaylistParser {
             e.printStackTrace();
         }
 
+        String pathPrefix = "";
 
         File tmpFile = new File(line);
         if (!tmpFile.exists()) {
-            String plPath = mFile.getPath();
+            String plPath = uri.getPath();
             plPath = plPath.substring(0, plPath.lastIndexOf('/'));
             while (!plPath.isEmpty()) {
                 tmpFile = new File(plPath + '/' + line);
-                if (!tmpFile.exists()) {
+                if (!tmpFile.exists() && plPath.contains("/")) {
                     plPath = plPath.substring(0, plPath.lastIndexOf('/'));
                 } else {
-                    mPathPrefix = plPath;
+                    pathPrefix = plPath;
                     break;
                 }
             }
-
         }
 
         ArrayList<String> urls = new ArrayList<>();
@@ -95,8 +99,8 @@ public class M3UParser extends PlaylistParser {
                 continue;
             }
             String tmpUrl;
-            if (!mPathPrefix.isEmpty()) {
-                tmpUrl = mPathPrefix + '/' + line;
+            if (!pathPrefix.isEmpty()) {
+                tmpUrl = pathPrefix + '/' + line;
             } else {
                 tmpUrl = line;
             }

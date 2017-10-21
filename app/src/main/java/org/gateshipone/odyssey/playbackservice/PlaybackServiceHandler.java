@@ -51,7 +51,7 @@ public class PlaybackServiceHandler extends Handler {
             // Parse message
             switch (msgObj.getAction()) {
                 case ODYSSEY_PLAY:
-                    mService.get().playURI(msgObj.getTrack());
+                    mService.get().playURI(msgObj.getStringParam());
                     break;
                 case ODYSSEY_PAUSE:
                     break;

@@ -31,7 +31,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
-import android.os.PowerManager;
 import android.util.Log;
 
 import org.gateshipone.odyssey.utils.FormatHelper;
@@ -161,8 +160,8 @@ public class GaplessPlayer {
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             // Set the datasource of the player to the provider URI
-            uri = FormatHelper.encodeFileURI(uri);
-            mCurrentMediaPlayer.setDataSource(uri);
+            mCurrentMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
+                    FormatHelper.encodeURI(uri));
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError);
         } catch (SecurityException e) {
@@ -255,7 +254,7 @@ public class GaplessPlayer {
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
-                Log.v(TAG,"Closing effect for session: " + mCurrentMediaPlayer.getAudioSessionId());
+                Log.v(TAG, "Closing effect for session: " + mCurrentMediaPlayer.getAudioSessionId());
             }
             // Release the current player
             mCurrentMediaPlayer.release();
@@ -396,8 +395,8 @@ public class GaplessPlayer {
 
             try {
                 // Try setting the data source
-                uri = FormatHelper.encodeFileURI(uri);
-                mNextMediaPlayer.setDataSource(uri);
+                mNextMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
+                        FormatHelper.encodeURI(uri));
             } catch (IllegalArgumentException e) {
                 throw new PlaybackException(REASON.ArgumentError);
             } catch (SecurityException e) {
@@ -447,7 +446,7 @@ public class GaplessPlayer {
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                Log.v(TAG,"Opening effect session: " + mp.getAudioSessionId());
+                Log.v(TAG, "Opening effect session: " + mp.getAudioSessionId());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
 
 
@@ -508,7 +507,7 @@ public class GaplessPlayer {
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                    Log.v(TAG,"Opening effect for session: " + mp.getAudioSessionId());
+                    Log.v(TAG, "Opening effect for session: " + mp.getAudioSessionId());
                     mPlaybackService.sendBroadcast(audioEffectOpenIntent);
 
                     // Playback start
@@ -606,7 +605,6 @@ public class GaplessPlayer {
 
                 // Release old MediaPlayer
                 mp.release();
-
 
 
                 // Set current MP to next MP if one is ready

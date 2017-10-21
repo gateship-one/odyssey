@@ -21,6 +21,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.gateshipone.odyssey">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -33,18 +34,15 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@style/AppTheme.indigo">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.indigo"
+        tools:ignore="AllowBackup">
+
         <activity
             android:name=".activities.OdysseySplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.MUSIC_PLAYER" />
@@ -53,6 +51,56 @@
                 <category android:name="android.intent.category.APP_MUSIC" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/mpeg" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/mp4" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/x-wav" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/ogg" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/ogg" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/aac" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/aac-adts" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/x-matroska" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/midi" />
+            </intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError,GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/flac" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.OdysseyMainActivity"
@@ -60,16 +108,11 @@
         <activity
             android:name=".activities.OdysseyAboutActivity"
             android:label="About"
-            android:parentActivityName=".activities.OdysseyMainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
+            android:parentActivityName=".activities.OdysseyMainActivity" />
         <activity
             android:name=".activities.OdysseyContributorsActivity"
             android:label="Contributors"
-            android:parentActivityName=".activities.OdysseyMainActivity">
-        </activity>
+            android:parentActivityName=".activities.OdysseyMainActivity" />
 
         <service
             android:name=".playbackservice.PlaybackService"
@@ -86,6 +129,14 @@
                 <action android:name="org.gateshipone.odyssey.next" />
             </intent-filter>
         </service>
+        <service
+            android:name=".artworkdatabase.BulkDownloadService"
+            android:exported="false"
+            android:process=":downloadProcess" />
+        <service
+            android:name=".mediascanner.MediaScannerService"
+            android:exported="false"
+            android:process=":mediascanProcess" />
 
         <receiver android:name=".playbackservice.RemoteControlReceiver">
             <intent-filter>
@@ -108,14 +159,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_big_info" />
         </receiver>
-
-        <service android:name=".artworkdatabase.BulkDownloadService"
-            android:exported="false"
-            android:process=":downloadProcess"/>
-
-        <service android:name=".mediascanner.MediaScannerService"
-            android:exported="false"
-            android:process=":mediascanProcess"/>
     </application>
 
 </manifest>

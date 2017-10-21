@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-regular"
         android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="?attr/odyssey_color_text_background_primary"
         android:textSize="@dimen/material_font_style_size_subheading"
         tools:text="title" />

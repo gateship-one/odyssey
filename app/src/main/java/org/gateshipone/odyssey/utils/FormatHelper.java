@@ -29,7 +29,6 @@ import android.net.Uri;
 import org.gateshipone.odyssey.R;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -112,14 +111,33 @@ public class FormatHelper {
      * @param uri the path to the media file as String
      * @return the encoded uri as String
      */
-    public static String encodeFileURI(final String uri) {
-        return "file://" + Uri.encode(uri, "/");
+
+    /**
+     * Helper method to create a {@link Uri} from the given uri String.
+     * <p>
+     * This method will check if the given uri needs to be encoded to support special characters
+     * like :, %, # etc. and will add a scheme if missing.
+     *
+     * @param uri the path to the media file as String
+     * @return
+     */
+    public static Uri encodeURI(final String uri) {
+        Uri encodedUri = Uri.parse(uri);
+
+        String scheme = encodedUri.getScheme();
+
+        if (scheme != null) {
+            return encodedUri;
+        } else {
+            return Uri.parse("file://" + Uri.encode(uri, "/"));
+        }
     }
 
     /**
      * Escapes Apache lucene special characters (e.g. used by MusicBrainz) for URLs.
      * See:
      * https://lucene.apache.org/core/4_3_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html
+     *
      * @param input Input string
      * @return Escaped string
      */
@@ -127,7 +145,7 @@ public class FormatHelper {
         String retVal = input.replaceAll("(\\&\\&)", "\\\\&\\\\&");
         retVal = retVal.replaceAll("(\\|\\|)", "\\\\|\\\\|");
 
-        retVal = retVal.replaceAll(LUCENE_SPECIAL_CHARACTERS_REGEX,"\\\\$1");
+        retVal = retVal.replaceAll(LUCENE_SPECIAL_CHARACTERS_REGEX, "\\\\$1");
         return retVal;
     }
 }

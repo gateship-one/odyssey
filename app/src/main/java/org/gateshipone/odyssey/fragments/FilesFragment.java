@@ -41,7 +41,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -53,8 +52,6 @@ import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
-import org.gateshipone.odyssey.utils.PlaylistParser;
-import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -103,10 +100,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+        mListView = rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));

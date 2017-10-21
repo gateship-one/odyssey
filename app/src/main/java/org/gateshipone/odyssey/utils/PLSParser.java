@@ -20,7 +20,7 @@ package org.gateshipone.odyssey.utils;
 
 
 import android.content.Context;
-import android.util.Log;
+import android.net.Uri;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -28,15 +28,15 @@ import org.gateshipone.odyssey.models.TrackModel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class PLSParser extends PlaylistParser {
     private static final String TAG = PLSParser.class.getSimpleName();
-    FileModel mFile;
 
-    String mPathPrefix = "";
+    private final FileModel mFile;
 
     public PLSParser(FileModel file) {
         mFile = file;
@@ -44,19 +44,23 @@ public class PLSParser extends PlaylistParser {
 
     @Override
     public ArrayList<TrackModel> parseList(Context context) {
-        FileReader fileReader;
+        Uri uri = FormatHelper.encodeURI(mFile.getPath());
+        InputStream inputStream;
         try {
-            fileReader = new FileReader(mFile.getPath());
+            inputStream = context.getContentResolver().openInputStream(uri);
         } catch (FileNotFoundException e) {
-            return null;
+            e.printStackTrace();
+            return new ArrayList<>();
         }
 
-        BufferedReader bufReader = new BufferedReader(fileReader);
+        if (null == inputStream) {
+            return new ArrayList<>();
+        }
+
+        BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
 
         // Try to check if file paths in playlist are relativ or absolute
         String line = "";
-
-
         try {
             line = bufReader.readLine();
             while (!line.startsWith("File")) {
@@ -68,17 +72,18 @@ public class PLSParser extends PlaylistParser {
 
         String tmpPath = line.substring(line.indexOf('=') + 1);
 
+        String pathPrefix = "";
 
         File tmpFile = new File(tmpPath);
         if (!tmpFile.exists()) {
-            String plPath = mFile.getPath();
+            String plPath = uri.getPath();
             plPath = plPath.substring(0, plPath.lastIndexOf('/'));
             while (!plPath.isEmpty()) {
                 tmpFile = new File(plPath + '/' + tmpPath);
-                if (!tmpFile.exists()) {
+                if (!tmpFile.exists() && plPath.contains("/")) {
                     plPath = plPath.substring(0, plPath.lastIndexOf('/'));
                 } else {
-                    mPathPrefix = plPath;
+                    pathPrefix = plPath;
                     break;
                 }
             }
@@ -97,8 +102,8 @@ public class PLSParser extends PlaylistParser {
             }
             tmpPath = line.substring(line.indexOf('=') + 1);
             String tmpUrl;
-            if (!mPathPrefix.isEmpty()) {
-                tmpUrl = mPathPrefix + '/' + tmpPath;
+            if (!pathPrefix.isEmpty()) {
+                tmpUrl = pathPrefix + '/' + tmpPath;
             } else {
                 tmpUrl = tmpPath;
             }

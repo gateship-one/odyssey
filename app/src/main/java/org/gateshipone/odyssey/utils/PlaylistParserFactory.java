@@ -21,8 +21,6 @@ package org.gateshipone.odyssey.utils;
 
 import org.gateshipone.odyssey.models.FileModel;
 
-import java.io.File;
-
 public class PlaylistParserFactory {
     public static PlaylistParser getParser(FileModel playlistFile) {
         String path = playlistFile.getPath();

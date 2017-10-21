@@ -78,14 +78,14 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final boolean showIcon, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_file, 0, 0, adapter);
 
-        mTitleView = (TextView) findViewById(R.id.item_title);
-        mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
-        mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
-        mIconView = (ImageView) findViewById(R.id.item_icon);
+        mTitleView = findViewById(R.id.item_title);
+        mSubtitleView = findViewById(R.id.item_subtitle);
+        mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
+        mIconView = findViewById(R.id.item_icon);
 
         if (showIcon) {
             mIconView.setVisibility(VISIBLE);
-            ViewGroup basicItemLayout = (ViewGroup) findViewById(R.id.basic_listview_item);
+            ViewGroup basicItemLayout = findViewById(R.id.basic_listview_item);
             basicItemLayout.setPadding(0, 0, basicItemLayout.getPaddingRight(), 0);
         } else {
             mIconView.setVisibility(GONE);
@@ -101,10 +101,10 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_section, R.id.section_header_image, R.id.section_header_image_switcher, adapter);
 
-        mTitleView = (TextView) findViewById(R.id.item_title);
-        mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
-        mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
-        mSectionTitleView = (TextView) findViewById(R.id.section_header_text);
+        mTitleView = findViewById(R.id.item_title);
+        mSubtitleView = findViewById(R.id.item_subtitle);
+        mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
+        mSectionTitleView = findViewById(R.id.section_header_text);
     }
 
     /**
@@ -117,9 +117,9 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.listview_item_image, R.id.item_image, R.id.item_image_switcher, adapter);
 
-        mTitleView = (TextView) findViewById(R.id.item_title);
-        mSubtitleView = (TextView) findViewById(R.id.item_subtitle);
-        mAdditionalSubtitleView = (TextView) findViewById(R.id.item_additional_subtitle);
+        mTitleView = findViewById(R.id.item_title);
+        mSubtitleView = findViewById(R.id.item_subtitle);
+        mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
 
         // hide subtitles
         mSubtitleView.setVisibility(GONE);

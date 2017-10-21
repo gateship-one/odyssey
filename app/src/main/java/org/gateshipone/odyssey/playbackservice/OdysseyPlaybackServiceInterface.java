@@ -45,9 +45,9 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
      * thread for performance reasons.
      */
     @Override
-    public void play(TrackModel track) throws RemoteException {
+    public void playURI(String uri) throws RemoteException {
         // Create play control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAY, track);
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAY, uri);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
