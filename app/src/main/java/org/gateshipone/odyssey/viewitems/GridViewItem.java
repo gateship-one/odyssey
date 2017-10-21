@@ -39,7 +39,7 @@ public class GridViewItem extends GenericImageViewItem {
     public GridViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.gridview_item, R.id.grid_item_cover_image, R.id.grid_item_view_switcher, adapter);
 
-        mTitleView = (TextView) findViewById(R.id.grid_item_title);
+        mTitleView = findViewById(R.id.grid_item_title);
 
         mTitleView.setText(title);
     }

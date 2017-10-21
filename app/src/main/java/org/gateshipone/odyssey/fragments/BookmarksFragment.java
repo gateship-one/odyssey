@@ -31,7 +31,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -53,7 +52,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
         // get listview
-        mListView = (AbsListView) rootView.findViewById(R.id.list_linear_listview);
+        mListView = rootView.findViewById(R.id.list_linear_listview);
 
         mAdapter = new BookmarksAdapter(getActivity());
 

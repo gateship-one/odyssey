@@ -22,14 +22,14 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
 
     <org.gateshipone.odyssey.views.SquareImageView
         android:id="@+id/collapsing_image"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:background="@android:color/black"
         android:scaleType="centerCrop"
         android:src="@drawable/cover_placeholder"
@@ -39,7 +39,7 @@
         android:id="@+id/collapsing_image_gradient_top"
         android:layout_width="fill_parent"
         android:layout_height="128dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@id/collapsing_image"
         android:background="@drawable/album_imagebar_gradient_top"
         android:visibility="gone" />
 
@@ -47,7 +47,7 @@
         android:id="@+id/collapsing_image_gradient_bottom"
         android:layout_width="fill_parent"
         android:layout_height="128dp"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@id/collapsing_image"
         android:background="@drawable/album_imagebar_gradient_bottom"
         android:visibility="gone" />
 

@@ -35,7 +35,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -80,15 +79,15 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         if (useList) {
             rootView = inflater.inflate(R.layout.list_refresh, container, false);
             // get listview
-            mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+            mListView = rootView.findViewById(R.id.list_refresh_listview);
         } else {
             rootView = inflater.inflate(R.layout.grid_refresh, container, false);
             // get gridview
-            mListView = (AbsListView) rootView.findViewById(R.id.grid_refresh_gridview);
+            mListView = rootView.findViewById(R.id.grid_refresh_gridview);
         }
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));

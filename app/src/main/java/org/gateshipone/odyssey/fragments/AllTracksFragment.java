@@ -33,7 +33,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -65,10 +64,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
         // get listview
-        mListView = (AbsListView) rootView.findViewById(R.id.list_refresh_listview);
+        mListView = rootView.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));

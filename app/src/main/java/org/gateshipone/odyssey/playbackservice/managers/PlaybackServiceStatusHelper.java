@@ -237,6 +237,7 @@ public class PlaybackServiceStatusHelper {
 
         // Create the broadcast intent
         Intent broadcastIntent = new Intent(MESSAGE_NEWTRACKINFORMATION);
+        broadcastIntent.setPackage(mPlaybackService.getPackageName());
 
         // Add nowplayingInfo to parcel
         broadcastIntent.putExtra(INTENT_NOWPLAYINGNAME, info);
@@ -254,12 +255,14 @@ public class PlaybackServiceStatusHelper {
         if (state == PlaybackService.PLAYBACKSERVICESTATE.WORKING) {
             // Create the broadcast intent
             Intent broadcastIntent = new Intent(MESSAGE_WORKING);
+            broadcastIntent.setPackage(mPlaybackService.getPackageName());
 
             // We're good to go, send it away
             mPlaybackService.sendBroadcast(broadcastIntent);
         } else if (state == PlaybackService.PLAYBACKSERVICESTATE.IDLE) {
             // Create the broadcast intent
             Intent broadcastIntent = new Intent(MESSAGE_IDLE);
+            broadcastIntent.setPackage(mPlaybackService.getPackageName());
 
             // We're good to go, send it away
             mPlaybackService.sendBroadcast(broadcastIntent);
@@ -381,6 +384,7 @@ public class PlaybackServiceStatusHelper {
         mLastTrack = null;
         mNotificationManager.hideArtwork(enable);
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
+        settingChangedIntent.setPackage(mPlaybackService.getPackageName());
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
 
         /**
