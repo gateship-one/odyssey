@@ -1522,14 +1522,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * creates trackmodels for a given directorypath (inclusive all subdirectories) and adds the tracks to the playlist
      *
      * @param directoryPath the path to the selected directory
+     * @param filterString  A filter that is used to exclude folders/files that didn't contain this String.
      */
-    public void enqueueDirectoryAndSubDirectories(String directoryPath) {
+    public void enqueueDirectoryAndSubDirectories(String directoryPath, String filterString) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         final FileModel currentDirectory = new FileModel(directoryPath);
 
-        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory);
+        List<TrackModel> tracks = FileExplorerHelper.getInstance().getTrackModelsForFolderAndSubFolders(getApplicationContext(), currentDirectory, filterString);
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -1546,11 +1547,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * A previous playlist will be cleared.
      *
      * @param directoryPath the path to the selected directory
+     * @param filterString  A filter that is used to exclude folder/files that didn't contain this String.
      */
-    public void playDirectoryAndSubDirectories(String directoryPath) {
+    public void playDirectoryAndSubDirectories(String directoryPath, String filterString) {
         clearPlaylist();
 
-        enqueueDirectoryAndSubDirectories(directoryPath);
+        enqueueDirectoryAndSubDirectories(directoryPath, filterString);
 
         jumpToIndex(0);
     }

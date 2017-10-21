@@ -31,6 +31,7 @@ import org.gateshipone.odyssey.models.TrackModel;
  * @author hendrik
  */
 public class ControlObject {
+
     public enum PLAYBACK_ACTION {
         ODYSSEY_PLAY, ODYSSEY_TOGGLEPAUSE, ODYSSEY_NEXT, ODYSSEY_PREVIOUS, ODYSSEY_SEEKTO, ODYSSEY_JUMPTO, ODYSSEY_REPEAT, ODYSSEY_RANDOM,
         ODYSSEY_ENQUEUETRACK, ODYSSEY_PLAYTRACK, ODYSSEY_DEQUEUETRACK, ODYSSEY_DEQUEUETRACKS,
@@ -50,6 +51,7 @@ public class ControlObject {
     private boolean mBoolparam;
     private int mIntparam;
     private String mStringparam;
+    private String mSecondStringParam;
     private TrackModel mTrack;
     private long mLongParam;
 
@@ -64,6 +66,12 @@ public class ControlObject {
 
     public ControlObject(PLAYBACK_ACTION action, String param) {
         mStringparam = param;
+        mAction = action;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, String param, String param2) {
+        mStringparam = param;
+        mSecondStringParam = param2;
         mAction = action;
     }
 
@@ -113,6 +121,10 @@ public class ControlObject {
 
     public String getStringParam() {
         return mStringparam;
+    }
+
+    public String getSecondStringParam() {
+        return mSecondStringParam;
     }
 
     public int getIntParam() {
