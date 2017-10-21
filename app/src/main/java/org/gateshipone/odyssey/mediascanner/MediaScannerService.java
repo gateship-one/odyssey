@@ -151,7 +151,7 @@ public class MediaScannerService extends Service {
             // Cancel action
             Intent nextIntent = new Intent(MediaScannerService.ACTION_CANCEL_MEDIASCANNING);
             PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            android.support.v7.app.NotificationCompat.Action cancelAction = new android.support.v7.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
+            NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
             mBuilder.addAction(cancelAction);
 
