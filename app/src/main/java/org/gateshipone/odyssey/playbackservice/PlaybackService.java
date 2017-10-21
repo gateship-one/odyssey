@@ -535,7 +535,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Add all tracks to the playlist and start playing them
      */
-    public void playAllTracks() {
+    public void playAllTracks(String searchString) {
         // Notify the user about the possible long running operation
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
@@ -545,7 +545,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         // Get a list of all available tracks from the MusicLibraryHelper
-        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(getApplicationContext());
+        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(searchString, getApplicationContext());
 
         mCurrentList.addAll(allTracks);
 

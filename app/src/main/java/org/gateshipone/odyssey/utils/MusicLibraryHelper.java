@@ -474,7 +474,7 @@ public class MusicLibraryHelper {
     /**
      * Return a list of all tracks in the mediastore.
      */
-    public static List<TrackModel> getAllTracks(Context context) {
+    public static List<TrackModel> getAllTracks(String searchString, Context context) {
         List<TrackModel> allTracks = new ArrayList<>();
 
         // filter non music
@@ -498,7 +498,9 @@ public class MusicLibraryHelper {
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
                     // add the track
-                    allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    if (null == searchString || searchString.isEmpty() || trackName.toLowerCase().contains(searchString)) {
+                        allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    }
 
                 } while (cursor.moveToNext());
             }

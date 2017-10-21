@@ -31,7 +31,7 @@ interface IOdysseyPlaybackService {
 	void previous();
 	void togglePause();
 	void shufflePlaylist();
-	void playAllTracks();
+	void playAllTracks(String searchString);
 
 	/**
 	 * position = position in current track ( in seconds)

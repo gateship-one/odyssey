@@ -76,7 +76,7 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
         } else {
             if (mAlbumKey.isEmpty()) {
                 // load all tracks
-                return MusicLibraryHelper.getAllTracks(mContext);
+                return MusicLibraryHelper.getAllTracks(null, mContext);
             } else {
                 // load album tracks
                 return MusicLibraryHelper.getTracksForAlbum(mAlbumKey, mContext);

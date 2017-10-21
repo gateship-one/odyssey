@@ -93,7 +93,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().shufflePlaylist();
                     break;
                 case ODYSSEY_PLAYALLTRACKS:
-                    mService.get().playAllTracks();
+                    mService.get().playAllTracks(msgObj.getStringParam());
                     break;
                 case ODYSSEY_SAVEPLAYLIST:
                     mService.get().savePlaylist(msgObj.getStringParam());
