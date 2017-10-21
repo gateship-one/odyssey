@@ -30,7 +30,7 @@ import android.widget.ImageView;
  * Square ImageView that matches the parents width.
  * This view is used for the albumcover in the toolbar in portrait mode.
  */
-public class SquareImageView extends ImageView {
+public class SquareImageView extends android.support.v7.widget.AppCompatImageView {
 
     public SquareImageView(Context context) {
         super(context);
@@ -42,10 +42,6 @@ public class SquareImageView extends ImageView {
 
     public SquareImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public SquareImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     /**
