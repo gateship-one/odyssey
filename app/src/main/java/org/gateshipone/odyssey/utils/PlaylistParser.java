@@ -24,7 +24,6 @@ import android.content.Context;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public abstract class PlaylistParser {
