@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.dialogs;
 
 import android.app.Dialog;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -100,7 +101,11 @@ public class BulkDownloaderDialog extends DialogFragment {
                                 getString(R.string.pref_artwork_provider_album_default)));
                         serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
                                 getResources().getBoolean(R.bool.pref_download_wifi_default)));
-                        getActivity().startService(serviceIntent);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            getActivity().startForegroundService(serviceIntent);
+                        } else {
+                            getActivity().startService(serviceIntent);
+                        }
                     }
                 });
 
