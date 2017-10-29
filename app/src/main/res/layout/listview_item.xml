@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-regular"
-        android:maxLines="1"
+        android:singleLine="true"
         android:ellipsize="end"
         android:textColor="?attr/odyssey_color_text_background_primary"
         android:textSize="@dimen/material_font_style_size_subheading"
@@ -53,7 +53,7 @@
             android:layout_toStartOf="@+id/item_additional_subtitle"
             android:ellipsize="end"
             android:fontFamily="sans-serif-regular"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="?attr/odyssey_color_text_background_secondary"
             android:textSize="@dimen/material_font_style_size_body_1"
             tools:text="subtitle" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:fontFamily="sans-serif-regular"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="?attr/odyssey_color_text_background_primary"
             android:textSize="@dimen/material_font_style_size_body_1"
             tools:text="additional subtitle" />
