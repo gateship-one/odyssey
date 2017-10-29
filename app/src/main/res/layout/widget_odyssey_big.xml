@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="@dimen/material_font_style_size_subheading" />
 
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@android:color/secondary_text_dark"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
