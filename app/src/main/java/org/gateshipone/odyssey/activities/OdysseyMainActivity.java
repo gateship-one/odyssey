@@ -955,6 +955,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         // set scrolling behaviour
         CollapsingToolbarLayout toolbar = findViewById(R.id.collapsing_toolbar);
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        params.height = -1;
 
         if (scrollingEnabled && !showImage) {
             toolbar.setTitleEnabled(false);
@@ -978,6 +979,12 @@ public class OdysseyMainActivity extends AppCompatActivity
         ImageView collapsingImage = findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageBitmap(bm);
+
+            // FIXME DIRTY HACK: Manually fix the toolbar size to the screen width
+            CollapsingToolbarLayout toolbar = findViewById(R.id.collapsing_toolbar);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+
+            params.height = getWindow().getDecorView().getMeasuredWidth();
         }
     }
 

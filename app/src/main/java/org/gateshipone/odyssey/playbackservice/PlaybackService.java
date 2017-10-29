@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -493,7 +494,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
              */
             Intent serviceStartIntent = new Intent(this, PlaybackService.class);
             serviceStartIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-            startService(serviceStartIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceStartIntent);
+            } else {
+                startService(serviceStartIntent);
+            }
 
             // Request audio focus before doing anything
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -734,7 +739,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
              */
             Intent serviceStartIntent = new Intent(this, PlaybackService.class);
             serviceStartIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-            startService(serviceStartIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceStartIntent);
+            } else {
+                startService(serviceStartIntent);
+            }
 
             // Get the item that is requested to be played.
             TrackModel item = mCurrentList.get(mCurrentPlayingIndex);

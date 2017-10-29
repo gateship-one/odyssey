@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif-regular"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:paddingStart="@dimen/material_standard_horizontal_spacing"
                 android:textSize="@dimen/material_font_style_size_title"
                 tools:text="section header" />

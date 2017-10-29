@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
@@ -194,19 +195,34 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         // Play/Pause action
         Intent playPauseIntent = new Intent(mContext, PlaybackService.class);
         playPauseIntent.putExtra("action", PlaybackService.ACTION_TOGGLEPAUSE);
-        PendingIntent playPausePendingIntent = PendingIntent.getService(mContext, INTENT_PLAYPAUSE, playPauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent playPausePendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            playPausePendingIntent = PendingIntent.getForegroundService(mContext, INTENT_PLAYPAUSE, playPauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            playPausePendingIntent = PendingIntent.getService(mContext, INTENT_PLAYPAUSE, playPauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         mViews.setOnClickPendingIntent(R.id.widget_big_play, playPausePendingIntent);
 
         // Previous song action
         Intent prevIntent = new Intent(mContext, PlaybackService.class);
         prevIntent.putExtra("action", PlaybackService.ACTION_PREVIOUS);
-        PendingIntent prevPendingIntent = PendingIntent.getService(mContext, INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent prevPendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            prevPendingIntent = PendingIntent.getForegroundService(mContext, INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            prevPendingIntent = PendingIntent.getService(mContext, INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         mViews.setOnClickPendingIntent(R.id.widget_big_previous, prevPendingIntent);
 
         // Next song action
         Intent nextIntent = new Intent(mContext, PlaybackService.class);
         nextIntent.putExtra("action", PlaybackService.ACTION_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getService(mContext, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent nextPendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nextPendingIntent = PendingIntent.getForegroundService(mContext, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            nextPendingIntent = PendingIntent.getService(mContext, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         mViews.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
 
         // Send the widget to the launcher by transfering the remote view
