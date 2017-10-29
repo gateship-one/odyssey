@@ -1,6 +1,10 @@
 ### Version: 1.X Tag: release-XX (2017-XX-XX) ###
 * Add ability to open music files from a file browser ([Issue #41](https://github.com/gateship-one/odyssey/issues/41), [Issue #58](https://github.com/gateship-one/odyssey/issues/58))
 * Improve playback speed if started from file browser ([Issue #53](https://github.com/gateship-one/odyssey/issues/53))
+* Only play search results ([Issue #94](https://github.com/gateship-one/odyssey/issues/94))
+* New sdk version (26)
+* Adaptive icon
+* Fix sorting of recent albums 
 
 ### Version: 1.1.6 Tag: release-18 (2017-07-25) ###
 * Allow horizontal resizing of homescreen widget
