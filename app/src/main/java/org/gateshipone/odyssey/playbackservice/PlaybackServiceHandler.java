@@ -93,7 +93,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().shufflePlaylist();
                     break;
                 case ODYSSEY_PLAYALLTRACKS:
-                    mService.get().playAllTracks();
+                    mService.get().playAllTracks(msgObj.getStringParam());
                     break;
                 case ODYSSEY_SAVEPLAYLIST:
                     mService.get().savePlaylist(msgObj.getStringParam());
@@ -129,10 +129,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playDirectory(msgObj.getStringParam(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES:
-                    mService.get().enqueueDirectoryAndSubDirectories(msgObj.getStringParam());
+                    mService.get().enqueueDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
                     break;
                 case ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES:
-                    mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam());
+                    mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
                     break;
                 case ODYSSEY_ENQUEUEALBUM:
                     mService.get().enqueueAlbum(msgObj.getStringParam());

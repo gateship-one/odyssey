@@ -461,7 +461,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playDirectoryAndSubDirectories(currentFolder.getPath());
+            mServiceConnection.getPBS().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -478,7 +478,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath());
+            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -492,7 +492,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void playCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().playDirectoryAndSubDirectories(mCurrentDirectory.getPath());
+            mServiceConnection.getPBS().playDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -521,7 +521,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void enqueueCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath());
+            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

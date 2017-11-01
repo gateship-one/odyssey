@@ -279,37 +279,45 @@ public class FileExplorerHelper {
     /**
      * return a list of TrackModels created for the given folder
      * this includes all subfolders
+     *
+     * @param filterString A filter that is used to exclude folders/files that didn't contain this String.
      */
-    public List<TrackModel> getTrackModelsForFolderAndSubFolders(Context context, FileModel folder) {
+    public List<TrackModel> getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, String filterString) {
         List<TrackModel> tracks = new ArrayList<>();
         // check current folder and subfolders for music files
-        getTrackModelsForFolderAndSubFolders(context, folder, tracks);
+        getTrackModelsForFolderAndSubFolders(context, folder, tracks, filterString);
 
         return tracks;
     }
 
     /**
      * add TrackModel objects for the current folder and all subfolders to the tracklist
+     *
+     * @param filterString A filter that is used to exclude folders/files that didn't contain this String.
      */
-    private void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks) {
+    private void getTrackModelsForFolderAndSubFolders(Context context, FileModel folder, List<TrackModel> tracks, String filterString) {
         if (folder.isFile()) {
-            // file is not a directory so create a trackmodel for the file
-            if (folder.isPlaylist()) {
-                // Parse the playlist file with a parser
-                PlaylistParser parser = PlaylistParserFactory.getParser(folder);
-                if (parser != null) {
+            if (filterString == null || filterString.isEmpty() || folder.getName().toLowerCase().contains(filterString)) {
+                // file is not a directory so create a trackmodel for the file
+                if (folder.isPlaylist()) {
+                    // Parse the playlist file with a parser
+                    PlaylistParser parser = PlaylistParserFactory.getParser(folder);
+                    if (parser != null) {
 
-                    tracks.addAll(parser.parseList(context));
+                        tracks.addAll(parser.parseList(context));
+                    }
+                } else {
+                    tracks.add(getDummyTrackModelForFile(folder));
                 }
-            } else {
-                tracks.add(getDummyTrackModelForFile(folder));
             }
         } else {
             List<FileModel> files = PermissionHelper.getFilesForDirectory(context, folder);
 
             for (FileModel file : files) {
-                // call method for all files found in this folder
-                getTrackModelsForFolderAndSubFolders(context, file, tracks);
+                if (filterString == null || filterString.isEmpty() || file.getName().toLowerCase().contains(filterString)) {
+                    // call method for all files found in this folder
+                    getTrackModelsForFolderAndSubFolders(context, file, tracks, null);
+                }
             }
         }
     }

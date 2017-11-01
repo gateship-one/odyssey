@@ -473,8 +473,10 @@ public class MusicLibraryHelper {
 
     /**
      * Return a list of all tracks in the mediastore.
+     *
+     * @param filterString A filter that is used to exclude tracks that didn't contain this String.
      */
-    public static List<TrackModel> getAllTracks(Context context) {
+    public static List<TrackModel> getAllTracks(String filterString, Context context) {
         List<TrackModel> allTracks = new ArrayList<>();
 
         // filter non music
@@ -498,7 +500,9 @@ public class MusicLibraryHelper {
                     long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 
                     // add the track
-                    allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    if (null == filterString || filterString.isEmpty() || trackName.toLowerCase().contains(filterString)) {
+                        allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    }
 
                 } while (cursor.moveToNext());
             }

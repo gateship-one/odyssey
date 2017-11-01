@@ -31,7 +31,7 @@ interface IOdysseyPlaybackService {
 	void previous();
 	void togglePause();
 	void shufflePlaylist();
-	void playAllTracks();
+	void playAllTracks(String filterString);
 
 	/**
 	 * position = position in current track ( in seconds)
@@ -84,8 +84,8 @@ interface IOdysseyPlaybackService {
 	void playFile(String filePath);
 
 	void playDirectory(String directoryPath, int position);
-	void enqueueDirectoryAndSubDirectories(String directoryPath);
-	void playDirectoryAndSubDirectories(String directoryPath);
+	void enqueueDirectoryAndSubDirectories(String directoryPath, String filterString);
+	void playDirectoryAndSubDirectories(String directoryPath, String filterString);
 
 	// Information getters
 
