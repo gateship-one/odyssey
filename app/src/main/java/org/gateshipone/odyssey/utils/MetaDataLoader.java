@@ -200,13 +200,6 @@ public class MetaDataLoader {
             Map<String, TrackModel> mParsedTracks = new HashMap<>();
 
             for (Map.Entry<String, String> unknownTrack : mUnknownTracks.entrySet()) {
-//                // TODO remove me after finished
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
                 mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
             }
 
