@@ -180,4 +180,7 @@
     <string name="contributor_translator_french">Französische Übersetzung</string>
     <string name="fragment_title_recent_albums">Zuletzt Hinzugefügt</string>
     <string name="action_show_recent_albums">Zuletzt hinzugefügt</string>
+    <string name="notification_channel_playback">Wiedergabe</string>
+    <string name="notification_channel_downloader">Downloader</string>
+    <string name="notification_channel_library_scanner">Medienscanner</string>
 </resources>
