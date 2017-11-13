@@ -1,3 +1,6 @@
+### Version: 1.1.8 Tag: release-20 (2017-11-13) ###
+* Hotfix for: https://issuetracker.google.com/issues/64434571
+
 ### Version: 1.1.7 Tag: release-19 (2017-11-05) ###
 * Add ability to open music files from a file browser ([Issue #41](https://github.com/gateship-one/odyssey/issues/41), [Issue #58](https://github.com/gateship-one/odyssey/issues/58))
 * Improve playback speed if started from file browser ([Issue #53](https://github.com/gateship-one/odyssey/issues/53))
