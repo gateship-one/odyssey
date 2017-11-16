@@ -3,3 +3,4 @@
 - Alessandra Ghiazza - Italian Translation
 - Kévin Minions - French Translation
 - mray (GitHub user) - Image tweaks
+- Daria Szatan - Polish Translation
