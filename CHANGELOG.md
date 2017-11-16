@@ -1,3 +1,6 @@
+### Version: 1.X.X Tag: release-X (2017-XX-XX) ###
+* Add polish translation (thanks to Daria Szatan)
+
 ### Version: 1.1.8 Tag: release-20 (2017-11-13) ###
 * Hotfix for: https://issuetracker.google.com/issues/64434571
 
