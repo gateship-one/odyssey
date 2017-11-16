@@ -183,4 +183,5 @@
     <string name="notification_channel_playback">Wiedergabe</string>
     <string name="notification_channel_downloader">Downloader</string>
     <string name="notification_channel_library_scanner">Medienscanner</string>
+    <string name="contributor_translator_polish">Polnische Übersetzung</string>
 </resources>
