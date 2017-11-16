@@ -21,10 +21,8 @@
   -->
 
 <resources>
-    <string name="app_name" translatable="false">Odyssey</string>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_button" translatable="false">@android:string/ok</string>
     <string name="permission_request_snackbar_explanation">Uprawnienia Pamięci są wymagane, aby załadować pliki.</string>
 
     <!-- nav drawer -->
@@ -76,7 +74,6 @@
     <string name="dialog_choose_playlist">Wybierz playlistę</string>
     <string name="dialog_equalizer_not_found_title">Brak dostępnych equalizerów</string>
     <string name="dialog_equalizer_not_found_message">Na Twoim urządzeniu nie jest obecnie zainstalowany żaden equalizer</string>
-    <string name="error_dialog_ok_action" translatable="false">@android:string/ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nowa Playlista</string>
@@ -96,7 +93,6 @@
 
     <string name="action_reset_artwork">Resetuj okładki albumów</string>
 
-    <string name="action_wikipedia" translatable="false">Wikipedia</string>
     <string name="action_wikipedia_album">Otwórz album</string>
     <string name="action_wikipedia_artist">Otwórz wykonawcę</string>
 
@@ -129,12 +125,6 @@
     <string name="popup_menu_action_createbookmark">Utwórz zakładkę</string>
     <string name="popup_menu_action_startequalizer">Otwórz equalizer</string>
     <string name="popup_menu_action_sharetrack">Udostępnij obecnie odtwarzany utwór</string>
-
-    <!-- templates -->
-    <string name="track_title_template" translatable="false">%1$s - %2$s</string>
-    <string name="track_duration_short_template" translatable="false">%02d:%02d</string>
-    <string name="track_duration_long_template" translatable="false">%02d:%02d:%02d</string>
-    <string name="timestamp_format_pattern" translatable="false">yyyy-MM-dd HH:mm</string>
 
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Pokaż tylko albumy wykonawców</string>
@@ -202,9 +192,6 @@
     <string name="preference_artwork_album_provider_message">Wybierz dostawcę okładek albumów.</string>
 
     <string name="provider_off">Wyłączone</string>
-    <string name="musicbrainz" translatable="false">MusicBrainz</string>
-    <string name="last_fm" translatable="false">Last.fm</string>
-    <string name="fanart_tv" translatable="false">Fanart.tv</string>
 
     <string name="preference_artwork_artist_provider_title">Dostawca zdjęć wykonawców</string>
     <string name="preference_artwork_artist_provider_summary">Wybierz dostawcę zdjęć wykonawców.</string>
@@ -242,10 +229,6 @@
     <string name="sources_text">Kod źródłowy jest dostępny na stronie GitHub:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="activity_about_version">Wersja:</string>
 
-    <string name="url_musicbrainz" translatable="false">https://www.musicbrainz.org</string>
-    <string name="url_lastfm" translatable="false">http://www.last.fm</string>
-    <string name="url_fanarttv" translatable="false">https://fanart.tv</string>
-
     <!-- PBS working message -->
     <string name="playbackservice_working">Proszę czekać</string>
 
@@ -267,7 +250,6 @@
 
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Wnieśli wkład</string>
-    <string name="contributor_team" translatable="false">Team Gateship One</string>
     <string name="contributor_translator_italian">włoskie tłumaczenie</string>
     <string name="contributor_translator_french">francuskie tłumaczenie</string>
 
