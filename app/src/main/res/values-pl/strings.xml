@@ -140,7 +140,7 @@
     <string name="preference_show_album_artists_only_title">Pokaż tylko albumy wykonawców</string>
     <string name="preference_show_album_artists_only_summary">Pokazuje albumy wykonawców zamiast wszystkich wykonawców.</string>
 
-    <string name="preference_launch_about">O Odyssey</string>
+    <string name="preference_launch_about">O Odyssey...</string>
 
     <string name="preference_theme_title">Motyw</string>
     <string name="preference_theme_summary">Ustal motyw aplikacji.</string>
@@ -161,7 +161,7 @@
 
     <string name="preference_album_sort_order_title">Sortuj albumy wykonawców wg</string>
     <string name="preference_album_sort_order_message">Sortuj wg</string>
-    <string name="preference_album_sort_order_summary">Select the sort order for albums of an artist.</string>
+    <string name="preference_album_sort_order_summary">Wybierz kolejność sortowania albumów wykonawców.</string>
 
     <string name="preference_album_sort_order_name">Nazwy</string>
     <string name="preference_album_sort_order_year">Roku wydania</string>
@@ -185,12 +185,12 @@
     <string name="preference_library_view_list">Lista</string>
 
     <string name="preference_show_artist_image_title">Pokaż zdjęcie wykonawcy</string>
-    <string name="preference_show_artist_image_text">Alternate between the album cover and an image of the artist in the view for the currently playing song</string>
+    <string name="preference_show_artist_image_text">Alternatywa między okładką albumu a zdjęciem wykonawcy w widoku obecnie odtwarzanego utworu</string>
 
     <string name="artwork_settings">Ustawienia okładek</string>
 
     <string name="preference_clear_default_directory_title">Wyczyść domyślny katalog</string>
-    <string name="preference_clear_default_directory_summary">Reset the default directory to an available root directory of the device.</string>
+    <string name="preference_clear_default_directory_summary">Przywróc domyśly katalog do dotępnego katalogu roota tego urządzenia.</string>
 
     <string name="preference_category_design">Design</string>
     <string name="preference_category_library">Biblioteka</string>
@@ -201,7 +201,7 @@
     <string name="preference_artwork_album_provider_summary">Wybierz dostawcę okładek albumów.</string>
     <string name="preference_artwork_album_provider_message">Wybierz dostawcę okładek albumów.</string>
 
-    <string name="provider_off">Wyłączony</string>
+    <string name="provider_off">Wyłączone</string>
     <string name="musicbrainz" translatable="false">MusicBrainz</string>
     <string name="last_fm" translatable="false">Last.fm</string>
     <string name="fanart_tv" translatable="false">Fanart.tv</string>
@@ -223,22 +223,22 @@
     <string name="preference_artwork_bulk_load">Spróbuj załadować wszystkie obrazy dla bazy multimediów</string>
     <string name="preference_artwork_bulk_load_summary">This will load a lot of images. Be warned this will take some time. It might result in a temporary rate limit of the provider.</string>
 
-    <string name="preference_artwork_wifi_only_title">Only use WIFI for downloading</string>
-    <string name="preference_artwork_wifi_only_text">Artwork downloading will only take place if the device is connected via WIFI.</string>
+    <string name="preference_artwork_wifi_only_title">Używaj tylko Wi-Fi do pobierania</string>
+    <string name="preference_artwork_wifi_only_text">Pobieranie obrazów rozpocznie się tylko wtedy, gdy urządzenie zostanie podłączone do sieci Wi-Fi.</string>
 
-    <string name="preference_artwork_hide_artwork_title">Hide artwork</string>
-    <string name="preference_artwork_hide_artwork_text">Disables the whole artwork visibility.</string>
+    <string name="preference_artwork_hide_artwork_title">Ukryj obrazy</string>
+    <string name="preference_artwork_hide_artwork_text">Wyłącza widoczność wszystkich obrazów.</string>
 
-    <string name="preference_use_english_wikipedia_title">Używaj angielskiej Wikipedii</string>
-    <string name="preference_use_english_wikipedia_text">Użyj angielskiej Wikipedii, aby wyszukiwać strony</string>
+    <string name="preference_use_english_wikipedia_title">Użyj angielskiej Wikipedii</string>
+    <string name="preference_use_english_wikipedia_text">Używaj angielskiej Wikipedii, aby wyszukiwać strony</string>
 
-    <string name="preference_category_artwork_settings">Artwork settings</string>
+    <string name="preference_category_artwork_settings">Ustawienia obrazów</string>
     <string name="preference_category_artwork_database_cleanup">Wyczyść bazę danych</string>
     <string name="preference_category_artwork_other_actions">Inne akcje</string>
 
     <!-- About activity -->
-    <string name="artwork_provided_by">Artwork provided by:</string>
-    <string name="license_text">This application is licensed under the GPLv3 license.\nMaterial icons are licensed under the CC-BY license by Google.</string>
+    <string name="artwork_provided_by">Obrazy dostarczane są przez:</string>
+    <string name="license_text">Poniższa aplikacja jest objęta licencją GNU GPL v3.\nMaterial icons są objęte licencją CC-BY przez Google.</string>
     <string name="sources_text">Kod źródłowy jest dostępny na stronie GitHub:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="activity_about_version">Wersja:</string>
 
@@ -250,18 +250,18 @@
     <string name="playbackservice_working">Proszę czekać</string>
 
     <!-- Bulk downloader service -->
-    <string name="downloader_notification_title">Bulk download running</string>
+    <string name="downloader_notification_title">Masowe pobieranie włączone</string>
     <string name="downloader_notification_remaining_images">Pobrane obrazy:</string>
 
     <string name="bulk_download_notice_title">Pobranie obrazów</string>
-    <string name="bulk_download_notice_text">Downloading a large amount of images puts heavy load on the servers of the service you chose. It may occur that a server load prevents downloading of images. The downloader will then cancel its action if it detects an overload.\n\nPlease consider donating to the artwork services.</string>
+    <string name="bulk_download_notice_text">Pobieranie dużej liczby obrazów może spowodować ogromne przeciążenie serwerów danego serwisu, który wcześniej wybrałeś. Wynikiem tej operacji może być zablokowanie wykonywanych działań - zostaną one zatrzymane, jeżeli wykryto przeciążenie.\n\nProszę rozważyć złożenie donacji dostawcom usług.</string>
 
     <!-- Media scanner service -->
     <string name="mediascanner_notification_title">Aktualizowanie bazy danych mediów</string>
-    <string name="mediascanner_notification_text">Scanning file %1$d/%2$d</string>
+    <string name="mediascanner_notification_text">Skanowanie pliku %1$d/%2$d</string>
 
     <!-- Notification channel names -->
-    <string name="notification_channel_playback">Playback</string>
+    <string name="notification_channel_playback">Odtwarzanie</string>
     <string name="notification_channel_downloader">Pobieranie</string>
     <string name="notification_channel_library_scanner">Skaner biblioteki</string>
 
