@@ -1117,7 +1117,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_WORKING)) {
+            if (PlaybackServiceStatusHelper.MESSAGE_WORKING.equals(intent.getAction())) {
                 runOnUiThread(new Runnable() {
 
                     @Override
@@ -1127,7 +1127,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                         }
                     }
                 });
-            } else if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_IDLE)) {
+            } else if (PlaybackServiceStatusHelper.MESSAGE_IDLE.equals(intent.getAction())) {
                 runOnUiThread(new Runnable() {
 
                     @Override
