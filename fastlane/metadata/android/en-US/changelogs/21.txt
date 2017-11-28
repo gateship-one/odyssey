@@ -1,0 +1,1 @@
+* Add polish translation (thanks to Daria Szatan)

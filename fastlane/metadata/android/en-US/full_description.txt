@@ -1,0 +1,26 @@
+The main focus of this project is to create an music player that is optimized for speed (even with large music libraries). 
+
+* For support for this application please open an issue at our GitHub repository ( https://github.com/gateship-one/odyssey ) *
+
+It's main features are a fast music library (artist, album, file browser).
+
+Features:
+* Responsive UI
+* Album/Artists/Tracks library
+* File browser
+* Basic playlist management
+* Bookmark support
+* Homescreen widget
+* Basic search functionality
+* Colorful Material based themes
+* Lockscreen control
+* Simple Last.fm scrobbler support ( https://play.google.com/store/apps/details?id=com.adam.aslfms )
+* Artwork downloading for artist/album images (Fanart.tv, Last.fm & MusicBrainz)
+
+This music player aimes to be very fast and responsive even for large libraries (> 20.000 songs). To accomplish this we try to follow the Material design guidelines as close as possible with multiple colorful themes.  
+
+This music player works best with accurately taged music libraries. We recommend tagging using MusicBrainz Picard.
+
+Cover images shown on screenshots used with permission from Carbon Based Lifeforms ( http://carbonbasedlifeforms.net )
+
+This software is free software, licensed under the GPLv3 or later license. The source code is available on GitHub ( https://github.com/gateship-one/odyssey )
