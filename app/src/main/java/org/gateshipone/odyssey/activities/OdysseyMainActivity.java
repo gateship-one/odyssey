@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -303,6 +304,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, fragment);
             transaction.commit();
         }
+
+        // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // ask for permissions
         requestPermissionExternalStorage();
