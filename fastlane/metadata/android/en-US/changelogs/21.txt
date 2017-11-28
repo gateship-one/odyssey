@@ -1,1 +1,2 @@
 * Add polish translation (thanks to Daria Szatan)
+* Change music volume by hardware controls if Odyssey is in foreground
