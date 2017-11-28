@@ -735,20 +735,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    /**
-     * Method to retrieve the height of the statusbar to compensate in non-transparent cases.
-     *
-     * @return The Dimension of the statusbar. Used to compensate the padding.
-     */
-    private int getStatusBarHeight() {
-        int resHeight = 0;
-        int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resId > 0) {
-            resHeight = getResources().getDimensionPixelSize(resId);
-        }
-        return resHeight;
-    }
-
     @Override
     public void onStatusChanged(DRAG_STATUS status) {
         mNowPlayingDragStatus = status;
