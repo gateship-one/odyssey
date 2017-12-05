@@ -101,7 +101,6 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     @Override
     public void onResume() {
         super.onResume();
-
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
@@ -225,6 +224,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        getArguments().remove(ARG_BITMAP);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     /**
      * Call the PBS to enqueue artist.
      */
@@ -270,6 +275,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
                     mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
                     // set toolbar image
                     mToolbarAndFABCallback.setupToolbarImage(bm);
+                    getArguments().putParcelable(ARG_BITMAP,bm);
                 }
             });
         }

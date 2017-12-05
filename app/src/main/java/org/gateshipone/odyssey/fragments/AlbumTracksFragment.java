@@ -292,6 +292,12 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        getArguments().remove(EXTRA_BITMAP);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     /**
      * Open a fragment for the artist of the selected album.
      *
@@ -368,6 +374,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                     mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
                     // set toolbar image
                     mToolbarAndFABCallback.setupToolbarImage(bm);
+                    getArguments().putParcelable(EXTRA_BITMAP,bm);
                 }
             });
         }
