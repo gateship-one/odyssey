@@ -141,6 +141,6 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
     }
 }

@@ -42,6 +42,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
     private static final String TAG = GenericImageViewItem.class.getSimpleName();
 
     private final ImageView mImageView;
+    private Bitmap mBitmap = null;
     private final ViewSwitcher mSwitcher;
 
     private AsyncLoader mLoaderTask;
@@ -130,6 +131,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      */
     @Override
     public void setImage(final Bitmap image) {
+        mBitmap = image;
         if (image != null) {
             mCoverDone = true;
 
@@ -152,5 +154,9 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
             mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
             mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
         }
+    }
+
+    public Bitmap getBitmap() {
+        return mBitmap;
     }
 }

@@ -31,6 +31,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,7 +58,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.List;
 
 public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewAlbumImageListener {
-
+    private static final String TAG = AlbumTracksFragment.class.getSimpleName();
     /**
      * Listener to open an artist
      */
@@ -68,6 +69,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      */
     // FIXME move to separate class to get unified constants?
     public final static String EXTRA_ALBUMMODEL = "albummodel";
+    public final static String EXTRA_BITMAP = "bitmap";
 
     /**
      * The information of the displayed album
@@ -76,6 +78,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private AlbumModel mAlbum;
 
     private CoverBitmapLoader mBitmapLoader;
+    private Bitmap mBitmap = null;
 
     private boolean mHideArtwork;
 
@@ -111,6 +114,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         Bundle args = getArguments();
 
         mAlbum = args.getParcelable(EXTRA_ALBUMMODEL);
+        mBitmap = args.getParcelable(EXTRA_BITMAP);
 
         setHasOptionsMenu(true);
 
@@ -155,7 +159,6 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
                 @Override
@@ -165,8 +168,15 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
             });
         }
 
-        if (!mHideArtwork) {
+        if (!mHideArtwork && mBitmap == null) {
+            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             mBitmapLoader.getAlbumImage(mAlbum);
+        } else if (!mHideArtwork){
+            // Reuse image
+            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
+            mToolbarAndFABCallback.setupToolbarImage(mBitmap);
+        } else {
+            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
         }
 
         ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
@@ -296,7 +306,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID),null);
     }
 
     /**

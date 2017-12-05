@@ -24,11 +24,13 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.RemoteException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -47,11 +49,12 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import java.util.List;
 
 public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements AdapterView.OnItemClickListener {
-
+    public static final String TAG = ArtistsFragment.class.getSimpleName();
     /**
      * Listener to open an artist
      */
@@ -198,8 +201,15 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
+        Bitmap bitmap = null;
+
+        // Check if correct view type, to be safe
+        if (view instanceof GenericImageViewItem) {
+            bitmap = ((GenericImageViewItem) view).getBitmap();
+        }
+
         // send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artist, artistID));
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artist, artistID), bitmap);
     }
 
     /**

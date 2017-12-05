@@ -216,7 +216,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID));
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
     }
 
     private void enqueueAllAlbums() {

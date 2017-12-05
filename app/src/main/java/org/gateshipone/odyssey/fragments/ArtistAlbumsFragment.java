@@ -30,6 +30,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,6 +51,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.List;
 
 public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewArtistImageListener {
+    private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
     /**
      * {@link ArtistModel} to show albums for
      */
@@ -60,8 +62,10 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
      */
     // FIXME move to separate class to get unified constants?
     public final static String ARG_ARTISTMODEL = "artistmodel";
+    public final static String ARG_BITMAP = "bitmap";
 
     private CoverBitmapLoader mBitmapLoader;
+    private Bitmap mBitmap;
 
     private boolean mHideArtwork;
 
@@ -77,6 +81,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         // read arguments
         Bundle args = getArguments();
         mArtist = args.getParcelable(ARG_ARTISTMODEL);
+        mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
 
@@ -98,8 +103,6 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         super.onResume();
 
         if (mToolbarAndFABCallback != null) {
-            // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
             // set up play button
             mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
                 @Override
@@ -109,8 +112,15 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
             });
         }
 
-        if (!mHideArtwork) {
+        // set toolbar behaviour and title
+        if (!mHideArtwork && mBitmap == null) {
+            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
             mBitmapLoader.getArtistImage(mArtist);
+        } else if (!mHideArtwork) {
+            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
+            mToolbarAndFABCallback.setupToolbarImage(mBitmap);
+        } else {
+            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
         }
 
         ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener(this);

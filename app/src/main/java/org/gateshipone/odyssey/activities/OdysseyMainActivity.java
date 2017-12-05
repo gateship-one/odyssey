@@ -563,7 +563,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                         nowPlayingView.minimize();
                     }
 
-                    onAlbumSelected(tmpAlbum);
+                    onAlbumSelected(tmpAlbum, null);
                     return true;
                 }
                 case R.id.view_current_playlist_action_showartist: {
@@ -577,7 +577,7 @@ public class OdysseyMainActivity extends AppCompatActivity
                     if (nowPlayingView != null) {
                         nowPlayingView.minimize();
                     }
-                    onArtistSelected(new ArtistModel(artistTitle, artistID));
+                    onArtistSelected(new ArtistModel(artistTitle, artistID), null);
                     return true;
                 }
                 default:
@@ -658,11 +658,15 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onArtistSelected(ArtistModel artist) {
+    public void onArtistSelected(ArtistModel artist, Bitmap bitmap) {
         // Create fragment and give it an argument for the selected article
         ArtistAlbumsFragment newFragment = new ArtistAlbumsFragment();
         Bundle args = new Bundle();
         args.putParcelable(ArtistAlbumsFragment.ARG_ARTISTMODEL, artist);
+
+        if(bitmap != null) {
+            args.putParcelable(ArtistAlbumsFragment.ARG_BITMAP, bitmap);
+        }
 
         newFragment.setArguments(args);
 
@@ -684,11 +688,15 @@ public class OdysseyMainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAlbumSelected(AlbumModel album) {
+    public void onAlbumSelected(AlbumModel album, Bitmap bitmap) {
         // Create fragment and give it an argument for the selected article
         AlbumTracksFragment newFragment = new AlbumTracksFragment();
         Bundle args = new Bundle();
         args.putParcelable(AlbumTracksFragment.EXTRA_ALBUMMODEL, album);
+
+        if(bitmap != null) {
+            args.putParcelable(AlbumTracksFragment.EXTRA_BITMAP, bitmap);
+        }
 
         newFragment.setArguments(args);
 

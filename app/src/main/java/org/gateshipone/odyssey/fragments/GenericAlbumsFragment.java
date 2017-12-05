@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.Loader;
@@ -43,6 +44,7 @@ import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import java.util.List;
 
@@ -177,8 +179,15 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         // identify current album
         AlbumModel currentAlbum = (AlbumModel) mAdapter.getItem(position);
 
+        Bitmap bitmap = null;
+
+        // Check if correct view type, to be safe
+        if (view instanceof GenericImageViewItem) {
+            bitmap = ((GenericImageViewItem) view).getBitmap();
+        }
+
         // send the event to the host activity
-        mAlbumSelectedCallback.onAlbumSelected(currentAlbum);
+        mAlbumSelectedCallback.onAlbumSelected(currentAlbum, bitmap);
     }
 
     /**

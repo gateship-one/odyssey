@@ -22,8 +22,10 @@
 
 package org.gateshipone.odyssey.listener;
 
+import android.graphics.Bitmap;
+
 import org.gateshipone.odyssey.models.ArtistModel;
 
 public interface OnArtistSelectedListener {
-    void onArtistSelected(ArtistModel artist);
+    void onArtistSelected(ArtistModel artist, Bitmap bitmap);
 }
