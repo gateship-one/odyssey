@@ -28,7 +28,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -43,7 +42,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * The version of the database
      */
-    private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
+    private static final int DATABASE_VERSION = 21;
+
     private static ArtworkDatabaseManager mInstance;
 
     private ArtworkDatabaseManager(Context context) {
