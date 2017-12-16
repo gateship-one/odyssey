@@ -983,6 +983,10 @@ public class OdysseyMainActivity extends AppCompatActivity
             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
 
             params.height = getWindow().getDecorView().getMeasuredWidth();
+
+            // Always expand the toolbar to show the complete image
+            AppBarLayout appbar = findViewById(R.id.appbar);
+            appbar.setExpanded(true,false);
         }
     }
 

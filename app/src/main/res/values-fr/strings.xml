@@ -249,12 +249,18 @@
     <string name="mediascanner_notification_title">Mise à jour de l\'audiothèque</string>
     <string name="mediascanner_notification_text">Analyse des fichiers en cours %1$d/%2$d</string>
 
+    <!-- Notification channel names -->
+    <string name="notification_channel_playback">Lecture</string>
+    <string name="notification_channel_downloader">Téléchargements</string>
+    <string name="notification_channel_library_scanner">Analyse Audiothèque</string>
+
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Collaborateurs</string>
     <!-- string name="contributor_team" : translatable="false" -->
     <string name="contributor_translator_italian">Traduction italienne</string>
+    <string name="contributor_translator_french">Traduction française</string>
+    <string name="contributor_translator_polish">Traduction polonaise</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licences tierces</string>
-    <string name="contributor_translator_french">Traduction française</string>
 </resources>

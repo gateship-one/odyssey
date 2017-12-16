@@ -65,12 +65,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     /**
      * Maximmum size for either x or y of an image
      */
-    private static final int MAXIMUM_IMAGE_SIZE = 500;
+    private static final int MAXIMUM_IMAGE_RESOLUTION = 500;
 
     /**
      * Compression level if images are rescaled
      */
     private static final int IMAGE_COMPRESSION_SETTING = 80;
+
+    /**
+     * Maximum size of an image blob to insert in SQLite database. (1MB)
+     */
+    private static final int MAXIMUM_IMAGE_SIZE = 1024*1024;
 
     /**
      * Manager for the SQLite database handling
@@ -582,14 +587,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
-            if ((options.outHeight > MAXIMUM_IMAGE_SIZE || options.outWidth > MAXIMUM_IMAGE_SIZE)) {
+            if ((options.outHeight > MAXIMUM_IMAGE_RESOLUTION || options.outWidth > MAXIMUM_IMAGE_RESOLUTION)) {
                 options.inJustDecodeBounds = false;
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_SIZE, MAXIMUM_IMAGE_SIZE, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
-                mDBManager.insertArtistImage(response.artist, byteStream.toByteArray(), mContext);
+                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                if(byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertArtistImage(response.artist, byteStream.toByteArray(), mContext);
+                }
             } else {
-                mDBManager.insertArtistImage(response.artist, response.image, mContext);
+                if(response.image.length <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertArtistImage(response.artist, response.image, mContext);
+                }
             }
 
             broadcastNewArtistImageInfo(response, mContext);
@@ -646,14 +655,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
-            if ((options.outHeight > MAXIMUM_IMAGE_SIZE || options.outWidth > MAXIMUM_IMAGE_SIZE)) {
+            if ((options.outHeight > MAXIMUM_IMAGE_RESOLUTION || options.outWidth > MAXIMUM_IMAGE_RESOLUTION)) {
                 options.inJustDecodeBounds = false;
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_SIZE, MAXIMUM_IMAGE_SIZE, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
-                mDBManager.insertAlbumImage(response.album, byteStream.toByteArray());
+                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                if(byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertAlbumImage(response.album, byteStream.toByteArray());
+                }
             } else {
-                mDBManager.insertAlbumImage(response.album, response.image);
+                if(response.image.length <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertAlbumImage(response.album, response.image);
+                }
             }
 
             broadcastNewAlbumImageInfo(response, mContext);

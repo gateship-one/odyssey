@@ -1,6 +1,8 @@
-### Version: 1.X.X Tag: release-X (2017-XX-XX) ###
+### Version: 1.1.9 Tag: release-21 (2017-12-16) ###
 * Add polish translation (thanks to Daria Szatan)
+* Update of french translation (thanks to Kévin Minions)
 * Change music volume by hardware controls if Odyssey is in foreground
+* minor UI and performance tweaks
 
 ### Version: 1.1.8 Tag: release-20 (2017-11-13) ###
 * Hotfix for: https://issuetracker.google.com/issues/64434571
