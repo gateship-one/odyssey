@@ -75,7 +75,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     /**
      * Maximum size of an image blob to insert in SQLite database. (1MB)
      */
-    private static final int MAXIMUM_IMAGE_SIZE = 1024*1024;
+    private static final int MAXIMUM_IMAGE_SIZE = 1024 * 1024;
 
     /**
      * Manager for the SQLite database handling
@@ -195,6 +195,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
     /**
      * Removes the image for the album and tries to reload it from the internet
+     *
      * @param album {@link AlbumModel} to reload the image for
      */
     public void resetAlbumImage(final AlbumModel album, final Context context) {
@@ -206,12 +207,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         mDBManager.removeAlbumImage(album);
 
         // Reload the image from the internet
-        fetchAlbumImage(album,context);
+        fetchAlbumImage(album, context);
     }
 
 
     /**
      * Removes the image for the artist and tries to reload it from the internet
+     *
      * @param artist {@link ArtistModel} to reload the image for
      */
     public void resetArtistImage(final ArtistModel artist, final Context context) {
@@ -226,7 +228,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         fetchArtistImage(artist, context);
     }
 
-    public Bitmap getArtistImage(final ArtistModel artist) throws ImageNotFoundException {
+    public Bitmap getArtistImage(final Context context, final ArtistModel artist) throws ImageNotFoundException {
         if (null == artist) {
             return null;
         }
@@ -240,9 +242,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
          * the artist with name instead of id.
          */
         if (artistID == -1) {
-            image = mDBManager.getArtistImage(artist.getArtistName());
+            image = mDBManager.getArtistImage(context, artist.getArtistName());
         } else {
-            image = mDBManager.getArtistImage(artistID);
+            image = mDBManager.getArtistImage(context, artistID);
         }
 
         // Checks if the database has an image for the requested artist
@@ -253,7 +255,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         return null;
     }
 
-    public Bitmap getAlbumImage(final AlbumModel album) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
         if (null == album) {
             return null;
         }
@@ -267,10 +269,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             // Check if ID is available (should be the case). If not use the album name for
             // lookup.
             // FIXME use artistname also
-            image = mDBManager.getAlbumImage(album.getAlbumName());
+            image = mDBManager.getAlbumImage(context, album.getAlbumName());
         } else {
             // If id is available use it.
-            image = mDBManager.getAlbumImage(album.getAlbumID());
+            image = mDBManager.getAlbumImage(context, album.getAlbumID());
         }
 
         // Checks if the database has an image for the requested album
@@ -282,7 +284,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         return null;
     }
 
-    public Bitmap getAlbumImage(final TrackModel track) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final TrackModel track) throws ImageNotFoundException {
         if (null == track) {
             return null;
         }
@@ -291,7 +293,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         byte[] image;
 
         // FIXME use album artist as well.
-        image = mDBManager.getAlbumImage(track.getTrackAlbumName());
+        image = mDBManager.getAlbumImage(context, track.getTrackAlbumName());
 
         // Checks if the database has an image for the requested album
         if (null != image) {
@@ -579,7 +581,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 fetchNextBulkArtist(mContext);
             }
             if (response.image == null) {
-                mDBManager.insertArtistImage(response.artist, null, mContext);
+                mDBManager.insertArtistImage(mContext, response.artist, null);
                 return response.artist;
             }
 
@@ -592,12 +594,12 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
-                if(byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
-                    mDBManager.insertArtistImage(response.artist, byteStream.toByteArray(), mContext);
+                if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertArtistImage(mContext, response.artist, byteStream.toByteArray());
                 }
             } else {
-                if(response.image.length <= MAXIMUM_IMAGE_SIZE) {
-                    mDBManager.insertArtistImage(response.artist, response.image, mContext);
+                if (response.image.length <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertArtistImage(mContext, response.artist, response.image);
                 }
             }
 
@@ -647,7 +649,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 fetchNextBulkAlbum(mContext);
             }
             if (response.image == null) {
-                mDBManager.insertAlbumImage(response.album, null);
+                mDBManager.insertAlbumImage(mContext, response.album, null);
                 return response.album;
             }
 
@@ -660,12 +662,12 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
-                if(byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
-                    mDBManager.insertAlbumImage(response.album, byteStream.toByteArray());
+                if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertAlbumImage(mContext, response.album, byteStream.toByteArray());
                 }
             } else {
-                if(response.image.length <= MAXIMUM_IMAGE_SIZE) {
-                    mDBManager.insertAlbumImage(response.album, response.image);
+                if (response.image.length <= MAXIMUM_IMAGE_SIZE) {
+                    mDBManager.insertAlbumImage(mContext, response.album, response.image);
                 }
             }
 
@@ -851,9 +853,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 // Check if image already there
                 try {
                     if (album.getAlbumID() != -1) {
-                        mDBManager.getAlbumImage(album.getAlbumID());
+                        mDBManager.getAlbumImage(context, album.getAlbumID());
                     } else {
-                        mDBManager.getAlbumImage(album.getAlbumName());
+                        mDBManager.getAlbumImage(context, album.getAlbumName());
                     }
                     // If this does not throw the exception it already has an image.
                 } catch (ImageNotFoundException e) {
@@ -890,9 +892,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             // Check if image already there
             try {
                 if (artist.getArtistID() != -1) {
-                    mDBManager.getArtistImage(artist.getArtistID());
+                    mDBManager.getArtistImage(context, artist.getArtistID());
                 } else {
-                    mDBManager.getArtistImage(artist.getArtistName());
+                    mDBManager.getArtistImage(context, artist.getArtistName());
                 }
                 // If this does not throw the exception it already has an image.
             } catch (ImageNotFoundException e) {

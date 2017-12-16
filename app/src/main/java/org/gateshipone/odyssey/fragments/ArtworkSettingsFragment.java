@@ -65,7 +65,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         clearAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                ArtworkDatabaseManager.getInstance(getContext()).clearAlbumImages();
+                ArtworkDatabaseManager.getInstance(getContext()).clearAlbumImages(getContext());
                 return true;
             }
         });
@@ -75,7 +75,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         clearArtist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference preference) {
-                ArtworkDatabaseManager.getInstance(getContext()).clearArtistImages();
+                ArtworkDatabaseManager.getInstance(getContext()).clearArtistImages(getContext());
                 return true;
             }
         });
