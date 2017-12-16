@@ -43,6 +43,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -960,20 +961,21 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      * @param v View to which the popup menu should be attached
      */
     private void showAdditionalOptionsMenu(View v) {
-        PopupMenu menu = new PopupMenu(getContext(), v);
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);
         // Inflate the menu from a menu xml file
-        menu.inflate(R.menu.popup_menu_nowplaying_view);
+        popupMenu.inflate(R.menu.popup_menu_nowplaying_view);
         // Set the main NowPlayingView as a listener (directly implements callback)
-        menu.setOnMenuItemClickListener(this);
+        popupMenu.setOnMenuItemClickListener(this);
+        Menu menu = popupMenu.getMenu();
 
         // Check if the current view is the cover or the playlist. If it is the playlist hide its actions.
         // If the viewswitcher only has one child the dual pane layout is used
         if (mViewSwitcher.getDisplayedChild() == 0 && (mViewSwitcher.getChildCount() > 1)) {
-            menu.getMenu().setGroupEnabled(R.id.action_group_playlist, false);
-            menu.getMenu().setGroupVisible(R.id.action_group_playlist, false);
+            menu.setGroupEnabled(R.id.action_group_playlist, false);
+            menu.setGroupVisible(R.id.action_group_playlist, false);
         }
         // Open the menu itself
-        menu.show();
+        popupMenu.show();
     }
 
 
