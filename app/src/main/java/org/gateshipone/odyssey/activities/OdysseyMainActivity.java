@@ -126,7 +126,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     private PlaybackServiceConnection mServiceConnection;
 
-    private Uri mSendedUri;
+    private Uri mSentUri;
 
     private boolean mShowNPV = false;
 
@@ -143,7 +143,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             if (intent != null) {
                 if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
                     // odyssey was opened by a file so save the uri for later usage when the service is running
-                    mSendedUri = intent.getData();
+                    mSentUri = intent.getData();
                 } else {
                     // odyssey was opened by widget or notification
                     final Bundle extras = intent.getExtras();
@@ -1086,17 +1086,17 @@ public class OdysseyMainActivity extends AppCompatActivity
     /**
      * Check if odyssey was opened via a file.
      * <p>
-     * This method will play the selected file if the mSendedUri is valid.
+     * This method will play the selected file if the mSentUri is valid.
      */
     private void checkUri() {
-        if (mSendedUri != null) {
+        if (mSentUri != null) {
             try {
-                mServiceConnection.getPBS().playURI(mSendedUri.toString());
+                mServiceConnection.getPBS().playURI(mSentUri.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
 
-            mSendedUri = null;
+            mSentUri = null;
         }
     }
 
