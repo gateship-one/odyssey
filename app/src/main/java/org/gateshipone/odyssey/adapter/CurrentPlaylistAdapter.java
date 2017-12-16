@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
@@ -45,7 +46,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     }
 
     private final Context mContext;
-    private final PlaybackServiceConnection mPlayBackServiceConnection;
+    IOdysseyPlaybackService mPBS;
 
     private int mCurrentPlayingIndex = -1;
     private int mPlaylistSize = 0;
@@ -64,12 +65,13 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
 
         mContext = context;
 
-        mPlayBackServiceConnection = playbackServiceConnection;
 
         try {
-            mPlaylistSize = mPlayBackServiceConnection.getPBS().getPlaylistSize();
-            mCurrentPlayingIndex = mPlayBackServiceConnection.getPBS().getCurrentIndex();
+            mPBS = playbackServiceConnection.getPBS();
+            mPlaylistSize = mPBS.getPlaylistSize();
+            mCurrentPlayingIndex = mPBS.getCurrentIndex();
         } catch (RemoteException e) {
+            mPBS = null;
             e.printStackTrace();
         }
 
@@ -95,11 +97,11 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     @Override
     public Object getItem(int position) {
         try {
-            if (mPlayBackServiceConnection != null) {
+            if (mPBS != null) {
                 // Check cache first for a hit
                 TrackModel track = mTrackCache.get(position);
                 if (track == null) {
-                    track = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+                    track = mPBS.getPlaylistSong(position);
                     mTrackCache.put(position, track);
                 }
                 return track;
@@ -171,8 +173,8 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
         // get the trackmodel for the current position from the PBS
         TrackModel currentTrack;
         try {
-            if (mPlayBackServiceConnection != null) {
-                currentTrack = mPlayBackServiceConnection.getPBS().getPlaylistSong(position);
+            if (mPBS != null) {
+                currentTrack = mPBS.getPlaylistSong(position);
             } else {
                 currentTrack = new TrackModel();
             }
