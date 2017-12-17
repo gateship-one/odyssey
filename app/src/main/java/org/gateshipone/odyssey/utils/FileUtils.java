@@ -34,6 +34,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class FileUtils {
 
+    private static final String ARTWORK_DIR = "artworks";
+
     public static String createSHA256HashForString(final String... inputStrings) throws NoSuchAlgorithmException {
         final StringBuilder input = new StringBuilder();
 
@@ -60,24 +62,24 @@ public class FileUtils {
         return hexString.toString();
     }
 
-    public static void saveImageFile(final Context context, final String fileName, final String dirName, final byte[] image) throws IOException {
-        final File imageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + dirName + "/");
-        imageDir.mkdirs();
+    public static void saveArtworkFile(final Context context, final String fileName, final String dirName, final byte[] image) throws IOException {
+        final File artworkDir = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/");
+        artworkDir.mkdirs();
 
-        final File imageFile = new File(imageDir, fileName);
+        final File imageFile = new File(artworkDir, fileName);
 
         final FileOutputStream outputStream = new FileOutputStream(imageFile);
         outputStream.write(image);
         outputStream.close();
     }
 
-    public static byte[] readImageFile(final Context context, final String fileName, final String dirName) {
-        final File imageFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + dirName + "/", fileName);
+    public static byte[] readArtworkFile(final Context context, final String fileName, final String dirName) {
+        final File artworkFile = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
         FileInputStream inputStream;
         try {
-            inputStream = new FileInputStream(imageFile);
+            inputStream = new FileInputStream(artworkFile);
 
-            byte[] buffer = new byte[(int) imageFile.length()];
+            byte[] buffer = new byte[(int) artworkFile.length()];
             inputStream.read(buffer);
             inputStream.close();
 
@@ -88,19 +90,19 @@ public class FileUtils {
         }
     }
 
-    public static void removeImageFile(final Context context, final String fileName, final String dirName) {
-        final File imageFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + dirName + "/", fileName);
-        imageFile.delete();
+    public static void removeArtworkFile(final Context context, final String fileName, final String dirName) {
+        final File artworkFile = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
+        artworkFile.delete();
     }
 
-    public static void removeImageDirectory(final Context context, final String directoryName) {
-        final File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + directoryName);
+    public static void removeArtworkDirectory(final Context context, final String dirName) {
+        final File artworkDir = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/");
 
-        if (directory.listFiles() != null) {
-            for (File child : directory.listFiles()) {
+        if (artworkDir.listFiles() != null) {
+            for (File child : artworkDir.listFiles()) {
                 child.delete();
             }
-            directory.delete();
+            artworkDir.delete();
         }
     }
 }

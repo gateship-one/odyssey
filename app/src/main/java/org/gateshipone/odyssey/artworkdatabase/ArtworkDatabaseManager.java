@@ -110,12 +110,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
-            final byte[] image = FileUtils.readImageFile(context, imageFileName, DIRECTORY_ALBUM_IMAGES);
+            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
 
             if (image != null) {
                 return image;
@@ -152,12 +152,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
-            final byte[] image = FileUtils.readImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
 
             if (image != null) {
                 return image;
@@ -193,12 +193,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
-            final byte[] image = FileUtils.readImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
 
             if (image != null) {
                 return image;
@@ -231,17 +231,17 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final String artistMBID = artist.getMBID();
         final String artistName = artist.getArtistName();
 
-        String imageFileName = null;
+        String artworkFilename = null;
         if (image != null) {
             try {
-                imageFileName = FileUtils.createSHA256HashForString(artistIDString, artistMBID, artistName) + ".jpg";
+                artworkFilename = FileUtils.createSHA256HashForString(artistIDString, artistMBID, artistName) + ".jpg";
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 return;
             }
 
             try {
-                FileUtils.saveImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES, image);
+                FileUtils.saveArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES, image);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -252,7 +252,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistID);
         values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artist.getMBID());
         values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artist.getArtistName());
-        values.put(ArtistArtTable.COLUMN_IMAGE_FILE_PATH, imageFileName);
+        values.put(ArtistArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
 
         // If null was given as byte[] set the not_found flag for this entry.
         values.put(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
@@ -286,12 +286,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
-            final byte[] image = FileUtils.readImageFile(context, imageFileName, DIRECTORY_ALBUM_IMAGES);
+            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
 
             if (image != null) {
                 return image;
@@ -319,17 +319,17 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final String albumName = album.getAlbumName();
         final String albumArtistName = album.getArtistName();
 
-        String imageFileName = null;
+        String artworkFilename = null;
         if (image != null) {
             try {
-                imageFileName = FileUtils.createSHA256HashForString(albumID, albumMBID, albumName, albumArtistName) + ".jpg";
+                artworkFilename = FileUtils.createSHA256HashForString(albumID, albumMBID, albumName, albumArtistName) + ".jpg";
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 return;
             }
 
             try {
-                FileUtils.saveImageFile(context, imageFileName, DIRECTORY_ALBUM_IMAGES, image);
+                FileUtils.saveArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES, image);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -341,7 +341,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBID);
         values.put(AlbumArtTable.COLUMN_ALBUM_NAME, album.getAlbumName());
         values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumName);
-        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, imageFileName);
+        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
 
         // If null was given as byte[] set the not_found flag for this entry.
         values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
@@ -361,7 +361,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         database.close();
 
-        FileUtils.removeImageDirectory(context, DIRECTORY_ARTIST_IMAGES);
+        FileUtils.removeArtworkDirectory(context, DIRECTORY_ARTIST_IMAGES);
     }
 
     /**
@@ -374,7 +374,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         database.close();
 
-        FileUtils.removeImageDirectory(context, DIRECTORY_ALBUM_IMAGES);
+        FileUtils.removeArtworkDirectory(context, DIRECTORY_ALBUM_IMAGES);
     }
 
     public synchronized void clearBlockedArtistImages() {
@@ -410,11 +410,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         if (requestCursor.moveToFirst()) {
 
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
 
-            FileUtils.removeImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+            FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
@@ -433,11 +433,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         if (requestCursor.moveToFirst()) {
 
-            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
 
-            FileUtils.removeImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+            FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
