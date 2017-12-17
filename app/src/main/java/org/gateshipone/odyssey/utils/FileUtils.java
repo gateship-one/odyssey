@@ -88,6 +88,11 @@ public class FileUtils {
         }
     }
 
+    public static void removeImageFile(final Context context, final String fileName, final String dirName) {
+        final File imageFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + dirName + "/", fileName);
+        imageFile.delete();
+    }
+
     public static void removeImageDirectory(final Context context, final String directoryName) {
         final File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + directoryName);
 

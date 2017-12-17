@@ -204,7 +204,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         // Clear the old image
-        mDBManager.removeAlbumImage(album);
+        mDBManager.removeAlbumImage(context, album);
 
         // Reload the image from the internet
         fetchAlbumImage(album, context);
@@ -222,7 +222,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         // Clear the old image
-        mDBManager.removeArtistImage(artist);
+        mDBManager.removeArtistImage(context, artist);
 
         // Reload the image from the internet
         fetchArtistImage(artist, context);

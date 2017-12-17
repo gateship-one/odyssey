@@ -94,12 +94,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
     public synchronized byte[] getAlbumImage(final Context context, long id) throws ImageNotFoundException {
-        SQLiteDatabase database = getReadableDatabase();
+        final SQLiteDatabase database = getReadableDatabase();
 
-        String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
+        final String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
 
 
-        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_ID, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
+        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_ID, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{String.valueOf(id)}, null, null, null);
 
         // Check if an image was found
@@ -136,12 +136,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
     public synchronized byte[] getArtistImage(final Context context, long id) throws ImageNotFoundException {
-        SQLiteDatabase database = getReadableDatabase();
+        final SQLiteDatabase database = getReadableDatabase();
 
-        String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
+        final String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
 
 
-        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_ID, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
+        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_ID, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{String.valueOf(id)}, null, null, null);
 
         // Check if an image was found
@@ -178,11 +178,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
     public synchronized byte[] getArtistImage(final Context context, String artistName) throws ImageNotFoundException {
-        SQLiteDatabase database = getReadableDatabase();
+        final SQLiteDatabase database = getReadableDatabase();
 
-        String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
+        final String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
 
-        Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
+        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{artistName}, null, null, null);
 
         // Check if an image was found
@@ -219,10 +219,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      *               the database entry will have the not_found flag set.
      */
     public synchronized void insertArtistImage(final Context context, final ArtistModel artist, final byte[] image) {
-        SQLiteDatabase database = getWritableDatabase();
+        final SQLiteDatabase database = getWritableDatabase();
 
         long artistID = artist.getArtistID();
-
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
             artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), context);
@@ -272,11 +271,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
     public synchronized byte[] getAlbumImage(final Context context, final String albumName) throws ImageNotFoundException {
-        SQLiteDatabase database = getReadableDatabase();
+        final SQLiteDatabase database = getReadableDatabase();
 
-        String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
+        final String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
 
-        Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
+        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
                 selection, new String[]{albumName}, null, null, null);
 
         // Check if an image was found
@@ -356,7 +355,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * Removes all lines from the artists table
      */
     public synchronized void clearArtistImages(final Context context) {
-        SQLiteDatabase database = getWritableDatabase();
+        final SQLiteDatabase database = getWritableDatabase();
 
         database.delete(ArtistArtTable.TABLE_NAME, null, null);
 
@@ -369,7 +368,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * Removes all lines from the albums table
      */
     public synchronized void clearAlbumImages(final Context context) {
-        SQLiteDatabase database = getWritableDatabase();
+        final SQLiteDatabase database = getWritableDatabase();
 
         database.delete(AlbumArtTable.TABLE_NAME, null, null);
 
@@ -379,10 +378,10 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized void clearBlockedArtistImages() {
-        SQLiteDatabase database = getWritableDatabase();
+        final SQLiteDatabase database = getWritableDatabase();
 
-        String where = ArtistArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
-        String whereArgs[] = {"1"};
+        final String where = ArtistArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
+        final String whereArgs[] = {"1"};
 
         database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
 
@@ -390,32 +389,56 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized void clearBlockedAlbumImages() {
-        SQLiteDatabase database = getWritableDatabase();
+        final SQLiteDatabase database = getWritableDatabase();
 
-        String where = AlbumArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
-        String whereArgs[] = {"1"};
+        final String where = AlbumArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
+        final String whereArgs[] = {"1"};
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
 
         database.close();
     }
 
-    public synchronized void removeArtistImage(ArtistModel artist) {
-        SQLiteDatabase database = getWritableDatabase();
+    public synchronized void removeArtistImage(final Context context, final ArtistModel artist) {
+        final SQLiteDatabase database = getWritableDatabase();
 
-        String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " + ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
-        String whereArgs[] = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
+        final String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " + ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
+        final String whereArgs[] = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
+
+        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_IMAGE_FILE_PATH},
+                where, whereArgs, null, null, null);
+
+        if (requestCursor.moveToFirst()) {
+
+            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+
+            requestCursor.close();
+
+            FileUtils.removeImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+        }
 
         database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
 
         database.close();
     }
 
-    public synchronized void removeAlbumImage(AlbumModel album) {
-        SQLiteDatabase database = getWritableDatabase();
+    public synchronized void removeAlbumImage(final Context context, final AlbumModel album) {
+        final SQLiteDatabase database = getWritableDatabase();
 
-        String where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
-        String whereArgs[] = {String.valueOf(album.getAlbumID())};
+        final String where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
+        final String whereArgs[] = {String.valueOf(album.getAlbumID())};
+
+        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_IMAGE_FILE_PATH},
+                where, whereArgs, null, null, null);
+
+        if (requestCursor.moveToFirst()) {
+
+            final String imageFileName = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+
+            requestCursor.close();
+
+            FileUtils.removeImageFile(context, imageFileName, DIRECTORY_ARTIST_IMAGES);
+        }
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
 
