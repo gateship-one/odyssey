@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,8 +33,18 @@ import java.security.NoSuchAlgorithmException;
 
 public class FileUtils {
 
+    /**
+     * The directory name for all artwork images and subfolders
+     */
     private static final String ARTWORK_DIR = "artworks";
 
+    /**
+     * Create a SHA256 Hash for the given input strings.
+     *
+     * @param inputStrings The input that will be used as a concatenated string to create the hashed value.
+     * @return The result as a hex string.
+     * @throws NoSuchAlgorithmException If SHA-256 is not available.
+     */
     public static String createSHA256HashForString(final String... inputStrings) throws NoSuchAlgorithmException {
         final StringBuilder input = new StringBuilder();
 
@@ -62,6 +71,15 @@ public class FileUtils {
         return hexString.toString();
     }
 
+    /**
+     * Saves an image byte array in a file in the given directory.
+     *
+     * @param context  The application context to get the files directory of the app.
+     * @param fileName The name that will be used to save the file.
+     * @param dirName  The directory name in which the file is saved.
+     * @param image    The image byte array that will be saved in a file.
+     * @throws IOException If the file couldn't be written.
+     */
     public static void saveArtworkFile(final Context context, final String fileName, final String dirName, final byte[] image) throws IOException {
         final File artworkDir = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/");
         artworkDir.mkdirs();
@@ -73,6 +91,14 @@ public class FileUtils {
         outputStream.close();
     }
 
+    /**
+     * Reads the image byte array from a file in the given directory.
+     *
+     * @param context  The application context to get the files directory of the app.
+     * @param fileName The name of the file.
+     * @param dirName  The name of the parent directory of the file.
+     * @return The bytes read from the file or null if an error occurs.
+     */
     public static byte[] readArtworkFile(final Context context, final String fileName, final String dirName) {
         final File artworkFile = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
         FileInputStream inputStream;
@@ -90,11 +116,24 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Removes a file from the given directory.
+     *
+     * @param context  The application context to get the files directory of the app.
+     * @param fileName The name of the file.
+     * @param dirName  The name of the parent directory of the file.
+     */
     public static void removeArtworkFile(final Context context, final String fileName, final String dirName) {
         final File artworkFile = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
         artworkFile.delete();
     }
 
+    /**
+     * Removes the given directory.
+     *
+     * @param context The application context to get the files directory of the app.
+     * @param dirName The name of the directory that should be removed.
+     */
     public static void removeArtworkDirectory(final Context context, final String dirName) {
         final File artworkDir = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/");
 
