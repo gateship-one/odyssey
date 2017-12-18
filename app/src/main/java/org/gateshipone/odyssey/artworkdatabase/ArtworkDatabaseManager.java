@@ -69,7 +69,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * Creates the database tables if they are not already existing
      *
-     * @param db
+     * @param db The {@link SQLiteDatabase} instance that will be used to create the tables.
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -91,7 +91,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      *
      * @param id Android MediaColumns album_id.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
+     * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
     public synchronized byte[] getAlbumImage(final Context context, long id) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
@@ -110,11 +110,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
+
+            // get the filename for the image
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
+            // try to read the file
             final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
 
             if (image != null) {
@@ -133,7 +136,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      *
      * @param id Android MediaColumns artist_id.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
+     * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
     public synchronized byte[] getArtistImage(final Context context, long id) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
@@ -152,11 +155,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
+
+            // get the filename for the image
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
+            // try to read the file
             final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
 
             if (image != null) {
@@ -175,7 +181,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      *
      * @param artistName The name of the artist to search for.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
+     * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
     public synchronized byte[] getArtistImage(final Context context, String artistName) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
@@ -193,11 +199,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
+
+            // get the filename for the image
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
 
+            // try to read the file
             final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
 
             if (image != null) {
@@ -212,7 +221,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts the given byte[] image to the artists table.
+     * Saves the given artist byte[] image.
      *
      * @param artist Artist for the associated image byte[].
      * @param image  byte[] containing the raw image that was downloaded. This can be null in which case
@@ -305,7 +314,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts the given byte[] image to the albums table.
+     * Saves the given album byte[] image.
      *
      * @param album Album for the associated image byte[].
      * @param image byte[] containing the raw image that was downloaded. This can be null in which case
@@ -377,6 +386,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         FileUtils.removeArtworkDirectory(context, DIRECTORY_ALBUM_IMAGES);
     }
 
+    /**
+     * Reset the state of all artist images that was not found before
+     */
     public synchronized void clearBlockedArtistImages() {
         final SQLiteDatabase database = getWritableDatabase();
 
@@ -388,6 +400,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         database.close();
     }
 
+    /**
+     * Reset the state of all album images that was not found before
+     */
     public synchronized void clearBlockedAlbumImages() {
         final SQLiteDatabase database = getWritableDatabase();
 
@@ -399,6 +414,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         database.close();
     }
 
+    /**
+     * Removes the artist image for the given artist.
+     *
+     * @param context The application context to access the file.
+     * @param artist  The {@link ArtistModel} representing the artist.
+     */
     public synchronized void removeArtistImage(final Context context, final ArtistModel artist) {
         final SQLiteDatabase database = getWritableDatabase();
 
@@ -422,6 +443,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         database.close();
     }
 
+    /**
+     * Removes the album image for the given album.
+     *
+     * @param context The application context to access the file.
+     * @param album   The {@link AlbumModel} representing the album.
+     */
     public synchronized void removeAlbumImage(final Context context, final AlbumModel album) {
         final SQLiteDatabase database = getWritableDatabase();
 
