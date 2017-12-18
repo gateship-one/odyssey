@@ -249,9 +249,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         }
 
         final ContentValues values = new ContentValues();
-        values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistID);
-        values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artist.getMBID());
-        values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artist.getArtistName());
+        values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistIDString);
+        values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artistMBID);
+        values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artistName);
         values.put(ArtistArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
 
         // If null was given as byte[] set the not_found flag for this entry.
@@ -339,8 +339,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final ContentValues values = new ContentValues();
         values.put(AlbumArtTable.COLUMN_ALBUM_ID, albumID);
         values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBID);
-        values.put(AlbumArtTable.COLUMN_ALBUM_NAME, album.getAlbumName());
-        values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumName);
+        values.put(AlbumArtTable.COLUMN_ALBUM_NAME, albumName);
+        values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumArtistName);
         values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
 
         // If null was given as byte[] set the not_found flag for this entry.
