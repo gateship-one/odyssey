@@ -124,7 +124,7 @@ public class CoverBitmapLoader {
 
             // If we reach this, we obviously don't have a local image. Try the database of downloaded images
             try {
-                Bitmap image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mTrack);
+                Bitmap image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mTrack);
                 mListener.receiveBitmap(image,IMAGE_TYPE.ALBUM_IMAGE);
             } catch (ImageNotFoundException e) {
                 // Try to fetch the image here
@@ -147,7 +147,7 @@ public class CoverBitmapLoader {
         @Override
         public void run() {
             try {
-                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mArtist);
+                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist);
                 mListener.receiveBitmap(artistImage, IMAGE_TYPE.ARTIST_IMAGE);
             } catch (ImageNotFoundException e) {
                 ArtworkManager.getInstance(mContext.getApplicationContext()).fetchArtistImage(mArtist, mContext);
@@ -170,7 +170,7 @@ public class CoverBitmapLoader {
         @Override
         public void run() {
             try {
-                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mArtist);
+                Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist);
                 mListener.receiveBitmap(artistImage,IMAGE_TYPE.ARTIST_IMAGE);
             } catch (ImageNotFoundException e) {
                 ArtworkManager.getInstance(mContext.getApplicationContext()).fetchArtistImage(mArtist, mContext);
@@ -204,7 +204,7 @@ public class CoverBitmapLoader {
                         mAlbum.setAlbumID(MusicLibraryHelper.getAlbumIDFromKey(mAlbum.getAlbumKey(), mContext));
                     }
                     // No tagged album image available, check download database
-                    Bitmap albumImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mAlbum);
+                    Bitmap albumImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mAlbum);
                     mListener.receiveBitmap(albumImage, IMAGE_TYPE.ALBUM_IMAGE);
                 }
             } catch (ImageNotFoundException e) {

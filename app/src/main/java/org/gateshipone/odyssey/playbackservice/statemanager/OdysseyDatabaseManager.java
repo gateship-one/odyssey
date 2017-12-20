@@ -29,7 +29,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.OdysseyServiceState;
@@ -49,7 +48,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     /**
      * The version of the database
      */
-    private static final int DATABASE_VERSION = BuildConfig.VERSION_CODE;
+    private static final int DATABASE_VERSION = 21;
 
     /**
      * Array of returned columns from the StateTracks table

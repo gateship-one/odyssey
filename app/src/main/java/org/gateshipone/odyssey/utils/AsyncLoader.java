@@ -77,7 +77,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getArtistImage(artist);
+                image = mCover.artworkManager.getArtistImage(mContext, artist);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!artist.getFetching()) {
@@ -95,7 +95,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception.
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getAlbumImage(album);
+                image = mCover.artworkManager.getAlbumImage(mContext, album);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!album.getFetching()) {
@@ -117,7 +117,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
                 try {
                     // Check if image is available. If it is not yet fetched it will throw an exception.
                     // If it was already searched for and not found, this will be null.
-                    image = mCover.artworkManager.getAlbumImage(album);
+                    image = mCover.artworkManager.getAlbumImage(mContext, album);
                 } catch (ImageNotFoundException e) {
                     // Check if fetching for this item is already ongoing
                     if (!album.getFetching()) {
