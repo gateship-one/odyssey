@@ -101,28 +101,6 @@ public class CoverBitmapLoader {
          */
         @Override
         public void run() {
-            String where = android.provider.MediaStore.Audio.Albums.ALBUM_KEY + "=?";
-
-            String whereVal[] = { mTrack.getTrackAlbumKey() };
-
-            Cursor cursor = PermissionHelper.query(mContext, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ALBUM_ART}, where, whereVal, "");
-
-            if(cursor != null) {
-                String coverPath = null;
-                if (cursor.moveToFirst()) {
-                    coverPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                }
-                if (coverPath != null && !coverPath.isEmpty()) {
-                    Bitmap cover = BitmapFactory.decodeFile(coverPath);
-                    mListener.receiveBitmap(cover,IMAGE_TYPE.ALBUM_IMAGE);
-                    cursor.close();
-                    return;
-                }
-
-                cursor.close();
-            }
-
-            // If we reach this, we obviously don't have a local image. Try the database of downloaded images
             try {
                 Bitmap image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mTrack);
                 mListener.receiveBitmap(image,IMAGE_TYPE.ALBUM_IMAGE);

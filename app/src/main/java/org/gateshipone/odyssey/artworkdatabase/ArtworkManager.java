@@ -53,6 +53,7 @@ import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResp
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.BitmapUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.json.JSONException;
 
@@ -233,6 +234,12 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
+        // Try cache first
+        Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
+        if (cacheImage != null) {
+            return cacheImage;
+        }
+
         long artistID = artist.getArtistID();
 
         byte[] image;
@@ -250,7 +257,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested artist
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            return BitmapFactory.decodeByteArray(image, 0, image.length);
+            Bitmap bm = BitmapFactory.decodeByteArray(image, 0, image.length);
+            BitmapCache.getInstance().putArtistImage(artist, bm);
+            return bm;
         }
         return null;
     }
@@ -258,6 +267,21 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     public Bitmap getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
         if (null == album) {
             return null;
+        }
+
+        // Try cache first
+        Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
+        if (cacheBitmap != null) {
+            return cacheBitmap;
+        }
+
+        // Check local artwork database
+        String albumURL = album.getAlbumArtURL();
+        if (albumURL != null && !albumURL.isEmpty()) {
+            // Local album art found (android database)
+            Bitmap bm = BitmapFactory.decodeFile(albumURL);
+            BitmapCache.getInstance().putAlbumBitmap(album, bm);
+            return bm;
         }
 
         // Get the id for the album, used to check in database
@@ -278,8 +302,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested album
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            return BitmapFactory.decodeByteArray(image, 0, image.length);
-
+            Bitmap bm = BitmapFactory.decodeByteArray(image, 0, image.length);
+            BitmapCache.getInstance().putAlbumBitmap(album, bm);
+            return bm;
         }
         return null;
     }
@@ -289,19 +314,10 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
+        // get album information for the current track
+        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
 
-        byte[] image;
-
-        // FIXME use album artist as well.
-        image = mDBManager.getAlbumImage(context, track.getTrackAlbumName());
-
-        // Checks if the database has an image for the requested album
-        if (null != image) {
-            // Create a bitmap from the data blob in the database
-            return BitmapFactory.decodeByteArray(image, 0, image.length);
-
-        }
-        return null;
+        return getAlbumImage(context, album);
     }
 
     /**
