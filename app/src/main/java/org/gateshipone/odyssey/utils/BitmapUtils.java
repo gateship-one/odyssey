@@ -39,7 +39,7 @@ public class BitmapUtils {
         BitmapFactory.decodeFile(pathName, options);
 
         // Calculate inSampleSize
-        if (reqWidth == 0 && reqHeight == 0) {
+        if (reqWidth <= 0 && reqHeight <= 0) {
             // check if the layout of the view already set
             options.inSampleSize = 1;
         } else {
@@ -62,7 +62,7 @@ public class BitmapUtils {
         BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
         // Calculate inSampleSize
-        if (reqWidth == 0 && reqHeight == 0) {
+        if (reqWidth <= 0 && reqHeight <= 0) {
             // check if the layout of the view already set
             options.inSampleSize = 1;
         } else {
