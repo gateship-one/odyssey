@@ -288,7 +288,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         String albumURL = album.getAlbumArtURL();
         if (albumURL != null && !albumURL.isEmpty()) {
             // Local album art found (android database)
-            Bitmap bm = BitmapFactory.decodeFile(albumURL);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
             BitmapCache.getInstance().putAlbumBitmap(album, bm);
             return bm;
         }
