@@ -95,7 +95,6 @@ public class BitmapCache {
      * @return Bitmap if cache hit, null otherwise
      */
     public synchronized Bitmap requestAlbumBitmap(AlbumModel album) {
-        printUsage();
         Bitmap bitmap = mCache.get(getAlbumHash(album));
         return bitmap;
     }
@@ -183,7 +182,6 @@ public class BitmapCache {
      * @return Bitmap if cache hit, null otherwise
      */
     public synchronized Bitmap requestArtistImage(ArtistModel artist) {
-        printUsage();
         return mCache.get(getArtistHash(artist));
     }
 
