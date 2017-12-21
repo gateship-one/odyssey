@@ -77,7 +77,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getArtistImage(mContext, artist);
+                image = mCover.artworkManager.getArtistImage(mContext, artist, mCover.imageDimension.first, mCover.imageDimension.second);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!artist.getFetching()) {
@@ -92,7 +92,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception.
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getAlbumImage(mContext, album);
+                image = mCover.artworkManager.getAlbumImage(mContext, album, mCover.imageDimension.first, mCover.imageDimension.second);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!album.getFetching()) {
@@ -107,7 +107,7 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception.
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getAlbumImage(mContext, track);
+                image = mCover.artworkManager.getAlbumImage(mContext, track, mCover.imageDimension.first, mCover.imageDimension.second);
             } catch (ImageNotFoundException e) {
                 // If not set it as ongoing and request the image fetch.
                 mCover.artworkManager.fetchAlbumImage(track, mContext);

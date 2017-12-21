@@ -309,7 +309,7 @@ public class PlaybackServiceStatusHelper {
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
-        mCoverLoader.getImage(mLastTrack);
+        mCoverLoader.getImage(mLastTrack,-1,-1);
     }
 
     /**

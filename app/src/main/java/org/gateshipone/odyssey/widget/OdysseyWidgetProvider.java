@@ -123,7 +123,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                 CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
 
                 if (!mHideArtwork) {
-                    coverLoader.getImage(mLastTrack);
+                    coverLoader.getImage(mLastTrack,-1,-1);
                 }
                 mLastCover = null;
             }
@@ -155,7 +155,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
 
                     if (!mHideArtwork) {
-                        coverLoader.getImage(item);
+                        coverLoader.getImage(item,-1,-1);
                     }
                     mLastCover = null;
                 } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null) {

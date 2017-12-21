@@ -229,14 +229,23 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         fetchArtistImage(artist, context);
     }
 
-    public Bitmap getArtistImage(final Context context, final ArtistModel artist) throws ImageNotFoundException {
+    /**
+     *
+     * @param context
+     * @param artist
+     * @param width Requested width for the image (-1 if it does not matter)
+     * @param height Requested height for the image (-1 if it does not matter)
+     * @return
+     * @throws ImageNotFoundException
+     */
+    public Bitmap getArtistImage(final Context context, final ArtistModel artist, int width, int height) throws ImageNotFoundException {
         if (null == artist) {
             return null;
         }
 
         // Try cache first
         Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
-        if (cacheImage != null) {
+        if (cacheImage != null && width <= cacheImage.getWidth() && height <= cacheImage.getWidth()) {
             return cacheImage;
         }
 
@@ -257,21 +266,21 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested artist
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapFactory.decodeByteArray(image, 0, image.length);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromByteArray(image, width, height);
             BitmapCache.getInstance().putArtistImage(artist, bm);
             return bm;
         }
         return null;
     }
 
-    public Bitmap getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final AlbumModel album, int width, int height) throws ImageNotFoundException {
         if (null == album) {
             return null;
         }
 
         // Try cache first
         Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
-        if (cacheBitmap != null) {
+        if (cacheBitmap != null && width <= cacheBitmap.getWidth() && height <= cacheBitmap.getWidth()) {
             return cacheBitmap;
         }
 
@@ -302,14 +311,14 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested album
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapFactory.decodeByteArray(image, 0, image.length);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromByteArray(image, width, height);
             BitmapCache.getInstance().putAlbumBitmap(album, bm);
             return bm;
         }
         return null;
     }
 
-    public Bitmap getAlbumImage(final Context context, final TrackModel track) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final TrackModel track, int width, int height) throws ImageNotFoundException {
         if (null == track) {
             return null;
         }
@@ -317,7 +326,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // get album information for the current track
         AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
 
-        return getAlbumImage(context, album);
+        return getAlbumImage(context, album, width, height);
     }
 
     /**

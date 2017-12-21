@@ -480,7 +480,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     @Override
     public void newAlbumImage(AlbumModel album) {
         if (!mHideArtwork && mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
-            mCoverLoader.getAlbumImage(album);
+            mCoverLoader.getAlbumImage(album, mCoverImage.getWidth(), mCoverImage.getHeight());
         }
     }
 
@@ -492,7 +492,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             if (!mHideArtwork) {
                 // Start cover loading
                 try {
-                    mCoverLoader.getImage(mServiceConnection.getPBS().getCurrentSong());
+                    mCoverLoader.getImage(mServiceConnection.getPBS().getCurrentSong(), mCoverImage.getWidth(), mCoverImage.getHeight());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -509,7 +509,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
             // Show artist image if artwork is requested
             if ( mShowArtistImage && !mHideArtwork ) {
-                mCoverLoader.getArtistImage(mLastTrack);
+                mCoverLoader.getArtistImage(mLastTrack, mCoverImage.getWidth(), mCoverImage.getHeight());
             } else {
                 // Hide artist image
                 mCoverImage.clearArtistImage();
@@ -520,7 +520,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     @Override
     public void newArtistImage(ArtistModel artist) {
         if (mShowArtistImage && !mHideArtwork && mLastTrack.getTrackArtistName().equals(artist.getArtistName())) {
-            mCoverLoader.getArtistImage(artist);
+            mCoverLoader.getArtistImage(artist, mCoverImage.getWidth(), mCoverImage.getHeight());
         }
     }
 
@@ -1122,7 +1122,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
             if (!mHideArtwork) {
                 // Start the cover loader
-                mCoverLoader.getImage(currentTrack);
+                mCoverLoader.getImage(currentTrack, mCoverImage.getWidth(), mCoverImage.getHeight());
             }
         }
 
@@ -1131,7 +1131,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mCoverImage.clearArtistImage();
             if (!mHideArtwork && mShowArtistImage) {
                 // Start the cover loader
-                mCoverLoader.getArtistImage(currentTrack);
+                mCoverLoader.getArtistImage(currentTrack, mCoverImage.getWidth(), mCoverImage.getHeight());
             }
         }
         // Save the last track

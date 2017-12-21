@@ -31,7 +31,7 @@ public class BitmapUtils {
     /**
      * Resize retrieved bitmap if necessary
      */
-    public static Bitmap decodeSampledBitmapFromResource(String pathName, int reqWidth, int reqHeight) {
+    public static Bitmap decodeSampledBitmapFromFile(String pathName, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -49,6 +49,29 @@ public class BitmapUtils {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(pathName, options);
+    }
+
+    /**
+     * Resize retrieved bitmap if necessary
+     */
+    public static Bitmap decodeSampledBitmapFromByteArray(byte[] data, int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, 0, data.length, options);
+
+        // Calculate inSampleSize
+        if (reqWidth == 0 && reqHeight == 0) {
+            // check if the layout of the view already set
+            options.inSampleSize = 1;
+        } else {
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        }
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
     }
 
     /**

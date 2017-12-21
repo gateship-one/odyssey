@@ -22,12 +22,15 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.Map;
 
@@ -92,6 +95,7 @@ public class BitmapCache {
      * @return Bitmap if cache hit, null otherwise
      */
     public synchronized Bitmap requestAlbumBitmap(AlbumModel album) {
+        printUsage();
         Bitmap bitmap = mCache.get(getAlbumHash(album));
         return bitmap;
     }
@@ -111,12 +115,12 @@ public class BitmapCache {
     /**
      * Tries to get an album image from the cache
      *
-     * @param albumName  Album name used as key
-     * @param artistName Albumartist name used as key
+     * @param track Track to check for image
      * @return Bitmap if cache hit, null otherwise
      */
-    public synchronized Bitmap requestAlbumBitmap(String albumName, String artistName) {
-        return mCache.get(getAlbumHash(albumName, artistName));
+    public synchronized Bitmap requestAlbumBitmap(TrackModel track, Context context) {
+        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
+        return requestAlbumBitmap(album);
     }
 
     /**
@@ -179,6 +183,7 @@ public class BitmapCache {
      * @return Bitmap if cache hit, null otherwise
      */
     public synchronized Bitmap requestArtistImage(ArtistModel artist) {
+        printUsage();
         return mCache.get(getArtistHash(artist));
     }
 

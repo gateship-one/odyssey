@@ -114,7 +114,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         // set toolbar behaviour and title
         if (!mHideArtwork && mBitmap == null) {
             mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
-            mBitmapLoader.getArtistImage(mArtist);
+            int width = getView().getWidth();
+            mBitmapLoader.getArtistImage(mArtist, width, width);
         } else if (!mHideArtwork) {
             mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
@@ -285,7 +286,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     public void newArtistImage(ArtistModel artist) {
         if (artist.equals(mArtist)) {
             if (!mHideArtwork) {
-                mBitmapLoader.getArtistImage(mArtist);
+                int width = getView().getWidth();
+                mBitmapLoader.getArtistImage(mArtist, width, width);
             }
         }
     }

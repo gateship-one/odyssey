@@ -170,7 +170,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         if (!mHideArtwork && mBitmap == null) {
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-            mBitmapLoader.getAlbumImage(mAlbum);
+            int width = getView().getWidth();
+            mBitmapLoader.getAlbumImage(mAlbum, width, width);
         } else if (!mHideArtwork){
             // Reuse image
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
@@ -384,7 +385,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     public void newAlbumImage(AlbumModel album) {
         if (album.equals(mAlbum)) {
             if (!mHideArtwork) {
-                mBitmapLoader.getAlbumImage(mAlbum);
+                int width = getView().getWidth();
+                mBitmapLoader.getAlbumImage(mAlbum, width, width);
             }
         }
     }
