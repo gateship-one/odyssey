@@ -174,7 +174,7 @@ public class CoverBitmapLoader {
 
         private ArtistModel mArtist;
 
-        public TrackArtistImageRunner(TrackModel trackModel, int height, int width) {
+        public TrackArtistImageRunner(TrackModel trackModel, int width, int height) {
             long artistID = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mContext);
             mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistID );
             mWidth = width;
@@ -211,7 +211,7 @@ public class CoverBitmapLoader {
 
         private final Context mContext;
 
-        public AlbumImageRunner(AlbumModel album, Context context, int height, int width) {
+        public AlbumImageRunner(AlbumModel album, Context context, int width, int height) {
             mAlbum = album;
             mContext = context;
             mWidth = width;
