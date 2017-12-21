@@ -39,10 +39,12 @@ import java.util.Map;
 public class BitmapCache {
     private static final String TAG = BitmapCache.class.getSimpleName();
 
+    private static final int mMaxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
+
     /**
-     * Number of entries to cache. This should not be too high and not too low.
+     * Maximum size of the cache in kilobytes
      */
-    private static final int CACHE_ENTRIES = 64;
+    private static final int mCacheSize = mMaxMemory / 4;
 
     /**
      * Hash prefix for album images
@@ -65,7 +67,15 @@ public class BitmapCache {
     private static BitmapCache mInstance;
 
     private BitmapCache() {
-        mCache = new LruCache<>(CACHE_ENTRIES);
+        mCache = new LruCache<String, Bitmap>(mCacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+
+        };
     }
 
     public static synchronized BitmapCache getInstance() {
