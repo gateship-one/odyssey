@@ -170,12 +170,33 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         if (!mHideArtwork && mBitmap == null) {
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-            int width = getView().getWidth();
-            mBitmapLoader.getAlbumImage(mAlbum, width, width);
+            final View rootView = getView();
+            if (rootView != null) {
+                getView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int width = rootView.getMeasuredWidth();
+                        mBitmapLoader.getAlbumImage(mAlbum, width, width);
+                    }
+                });
+            }
         } else if (!mHideArtwork){
             // Reuse image
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
+            final View rootView = getView();
+            if (rootView != null) {
+                getView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int width = rootView.getMeasuredWidth();
+                        // Image too small
+                        if(mBitmap.getWidth() < width) {
+                            mBitmapLoader.getAlbumImage(mAlbum, width, width);
+                        }
+                    }
+                });
+            }
         } else {
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
         }
@@ -385,7 +406,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     public void newAlbumImage(AlbumModel album) {
         if (album.equals(mAlbum)) {
             if (!mHideArtwork) {
-                int width = getView().getWidth();
+                int width = getView().getMeasuredWidth();
                 mBitmapLoader.getAlbumImage(mAlbum, width, width);
             }
         }
