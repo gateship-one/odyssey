@@ -49,6 +49,8 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
     private ArtworkManager mArtworkManager;
 
     private boolean mUseList;
+    private int mListItemHeight;
+
 
     private boolean mHideArtwork;
 
@@ -59,6 +61,9 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
         mListView = listView;
 
         mUseList = useList;
+        if (mUseList) {
+            mListItemHeight = (int)context.getResources().getDimension(R.dimen.material_list_item_height);
+        }
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
 
@@ -95,6 +100,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
 
                 // Check if the scroll speed currently is already 0, then start the image task right away.
                 if (mScrollSpeed == 0) {
+                    listItem.setImageDimension(mListItemHeight, mListItemHeight);
                     listItem.startCoverImageTask();
                 }
             }
@@ -102,18 +108,20 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
         } else {
             GridViewItem gridItem;
             ViewGroup.LayoutParams layoutParams;
+            int width = ((GridView)mListView).getColumnWidth();
+
             // Check if a view can be recycled
             if (convertView != null) {
                 gridItem = (GridViewItem) convertView;
                 gridItem.setTitle(label);
 
                 layoutParams = gridItem.getLayoutParams();
-                layoutParams.height = ((GridView) mListView).getColumnWidth();
-                layoutParams.width = ((GridView) mListView).getColumnWidth();
+                layoutParams.height = width;
+                layoutParams.width = width;
             } else {
                 // Create new view if no reusable is available
                 gridItem = new GridViewItem(mContext, label, this);
-                layoutParams = new android.widget.AbsListView.LayoutParams(((GridView) mListView).getColumnWidth(), ((GridView) mListView).getColumnWidth());
+                layoutParams = new android.widget.AbsListView.LayoutParams(width, width);
             }
 
             // Make sure to reset the layoutParams in case of change (rotation for example)
@@ -125,6 +133,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
 
                 // Check if the scroll speed currently is already 0, then start the image task right away.
                 if (mScrollSpeed == 0) {
+                    gridItem.setImageDimension(width, width);
                     gridItem.startCoverImageTask();
                 }
             }

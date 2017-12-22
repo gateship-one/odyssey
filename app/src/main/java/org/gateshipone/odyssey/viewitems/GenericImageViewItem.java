@@ -69,6 +69,8 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverLoadable = this;
         mHolder.mAdapter = adapter;
+        mHolder.imageDimension = new Pair<>(0,0);
+
 
         mCoverDone = false;
         if (mImageView != null && mSwitcher != null) {
@@ -86,12 +88,13 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      */
     public void startCoverImageTask() {
         if (mLoaderTask == null && mHolder.artworkManager != null && mHolder.modelItem != null && !mCoverDone) {
-            if (mImageView != null) {
-                mHolder.imageDimension = new Pair<>(mImageView.getWidth(), mImageView.getHeight());
-            }
             mLoaderTask = new AsyncLoader(getContext());
             mLoaderTask.execute(mHolder);
         }
+    }
+
+    public void setImageDimension(int width, int height) {
+        mHolder.imageDimension = new Pair<>(width, height);
     }
 
     /**
