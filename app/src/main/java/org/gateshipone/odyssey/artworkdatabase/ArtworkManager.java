@@ -238,15 +238,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @return
      * @throws ImageNotFoundException
      */
-    public Bitmap getArtistImage(final Context context, final ArtistModel artist, int width, int height) throws ImageNotFoundException {
+    public Bitmap getArtistImage(final Context context, final ArtistModel artist, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == artist) {
             return null;
         }
 
-        // Try cache first
-        Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
-        if (cacheImage != null && width <= cacheImage.getWidth() && height <= cacheImage.getWidth()) {
-            return cacheImage;
+        if(!skipCache) {
+            // Try cache first
+            Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
+            if (cacheImage != null && width <= cacheImage.getWidth() && height <= cacheImage.getWidth()) {
+                return cacheImage;
+            }
         }
 
         long artistID = artist.getArtistID();
@@ -273,15 +275,17 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         return null;
     }
 
-    public Bitmap getAlbumImage(final Context context, final AlbumModel album, int width, int height) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final AlbumModel album, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == album) {
             return null;
         }
 
-        // Try cache first
-        Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
-        if (cacheBitmap != null && width <= cacheBitmap.getWidth() && height <= cacheBitmap.getWidth()) {
-            return cacheBitmap;
+        if(!skipCache) {
+            // Try cache first
+            Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
+            if (cacheBitmap != null && width <= cacheBitmap.getWidth() && height <= cacheBitmap.getWidth()) {
+                return cacheBitmap;
+            }
         }
 
         // Check local artwork database
@@ -318,7 +322,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         return null;
     }
 
-    public Bitmap getAlbumImage(final Context context, final TrackModel track, int width, int height) throws ImageNotFoundException {
+    public Bitmap getAlbumImage(final Context context, final TrackModel track, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == track) {
             return null;
         }
@@ -326,7 +330,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // get album information for the current track
         AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
 
-        return getAlbumImage(context, album, width, height);
+        return getAlbumImage(context, album, width, height, skipCache);
     }
 
     /**

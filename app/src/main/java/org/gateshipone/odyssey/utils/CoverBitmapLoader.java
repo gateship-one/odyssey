@@ -121,7 +121,7 @@ public class CoverBitmapLoader {
             try {
                 // If image was to small get it in the right resolution
                 if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
-                    image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, album, mWidth, mHeight);
+                    image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, album, mWidth, mHeight, true);
                     mListener.receiveBitmap(image,IMAGE_TYPE.ALBUM_IMAGE);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putAlbumBitmap(album, image);
@@ -157,7 +157,7 @@ public class CoverBitmapLoader {
             // If image was to small get it in the right resolution
             if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                 try {
-                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight);
+                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight, true);
                     mListener.receiveBitmap(artistImage, IMAGE_TYPE.ARTIST_IMAGE);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putArtistImage(mArtist, image);
@@ -193,7 +193,7 @@ public class CoverBitmapLoader {
             // If image was to small get it in the right resolution
             if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                 try {
-                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight);
+                    Bitmap artistImage = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight,true);
                     mListener.receiveBitmap(artistImage, IMAGE_TYPE.ARTIST_IMAGE);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putArtistImage(mArtist, image);
@@ -232,7 +232,7 @@ public class CoverBitmapLoader {
             try {
                 // If image was to small get it in the right resolution
                 if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
-                    image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mAlbum, mWidth, mHeight);
+                    image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mAlbum, mWidth, mHeight,true);
                     mListener.receiveBitmap(image,IMAGE_TYPE.ALBUM_IMAGE);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putAlbumBitmap(mAlbum, image);
