@@ -92,28 +92,14 @@ public class FileUtils {
     }
 
     /**
-     * Reads the image byte array from a file in the given directory.
-     *
-     * @param context  The application context to get the files directory of the app.
-     * @param fileName The name of the file.
-     * @param dirName  The name of the parent directory of the file.
-     * @return The bytes read from the file or null if an error occurs.
+     * Generates the full absolute file path for an artwork image
+     * @param context Context used for directory resolving
+     * @param fileName Filename used as a basis
+     * @param dirName Directory suffix
+     * @return Full absolute file path
      */
-    public static byte[] readArtworkFile(final Context context, final String fileName, final String dirName) {
-        final File artworkFile = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
-        FileInputStream inputStream;
-        try {
-            inputStream = new FileInputStream(artworkFile);
-
-            byte[] buffer = new byte[(int) artworkFile.length()];
-            inputStream.read(buffer);
-            inputStream.close();
-
-            return buffer;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static String getFullArtworkFilePath(final Context context, final String fileName, final String dirName) {
+        return context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName;
     }
 
     /**

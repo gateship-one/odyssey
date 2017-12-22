@@ -253,7 +253,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         long artistID = artist.getArtistID();
 
-        byte[] image;
+        String image;
 
         /**
          * If no artist id is set for the album (possible with data set of Odyssey) check
@@ -268,7 +268,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested artist
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromByteArray(image, width, height);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, width, height);
             BitmapCache.getInstance().putArtistImage(artist, bm);
             return bm;
         }
@@ -300,7 +300,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Get the id for the album, used to check in database
         long albumID = album.getAlbumID();
 
-        byte[] image;
+        String image;
 
         if (albumID == -1) {
             // Check if ID is available (should be the case). If not use the album name for
@@ -315,7 +315,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Checks if the database has an image for the requested album
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromByteArray(image, width, height);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, width, height);
             BitmapCache.getInstance().putAlbumBitmap(album, bm);
             return bm;
         }

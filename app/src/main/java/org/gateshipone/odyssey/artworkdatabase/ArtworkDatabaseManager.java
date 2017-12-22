@@ -93,7 +93,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
-    public synchronized byte[] getAlbumImage(final Context context, long id) throws ImageNotFoundException {
+    public synchronized String getAlbumImage(final Context context, long id) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
@@ -117,12 +117,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            // try to read the file
-            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
-
-            if (image != null) {
-                return image;
-            }
+            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
         }
 
         // If we reach this, no entry was found for the given request. Throw an exception
@@ -138,7 +133,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
-    public synchronized byte[] getArtistImage(final Context context, long id) throws ImageNotFoundException {
+    public synchronized String getArtistImage(final Context context, long id) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
@@ -162,12 +157,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            // try to read the file
-            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
-
-            if (image != null) {
-                return image;
-            }
+            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         // If we reach this, no entry was found for the given request. Throw an exception
@@ -183,7 +173,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
-    public synchronized byte[] getArtistImage(final Context context, String artistName) throws ImageNotFoundException {
+    public synchronized String getArtistImage(final Context context, String artistName) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
@@ -206,12 +196,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            // try to read the file
-            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
-
-            if (image != null) {
-                return image;
-            }
+            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         // If we reach this, no entry was found for the given request. Throw an exception
@@ -279,7 +264,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
-    public synchronized byte[] getAlbumImage(final Context context, final String albumName) throws ImageNotFoundException {
+    public synchronized String getAlbumImage(final Context context, final String albumName) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
@@ -300,11 +285,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            final byte[] image = FileUtils.readArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
-
-            if (image != null) {
-                return image;
-            }
+            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
         }
 
         // If we reach this, no entry was found for the given request. Throw an exception
