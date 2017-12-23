@@ -112,6 +112,10 @@ public class CoverBitmapLoader {
         public void run() {
             // At first get image independent of resolution (can be replaced later with higher resolution)
             AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(mTrack.getTrackAlbumKey(), mContext);
+            if (album == null) {
+                // No album found for track, abort
+                return;
+            }
 
             Bitmap image = BitmapCache.getInstance().requestAlbumBitmap(album);
             if(image != null) {

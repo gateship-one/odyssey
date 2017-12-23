@@ -112,30 +112,6 @@ public class BitmapCache {
     }
 
     /**
-     * Tries to get an album image from the cache
-     *
-     * @param track Track to check for image
-     * @return Bitmap if cache hit, null otherwise
-     */
-    public synchronized Bitmap requestAlbumBitmap(TrackModel track, Context context) {
-        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
-        return requestAlbumBitmap(album);
-    }
-
-    /**
-     * Puts an album image to the cache
-     *
-     * @param albumName  Album name used as key
-     * @param artistName Albumartist name used as key
-     * @param bm         Bitmap to store in cache
-     */
-    public synchronized void putAlbumBitmap(String albumName, String artistName, Bitmap bm) {
-        if (bm != null) {
-            mCache.put(getAlbumHash(albumName, artistName), bm);
-        }
-    }
-
-    /**
      * Private hash method for cache key
      *
      * @param album Album to calculate the key from

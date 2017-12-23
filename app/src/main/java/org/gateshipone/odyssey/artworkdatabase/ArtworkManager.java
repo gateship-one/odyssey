@@ -329,6 +329,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         // get album information for the current track
         AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
+        if (album == null) {
+            return null;
+        }
 
         return getAlbumImage(context, album, width, height, skipCache);
     }
