@@ -145,7 +145,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         if (info != null) {
             TrackModel item = info.getCurrentTrack();
             if (item != null) {
-                mViews.setTextViewText(R.id.widget_big_trackName, item.getTrackName());
+                mViews.setTextViewText(R.id.widget_big_trackName, item.getTrackTitle());
                 mViews.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
 
                 // Check if the tracks album changed

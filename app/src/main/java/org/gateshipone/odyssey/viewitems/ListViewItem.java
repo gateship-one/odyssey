@@ -253,6 +253,10 @@ public class ListViewItem extends GenericImageViewItem {
         // duration
         String trackDuration = FormatHelper.formatTracktimeFromMS(context, track.getTrackDuration());
 
+        if (trackTitle.isEmpty()) {
+            trackTitle = track.getTrackTitle();
+        }
+
         setTitle(trackTitle);
         setSubtitle(trackSubtitle);
         setAddtionalSubtitle(trackDuration);
