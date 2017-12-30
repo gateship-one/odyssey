@@ -1112,7 +1112,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         TrackModel currentTrack = info.getCurrentTrack();
 
         // set tracktitle, album, artist and albumcover
-        mTrackTitle.setText(currentTrack.getTrackTitle());
+        mTrackTitle.setText(currentTrack.getTrackDisplayedName());
 
 
         // Check if the album title changed. If true, start the cover generator thread.
