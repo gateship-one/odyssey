@@ -1,3 +1,9 @@
+### Version: 1.1.10 Tag: release-22 (2017-12-31) ###
+* Minor bug fixes
+* Restructure cover art storage to support larger images (previous downloaded cover art will be lost)
+* Improve image processing (scaling and caching)
+* Happy new year!
+
 ### Version: 1.1.9 Tag: release-21 (2017-12-16) ###
 * Add polish translation (thanks to Daria Szatan)
 * Update of french translation (thanks to Kévin Minions)

@@ -1,0 +1,4 @@
+* Minor bug fixes
+* Restructure cover art storage to support larger images (previous downloaded cover art will be lost)
+* Improve image processing (scaling and caching)
+* Happy new year!
