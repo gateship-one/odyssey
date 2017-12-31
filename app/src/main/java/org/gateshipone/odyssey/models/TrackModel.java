@@ -165,6 +165,17 @@ public class TrackModel implements GenericModel, Parcelable {
     }
 
     /**
+     * Return the name of the track, or the file basename if empty
+     */
+    public String getTrackDisplayedName() {
+        if (mTrackName.isEmpty()) {
+            return mTrackURL.substring(mTrackURL.lastIndexOf('/') + 1, mTrackURL.length());
+        }
+
+        return mTrackName;
+    }
+
+    /**
      * Return the name of the artist
      */
     public String getTrackArtistName() {

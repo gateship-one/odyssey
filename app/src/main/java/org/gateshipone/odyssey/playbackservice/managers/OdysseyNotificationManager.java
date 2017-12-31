@@ -143,7 +143,7 @@ public class OdysseyNotificationManager {
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
-            mNotificationBuilder.setContentTitle(track.getTrackName());
+            mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
             mNotificationBuilder.setContentText(track.getTrackArtistName());
 
             // Remove unnecessary time info

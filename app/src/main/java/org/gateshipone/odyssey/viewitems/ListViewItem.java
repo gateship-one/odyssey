@@ -220,7 +220,6 @@ public class ListViewItem extends GenericImageViewItem {
         // title (number + name)
         String trackTitle = "";
         int trackNumber = track.getTrackNumber();
-        String trackName = track.getTrackName();
         String formattedTrackNumber = FormatHelper.formatTrackNumber(trackNumber);
         String albumName = track.getTrackAlbumName();
         String artistName = track.getTrackArtistName();
@@ -237,9 +236,7 @@ public class ListViewItem extends GenericImageViewItem {
             trackTitle += formattedTrackNumber + " - ";
         }
 
-        if (!trackName.isEmpty()) {
-            trackTitle += trackName;
-        }
+        trackTitle += track.getTrackDisplayedName();
 
         // subtitle (artist + album)
         String trackSubtitle = artistName;
