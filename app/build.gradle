@@ -39,12 +39,12 @@ android {
             }
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion '27.0.1'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 22
         versionName "1.1.10"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -70,7 +70,7 @@ android {
 
 ext{
     // define support library version
-    supportLibraryVersion = '26.1.0'
+    supportLibraryVersion = '27.0.2'
 }
 
 dependencies {
