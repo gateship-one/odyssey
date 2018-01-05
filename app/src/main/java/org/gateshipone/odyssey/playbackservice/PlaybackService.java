@@ -428,8 +428,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlayer.stop();
 
         // Reset the interal state variables
-        mCurrentPlayingIndex = 0;
-        mLastPosition = 0;
+        mCurrentPlayingIndex = -1;
+        mLastPosition = -1;
 
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
