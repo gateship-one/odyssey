@@ -17,7 +17,7 @@ Features:
 * Simple Last.fm scrobbler support ( https://play.google.com/store/apps/details?id=com.adam.aslfms )
 * Artwork downloading for artist/album images (Fanart.tv, Last.fm & MusicBrainz)
 
-This music player aimes to be very fast and responsive even for large libraries (> 20.000 songs). To accomplish this we try to follow the Material design guidelines as close as possible with multiple colorful themes.  
+This music player aims to be very fast and responsive even for large libraries (> 20.000 songs). To accomplish this we try to follow the Material design guidelines as close as possible with multiple colorful themes.  
 
 This music player works best with accurately taged music libraries. We recommend tagging using MusicBrainz Picard.
 
