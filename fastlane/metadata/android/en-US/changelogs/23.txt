@@ -1,0 +1,2 @@
+* Fix crash when choosing 'Play after current song' with an empty playlist
+* Fix possible problem in cover loading process

@@ -1,3 +1,7 @@
+### Version: 1.1.1 Tag: release-23 (2018-01-10) ###
+* Fix crash when choosing 'Play after current song' with an empty playlist
+* Fix possible problem in cover loading process
+
 ### Version: 1.1.10 Tag: release-22 (2017-12-31) ###
 * Minor bug fixes
 * Restructure cover art storage to support larger images (previous downloaded cover art will be lost)
