@@ -24,8 +24,8 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -41,7 +41,7 @@ import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
-import org.gateshipone.odyssey.utils.PermissionHelper;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
 
@@ -58,8 +58,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     private int mLastPosition = -1;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
@@ -236,17 +235,16 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      *
      * @param position the position of the selected playlist in the adapter
      */
-    private void deletePlaylist(int position) {
+    private void deletePlaylist(final int position) {
         // identify current playlist
-        PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+        final PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
 
         // delete current playlist
-        String where = MediaStore.Audio.Playlists._ID + "=?";
-        String[] whereVal = {"" + clickedPlaylist.getPlaylistID()};
+        final boolean reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
 
-        PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
-
-        // reload data
-        getLoaderManager().restartLoader(0, getArguments(), this);
+        if (reloadData) {
+            // reload data
+            getLoaderManager().restartLoader(0, getArguments(), this);
+        }
     }
 }

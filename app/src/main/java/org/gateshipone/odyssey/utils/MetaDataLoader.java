@@ -87,59 +87,25 @@ public class MetaDataLoader {
      */
     private TrackModel readTrackMetaData(final Context context, final String trackTitle, final String trackUrl) {
         // parse the given url
-        Uri uri = FormatHelper.encodeURI(trackUrl);
-
-        String whereVal[] = {uri.getPath()};
-
-        String where = MediaStore.Audio.Media.DATA + "=?";
-
-        if (uri.getScheme().equals("content")) {
-            // special handling for content urls
-            final String parts[] = uri.getLastPathSegment().split(":");
-
-            if (parts.length > 1) {
-                if (parts[0].equals("audio")) {
-                    whereVal = new String[]{parts[1]};
-                    where = MediaStore.Audio.Media._ID + "=?";
-                } else {
-                    whereVal = new String[]{"%" + parts[1]};
-                    where = MediaStore.Audio.Media.DATA + " LIKE ?";
-                }
-            }
-        }
+        final Uri uri = FormatHelper.encodeURI(trackUrl);
 
         // lookup the current file in the media db
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+        final TrackModel track = MusicLibraryHelper.getTrackForUri(uri, context);
 
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                cursor.close();
-
-                return new TrackModel(title, artist, album, albumKey, duration, no, url, id);
-            }
-
-            cursor.close();
+        if (track != null) {
+            return track;
         }
 
         try {
             // try to read the file metadata
 
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
             retriever.setDataSource(context, uri);
 
-            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            final String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 
-            String durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            final String durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
             long duration = 0;
 
@@ -151,7 +117,7 @@ public class MetaDataLoader {
                 }
             }
 
-            String noString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+            final String noString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
 
             int no = -1;
 
@@ -171,15 +137,15 @@ public class MetaDataLoader {
                 }
             }
 
-            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-            String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+            final String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+            final String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
 
-            String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
+            final String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
 
             return new TrackModel(title, artist, album, albumKey, duration, no, trackUrl, -1);
         } catch (Exception e) {
             // something went wrong so just create a dummy track with the given title
-            String albumKey = "" + trackTitle.hashCode();
+            final String albumKey = "" + trackTitle.hashCode();
             return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUrl, -1);
         }
     }

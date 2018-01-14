@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 
@@ -71,34 +72,11 @@ public class FileExplorerHelper {
      * if no entry in the mediadb is found a dummy TrackModel will be created
      */
     public TrackModel getTrackModelForFile(Context context, FileModel file) {
-        TrackModel track = null;
-
-        String urlString = file.getURLString();
+        // parse the given url
+        final Uri uri = FormatHelper.encodeURI(file.getURLString());
 
         // lookup the current file in the media db
-        String whereVal[] = {urlString};
-
-        String where = MediaStore.Audio.Media.DATA + "=?";
-
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                int no = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
-            }
-
-            cursor.close();
-        }
-
+        final TrackModel track = MusicLibraryHelper.getTrackForUri(uri, context);
 
         if (null == track) {
             return getDummyTrackModelForFile(file);
@@ -153,26 +131,8 @@ public class FileExplorerHelper {
      * @return List of files that need to be scanned
      */
     public List<FileModel> getMissingDBFiles(Context context, FileModel basePath) {
+        List<FileModel> filesDB = MusicLibraryHelper.getMediaFilesForPath(basePath.getPath(), context);
         List<FileModel> filesFS = new ArrayList<>();
-        List<FileModel> filesDB = new ArrayList<>();
-
-        String whereVal[] = {basePath.getPath() + "%"};
-
-        String where = MediaStore.Audio.Media.DATA + " LIKE ?";
-
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-
-                    filesDB.add(new FileModel(url));
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
-        }
 
         getFilesRecursive(context, basePath, filesFS);
 

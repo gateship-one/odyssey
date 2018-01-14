@@ -22,11 +22,10 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -46,7 +45,6 @@ import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
-import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -74,7 +72,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
@@ -148,9 +146,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         if (mPlaylistPath == null) {
-            return new TrackLoader(getActivity(), mPlaylistID);
+            return new TrackLoader(getActivity().getApplicationContext(), mPlaylistID);
         } else {
-            return new PlaylistTrackLoader(getActivity(), mPlaylistPath);
+            return new PlaylistTrackLoader(getActivity().getApplicationContext(), mPlaylistPath);
         }
     }
 
@@ -199,7 +197,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
 
-        if(mPlaylistPath != null) {
+        if (mPlaylistPath != null) {
             // Hide remove track for playlist files as it is unsupported
             menu.findItem(R.id.fragment_playlist_tracks_action_remove).setVisible(false);
         }
@@ -353,20 +351,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param position the position of the selected track in the adapter
      */
     private void removeTrackFromPlaylist(int position) {
-        Cursor trackCursor = PermissionHelper.query(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+        final boolean reloadData = MusicLibraryHelper.removeTrackFromPlaylist(mPlaylistID, position, getActivity().getApplicationContext());
 
-        if (trackCursor != null) {
-            if (trackCursor.moveToPosition(position)) {
-                String where = MediaStore.Audio.Playlists.Members._ID + "=?";
-                String[] whereVal = {trackCursor.getString(trackCursor.getColumnIndex(MediaStore.Audio.Playlists.Members._ID))};
-
-                PermissionHelper.delete(getActivity(), MediaStore.Audio.Playlists.Members.getContentUri("external", mPlaylistID), where, whereVal);
-
-                // reload data
-                getLoaderManager().restartLoader(0, getArguments(), this);
-            }
-
-            trackCursor.close();
+        if (reloadData) {
+            // reload data
+            getLoaderManager().restartLoader(0, getArguments(), this);
         }
     }
 }
