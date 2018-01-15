@@ -32,8 +32,6 @@ import java.util.List;
 
 public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
 
-    protected final Context mContext;
-
     /**
      * The album key if tracks of a specific album should be loaded.
      */
@@ -44,25 +42,22 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
      */
     private final long mPlaylistID;
 
-    public TrackLoader(Context context) {
+    private TrackLoader(final Context context, final String albumKey, final long playlistID) {
         super(context);
-        mContext = context;
-        mAlbumKey = "";
-        mPlaylistID = -1;
+        mAlbumKey = albumKey;
+        mPlaylistID = playlistID;
+    }
+
+    public TrackLoader(final Context context) {
+        this(context, "", -1);
     }
 
     public TrackLoader(Context context, String albumKey) {
-        super(context);
-        mContext = context;
-        mAlbumKey = albumKey;
-        mPlaylistID = -1;
+        this(context, albumKey, -1);
     }
 
     public TrackLoader(Context context, long playlistID) {
-        super(context);
-        mContext = context;
-        mAlbumKey = "";
-        mPlaylistID = playlistID;
+        this(context, "", playlistID);
     }
 
     /**
@@ -70,16 +65,18 @@ public class TrackLoader extends AsyncTaskLoader<List<TrackModel>> {
      */
     @Override
     public List<TrackModel> loadInBackground() {
+        final Context context = getContext();
+
         if (mPlaylistID != -1) {
             // load playlist tracks
-            return MusicLibraryHelper.getTracksForPlaylist(mPlaylistID, mContext);
+            return MusicLibraryHelper.getTracksForPlaylist(mPlaylistID, context);
         } else {
             if (mAlbumKey.isEmpty()) {
                 // load all tracks
-                return MusicLibraryHelper.getAllTracks(null, mContext);
+                return MusicLibraryHelper.getAllTracks(null, context);
             } else {
                 // load album tracks
-                return MusicLibraryHelper.getTracksForAlbum(mAlbumKey, mContext);
+                return MusicLibraryHelper.getTracksForAlbum(mAlbumKey, context);
             }
         }
     }

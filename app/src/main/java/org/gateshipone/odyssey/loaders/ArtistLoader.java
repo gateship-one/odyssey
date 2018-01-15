@@ -34,11 +34,8 @@ import android.support.v4.content.AsyncTaskLoader;
 
 public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
 
-    private final Context mContext;
-
-    public ArtistLoader(Context context) {
+    public ArtistLoader(final Context context) {
         super(context);
-        this.mContext = context;
     }
 
     /**
@@ -46,10 +43,12 @@ public class ArtistLoader extends AsyncTaskLoader<List<ArtistModel>> {
      */
     @Override
     public List<ArtistModel> loadInBackground() {
-        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(mContext);
-        boolean showAlbumArtistsOnly = sharedPref.getBoolean(mContext.getString(R.string.pref_album_artists_only_key), mContext.getResources().getBoolean(R.bool.pref_album_artists_only_default));
+        final Context context = getContext();
 
-        return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, mContext);
+        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        boolean showAlbumArtistsOnly = sharedPref.getBoolean(context.getString(R.string.pref_album_artists_only_key), context.getResources().getBoolean(R.bool.pref_album_artists_only_default));
+
+        return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, context);
     }
 
     @Override

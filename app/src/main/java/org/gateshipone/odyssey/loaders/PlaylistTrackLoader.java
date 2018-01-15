@@ -33,7 +33,9 @@ import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 import java.util.List;
 
 public class PlaylistTrackLoader extends TrackLoader {
-    String mPath;
+
+    private final String mPath;
+
     public PlaylistTrackLoader(Context context, String playlistPath) {
         super(context);
         mPath = playlistPath;

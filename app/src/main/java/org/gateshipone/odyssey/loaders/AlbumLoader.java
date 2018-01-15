@@ -35,8 +35,6 @@ import android.support.v4.content.AsyncTaskLoader;
 
 public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
 
-    private final Context mContext;
-
     /**
      * The artist id if albums of a specific artist should be loaded.
      */
@@ -47,18 +45,18 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
      */
     private final boolean mLoadRecent;
 
-    public AlbumLoader(Context context, long artist) {
+    private AlbumLoader(final Context context, final long artistId, final boolean loadRecent) {
         super(context);
-        mContext = context;
-        mArtistID = artist;
-        mLoadRecent = false;
+        mArtistID = artistId;
+        mLoadRecent = loadRecent;
     }
 
-    public AlbumLoader(Context context, boolean loadRecent) {
-        super(context);
-        mContext = context;
-        mArtistID = -1;
-        mLoadRecent = loadRecent;
+    public AlbumLoader(final Context context, final long artistId) {
+        this(context, artistId, false);
+    }
+
+    public AlbumLoader(final Context context, final boolean loadRecent) {
+        this(context, -1, loadRecent);
     }
 
     /**
@@ -66,22 +64,24 @@ public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
      */
     @Override
     public List<AlbumModel> loadInBackground() {
+        final Context context = getContext();
+
         if (mArtistID == -1) {
             if (mLoadRecent) {
                 // load recent albums
-                return MusicLibraryHelper.getRecentAlbums(mContext);
+                return MusicLibraryHelper.getRecentAlbums(context);
             } else {
                 // load all albums
-                return MusicLibraryHelper.getAllAlbums(mContext);
+                return MusicLibraryHelper.getAllAlbums(context);
             }
         } else {
             // load all albums from the given artist
 
             // Read order preference
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String orderKey = sharedPref.getString(mContext.getString(R.string.pref_album_sort_order_key), mContext.getString(R.string.pref_artist_albums_sort_default));
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            String orderKey = sharedPref.getString(context.getString(R.string.pref_album_sort_order_key), context.getString(R.string.pref_artist_albums_sort_default));
 
-            return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, orderKey, mContext);
+            return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, orderKey, context);
         }
     }
 

@@ -33,17 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkLoader extends AsyncTaskLoader<List<BookmarkModel>> {
-    private final Context mContext;
 
     /**
      * Flag if a header element should be inserted.
      */
     private final boolean mAddHeader;
 
-    public BookmarkLoader(Context context, boolean addHeader) {
+    public BookmarkLoader(final Context context, final boolean addHeader) {
         super(context);
-
-        mContext = context;
         mAddHeader = addHeader;
     }
 
@@ -52,14 +49,16 @@ public class BookmarkLoader extends AsyncTaskLoader<List<BookmarkModel>> {
      */
     @Override
     public List<BookmarkModel> loadInBackground() {
+        final Context context = getContext();
+
         List<BookmarkModel> bookmarks = new ArrayList<>();
 
         if (mAddHeader) {
             // add a dummy bookmark for the choose bookmark dialog
             // this bookmark represents the action to create a new bookmark in the dialog
-            bookmarks.add(new BookmarkModel(-1, mContext.getString(R.string.create_new_bookmark), -1));
+            bookmarks.add(new BookmarkModel(-1, context.getString(R.string.create_new_bookmark), -1));
         }
-        bookmarks.addAll(new OdysseyDatabaseManager(mContext).getBookmarks());
+        bookmarks.addAll(new OdysseyDatabaseManager(context).getBookmarks());
 
         return bookmarks;
     }

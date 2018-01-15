@@ -34,8 +34,6 @@ import java.util.List;
 
 public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
 
-    private final Context mContext;
-
     /**
      * Flag if a header element should be inserted.
      */
@@ -43,8 +41,6 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
 
     public PlaylistLoader(Context context, boolean addHeader) {
         super(context);
-
-        mContext = context;
         mAddHeader = addHeader;
     }
 
@@ -53,15 +49,17 @@ public class PlaylistLoader extends AsyncTaskLoader<List<PlaylistModel>> {
      */
     @Override
     public List<PlaylistModel> loadInBackground() {
+        final Context context = getContext();
+
         List<PlaylistModel> playlists = new ArrayList<>();
 
         if (mAddHeader) {
             // add a dummy playlist for the choose playlist dialog
             // this playlist represents the action to create a new playlist in the dialog
-            playlists.add(new PlaylistModel(mContext.getString(R.string.create_new_playlist), -1));
+            playlists.add(new PlaylistModel(context.getString(R.string.create_new_playlist), -1));
         }
 
-        playlists.addAll(MusicLibraryHelper.getAllPlaylists(mContext));
+        playlists.addAll(MusicLibraryHelper.getAllPlaylists(context));
 
         return playlists;
     }

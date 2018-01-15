@@ -32,17 +32,13 @@ import java.util.List;
 
 public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
 
-    private final Context mContext;
-
     /**
      * The parent directory.
      */
     private final FileModel mCurrentDirectory;
 
-    public FileLoader(Context context, FileModel directory) {
+    public FileLoader(final Context context, final FileModel directory) {
         super(context);
-
-        mContext = context;
         mCurrentDirectory = directory;
     }
 
@@ -51,8 +47,7 @@ public class FileLoader extends AsyncTaskLoader<List<FileModel>> {
      */
     @Override
     public List<FileModel> loadInBackground() {
-
-        return PermissionHelper.getFilesForDirectory(mContext, mCurrentDirectory);
+        return PermissionHelper.getFilesForDirectory(getContext(), mCurrentDirectory);
     }
 
     /**
