@@ -184,4 +184,7 @@
     <string name="notification_channel_downloader">Downloader</string>
     <string name="notification_channel_library_scanner">Medienscanner</string>
     <string name="contributor_translator_polish">Polnische Übersetzung</string>
+    <string name="preference_library_click_action_title">Aktion bei Liedauswahl</string>
+    <string name="preference_library_click_action_summary">Standardaktion für Liedauswahl</string>
+    <string name="preference_library_click_action_message">Wählen Sie die Standardaktion die ausgeführt wird, wenn ein Lied in der Bibliothek ausgewählt wird.</string>
 </resources>
