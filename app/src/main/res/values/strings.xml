@@ -187,6 +187,20 @@
     <string name="preference_show_artist_image_title">Show artist image</string>
     <string name="preference_show_artist_image_text">Alternate between the album cover and an image of the artist in the view for the currently playing song</string>
 
+    <string name="preference_library_click_action_title">Track click action</string>
+    <string name="preference_library_click_action_summary">Select action for tracks in library</string>
+    <string name="preference_library_click_action_message">Select the default action to take if you click on a track in the library views</string>
+
+    <string name="preference_library_click_action_add" translatable="false">@string/context_menu_action_enqueue</string>
+    <string name="preference_library_click_action_play" translatable="false">@string/context_menu_action_playsong</string>
+    <string name="preference_library_click_action_play_next" translatable="false">@string/context_menu_action_enqueueasnext</string>
+
+    <string-array name="preference_library_click">
+        <item>@string/preference_library_click_action_add</item>
+        <item>@string/preference_library_click_action_play</item>
+        <item>@string/preference_library_click_action_play_next</item>
+    </string-array>
+
     <string name="artwork_settings">Artwork settings</string>
 
     <string name="preference_clear_default_directory_title">Clear default directory</string>

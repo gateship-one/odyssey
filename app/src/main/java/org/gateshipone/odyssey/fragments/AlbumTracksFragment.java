@@ -53,6 +53,7 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -81,6 +82,11 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private Bitmap mBitmap = null;
 
     private boolean mHideArtwork;
+
+    /**
+     * Action to execute when the user selects an item in the list
+     */
+    private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -122,6 +128,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         return rootView;
     }
@@ -228,7 +235,17 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playAlbum(position);
+        switch (mClickAction) {
+            case ACTION_ADD_SONG:
+                enqueueTrack(position, false);
+                break;
+            case ACTION_PLAY_SONG:
+                playAlbum(position);
+                break;
+            case ACTION_PLAY_SONG_NEXT:
+                enqueueTrack(position, true);
+                break;
+        }
     }
 
     /**

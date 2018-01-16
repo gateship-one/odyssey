@@ -22,9 +22,11 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -45,6 +47,7 @@ import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -67,6 +70,11 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private long mPlaylistID = -1;
 
     private String mPlaylistPath;
+
+    /**
+     * Action to execute when the user selects an item in the list
+     */
+    private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -118,6 +126,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         mPlaylistTitle = args.getString(ARG_PLAYLISTTITLE);
         mPlaylistID = args.getLong(ARG_PLAYLISTID);
         mPlaylistPath = args.getString(ARG_PLAYLISTPATH);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         return rootView;
     }
@@ -185,7 +196,17 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playPlaylist(position);
+        switch (mClickAction) {
+            case ACTION_ADD_SONG:
+                enqueueTrack(position, false);
+                break;
+            case ACTION_PLAY_SONG:
+                playPlaylist(position);
+                break;
+            case ACTION_PLAY_SONG_NEXT:
+                enqueueTrack(position, true);
+                break;
+        }
     }
 
     /**
@@ -219,10 +240,10 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         switch (item.getItemId()) {
             case R.id.fragment_playlist_tracks_action_enqueue:
-                enqueueTrack(info.position);
+                enqueueTrack(info.position, false);
                 return true;
             case R.id.fragment_playlist_tracks_action_enqueueasnext:
-                enqueueTrackAsNext(info.position);
+                enqueueTrack(info.position, true);
                 return true;
             case R.id.fragment_playlist_tracks_action_remove:
                 removeTrackFromPlaylist(info.position);
@@ -316,34 +337,18 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      *
      * @param position the position of the selected track in the adapter
      */
-    private void enqueueTrack(int position) {
+    private void enqueueTrack(int position, boolean asNext) {
 
         TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, false);
+            mServiceConnection.getPBS().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    /**
-     * Call the PBS to enqueue the selected track as the next track.
-     *
-     * @param position the position of the selected track in the adapter
-     */
-    private void enqueueTrackAsNext(int position) {
-
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
-
-        try {
-            mServiceConnection.getPBS().enqueueTrack(track, true);
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Remove the selected track from the playlist in the mediastore.

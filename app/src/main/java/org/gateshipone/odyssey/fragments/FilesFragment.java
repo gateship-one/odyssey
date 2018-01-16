@@ -53,6 +53,7 @@ import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -90,6 +91,13 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Constant for state saving
      */
     public final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
+
+
+    /**
+     * Action to execute when the user selects an item in the list
+     */
+    private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -145,6 +153,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                 mCurrentDirectory = new FileModel(directoryPath);
             }
         }
+
+        SharedPreferences sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         // try to resume the saved search string
         if (savedInstanceState != null) {
@@ -254,12 +265,22 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         } else if (selectedFile.isPlaylist()) {
             mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getNameWithoutExtension(), selectedFile.getPath());
         } else {
-            if (mSearchString != null) {
-                // search is active so just play the current file
-                playFile(position);
-            } else {
-                // play the folder from the current position
-                playFolder(position);
+            switch (mClickAction) {
+                case ACTION_ADD_SONG:
+                    enqueueFile(position, false);
+                    break;
+                case ACTION_PLAY_SONG:
+                    if (mSearchString != null) {
+                        // search is active so just play the current file
+                        playFile(position);
+                    } else {
+                        // play the folder from the current position
+                        playFolder(position);
+                    }
+                    break;
+                case ACTION_PLAY_SONG_NEXT:
+                    enqueueFile(position, true);
+                    break;
             }
         }
     }

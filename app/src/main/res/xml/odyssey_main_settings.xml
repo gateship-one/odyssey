@@ -75,6 +75,15 @@
             android:persistent="true"
             android:summary="@string/preference_library_view_summary"
             android:title="@string/preference_library_view_title" />
+        <ListPreference
+            android:defaultValue="@string/pref_library_click_action_default"
+            android:dialogTitle="@string/preference_library_click_action_title"
+            android:entries="@array/preference_library_click"
+            android:entryValues="@array/preference_library_click_action_values"
+            android:key="@string/pref_library_click_action_key"
+            android:persistent="true"
+            android:summary="@string/preference_library_click_action_message"
+            android:title="@string/preference_library_click_action_summary" />
         <Preference
             android:key="@string/pref_clear_default_directory_key"
             android:summary="@string/preference_clear_default_directory_summary"
