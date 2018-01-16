@@ -30,7 +30,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,7 +49,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewArtistImageListener {
+public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
     /**
      * {@link ArtistModel} to show albums for
@@ -290,8 +289,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     }
 
     @Override
-    public void receiveBitmap(final Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
-        if (type == CoverBitmapLoader.IMAGE_TYPE.ARTIST_IMAGE && bm != null && mToolbarAndFABCallback != null) {
+    public void receiveArtistBitmap(final Bitmap bm) {
+        if (bm != null && mToolbarAndFABCallback != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -303,6 +302,11 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
                 }
             });
         }
+    }
+
+    @Override
+    public void receiveAlbumBitmap(final Bitmap bm) {
+
     }
 
     @Override

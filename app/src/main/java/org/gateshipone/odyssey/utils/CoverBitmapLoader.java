@@ -23,10 +23,7 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.provider.MediaStore;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BitmapCache;
@@ -37,21 +34,13 @@ import org.gateshipone.odyssey.models.TrackModel;
 
 public class CoverBitmapLoader {
 
-    private final CoverBitmapListener mListener;
+    private final CoverBitmapReceiver mListener;
 
     private final Context mContext;
 
-    public CoverBitmapLoader(Context context, CoverBitmapListener listener) {
+    public CoverBitmapLoader(Context context, CoverBitmapReceiver listener) {
         mContext = context;
         mListener = listener;
-    }
-
-    /**
-     * Enum to define the type of the image that was retrieved
-     */
-    public enum IMAGE_TYPE {
-        ALBUM_IMAGE,
-        ARTIST_IMAGE,
     }
 
     /**
@@ -103,7 +92,7 @@ public class CoverBitmapLoader {
 
         private final TrackModel mTrack;
 
-        public TrackAlbumImageRunner(final TrackModel track, final int width, final int height) {
+        private TrackAlbumImageRunner(final TrackModel track, final int width, final int height) {
             mTrack = track;
             mWidth = width;
             mHeight = height;
@@ -123,14 +112,14 @@ public class CoverBitmapLoader {
 
             Bitmap image = BitmapCache.getInstance().requestAlbumBitmap(album);
             if (image != null) {
-                mListener.receiveBitmap(image, IMAGE_TYPE.ALBUM_IMAGE);
+                mListener.receiveAlbumBitmap(image);
             }
 
             try {
                 // If image was to small get it in the right resolution
                 if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                     image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, album, mWidth, mHeight, true);
-                    mListener.receiveBitmap(image, IMAGE_TYPE.ALBUM_IMAGE);
+                    mListener.receiveAlbumBitmap(image);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putAlbumBitmap(album, image);
                 }
@@ -149,7 +138,7 @@ public class CoverBitmapLoader {
 
         private final ArtistModel mArtist;
 
-        public ArtistImageRunner(final ArtistModel artist, final int width, final int height) {
+        private ArtistImageRunner(final ArtistModel artist, final int width, final int height) {
             mArtist = artist;
             mWidth = width;
             mHeight = height;
@@ -162,13 +151,13 @@ public class CoverBitmapLoader {
         public void run() {
             // At first get image independent of resolution (can be replaced later with higher resolution)
             Bitmap image = BitmapCache.getInstance().requestArtistImage(mArtist);
-            mListener.receiveBitmap(image, IMAGE_TYPE.ARTIST_IMAGE);
+            mListener.receiveArtistBitmap(image);
 
             // If image was to small get it in the right resolution
             if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                 try {
                     image = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight, true);
-                    mListener.receiveBitmap(image, IMAGE_TYPE.ARTIST_IMAGE);
+                    mListener.receiveArtistBitmap(image);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putArtistImage(mArtist, image);
                 } catch (ImageNotFoundException e) {
@@ -186,7 +175,7 @@ public class CoverBitmapLoader {
 
         private final ArtistModel mArtist;
 
-        public TrackArtistImageRunner(final TrackModel trackModel, final int width, final int height) {
+        private TrackArtistImageRunner(final TrackModel trackModel, final int width, final int height) {
             long artistID = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mContext);
             mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistID);
             mWidth = width;
@@ -200,13 +189,13 @@ public class CoverBitmapLoader {
         public void run() {
             // At first get image independent of resolution (can be replaced later with higher resolution)
             Bitmap image = BitmapCache.getInstance().requestArtistImage(mArtist);
-            mListener.receiveBitmap(image, IMAGE_TYPE.ARTIST_IMAGE);
+            mListener.receiveArtistBitmap(image);
 
             // If image was to small get it in the right resolution
             if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                 try {
                     image = ArtworkManager.getInstance(mContext.getApplicationContext()).getArtistImage(mContext, mArtist, mWidth, mHeight, true);
-                    mListener.receiveBitmap(image, IMAGE_TYPE.ARTIST_IMAGE);
+                    mListener.receiveArtistBitmap(image);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putArtistImage(mArtist, image);
                 } catch (ImageNotFoundException e) {
@@ -224,7 +213,7 @@ public class CoverBitmapLoader {
 
         private final AlbumModel mAlbum;
 
-        public AlbumImageRunner(AlbumModel album, int width, int height) {
+        private AlbumImageRunner(AlbumModel album, int width, int height) {
             mAlbum = album;
             mWidth = width;
             mHeight = height;
@@ -238,14 +227,14 @@ public class CoverBitmapLoader {
             // At first get image independent of resolution (can be replaced later with higher resolution)
             Bitmap image = BitmapCache.getInstance().requestAlbumBitmap(mAlbum);
             if (image != null) {
-                mListener.receiveBitmap(image, IMAGE_TYPE.ALBUM_IMAGE);
+                mListener.receiveAlbumBitmap(image);
             }
 
             try {
                 // If image was to small get it in the right resolution
                 if (image == null || !(mWidth <= image.getWidth() && mHeight <= image.getHeight())) {
                     image = ArtworkManager.getInstance(mContext.getApplicationContext()).getAlbumImage(mContext, mAlbum, mWidth, mHeight, true);
-                    mListener.receiveBitmap(image, IMAGE_TYPE.ALBUM_IMAGE);
+                    mListener.receiveAlbumBitmap(image);
                     // Replace image with higher resolution one
                     BitmapCache.getInstance().putAlbumBitmap(mAlbum, image);
                 }
@@ -259,7 +248,8 @@ public class CoverBitmapLoader {
     /**
      * Callback if image was loaded.
      */
-    public interface CoverBitmapListener {
-        void receiveBitmap(Bitmap bm, IMAGE_TYPE type);
+    public interface CoverBitmapReceiver {
+        void receiveAlbumBitmap(Bitmap bm);
+        void receiveArtistBitmap(Bitmap bm);
     }
 }

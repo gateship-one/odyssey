@@ -81,7 +81,7 @@ public class PlaybackServiceStatusHelper {
         // Register the callback for the MediaSession
         mMediaSession.setCallback(new OdysseyMediaSessionCallback());
 
-        mCoverLoader = new CoverBitmapLoader(mPlaybackService, new BitmapCoverListener());
+        mCoverLoader = new CoverBitmapLoader(mPlaybackService, new BitmapCoverReceiver());
 
         // Register the button receiver
         PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService, 0, new Intent(mPlaybackService, RemoteControlReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -360,18 +360,21 @@ public class PlaybackServiceStatusHelper {
      * lockscreen controls. Also sets the title/artist/album again otherwise
      * android would sometimes set it to the track before
      */
-    private class BitmapCoverListener implements CoverBitmapLoader.CoverBitmapListener {
+    private class BitmapCoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
 
         @Override
-        public void receiveBitmap(Bitmap bm, CoverBitmapLoader.IMAGE_TYPE type) {
-            if (bm != null && type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE) {
-                // Try to get old metadata to save image retrieval.
-                MediaMetadataCompat.Builder metaDataBuilder;
-                metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
-                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
-                mMediaSession.setMetadata(metaDataBuilder.build());
-                mNotificationManager.setNotificationImage(bm);
-            }
+        public void receiveAlbumBitmap(Bitmap bm) {
+            // Try to get old metadata to save image retrieval.
+            MediaMetadataCompat.Builder metaDataBuilder;
+            metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
+            metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+            mMediaSession.setMetadata(metaDataBuilder.build());
+            mNotificationManager.setNotificationImage(bm);
+        }
+
+        @Override
+        public void receiveArtistBitmap(Bitmap bm) {
+
         }
     }
 

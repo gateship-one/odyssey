@@ -31,7 +31,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,7 +57,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapListener, ArtworkManager.onNewAlbumImageListener {
+public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener, CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
     /**
      * Listener to open an artist
@@ -404,8 +403,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     }
 
     @Override
-    public void receiveBitmap(final Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
-        if (type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE && bm != null && mToolbarAndFABCallback != null) {
+    public void receiveAlbumBitmap(final Bitmap bm) {
+        if (bm != null && mToolbarAndFABCallback != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -417,6 +416,11 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 }
             });
         }
+    }
+
+    @Override
+    public void receiveArtistBitmap(final Bitmap bm) {
+
     }
 
     @Override

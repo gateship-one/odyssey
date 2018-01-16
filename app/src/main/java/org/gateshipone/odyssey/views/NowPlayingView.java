@@ -1390,7 +1390,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Private class that handles when the CoverGenerator finishes its fetching of cover images.
      */
-    private class CoverReceiverClass implements CoverBitmapLoader.CoverBitmapListener {
+    private class CoverReceiverClass implements CoverBitmapLoader.CoverBitmapReceiver {
 
         /**
          * Called when a bitmap is created
@@ -1398,7 +1398,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param bm Bitmap ready for use in the UI
          */
         @Override
-        public void receiveBitmap(final Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
+        public void receiveAlbumBitmap(final Bitmap bm) {
             if (bm != null) {
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
@@ -1407,14 +1407,32 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
                         @Override
                         public void run() {
-                            if ( type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE) {
-                                // Set the main cover image
-                                mCoverImage.setAlbumImage(bm);
-                                // Set the small header image
-                                mTopCoverImage.setImageBitmap(bm);
-                            } else if ( type == CoverBitmapLoader.IMAGE_TYPE.ARTIST_IMAGE) {
-                                mCoverImage.setArtistImage(bm);
-                            }
+                            // Set the main cover image
+                            mCoverImage.setAlbumImage(bm);
+                            // Set the small header image
+                            mTopCoverImage.setImageBitmap(bm);
+                        }
+                    });
+                }
+            }
+        }
+
+        /**
+         * Called when a bitmap is created
+         *
+         * @param bm Bitmap ready for use in the UI
+         */
+        @Override
+        public void receiveArtistBitmap(final Bitmap bm) {
+            if (bm != null) {
+                Activity activity = (Activity) getContext();
+                if (activity != null) {
+                    // Run on the UI thread of the activity because we are modifying gui elements.
+                    activity.runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            mCoverImage.setArtistImage(bm);
                         }
                     });
                 }

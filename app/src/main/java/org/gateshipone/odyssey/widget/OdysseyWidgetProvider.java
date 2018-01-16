@@ -230,7 +230,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         mAppWidgetManager.updateAppWidget(new ComponentName(mContext, OdysseyWidgetProvider.class), mViews);
     }
 
-    private class CoverReceiver implements CoverBitmapLoader.CoverBitmapListener {
+    private class CoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
 
         public CoverReceiver() {
         }
@@ -242,15 +242,20 @@ OdysseyWidgetProvider extends AppWidgetProvider {
          * @param bm Bitmap fetched for the currently running track.
          */
         @Override
-        public void receiveBitmap(Bitmap bm, final CoverBitmapLoader.IMAGE_TYPE type) {
+        public void receiveAlbumBitmap(Bitmap bm) {
             // Check if a valid image was found.
-            if (type == CoverBitmapLoader.IMAGE_TYPE.ALBUM_IMAGE && bm != null) {
+            if (bm != null) {
                 // Set the globally used variable
                 mLastCover = bm;
 
                 // Call the update method to refresh the view
                 setWidgetContent(mLastInfo);
             }
+        }
+
+        @Override
+        public void receiveArtistBitmap(Bitmap bm) {
+
         }
     }
 }
