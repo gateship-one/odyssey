@@ -52,6 +52,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.ContextMenu;
@@ -72,6 +73,7 @@ import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
 import org.gateshipone.odyssey.fragments.ArtworkSettingsFragment;
 import org.gateshipone.odyssey.fragments.BookmarksFragment;
 import org.gateshipone.odyssey.fragments.FilesFragment;
+import org.gateshipone.odyssey.fragments.InformationSettingsFragment;
 import org.gateshipone.odyssey.fragments.MyMusicFragment;
 import org.gateshipone.odyssey.fragments.OdysseyFragment;
 import org.gateshipone.odyssey.fragments.PlaylistTracksFragment;
@@ -643,6 +645,8 @@ public class OdysseyMainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
+        } else if (id == R.id.nav_information) {
+            fragment = new InformationSettingsFragment();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

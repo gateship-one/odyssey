@@ -187,4 +187,8 @@
     <string name="preference_library_click_action_title">Aktion bei Liedauswahl</string>
     <string name="preference_library_click_action_summary">Standardaktion für Liedauswahl</string>
     <string name="preference_library_click_action_message">Wählen Sie die Standardaktion die ausgeführt wird, wenn ein Lied in der Bibliothek ausgewählt wird.</string>
+    <string name="nav_menu_info">Informationen</string>
+    <string name="preference_launch_faq">F.A.Q.</string>
+    <string name="preference_launch_faq_text">Hilfestellungen für diese Anwendung</string>
+    <string name="preference_launch_about_text">Informationen über die Version, Lizenz und die Mitwirkenden</string>
 </resources>
