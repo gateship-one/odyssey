@@ -1036,6 +1036,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
         ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener(this);
 
+        mServiceConnection.closeConnection();
+        mServiceConnection = null;
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         sharedPref.unregisterOnSharedPreferenceChangeListener(this);
     }

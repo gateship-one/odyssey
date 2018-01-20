@@ -392,6 +392,9 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             nowPlayingView.onPause();
         }
+
+        mServiceConnection.closeConnection();
+        mServiceConnection = null;
     }
 
     @Override

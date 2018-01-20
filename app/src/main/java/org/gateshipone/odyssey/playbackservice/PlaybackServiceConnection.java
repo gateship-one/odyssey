@@ -78,7 +78,7 @@ public class PlaybackServiceConnection implements ServiceConnection {
         if (mNotifier != null) {
             mNotifier.onDisconnect();
         }
-        openConnection();
+        //openConnection();
     }
 
     /**

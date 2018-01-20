@@ -176,9 +176,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         // activate options menu in toolbar
         setHasOptionsMenu(true);
 
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-        mServiceConnection.openConnection();
 
         // try to resume the saved search string
         if (savedInstanceState != null) {
@@ -226,12 +223,23 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onResume() {
         super.onResume();
 
+        // set up pbs connection
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        mServiceConnection.openConnection();
+
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(getPlayButtonListener(mMyMusicViewPager.getCurrentItem()));
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mServiceConnection.closeConnection();
+        mServiceConnection = null;
     }
 
     /**

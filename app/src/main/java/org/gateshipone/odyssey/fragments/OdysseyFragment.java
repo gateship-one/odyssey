@@ -148,6 +148,9 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         super.onPause();
         mTrimmingEnabled = true;
 
+        mServiceConnection.closeConnection();
+        mServiceConnection = null;
+
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
     }
 

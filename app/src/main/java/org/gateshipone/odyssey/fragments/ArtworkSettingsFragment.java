@@ -159,6 +159,9 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+
+        mServiceConnection.closeConnection();
+        mServiceConnection = null;
     }
 
     /**
