@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.playbackservice;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import android.content.Intent;
@@ -45,6 +47,11 @@ import org.gateshipone.odyssey.utils.FormatHelper;
  */
 public class GaplessPlayer {
     private final static String TAG = "OdysseyGaplessPlayer";
+
+    /**
+     * Timeout after which the {@link MediaPlayer} is released (ms)
+     */
+    private final static int RELEASE_PLAYER_TIMEOUT = 30 * 1000;
 
     public enum REASON {
         IOError, SecurityError, StateError, ArgumentError
@@ -112,16 +119,28 @@ public class GaplessPlayer {
     private ArrayList<OnTrackStartedListener> mTrackStartListeners;
 
     /**
+     * Timer to schedule the release of the {@link MediaPlayer} object
+     */
+    private final Timer mReleasePlayerTimer;
+
+    /**
+     * Task to release the {@link MediaPlayer} object
+     */
+    private ReleaseGaplessPlayerTask mReleasePlayerTask;
+
+    /**
      * Public constructor.
      *
      * @param service PlaybackService to use as context and for callbacks.
      */
-    public GaplessPlayer(PlaybackService service) {
+    GaplessPlayer(PlaybackService service) {
         this.mTrackFinishedListeners = new ArrayList<>();
         this.mTrackStartListeners = new ArrayList<>();
         mPlaybackService = service;
         mSecondPreparingLock = new Semaphore(1);
         Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
+
+        mReleasePlayerTimer = new Timer();
     }
 
     /**
@@ -145,6 +164,7 @@ public class GaplessPlayer {
      * @throws IOException
      */
     public synchronized void play(String uri, int jumpTime) throws PlaybackException {
+        stopReleaseTask();
         // Another player currently exists, remove it.
         if (mCurrentMediaPlayer != null) {
             mCurrentMediaPlayer.reset();
@@ -213,6 +233,7 @@ public class GaplessPlayer {
         // Check if a MediaPlayer exits and if it is actual playing
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             mCurrentMediaPlayer.pause();
+            startReleaseTask();
         }
     }
 
@@ -222,6 +243,7 @@ public class GaplessPlayer {
     public synchronized void resume() {
         // If a MediaPlayer exists and is also prepared this command should start playback.
         if (mCurrentMediaPlayer != null && mCurrentPrepared) {
+            stopReleaseTask();
             mCurrentMediaPlayer.start();
         }
     }
@@ -230,6 +252,7 @@ public class GaplessPlayer {
      * Stops media playback
      */
     public synchronized void stop() {
+        stopReleaseTask();
         // Check if a player exists otherwise there is nothing to do.
         if (mCurrentMediaPlayer != null) {
             // Check if the player for the next song exists already
@@ -688,6 +711,45 @@ public class GaplessPlayer {
             return mCurrentMediaPlayer.getAudioSessionId();
         }
         return -1;
+    }
+
+    /**
+     * Schedule a timeout to release the {@link MediaPlayer} object
+     */
+    private void startReleaseTask() {
+        synchronized (mReleasePlayerTimer) {
+            if(mReleasePlayerTask != null) {
+                mReleasePlayerTask.cancel();
+            }
+            mReleasePlayerTask = new ReleaseGaplessPlayerTask();
+            mReleasePlayerTimer.schedule(mReleasePlayerTask, RELEASE_PLAYER_TIMEOUT);
+        }
+    }
+
+    /**
+     * Cancel outstanding release tasks
+     */
+    private void stopReleaseTask() {
+        synchronized (mReleasePlayerTimer) {
+            if(mReleasePlayerTask != null) {
+                mReleasePlayerTask.cancel();
+                mReleasePlayerTask = null;
+            }
+        }
+    }
+
+    /**
+     * Timer to release the {@link MediaPlayer}
+     */
+    private class ReleaseGaplessPlayerTask extends TimerTask {
+        @Override
+        public void run() {
+            Log.v(TAG,"Release player object");
+            synchronized (mReleasePlayerTimer) {
+                mReleasePlayerTask = null;
+            }
+            stop();
+        }
     }
 
 }
