@@ -390,8 +390,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         // Stop myself
-        stopSelf();
-
+        stopService();
     }
 
     /**
