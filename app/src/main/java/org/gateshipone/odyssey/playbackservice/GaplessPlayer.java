@@ -111,12 +111,12 @@ public class GaplessPlayer {
     /**
      * Registered listeners for track finish callbacks
      */
-    private ArrayList<OnTrackFinishedListener> mTrackFinishedListeners;
+    private final ArrayList<OnTrackFinishedListener> mTrackFinishedListeners;
 
     /**
      * Registered listeners for track start callbacks
      */
-    private ArrayList<OnTrackStartedListener> mTrackStartListeners;
+    private final ArrayList<OnTrackStartedListener> mTrackStartListeners;
 
     /**
      * Timer to schedule the release of the {@link MediaPlayer} object
@@ -158,10 +158,7 @@ public class GaplessPlayer {
      * started
      *
      * @param uri - Path to media file
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     * @throws IllegalStateException
-     * @throws IOException
+     * @throws PlaybackException Exception if file could not be played (e.g. file removed)
      */
     public synchronized void play(String uri, int jumpTime) throws PlaybackException {
         stopReleaseTask();
@@ -210,26 +207,9 @@ public class GaplessPlayer {
     }
 
     /**
-     * Pauses the currently running mediaplayer If already paused it continues
-     * the playback
-     */
-    public synchronized void togglePause() {
-        // Check if a Mediaplayer exits and if it is actual playing
-        if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
-            // In this case pause the playback
-            mCurrentMediaPlayer.pause();
-        } else if (mCurrentMediaPlayer != null && mCurrentPrepared) {
-            // If a MediaPlayer exists and is also prepared the toggle command should start playback.
-            mCurrentMediaPlayer.start();
-
-        }
-
-    }
-
-    /**
      * Just pauses currently running player
      */
-    public synchronized void pause() {
+    synchronized void pause() {
         // Check if a MediaPlayer exits and if it is actual playing
         if (mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying()) {
             mCurrentMediaPlayer.pause();
@@ -240,7 +220,7 @@ public class GaplessPlayer {
     /**
      * Resumes playback
      */
-    public synchronized void resume() {
+    synchronized void resume() {
         // If a MediaPlayer exists and is also prepared this command should start playback.
         if (mCurrentMediaPlayer != null && mCurrentPrepared) {
             stopReleaseTask();
@@ -251,7 +231,7 @@ public class GaplessPlayer {
     /**
      * Stops media playback
      */
-    public synchronized void stop() {
+    synchronized void stop() {
         stopReleaseTask();
         // Check if a player exists otherwise there is nothing to do.
         if (mCurrentMediaPlayer != null) {
@@ -293,7 +273,7 @@ public class GaplessPlayer {
      *
      * @param position Position in milliseconds to seek to.
      */
-    public synchronized void seekTo(int position) {
+    synchronized void seekTo(int position) {
         try {
             // Check if the MediaPlayer is in a valid state to seek and the requested position is within bounds
             if (mCurrentMediaPlayer != null && mCurrentPrepared && position < mCurrentMediaPlayer.getDuration()) {
@@ -309,7 +289,7 @@ public class GaplessPlayer {
      *
      * @return Position of the currently playing track in milliseconds. 0 if not playing.
      */
-    public synchronized int getPosition() {
+    synchronized int getPosition() {
         try {
             // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
             if (mCurrentMediaPlayer != null && mCurrentPrepared) {
@@ -327,7 +307,7 @@ public class GaplessPlayer {
      *
      * @return Duration of the currently playing track in milliseconds. 0 if not playing.
      */
-    public synchronized int getDuration() {
+    synchronized int getDuration() {
         try {
             // State checks for the MediaPlayer, only request time if object exists and the player is prepared.
             if (mCurrentMediaPlayer != null && mCurrentPrepared) {
@@ -345,11 +325,8 @@ public class GaplessPlayer {
      *
      * @return True if the player actually plays a track, false otherwise.
      */
-    public synchronized boolean isRunning() {
-        if (mCurrentMediaPlayer != null) {
-            return mCurrentMediaPlayer.isPlaying();
-        }
-        return false;
+    synchronized boolean isRunning() {
+        return mCurrentMediaPlayer != null && mCurrentMediaPlayer.isPlaying();
     }
 
     /**
@@ -357,7 +334,7 @@ public class GaplessPlayer {
      *
      * @return True if prepared and ready to play, false otherwise.
      */
-    public synchronized boolean isPrepared() {
+    synchronized boolean isPrepared() {
         return mCurrentMediaPlayer != null && mCurrentPrepared;
     }
 
@@ -367,7 +344,7 @@ public class GaplessPlayer {
      * @param leftChannel  Volume from 0.0 - 1.0 for left playback channel
      * @param rightChannel Volume from 0.0 - 1.0 for right playback channel
      */
-    public synchronized void setVolume(float leftChannel, float rightChannel) {
+    synchronized void setVolume(float leftChannel, float rightChannel) {
         if (mCurrentMediaPlayer != null) {
             mCurrentMediaPlayer.setVolume(leftChannel, rightChannel);
         }
@@ -379,7 +356,7 @@ public class GaplessPlayer {
      *
      * @param uri URI of the next song to play.
      */
-    public synchronized void setNextTrack(String uri) throws PlaybackException {
+    synchronized void setNextTrack(String uri) throws PlaybackException {
         // Reset the prepared state of the second mediaplayer
         mSecondPrepared = false;
 
@@ -484,8 +461,10 @@ public class GaplessPlayer {
 
 
                 // Notify connected listeners
-                for (OnTrackStartedListener listener : mTrackStartListeners) {
-                    listener.onTrackStarted(mPrimarySource);
+                synchronized (mTrackStartListeners) {
+                    for (OnTrackStartedListener listener : mTrackStartListeners) {
+                        listener.onTrackStarted(mPrimarySource);
+                    }
                 }
 
                 try {
@@ -538,8 +517,10 @@ public class GaplessPlayer {
 
 
                     // Notify connected listeners that playback has started
-                    for (OnTrackStartedListener listener : mTrackStartListeners) {
-                        listener.onTrackStarted(mPrimarySource);
+                    synchronized (mTrackStartListeners) {
+                        for (OnTrackStartedListener listener : mTrackStartListeners) {
+                            listener.onTrackStarted(mPrimarySource);
+                        }
                     }
                 } else {
                     // Normal case. Second is prepared while primary MP is playing.
@@ -574,8 +555,10 @@ public class GaplessPlayer {
      *
      * @param listener Listener to register
      */
-    public void setOnTrackFinishedListener(OnTrackFinishedListener listener) {
-        mTrackFinishedListeners.add(listener);
+    void setOnTrackFinishedListener(OnTrackFinishedListener listener) {
+        synchronized (mTrackFinishedListeners) {
+            mTrackFinishedListeners.add(listener);
+        }
     }
 
     /**
@@ -583,8 +566,10 @@ public class GaplessPlayer {
      *
      * @param listener Listener to remove from list
      */
-    public void removeOnTrackFinishedListener(OnTrackFinishedListener listener) {
-        mTrackFinishedListeners.remove(listener);
+    void removeOnTrackFinishedListener(OnTrackFinishedListener listener) {
+        synchronized (mTrackFinishedListeners) {
+            mTrackFinishedListeners.remove(listener);
+        }
     }
 
 
@@ -593,8 +578,10 @@ public class GaplessPlayer {
      *
      * @param listener Listener to register
      */
-    public void setOnTrackStartListener(OnTrackStartedListener listener) {
-        mTrackStartListeners.add(listener);
+    void setOnTrackStartListener(OnTrackStartedListener listener) {
+        synchronized (mTrackStartListeners) {
+            mTrackStartListeners.add(listener);
+        }
     }
 
     /**
@@ -603,7 +590,9 @@ public class GaplessPlayer {
      * @param listener Listener to remove from list
      */
     public void removeOnTrackStartListener(OnTrackStartedListener listener) {
-        mTrackStartListeners.remove(listener);
+        synchronized (mTrackStartListeners) {
+            mTrackStartListeners.remove(listener);
+        }
     }
 
 
@@ -620,8 +609,10 @@ public class GaplessPlayer {
                 mCurrentMediaPlayer = null;
 
                 // Notify connected listeners that the last track is now finished
-                for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
-                    listener.onTrackFinished();
+                synchronized (mTrackFinishedListeners) {
+                    for (OnTrackFinishedListener listener : mTrackFinishedListeners) {
+                        listener.onTrackFinished();
+                    }
                 }
 
                 int audioSessionID = mp.getAudioSessionId();
@@ -670,15 +661,15 @@ public class GaplessPlayer {
     /**
      * Exception class used to signal playback errors
      */
-    public class PlaybackException extends Exception {
+    class PlaybackException extends Exception {
 
         REASON mReason;
 
-        public PlaybackException(REASON reason) {
+        private PlaybackException(REASON reason) {
             mReason = reason;
         }
 
-        public REASON getReason() {
+        REASON getReason() {
             return mReason;
         }
     }
@@ -688,7 +679,7 @@ public class GaplessPlayer {
      *
      * @return True if this class is busy and false if it is not doing important work.
      */
-    public synchronized boolean getActive() {
+    synchronized boolean getActive() {
         if (mSecondPreparing) {
             return true;
         } else if (!mCurrentPrepared && (mCurrentMediaPlayer != null)) {
@@ -706,7 +697,7 @@ public class GaplessPlayer {
         }
     }
 
-    public int getAudioSessionID() {
+    int getAudioSessionID() {
         if ( mCurrentMediaPlayer != null && mCurrentPrepared) {
             return mCurrentMediaPlayer.getAudioSessionId();
         }
