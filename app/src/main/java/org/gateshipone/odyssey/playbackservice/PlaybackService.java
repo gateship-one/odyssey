@@ -695,6 +695,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // reset random and repeat state
         mRandom = RANDOMSTATE.RANDOM_OFF;
         mRepeat = REPEATSTATE.REPEAT_OFF;
+
+        mPlaybackServiceStatusHelper.updateStatus();
+
         // Stop the playback
         stop();
     }
@@ -832,6 +835,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Add the tracks to the actual list
         mCurrentList.addAll(tracklist);
+
+        // If track is the first to be added, set playing index to 0
+        if (mCurrentPlayingIndex == -1) {
+            mCurrentPlayingIndex = 0;
+        }
 
         /*
          * If currently playing and playing is the last one in old playlist set
@@ -982,6 +990,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         int oldSize = mCurrentList.size();
 
         mCurrentList.add(track);
+
+        // If track is the first to be added, set playing index to 0
+        if (mCurrentPlayingIndex == -1) {
+            mCurrentPlayingIndex = 0;
+        }
+
         /*
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
@@ -1162,15 +1176,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         // Save the state of the PBS at once
-        if (mCurrentList.size() > 0) {
-            OdysseyServiceState serviceState = new OdysseyServiceState();
+        OdysseyServiceState serviceState = new OdysseyServiceState();
 
-            serviceState.mTrackNumber = mCurrentPlayingIndex;
-            serviceState.mTrackPosition = mLastPosition;
-            serviceState.mRandomState = mRandom;
-            serviceState.mRepeatState = mRepeat;
-            mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
-        }
+        serviceState.mTrackNumber = mCurrentPlayingIndex;
+        serviceState.mTrackPosition = mLastPosition;
+        serviceState.mRandomState = mRandom;
+        serviceState.mRepeatState = mRepeat;
+        mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
 
         // Final status update
         mPlaybackServiceStatusHelper.updateStatus();
