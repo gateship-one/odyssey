@@ -270,13 +270,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                     enqueueFile(position, false);
                     break;
                 case ACTION_PLAY_SONG:
-                    if (mSearchString != null) {
-                        // search is active so just play the current file
-                        playFile(position);
-                    } else {
-                        // play the folder from the current position
-                        playFolder(position);
-                    }
+                    playFile(position);
                     break;
                 case ACTION_PLAY_SONG_NEXT:
                     enqueueFile(position, true);
@@ -429,8 +423,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFile = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), false);
-            mServiceConnection.getPBS().jumpTo(mServiceConnection.getPBS().getPlaylistSize() - 1);
+            mServiceConnection.getPBS().playFile(currentFile.getPath());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

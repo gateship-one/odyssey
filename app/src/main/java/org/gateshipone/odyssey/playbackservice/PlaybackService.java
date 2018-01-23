@@ -966,17 +966,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Plays the given track.
-     * A previous playlist will be cleared.
+     * Enqueue the given track and play it directly.
      *
      * @param track the current trackmodel
      */
     public void playTrack(TrackModel track) {
-        clearPlaylist();
-
         enqueueTrack(track);
 
-        jumpToIndex(0);
+        jumpToIndex(mCurrentList.size() - 1);
     }
 
     /**
@@ -1493,17 +1490,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Creates a trackmodel for a given filepath and plays the track.
-     * A previous playlist will be cleared.
+     * Creates a trackmodel for a given filepath then enqueue the given track and play it directly.
      *
      * @param filePath the path to the selected file
      */
     public void playFile(String filePath) {
-        clearPlaylist();
-
         enqueueFile(filePath, false);
 
-        jumpToIndex(0);
+        jumpToIndex(mCurrentList.size() - 1);
     }
 
     /**

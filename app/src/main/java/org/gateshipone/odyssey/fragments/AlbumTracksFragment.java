@@ -383,8 +383,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, false);
-            mServiceConnection.getPBS().jumpTo(mServiceConnection.getPBS().getPlaylistSize() - 1);
+            mServiceConnection.getPBS().playTrack(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
