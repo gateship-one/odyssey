@@ -45,9 +45,9 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     /**
      * Abstract list with model data used for this adapter.
      */
-    protected List<T> mModelData;
+    private List<T> mModelData;
 
-    protected final List<T> mFilteredModelData;
+    private final List<T> mFilteredModelData;
 
     private String mFilterString;
 
@@ -108,11 +108,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             notifyDataSetChanged();
         } else {
             // Refilter the new data
-            if (mFilterTask != null) {
-                mFilterTask.cancel(true);
-            }
-            mFilterTask = new FilterTask();
-            mFilterTask.execute(mFilterString);
+            startFilterTask();
         }
     }
 
@@ -262,13 +258,16 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     public void applyFilter(String filterString) {
         if (!filterString.equals(mFilterString)) {
             mFilterString = filterString;
-            if (mFilterTask != null) {
-                mFilterTask.cancel(true);
-            }
-            mFilterTask = new FilterTask();
-            mFilterTask.execute(filterString);
+            startFilterTask();
         }
+    }
 
+    private void startFilterTask() {
+        if (mFilterTask != null) {
+            mFilterTask.cancel(true);
+        }
+        mFilterTask = provideFilterTask();
+        mFilterTask.execute(mFilterString);
     }
 
     public void removeFilter() {
@@ -287,7 +286,16 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         }
     }
 
-    private class FilterTask extends AsyncTask<String, Object, Pair<List<T>, String>> {
+    protected FilterTask provideFilterTask() {
+        return new FilterTask() {
+            @Override
+            protected boolean matchesFilter(T elem, String filterString) {
+                return elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
+            }
+        };
+    }
+
+    protected abstract class FilterTask extends AsyncTask<String, Object, Pair<List<T>, String>> {
 
         @Override
         protected Pair<List<T>, String> doInBackground(String... lists) {
@@ -302,14 +310,16 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
                     mLock.readLock().unlock();
                     return new Pair<>(resultList, filterString);
                 }
-                if (elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase())) {
+                if (matchesFilter(elem, filterString)) {
                     resultList.add(elem);
                 }
             }
             mLock.readLock().unlock();
 
-            return new Pair<List<T>, String>(resultList, filterString);
+            return new Pair<>(resultList, filterString);
         }
+
+        protected abstract boolean matchesFilter(final T elem, final String filterString);
 
         protected void onPostExecute(Pair<List<T>, String> result) {
             if (!isCancelled() && mFilterString.equals(result.second)) {

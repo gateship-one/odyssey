@@ -138,6 +138,16 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
     }
 
     @Override
+    protected FilterTask provideFilterTask() {
+        return new FilterTask() {
+            @Override
+            protected boolean matchesFilter(AlbumModel elem, String filterString) {
+                return elem.getArtistName().toLowerCase().contains(filterString.toLowerCase());
+            }
+        };
+    }
+
+    @Override
     public void newAlbumImage(AlbumModel album) {
         notifyDataSetChanged();
     }
