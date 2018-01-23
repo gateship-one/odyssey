@@ -248,11 +248,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         ListView currentPlaylistListView = findViewById(R.id.list_linear_listview);
         registerForContextMenu(currentPlaylistListView);
 
-        if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
+        if (findViewById(R.id.fragment_container) != null && (savedInstanceState == null)) {
             Fragment fragment;
 
             switch (navId) {
