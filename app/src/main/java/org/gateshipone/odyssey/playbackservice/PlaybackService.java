@@ -434,7 +434,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPlayingIndex = -1;
 
         // Request to stop the service
-        stopService();
+        stopSelf();
     }
 
     /**
@@ -1608,7 +1608,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Toast.makeText(getBaseContext(), TAG + ":" + exception.getReason().toString(), Toast.LENGTH_LONG).show();
         // TODO better handling?
         // Stop service on exception for now
-        stopService();
+        stopSelf();
     }
 
     /**
