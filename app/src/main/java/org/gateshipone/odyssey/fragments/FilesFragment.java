@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -102,7 +103,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
@@ -159,7 +160,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // save the already typed search string (or null if nothing is entered)

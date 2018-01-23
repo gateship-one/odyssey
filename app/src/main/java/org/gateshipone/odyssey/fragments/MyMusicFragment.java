@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -120,7 +121,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_music, container, false);
@@ -194,7 +195,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // save the already typed search string (or null if nothing is entered)
@@ -416,6 +417,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             mRegisteredFragments = new SparseArray<>();
         }
 
+        @NonNull
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             OdysseyFragment fragment = (OdysseyFragment) super.instantiateItem(container, position);
@@ -430,7 +432,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             return POSITION_NONE;
         }
 

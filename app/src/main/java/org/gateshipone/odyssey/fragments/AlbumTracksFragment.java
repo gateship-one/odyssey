@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -91,7 +92,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
@@ -323,7 +324,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         getArguments().remove(EXTRA_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }

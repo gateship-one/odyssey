@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -541,7 +542,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @return True if the view should be allowed to be used as dragging part, false otheriwse.
          */
         @Override
-        public boolean tryCaptureView(View child, int pointerId) {
+        public boolean tryCaptureView(@NonNull View child, int pointerId) {
             if (child == mHeaderView) {
                 // start the refresh task if state is playing
                 if (mPlaybackServiceState == PlaybackService.PLAYSTATE.PLAYING) {
@@ -571,7 +572,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param dy          Dimension of the height
          */
         @Override
-        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+        public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) {
             // Save the heighest top position of this view.
             mTopPosition = top;
 
@@ -606,7 +607,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @param yvel          y position of the view
          */
         @Override
-        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+        public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
             int top = getPaddingTop();
             if (yvel > 0 || (yvel == 0 && mDragOffset > 0.5f)) {
                 top += mDragRange;
@@ -623,7 +624,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @return Dragging range
          */
         @Override
-        public int getViewVerticalDragRange(View child) {
+        public int getViewVerticalDragRange(@NonNull View child) {
             return mDragRange;
         }
 
@@ -637,7 +638,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
          * @return The limited height value (or valid position inside the clamped range).
          */
         @Override
-        public int clampViewPositionVertical(View child, int top, int dy) {
+        public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
             final int topBound = getPaddingTop();
             int bottomBound = getHeight() - mHeaderView.getHeight() - mHeaderView.getPaddingBottom();
 

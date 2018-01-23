@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.os.RemoteException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -67,8 +68,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView;
 
