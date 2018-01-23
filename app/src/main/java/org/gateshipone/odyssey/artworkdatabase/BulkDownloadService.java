@@ -41,9 +41,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 

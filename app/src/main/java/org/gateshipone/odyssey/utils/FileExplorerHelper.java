@@ -23,9 +23,7 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 
 import org.gateshipone.odyssey.models.FileModel;

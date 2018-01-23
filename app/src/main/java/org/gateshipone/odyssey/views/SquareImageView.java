@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * Square ImageView that matches the parents width.

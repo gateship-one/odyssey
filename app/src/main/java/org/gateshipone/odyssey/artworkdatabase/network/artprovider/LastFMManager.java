@@ -29,7 +29,6 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;

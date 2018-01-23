@@ -36,9 +36,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.R;
@@ -255,7 +252,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         String image;
 
-        /**
+        /*
          * If no artist id is set for the album (possible with data set of Odyssey) check
          * the artist with name instead of id.
          */

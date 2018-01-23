@@ -28,7 +28,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
