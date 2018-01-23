@@ -307,6 +307,10 @@ public class OdysseyMainActivity extends AppCompatActivity
             transaction.commit();
         }
 
+        // Create service connection
+        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
+        mServiceConnection.setNotifier(new ServiceConnectionListener());
+
         // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -361,8 +365,6 @@ public class OdysseyMainActivity extends AppCompatActivity
             nowPlayingView.onResume();
         }
 
-        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
-        mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
     }
 
@@ -394,7 +396,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
     }
 
     @Override

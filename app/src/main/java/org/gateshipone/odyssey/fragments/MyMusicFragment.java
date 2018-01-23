@@ -108,6 +108,14 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         ARTISTS, ALBUMS, TRACKS
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+    }
+
+
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -223,8 +231,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onResume() {
         super.onResume();
 
-        // set up pbs connection
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
         if (mToolbarAndFABCallback != null) {
@@ -239,7 +245,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onPause() {
         super.onPause();
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
     }
 
     /**

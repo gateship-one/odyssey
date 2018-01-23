@@ -26,6 +26,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -93,6 +94,12 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     private boolean mTrimmingEnabled;
 
     @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
@@ -135,7 +142,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         mAdapter.registerDataSetObserver(mDataSetObserver);
 
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
         mServiceConnection.openConnection();
 
         getContent();
@@ -149,7 +155,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         mTrimmingEnabled = true;
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
 
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
     }

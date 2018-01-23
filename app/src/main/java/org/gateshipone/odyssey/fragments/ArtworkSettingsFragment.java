@@ -110,6 +110,10 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
                 return true;
             }
         });
+
+
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -138,8 +142,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.openConnection();
 
         if (mToolbarAndFABCallback != null) {
@@ -161,7 +163,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
     }
 
     /**

@@ -89,6 +89,10 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         }
     }
 
+    public void unregisterPBSeviceConnection() {
+        mListView.setAdapter(null);
+    }
+
     /**
      * Play the selected track.
      */

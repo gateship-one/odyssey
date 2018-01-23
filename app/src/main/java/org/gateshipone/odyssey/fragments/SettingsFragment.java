@@ -117,6 +117,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         });
 
+
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -150,8 +153,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onResume() {
         super.onResume();
 
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.openConnection();
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -173,6 +174,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+
+        mServiceConnection.closeConnection();
     }
 
     /**

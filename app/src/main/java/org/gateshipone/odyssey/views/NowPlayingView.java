@@ -231,6 +231,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mPlaybackServiceState = PlaybackService.PLAYSTATE.STOPPED;
 
         mLastTrack = new TrackModel();
+
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
+        mServiceConnection.setNotifier(new ServiceConnectionListener());
     }
 
     /**
@@ -1037,7 +1040,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener(this);
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         sharedPref.unregisterOnSharedPreferenceChangeListener(this);
@@ -1056,8 +1058,6 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mNowPlayingReceiver = new NowPlayingReceiver();
         getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION));
         // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
-        mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
 
         // Reenable scrolling views after resuming
@@ -1352,7 +1352,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         @Override
         public void onDisconnect() {
             // Do nothing for now.
-            // FIXME perhaps reconnect?
+            mPlaylistView.unregisterPBSeviceConnection();
         }
 
     }
