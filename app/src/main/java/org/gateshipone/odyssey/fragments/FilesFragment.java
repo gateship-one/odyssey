@@ -429,7 +429,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFile = (FileModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playFile(currentFile.getPath());
+            mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), false);
+            mServiceConnection.getPBS().jumpTo(mServiceConnection.getPBS().getPlaylistSize() - 1);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

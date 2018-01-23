@@ -201,7 +201,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
                 enqueueTrack(position, false);
                 break;
             case ACTION_PLAY_SONG:
-                playPlaylist(position);
+                playTrack(position);
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
@@ -239,6 +239,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         }
 
         switch (item.getItemId()) {
+            case R.id.fragment_album_tracks_action_play:
+                playTrack(info.position);
+                return true;
             case R.id.fragment_playlist_tracks_action_enqueue:
                 enqueueTrack(info.position, false);
                 return true;
@@ -326,6 +329,23 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             } else {
                 mServiceConnection.getPBS().playPlaylistFile(mPlaylistPath, position);
             }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the PBS to enqueue the selected track and then play it.
+     *
+     * @param position the position of the selected track in the adapter
+     */
+    private void playTrack(int position) {
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
+
+        try {
+            mServiceConnection.getPBS().enqueueTrack(track, false);
+            mServiceConnection.getPBS().jumpTo(mServiceConnection.getPBS().getPlaylistSize() - 1);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

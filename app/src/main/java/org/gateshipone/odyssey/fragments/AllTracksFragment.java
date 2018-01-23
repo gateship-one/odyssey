@@ -23,8 +23,10 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
@@ -43,6 +45,7 @@ import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -53,6 +56,11 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      * Listener to open an artist
      */
     private OnArtistSelectedListener mArtistSelectedCallback;
+
+    /**
+     * Action to execute when the user selects an item in the list
+     */
+    private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -92,6 +100,9 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
 
         registerForContextMenu(mListView);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         return rootView;
     }
@@ -140,7 +151,17 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playTrack(position);
+        switch (mClickAction) {
+            case ACTION_ADD_SONG:
+                enqueueTrack(position, false);
+                break;
+            case ACTION_PLAY_SONG:
+                playTrack(position);
+                break;
+            case ACTION_PLAY_SONG_NEXT:
+                enqueueTrack(position, true);
+                break;
+        }
     }
 
     /**
@@ -212,7 +233,8 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         TrackModel track = (TrackModel) mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            mServiceConnection.getPBS().enqueueTrack(track, false);
+            mServiceConnection.getPBS().jumpTo(mServiceConnection.getPBS().getPlaylistSize() - 1);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
