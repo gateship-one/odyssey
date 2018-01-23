@@ -84,12 +84,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_recent_albums), false, false, false);
             // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playAllAlbums();
-                }
-            });
+            mToolbarAndFABCallback.setupFAB(v -> playAllAlbums());
         }
     }
 

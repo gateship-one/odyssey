@@ -218,12 +218,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
         @Override
         public void run() {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    imagesChanged();
-                }
-            });
+            post(AlbumArtistView.this::imagesChanged);
         }
     }
 }

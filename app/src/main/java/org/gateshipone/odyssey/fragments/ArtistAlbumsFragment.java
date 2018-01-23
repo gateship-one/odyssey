@@ -102,12 +102,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         super.onResume();
         if (mToolbarAndFABCallback != null) {
             // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playArtist();
-                }
-            });
+            mToolbarAndFABCallback.setupFAB(v -> playArtist());
         }
 
         // set toolbar behaviour and title
@@ -115,12 +110,9 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
             mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getWidth();
-                        mBitmapLoader.getArtistImage(mArtist, width, width);
-                    }
+                getView().post(() -> {
+                    int width = rootView.getWidth();
+                    mBitmapLoader.getArtistImage(mArtist, width, width);
                 });
             }
 
@@ -129,15 +121,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getWidth();
+                getView().post(() -> {
+                    int width = rootView.getWidth();
 
-                        // Image too small
-                        if(mBitmap.getWidth() < width) {
-                            mBitmapLoader.getArtistImage(mArtist, width, width);
-                        }
+                    // Image too small
+                    if(mBitmap.getWidth() < width) {
+                        mBitmapLoader.getArtistImage(mArtist, width, width);
                     }
                 });
             }
@@ -291,15 +280,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     @Override
     public void receiveArtistBitmap(final Bitmap bm) {
         if (bm != null && mToolbarAndFABCallback != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
-                    // set toolbar image
-                    mToolbarAndFABCallback.setupToolbarImage(bm);
-                    getArguments().putParcelable(ARG_BITMAP,bm);
-                }
+            getActivity().runOnUiThread(() -> {
+                // set toolbar behaviour and title
+                mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
+                // set toolbar image
+                mToolbarAndFABCallback.setupToolbarImage(bm);
+                getArguments().putParcelable(ARG_BITMAP,bm);
             });
         }
     }

@@ -93,13 +93,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
         // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         mAdapter = new TracksAdapter(getActivity());
 
@@ -181,12 +175,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             if (mAdapter.isEmpty()) {
                 mToolbarAndFABCallback.setupFAB(null);
             } else {
-                mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        playPlaylist(0);
-                    }
-                });
+                mToolbarAndFABCallback.setupFAB(v -> playPlaylist(0));
             }
         }
     }

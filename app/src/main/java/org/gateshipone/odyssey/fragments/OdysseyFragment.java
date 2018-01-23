@@ -164,12 +164,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      */
     public void refreshContent() {
         if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
         }
 
         mDataReady = false;
@@ -186,12 +181,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         // Check if data was fetched already or not (or removed because of trimming)
         if (!mDataReady) {
             if (mSwipeRefreshLayout != null) {
-                mSwipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                });
+                mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             }
 
             // Prepare loader ( start new one or reuse old )
@@ -211,12 +201,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     @Override
     public void onLoadFinished(Loader<List<T>> loader, List<T> model) {
         if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            });
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
 
         // Indicate that the data is ready now.

@@ -291,12 +291,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             if (!isDownloadAllowed(context)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
-                LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(new RequestQueue.RequestFilter() {
-                    @Override
-                    public boolean apply(Request<?> request) {
-                        return true;
-                    }
-                });
+                LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(request -> true);
             }
 
         }

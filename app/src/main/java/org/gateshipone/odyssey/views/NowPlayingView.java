@@ -835,121 +835,95 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mDraggedUpButtons.setAlpha(0.0f);
 
         // add listener to top playpause button
-        mTopPlayPauseButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().togglePause();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        mTopPlayPauseButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().togglePause();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
         // Add listeners to top playlist button
-        mTopPlaylistButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mTopPlaylistButton.setOnClickListener(v -> {
 
-                // get color for playlist button
-                int color;
-                if (mViewSwitcher.getCurrentView() != mPlaylistView) {
-                    color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            // get color for playlist button
+            int color;
+            if (mViewSwitcher.getCurrentView() != mPlaylistView) {
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            } else {
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+            }
+
+            // tint the button
+            mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(color));
+
+            // toggle between cover and playlistview
+            mViewSwitcher.showNext();
+
+            // report the change of the view
+            if (mDragStatusReceiver != null) {
+                // set view status
+                if (mViewSwitcher.getCurrentView() == mCoverImage) {
+                    // cover image is shown
+                    mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.COVER_VIEW);
                 } else {
-                    color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
-                }
-
-                // tint the button
-                mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(color));
-
-                // toggle between cover and playlistview
-                mViewSwitcher.showNext();
-
-                // report the change of the view
-                if (mDragStatusReceiver != null) {
-                    // set view status
-                    if (mViewSwitcher.getCurrentView() == mCoverImage) {
-                        // cover image is shown
-                        mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.COVER_VIEW);
-                    } else {
-                        // playlist view is shown
-                        mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.PLAYLIST_VIEW);
-                    }
+                    // playlist view is shown
+                    mDragStatusReceiver.onSwitchedViews(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.PLAYLIST_VIEW);
                 }
             }
         });
 
         // Add listener to top menu button
-        topMenuButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAdditionalOptionsMenu(v);
-            }
-        });
+        topMenuButton.setOnClickListener(this::showAdditionalOptionsMenu);
 
         // Add listener to bottom repeat button
-        mBottomRepeatButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().toggleRepeat();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        mBottomRepeatButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().toggleRepeat();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
         // Add listener to bottom previous button
-        bottomPreviousButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().previous();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        bottomPreviousButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().previous();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
         // Add listener to bottom playpause button
-        mBottomPlayPauseButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().togglePause();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        mBottomPlayPauseButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().togglePause();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
         // Add listener to bottom next button
-        bottomNextButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().next();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        bottomNextButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().next();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
         // Add listener to bottom random button
-        mBottomRandomButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                try {
-                    mServiceConnection.getPBS().toggleRandom();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        mBottomRandomButton.setOnClickListener(arg0 -> {
+            try {
+                mServiceConnection.getPBS().toggleRandom();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         });
 
@@ -1378,12 +1352,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     // Run the updateStatus method in the UI thread because it touches all the gui elements.
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // update views
-                            updateStatus(info);
-                        }
+                    activity.runOnUiThread(() -> {
+                        // update views
+                        updateStatus(info);
                     });
                 }
             }
@@ -1406,15 +1377,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     // Run on the UI thread of the activity because we are modifying gui elements.
-                    activity.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // Set the main cover image
-                            mCoverImage.setAlbumImage(bm);
-                            // Set the small header image
-                            mTopCoverImage.setImageBitmap(bm);
-                        }
+                    activity.runOnUiThread(() -> {
+                        // Set the main cover image
+                        mCoverImage.setAlbumImage(bm);
+                        // Set the small header image
+                        mTopCoverImage.setImageBitmap(bm);
                     });
                 }
             }
@@ -1431,13 +1398,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 Activity activity = (Activity) getContext();
                 if (activity != null) {
                     // Run on the UI thread of the activity because we are modifying gui elements.
-                    activity.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            mCoverImage.setArtistImage(bm);
-                        }
-                    });
+                    activity.runOnUiThread(() -> mCoverImage.setArtistImage(bm));
                 }
             }
         }
@@ -1483,12 +1444,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             smoothSlideTo(0.75f);
 
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mDragOffset > 0.0f) {
-                        smoothSlideTo(1.0f);
-                    }
+            handler.postDelayed(() -> {
+                if (mDragOffset > 0.0f) {
+                    smoothSlideTo(1.0f);
                 }
             }, 3000);
         }
@@ -1537,12 +1495,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             Activity activity = (Activity) getContext();
             // Run on the UI thread because we are updating gui elements
             if (activity != null) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTrackPosition();
-                    }
-                });
+                activity.runOnUiThread(NowPlayingView.this::updateTrackPosition);
             }
 
         }

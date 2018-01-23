@@ -256,16 +256,13 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             case 1:
                 return null;
             case 2:
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // play all tracks on device
-                        try {
-                            mServiceConnection.getPBS().playAllTracks(mSearchString);
-                        } catch (RemoteException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                return v -> {
+                    // play all tracks on device
+                    try {
+                        mServiceConnection.getPBS().playAllTracks(mSearchString);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 };
             default:

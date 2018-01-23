@@ -835,14 +835,9 @@ public class OdysseyMainActivity extends AppCompatActivity
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
                     Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
-                    sb.setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                    PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                        }
-                    });
+                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(OdysseyMainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE));
                     // style the snackbar text
                     TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
@@ -1138,23 +1133,15 @@ public class OdysseyMainActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (PlaybackServiceStatusHelper.MESSAGE_WORKING.equals(intent.getAction())) {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mProgressDialog != null) {
-                            mProgressDialog.show();
-                        }
+                runOnUiThread(() -> {
+                    if (mProgressDialog != null) {
+                        mProgressDialog.show();
                     }
                 });
             } else if (PlaybackServiceStatusHelper.MESSAGE_IDLE.equals(intent.getAction())) {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mProgressDialog != null) {
-                            mProgressDialog.dismiss();
-                        }
+                runOnUiThread(() -> {
+                    if (mProgressDialog != null) {
+                        mProgressDialog.dismiss();
                     }
                 });
             }

@@ -112,26 +112,21 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
 
         mBookmarksAdapter = new BookmarksAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksAdapter, (dialog, which) -> {
 
-                if (which == 0) {
-                    // open save dialog to create a new bookmark
-                    SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
-                    saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
-                } else {
-                    // override existing bookmark
-                    BookmarkModel bookmark = (BookmarkModel) mBookmarksAdapter.getItem(which);
-                    String objectTitle = bookmark.getTitle();
-                    mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
-                }
+            if (which == 0) {
+                // open save dialog to create a new bookmark
+                SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
+                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+            } else {
+                // override existing bookmark
+                BookmarkModel bookmark = (BookmarkModel) mBookmarksAdapter.getItem(which);
+                String objectTitle = bookmark.getTitle();
+                mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
             }
-        }).setNegativeButton(R.string.dialog_action_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog dont save object
-                getDialog().cancel();
-            }
+        }).setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
+            // User cancelled the dialog dont save object
+            getDialog().cancel();
         });
 
         // Prepare loader ( start new one or reuse old )

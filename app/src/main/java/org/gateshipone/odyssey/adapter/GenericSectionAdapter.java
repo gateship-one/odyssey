@@ -308,7 +308,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             }
             mLock.readLock().unlock();
 
-            return new Pair<List<T>, String>(resultList, filterString);
+            return new Pair<>(resultList, filterString);
         }
 
         protected void onPostExecute(Pair<List<T>, String> result) {

@@ -76,11 +76,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
 
         builder.setTitle(R.string.dialog_choose_storage_volume_title);
         mStorageVolumesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, storageVolumes);
-        builder.setAdapter(mStorageVolumesAdapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int item) {
-                mDirectorySelectedCallback.onDirectorySelected(mStorageVolumesAdapter.getItem(item), true);
-            }
-        });
+        builder.setAdapter(mStorageVolumesAdapter, (dialogInterface, item) -> mDirectorySelectedCallback.onDirectorySelected(mStorageVolumesAdapter.getItem(item), true));
 
         // Create the AlertDialog object and return it
         return builder.create();

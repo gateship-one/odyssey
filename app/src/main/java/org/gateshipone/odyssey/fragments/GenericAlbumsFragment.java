@@ -89,13 +89,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
         // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         mAdapter = new AlbumsAdapter(getActivity(), mListView, useList);
 

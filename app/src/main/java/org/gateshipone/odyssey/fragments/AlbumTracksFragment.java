@@ -166,24 +166,16 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
             // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playAlbum(0);
-                }
-            });
+            mToolbarAndFABCallback.setupFAB(v -> playAlbum(0));
         }
 
         if (!mHideArtwork && mBitmap == null) {
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getMeasuredWidth();
-                        mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                    }
+                getView().post(() -> {
+                    int width = rootView.getMeasuredWidth();
+                    mBitmapLoader.getAlbumImage(mAlbum, width, width);
                 });
             }
         } else if (!mHideArtwork){
@@ -192,14 +184,11 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getMeasuredWidth();
-                        // Image too small
-                        if(mBitmap.getWidth() < width) {
-                            mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                        }
+                getView().post(() -> {
+                    int width = rootView.getMeasuredWidth();
+                    // Image too small
+                    if(mBitmap.getWidth() < width) {
+                        mBitmapLoader.getAlbumImage(mAlbum, width, width);
                     }
                 });
             }
@@ -424,15 +413,12 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     @Override
     public void receiveAlbumBitmap(final Bitmap bm) {
         if (bm != null && mToolbarAndFABCallback != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
-                    // set toolbar image
-                    mToolbarAndFABCallback.setupToolbarImage(bm);
-                    getArguments().putParcelable(EXTRA_BITMAP,bm);
-                }
+            getActivity().runOnUiThread(() -> {
+                // set toolbar behaviour and title
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
+                // set toolbar image
+                mToolbarAndFABCallback.setupToolbarImage(bm);
+                getArguments().putParcelable(EXTRA_BITMAP,bm);
             });
         }
     }

@@ -117,13 +117,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
         // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         mAdapter = new FilesAdapter(getActivity());
 
@@ -242,12 +236,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             if (mAdapter.isEmpty()) {
                 mToolbarAndFABCallback.setupFAB(null);
             } else {
-                mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        playCurrentFolderAndSubFolders();
-                    }
-                });
+                mToolbarAndFABCallback.setupFAB(v -> playCurrentFolderAndSubFolders());
             }
         }
     }

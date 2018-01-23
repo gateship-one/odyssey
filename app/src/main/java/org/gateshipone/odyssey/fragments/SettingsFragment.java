@@ -69,52 +69,43 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         // add listener to open equalizer
         Preference openEqualizer = findPreference(getString(R.string.pref_open_equalizer_key));
-        openEqualizer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        openEqualizer.setOnPreferenceClickListener(preference -> {
+            // Start the equalizer
+            Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+            startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+            startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
-            public boolean onPreferenceClick(Preference preference) {
-                // Start the equalizer
-                Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
-                startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-
-                try {
-                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-
-
-                try {
-                    getActivity().startActivityForResult(startEqualizerIntent, 0);
-                } catch (ActivityNotFoundException e) {
-                    ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
-                    equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
-                }
-
-                return true;
+            try {
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
+
+
+            try {
+                getActivity().startActivityForResult(startEqualizerIntent, 0);
+            } catch (ActivityNotFoundException e) {
+                ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
+                equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
+            }
+
+            return true;
         });
 
         // add listener to open artwork settings
         Preference openArtwork = findPreference(getString(R.string.pref_artwork_settings_key));
-        openArtwork.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                mArtworkCallback.openArtworkSettings();
-                return true;
-            }
+        openArtwork.setOnPreferenceClickListener(preference -> {
+            mArtworkCallback.openArtworkSettings();
+            return true;
         });
 
         // add listener to clear the default directory
         Preference clearDefaultDirectory = findPreference(getString(R.string.pref_clear_default_directory_key));
-        clearDefaultDirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
-                sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
-                sharedPrefEditor.apply();
-                return true;
-            }
+        clearDefaultDirectory.setOnPreferenceClickListener(preference -> {
+            SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
+            sharedPrefEditor.apply();
+            return true;
         });
 
 
