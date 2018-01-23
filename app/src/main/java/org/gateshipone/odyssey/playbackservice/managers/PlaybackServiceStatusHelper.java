@@ -390,7 +390,7 @@ public class PlaybackServiceStatusHelper {
         settingChangedIntent.setPackage(mPlaybackService.getPackageName());
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
 
-        /**
+        /*
          * Informs the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider}
          * to hide its artwork.
          */

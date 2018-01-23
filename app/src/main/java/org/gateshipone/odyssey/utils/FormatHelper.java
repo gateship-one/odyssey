@@ -106,13 +106,6 @@ public class FormatHelper {
     }
 
     /**
-     * Helper method to encode the uri to support special characters like :, %, # etc.
-     *
-     * @param uri the path to the media file as String
-     * @return the encoded uri as String
-     */
-
-    /**
      * Helper method to create a {@link Uri} from the given uri String.
      * <p>
      * This method will check if the given uri needs to be encoded to support special characters

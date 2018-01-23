@@ -159,7 +159,7 @@ public class OdysseyNotificationManager {
             if (mLastBitmap != null && !mHideArtwork) {
                 mNotificationBuilder.setLargeIcon(mLastBitmap);
             } else {
-                /**
+                /*
                  * Create a dummy placeholder image for versions greater android 7 because it
                  * does not automatically show the application icon anymore in mediastyle notifications.
                  */
@@ -179,7 +179,7 @@ public class OdysseyNotificationManager {
                     mNotificationBuilder.setLargeIcon(iconBitmap);
 
                 } else {
-                    /**
+                    /*
                      * For older android versions set the null icon which will result in a dummy icon
                      * generated from the application icon.
                      */
