@@ -365,7 +365,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         resume();
                         break;
                     case ACTION_QUIT:
-                        stopService();
+                        stopSelf();
                         break;
                 }
             }
@@ -1147,7 +1147,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Stops the gapless mediaplayer and cancels the foreground service. Removes
      * any ongoing notification.
      */
-    public void stopService() {
+    private void stopService() {
         // Cancel possible cancel timers
         cancelQuitAlert();
 
@@ -1174,9 +1174,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Final status update
         mPlaybackServiceStatusHelper.updateStatus();
-
-        // Stops the service itself.
-        stopSelf();
     }
 
     /**
@@ -1857,7 +1854,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             } else if (intent.getAction().equals(ACTION_TOGGLEPAUSE)) {
                 togglePause();
             } else if (intent.getAction().equals(ACTION_QUIT)) {
-                stopService();
+                stopSelf();
             } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
                 // Check if artwork is for currently playing album
                 String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
