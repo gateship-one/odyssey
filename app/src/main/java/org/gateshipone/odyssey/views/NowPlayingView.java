@@ -409,35 +409,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
                 return true;
             case R.id.action_wikipedia_album: {
-                Intent albumIntent = new Intent(Intent.ACTION_VIEW);
-                TrackModel track;
-                try {
-                    track = mServiceConnection.getPBS().getCurrentSong();
-                } catch (RemoteException e) {
-                    return true;
-                }
-                if (mUseEnglishWikipedia) {
-                    albumIntent.setData(Uri.parse("https://en.wikipedia.org/wiki/" + track.getTrackAlbumName()));
-                } else {
-                    albumIntent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + track.getTrackAlbumName()));
-                }
-                getContext().startActivity(albumIntent);
+                openWikipediaPage(true);
                 return true;
             }
             case R.id.action_wikipedia_artist: {
-                Intent artistIntent = new Intent(Intent.ACTION_VIEW);
-                TrackModel track;
-                try {
-                    track = mServiceConnection.getPBS().getCurrentSong();
-                } catch (RemoteException e) {
-                    return true;
-                }
-                if (mUseEnglishWikipedia) {
-                    artistIntent.setData(Uri.parse("https://en.wikipedia.org/wiki/" + track.getTrackArtistName()));
-                } else {
-                    artistIntent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + track.getTrackArtistName()));
-                }
-                getContext().startActivity(artistIntent);
+                openWikipediaPage(false);
                 return true;
             }
             case R.id.view_nowplaying_action_share_track: {
@@ -447,6 +423,30 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             default:
                 return false;
         }
+    }
+
+    private void openWikipediaPage(boolean showAlbum) {
+        TrackModel track;
+        try {
+            track = mServiceConnection.getPBS().getCurrentSong();
+        } catch (RemoteException e) {
+            return;
+        }
+
+        String name;
+        if (showAlbum) {
+            name = track.getTrackAlbumName();
+        } else {
+            name = track.getTrackArtistName();
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (mUseEnglishWikipedia) {
+            intent.setData(Uri.parse("https://en.wikipedia.org/wiki/" + name));
+        } else {
+            intent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + name));
+        }
+        getContext().startActivity(intent);
     }
 
     /**
