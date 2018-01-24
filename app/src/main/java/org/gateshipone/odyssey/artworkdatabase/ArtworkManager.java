@@ -36,9 +36,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.R;
@@ -255,7 +252,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
         String image;
 
-        /**
+        /*
          * If no artist id is set for the album (possible with data set of Odyssey) check
          * the artist with name instead of id.
          */
@@ -347,19 +344,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
-            LastFMManager.getInstance(context).fetchArtistImage(artist, context, new Response.Listener<ArtistImageResponse>() {
-                @Override
-                public void onResponse(ArtistImageResponse response) {
-                    new InsertArtistImageTask(context).execute(response);
-                }
-            }, this);
+            LastFMManager.getInstance(context).fetchArtistImage(artist, context, response -> new InsertArtistImageTask(context).execute(response), this);
         } else if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_fanarttv_key))) {
-            FanartTVManager.getInstance(context).fetchArtistImage(artist, context, new Response.Listener<ArtistImageResponse>() {
-                @Override
-                public void onResponse(ArtistImageResponse response) {
-                    new InsertArtistImageTask(context).execute(response);
-                }
-            }, this);
+            FanartTVManager.getInstance(context).fetchArtistImage(artist, context, response -> new InsertArtistImageTask(context).execute(response), this);
         }
     }
 
@@ -374,19 +361,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         }
 
         if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
-            MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, new Response.Listener<AlbumImageResponse>() {
-                @Override
-                public void onResponse(AlbumImageResponse response) {
-                    new InsertAlbumImageTask(context).execute(response);
-                }
-            }, this);
+            MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
         } else if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
-            LastFMManager.getInstance(context).fetchAlbumImage(album, context, new Response.Listener<AlbumImageResponse>() {
-                @Override
-                public void onResponse(AlbumImageResponse response) {
-                    new InsertAlbumImageTask(context).execute(response);
-                }
-            }, this);
+            LastFMManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
         }
     }
 
@@ -405,19 +382,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
                 track.getTrackAlbumKey(), MusicLibraryHelper.getAlbumIDFromKey(track.getTrackAlbumKey(), context));
 
         if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
-            MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, new Response.Listener<AlbumImageResponse>() {
-                @Override
-                public void onResponse(AlbumImageResponse response) {
-                    new InsertAlbumImageTask(context).execute(response);
-                }
-            }, this);
+            MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
         } else if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
-            LastFMManager.getInstance(context).fetchAlbumImage(album, context, new Response.Listener<AlbumImageResponse>() {
-                @Override
-                public void onResponse(AlbumImageResponse response) {
-                    new InsertAlbumImageTask(context).execute(response);
-                }
-            }, this);
+            LastFMManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
         }
     }
 
@@ -786,12 +753,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * it is important to cancel all requests when changing the provider in settings.
      */
     public void cancelAllRequests(Context context) {
-        LimitingRequestQueue.getInstance(context).cancelAll(new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return true;
-            }
-        });
+        LimitingRequestQueue.getInstance(context).cancelAll(request -> true);
     }
 
     public void bulkLoadImages(BulkLoadingProgressCallback progressCallback, Context context) {

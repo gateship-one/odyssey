@@ -37,7 +37,6 @@ import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -350,18 +349,15 @@ public class MusicLibraryHelper {
         }
 
         // sort the recent albums
-        Collections.sort(recentAlbums, new Comparator<AlbumModel>() {
-            @Override
-            public int compare(AlbumModel o1, AlbumModel o2) {
-                // sort by date descending
-                if (o1.getDateAdded() < o2.getDateAdded()) {
-                    return 1;
-                } else if (o1.getDateAdded() == o2.getDateAdded()) {
-                    // if equal date sort by key
-                    return o1.getAlbumKey().compareTo(o2.getAlbumKey());
-                } else {
-                    return -1;
-                }
+        Collections.sort(recentAlbums, (o1, o2) -> {
+            // sort by date descending
+            if (o1.getDateAdded() < o2.getDateAdded()) {
+                return 1;
+            } else if (o1.getDateAdded() == o2.getDateAdded()) {
+                // if equal date sort by key
+                return o1.getAlbumKey().compareTo(o2.getAlbumKey());
+            } else {
+                return -1;
             }
         });
 
@@ -464,28 +460,25 @@ public class MusicLibraryHelper {
             cursor.close();
         }
 
-        Collections.sort(recentTracks, new Comparator<TrackModel>() {
-            @Override
-            public int compare(TrackModel o1, TrackModel o2) {
-                // sort tracks by albumkey
-                if (o1.getTrackAlbumKey().equals(o2.getTrackAlbumKey())) {
-                    // sort by tracknumber
-                    if (o1.getTrackNumber() < o2.getTrackNumber()) {
-                        return -1;
-                    } else if (o1.getTrackNumber() == o2.getTrackNumber()) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
+        Collections.sort(recentTracks, (o1, o2) -> {
+            // sort tracks by albumkey
+            if (o1.getTrackAlbumKey().equals(o2.getTrackAlbumKey())) {
+                // sort by tracknumber
+                if (o1.getTrackNumber() < o2.getTrackNumber()) {
+                    return -1;
+                } else if (o1.getTrackNumber() == o2.getTrackNumber()) {
+                    return 0;
                 } else {
-                    // sort tracks by date descending
-                    if (o1.getDateAdded() < o2.getDateAdded()) {
-                        return 1;
-                    } else if (o1.getDateAdded() == o2.getDateAdded()) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+                    return 1;
+                }
+            } else {
+                // sort tracks by date descending
+                if (o1.getDateAdded() < o2.getDateAdded()) {
+                    return 1;
+                } else if (o1.getDateAdded() == o2.getDateAdded()) {
+                    return 0;
+                } else {
+                    return -1;
                 }
             }
         });

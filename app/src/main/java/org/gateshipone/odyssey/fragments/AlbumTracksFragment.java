@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -91,7 +92,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_linear, container, false);
 
@@ -166,24 +167,16 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
             // set up play button
-            mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playAlbum(0);
-                }
-            });
+            mToolbarAndFABCallback.setupFAB(v -> playAlbum(0));
         }
 
         if (!mHideArtwork && mBitmap == null) {
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getMeasuredWidth();
-                        mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                    }
+                getView().post(() -> {
+                    int width = rootView.getMeasuredWidth();
+                    mBitmapLoader.getAlbumImage(mAlbum, width, width);
                 });
             }
         } else if (!mHideArtwork){
@@ -192,14 +185,11 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
             final View rootView = getView();
             if (rootView != null) {
-                getView().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = rootView.getMeasuredWidth();
-                        // Image too small
-                        if(mBitmap.getWidth() < width) {
-                            mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                        }
+                getView().post(() -> {
+                    int width = rootView.getMeasuredWidth();
+                    // Image too small
+                    if(mBitmap.getWidth() < width) {
+                        mBitmapLoader.getAlbumImage(mAlbum, width, width);
                     }
                 });
             }
@@ -239,7 +229,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 enqueueTrack(position, false);
                 break;
             case ACTION_PLAY_SONG:
-                playAlbum(position);
+                playTrack(position);
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
@@ -272,6 +262,9 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         }
 
         switch (item.getItemId()) {
+            case R.id.fragment_album_tracks_action_play:
+                playTrack(info.position);
+                return true;
             case R.id.fragment_album_tracks_action_enqueue:
                 enqueueTrack(info.position, false);
                 return true;
@@ -331,7 +324,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         getArguments().remove(EXTRA_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -372,6 +365,22 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     }
 
     /**
+     * Call the PBS to enqueue the selected track and then play it.
+     *
+     * @param position the position of the selected track in the adapter
+     */
+    private void playTrack(int position) {
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
+
+        try {
+            mServiceConnection.getPBS().playTrack(track);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Call the PBS to enqueue the complete album.
      */
     private void enqueueAlbum() {
@@ -405,15 +414,12 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     @Override
     public void receiveAlbumBitmap(final Bitmap bm) {
         if (bm != null && mToolbarAndFABCallback != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // set toolbar behaviour and title
-                    mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
-                    // set toolbar image
-                    mToolbarAndFABCallback.setupToolbarImage(bm);
-                    getArguments().putParcelable(EXTRA_BITMAP,bm);
-                }
+            getActivity().runOnUiThread(() -> {
+                // set toolbar behaviour and title
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
+                // set toolbar image
+                mToolbarAndFABCallback.setupToolbarImage(bm);
+                getArguments().putParcelable(EXTRA_BITMAP,bm);
             });
         }
     }

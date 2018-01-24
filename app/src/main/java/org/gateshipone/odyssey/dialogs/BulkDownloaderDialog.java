@@ -25,7 +25,6 @@ package org.gateshipone.odyssey.dialogs;
 import android.app.Dialog;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -87,25 +86,23 @@ public class BulkDownloaderDialog extends DialogFragment {
         String dialogMessage = (messageId == -1) ? "" : getString(messageId);
 
         builder.setTitle(dialogTitle).setMessage(dialogMessage)
-                .setPositiveButton(positiveButtonId, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // start the bulk download service
-                        Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
-                        serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
+                .setPositiveButton(positiveButtonId, (dialog, id) -> {
+                    // start the bulk download service
+                    Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
+                    serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
 
-                        // get the current settings for the bulk download
-                        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-                        serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
-                                getString(R.string.pref_artwork_provider_artist_default)));
-                        serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),
-                                getString(R.string.pref_artwork_provider_album_default)));
-                        serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
-                                getResources().getBoolean(R.bool.pref_download_wifi_default)));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            getActivity().startForegroundService(serviceIntent);
-                        } else {
-                            getActivity().startService(serviceIntent);
-                        }
+                    // get the current settings for the bulk download
+                    SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+                    serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
+                            getString(R.string.pref_artwork_provider_artist_default)));
+                    serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),
+                            getString(R.string.pref_artwork_provider_album_default)));
+                    serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
+                            getResources().getBoolean(R.bool.pref_download_wifi_default)));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        getActivity().startForegroundService(serviceIntent);
+                    } else {
+                        getActivity().startService(serviceIntent);
                     }
                 });
 

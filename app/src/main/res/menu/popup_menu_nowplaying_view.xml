@@ -25,37 +25,37 @@
     <group android:id="@+id/action_group_playlist">
         <item
             android:id="@+id/view_nowplaying_action_shuffleplaylist"
-            android:orderInCategory="100"
+
             android:title="@string/popup_menu_action_shuffleplaylist"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/view_nowplaying_action_saveplaylist"
-            android:orderInCategory="100"
+
             android:title="@string/popup_menu_action_saveplaylist"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/view_nowplaying_action_clearplaylist"
-            android:orderInCategory="100"
+
             android:title="@string/popup_menu_action_clearplaylist"
             app:showAsAction="never" />
     </group>
 
     <item
         android:id="@+id/view_nowplaying_action_createbookmark"
-        android:orderInCategory="100"
+
         android:title="@string/popup_menu_action_createbookmark"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/view_nowplaying_action_startequalizer"
-        android:orderInCategory="100"
+
         android:title="@string/popup_menu_action_startequalizer"
         app:showAsAction="never" />
 
     <item
-        android:orderInCategory="100"
+
         android:title="@string/action_wikipedia">
         <menu>
             <item
@@ -69,7 +69,7 @@
 
     <item
         android:id="@+id/view_nowplaying_action_share_track"
-        android:orderInCategory="100"
+
         android:title="@string/popup_menu_action_sharetrack"
         app:showAsAction="never" />
 

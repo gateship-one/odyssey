@@ -62,54 +62,43 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
         // add listener to clear album data
         Preference clearAlbums = findPreference(getString(R.string.pref_clear_album_key));
-        clearAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                final Context context = getContext();
-                ArtworkDatabaseManager.getInstance(context).clearAlbumImages(context);
-                return true;
-            }
+        clearAlbums.setOnPreferenceClickListener(preference -> {
+            final Context context = getContext();
+            ArtworkDatabaseManager.getInstance(context).clearAlbumImages(context);
+            return true;
         });
 
         // add listener to clear artist data
         Preference clearArtist = findPreference(getString(R.string.pref_clear_artist_key));
-        clearArtist.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                final Context context = getContext();
-                ArtworkDatabaseManager.getInstance(context).clearArtistImages(context);
-                return true;
-            }
+        clearArtist.setOnPreferenceClickListener(preference -> {
+            final Context context = getContext();
+            ArtworkDatabaseManager.getInstance(context).clearArtistImages(context);
+            return true;
         });
 
         Preference clearBlockedAlbums = findPreference(getString(R.string.pref_clear_blocked_album_key));
-        clearBlockedAlbums.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                ArtworkDatabaseManager.getInstance(getContext()).clearBlockedAlbumImages();
-                return true;
-            }
+        clearBlockedAlbums.setOnPreferenceClickListener(preference -> {
+            ArtworkDatabaseManager.getInstance(getContext()).clearBlockedAlbumImages();
+            return true;
         });
 
         Preference clearBlockedArtists = findPreference(getString(R.string.pref_clear_blocked_artist_key));
-        clearBlockedArtists.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference preference) {
-                ArtworkDatabaseManager.getInstance(getContext()).clearBlockedArtistImages();
-                return true;
-            }
+        clearBlockedArtists.setOnPreferenceClickListener(preference -> {
+            ArtworkDatabaseManager.getInstance(getContext()).clearBlockedArtistImages();
+            return true;
         });
 
         Preference bulkLoad = findPreference(getString(R.string.pref_bulk_load_key));
-        bulkLoad.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        bulkLoad.setOnPreferenceClickListener(preference -> {
+            BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
+            bulkDownloaderDialog.show(getFragmentManager(), "BulkDownloaderDialog");
 
-            public boolean onPreferenceClick(Preference preference) {
-                BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
-                bulkDownloaderDialog.show(getFragmentManager(), "BulkDownloaderDialog");
-
-                return true;
-            }
+            return true;
         });
+
+
+        // get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -138,8 +127,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
         mServiceConnection.openConnection();
 
         if (mToolbarAndFABCallback != null) {
@@ -161,7 +148,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
     }
 
     /**

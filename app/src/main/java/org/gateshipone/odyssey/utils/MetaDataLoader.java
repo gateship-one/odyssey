@@ -23,10 +23,8 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import org.gateshipone.odyssey.models.TrackModel;

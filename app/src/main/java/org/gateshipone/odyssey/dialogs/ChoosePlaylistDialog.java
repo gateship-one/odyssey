@@ -25,7 +25,6 @@ package org.gateshipone.odyssey.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -112,26 +111,21 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
 
         mPlaylistsListViewAdapter = new SavedPlaylistsAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_playlist).setAdapter(mPlaylistsListViewAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setTitle(R.string.dialog_choose_playlist).setAdapter(mPlaylistsListViewAdapter, (dialog, which) -> {
 
-                if (which == 0) {
-                    // open save dialog to create a new bookmark
-                    SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
-                    saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
-                } else {
-                    // override existing bookmark
-                    PlaylistModel playlist = (PlaylistModel) mPlaylistsListViewAdapter.getItem(which);
-                    String objectTitle = playlist.getPlaylistName();
-                    mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);
-                }
+            if (which == 0) {
+                // open save dialog to create a new bookmark
+                SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
+                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+            } else {
+                // override existing bookmark
+                PlaylistModel playlist = (PlaylistModel) mPlaylistsListViewAdapter.getItem(which);
+                String objectTitle = playlist.getPlaylistName();
+                mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);
             }
-        }).setNegativeButton(R.string.dialog_action_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog dont save object
-                getDialog().cancel();
-            }
+        }).setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
+            // User cancelled the dialog dont save object
+            getDialog().cancel();
         });
 
         // Prepare loader ( start new one or reuse old )

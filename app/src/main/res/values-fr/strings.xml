@@ -35,6 +35,7 @@
     <string name="nav_menu_settings">Paramètres</string>
     <string name="nav_menu_bookmarks">Marque-pages</string>
     <string name="nav_menu_files">Fichiers</string>
+    <string name="nav_menu_info">Informations</string>
 
     <!-- acitivty titles -->
     <string name="share_chooser_title">Partager la piste musicale avec</string>
@@ -132,7 +133,10 @@
     <string name="preference_show_album_artists_only_title">Artistes de l\'album uniquement</string>
     <string name="preference_show_album_artists_only_summary">Afficher uniquement les artistes de l\'album plutôt de tous les artistes de la base de données</string>
 
+    <string name="preference_launch_faq">F.A.Q.</string>
+    <string name="preference_launch_faq_text">Informations et aide (en anglais) pour cette application</string>
     <string name="preference_launch_about">À propos</string>
+    <string name="preference_launch_about_text">Informations de version, de licence et collaborateurs</string>
 
     <string name="preference_theme_title">Thème</string>
     <string name="preference_theme_summary">Changer l\'apparence de l\'application</string>
@@ -178,6 +182,10 @@
 
     <string name="preference_show_artist_image_title">Image de l\'artiste</string>
     <string name="preference_show_artist_image_text">Afficher alternativement la couverture de l\'album et une image de l\'artiste, dans la vue de la piste musicale en cours de lecture</string>
+
+    <string name="preference_library_click_action_title">Suivi d\'action</string>
+    <string name="preference_library_click_action_summary">Sélectionner l\'action à surveiller dans la bibliothèque</string>
+    <string name="preference_library_click_action_message">Sélectionner l\'action par défaut à surveiller lors d\'appui sur une piste musicale dans les vues de la bibliothèque</string>
 
     <string name="artwork_settings">Paramètres des illustrations</string>
 

@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.dialogs;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -69,11 +68,7 @@ public class ErrorDialog extends DialogFragment {
         String dialogMessage = (messageId == -1) ? "" : getString(messageId);
 
         builder.setTitle(dialogTitle).setMessage(dialogMessage)
-                .setNegativeButton(R.string.error_dialog_ok_action, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        getDialog().cancel();
-                    }
-                });
+                .setNegativeButton(R.string.error_dialog_ok_action, (dialog, id) -> getDialog().cancel());
 
         // Create the AlertDialog object and return it
         return builder.create();

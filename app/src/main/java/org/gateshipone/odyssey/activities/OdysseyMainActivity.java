@@ -52,7 +52,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.ContextMenu;
@@ -248,11 +247,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         ListView currentPlaylistListView = findViewById(R.id.list_linear_listview);
         registerForContextMenu(currentPlaylistListView);
 
-        if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
+        if (findViewById(R.id.fragment_container) != null && (savedInstanceState == null)) {
             Fragment fragment;
 
             switch (navId) {
@@ -306,6 +301,10 @@ public class OdysseyMainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, fragment);
             transaction.commit();
         }
+
+        // Create service connection
+        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
+        mServiceConnection.setNotifier(new ServiceConnectionListener());
 
         // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -361,8 +360,6 @@ public class OdysseyMainActivity extends AppCompatActivity
             nowPlayingView.onResume();
         }
 
-        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
-        mServiceConnection.setNotifier(new ServiceConnectionListener());
         mServiceConnection.openConnection();
     }
 
@@ -394,7 +391,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         mServiceConnection.closeConnection();
-        mServiceConnection = null;
     }
 
     @Override
@@ -838,14 +834,9 @@ public class OdysseyMainActivity extends AppCompatActivity
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
                     Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
-                    sb.setAction(R.string.permission_request_snackbar_button, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                    PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                        }
-                    });
+                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(OdysseyMainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE));
                     // style the snackbar text
                     TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
@@ -1141,23 +1132,15 @@ public class OdysseyMainActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (PlaybackServiceStatusHelper.MESSAGE_WORKING.equals(intent.getAction())) {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mProgressDialog != null) {
-                            mProgressDialog.show();
-                        }
+                runOnUiThread(() -> {
+                    if (mProgressDialog != null) {
+                        mProgressDialog.show();
                     }
                 });
             } else if (PlaybackServiceStatusHelper.MESSAGE_IDLE.equals(intent.getAction())) {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mProgressDialog != null) {
-                            mProgressDialog.dismiss();
-                        }
+                runOnUiThread(() -> {
+                    if (mProgressDialog != null) {
+                        mProgressDialog.dismiss();
                     }
                 });
             }

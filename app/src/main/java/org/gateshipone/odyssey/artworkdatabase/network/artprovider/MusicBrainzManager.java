@@ -29,7 +29,6 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
@@ -86,58 +85,37 @@ public class MusicBrainzManager implements AlbumImageProvider {
 
         String artistURLName = Uri.encode(artist.getArtistName());
 
-        getArtists(artistURLName, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                JSONArray artists;
-                try {
-                    artists = response.getJSONArray("artists");
+        getArtists(artistURLName, response -> {
+            JSONArray artists;
+            try {
+                artists = response.getJSONArray("artists");
 
-                    if (!artists.isNull(0)) {
-                        JSONObject artistObj = artists.getJSONObject(0);
-                        String artistMBID = artistObj.getString("id");
+                if (!artists.isNull(0)) {
+                    JSONObject artistObj = artists.getJSONObject(0);
+                    String artistMBID = artistObj.getString("id");
 
-                        getArtistImageURL(artistMBID, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                JSONArray relations;
-                                try {
-                                    relations = response.getJSONArray("relations");
-                                    for (int i = 0; i < relations.length(); i++) {
-                                        JSONObject obj = relations.getJSONObject(i);
+                    getArtistImageURL(artistMBID, response1 -> {
+                        JSONArray relations;
+                        try {
+                            relations = response1.getJSONArray("relations");
+                            for (int i = 0; i < relations.length(); i++) {
+                                JSONObject obj = relations.getJSONObject(i);
 
-                                        if (obj.getString("type").equals("image")) {
-                                            JSONObject url = obj.getJSONObject("url");
+                                if (obj.getString("type").equals("image")) {
+                                    JSONObject url = obj.getJSONObject("url");
 
-                                            getArtistImage(url.getString("resource"), listener, new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    errorListener.fetchVolleyError(artist, context, error);
-                                                }
-                                            });
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    errorListener.fetchJSONException(artist, context, e);
+                                    getArtistImage(url.getString("resource"), listener, error -> errorListener.fetchVolleyError(artist, context, error));
                                 }
                             }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchVolleyError(artist, context, error);
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    errorListener.fetchJSONException(artist, context, e);
+                        } catch (JSONException e) {
+                            errorListener.fetchJSONException(artist, context, e);
+                        }
+                    }, error -> errorListener.fetchVolleyError(artist, context, error));
                 }
+            } catch (JSONException e) {
+                errorListener.fetchJSONException(artist, context, e);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.fetchVolleyError(artist, context, error);
-            }
-        });
+        }, error -> errorListener.fetchVolleyError(artist, context, error));
     }
 
     /**
@@ -199,17 +177,7 @@ public class MusicBrainzManager implements AlbumImageProvider {
     @Override
     public void fetchAlbumImage(final AlbumModel album, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener) {
 
-        getAlbumMBID(album, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                parseMusicBrainzReleaseJSON(album, 0, response, context, listener, errorListener);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.fetchVolleyError(album, context, error);
-            }
-        });
+        getAlbumMBID(album, response -> parseMusicBrainzReleaseJSON(album, 0, response, context, listener, errorListener), error -> errorListener.fetchVolleyError(album, context, error));
     }
 
     /**
@@ -234,15 +202,12 @@ public class MusicBrainzManager implements AlbumImageProvider {
 
                 String url = COVERART_ARCHIVE_API_URL + "/" + "release/" + mbid + "/front-500";
 
-                getAlbumImage(url, album, listener, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.v(TAG, "No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
-                        if (releaseIndex + 1 < releases.length()) {
-                            parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, context, listener, errorListener);
-                        } else {
-                            errorListener.fetchVolleyError(album, context, error);
-                        }
+                getAlbumImage(url, album, listener, error -> {
+                    Log.v(TAG, "No image found for: " + album.getAlbumName() + " with release index: " + releaseIndex);
+                    if (releaseIndex + 1 < releases.length()) {
+                        parseMusicBrainzReleaseJSON(album, releaseIndex + 1, response, context, listener, errorListener);
+                    } else {
+                        errorListener.fetchVolleyError(album, context, error);
                     }
                 });
             } else {
@@ -293,12 +258,7 @@ public class MusicBrainzManager implements AlbumImageProvider {
 
     @Override
     public void cancelAll() {
-        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return true;
-            }
-        });
+        mRequestQueue.cancelAll(request -> true);
     }
 
 }

@@ -23,10 +23,12 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -43,6 +45,7 @@ import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
@@ -55,11 +58,15 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     private OnArtistSelectedListener mArtistSelectedCallback;
 
     /**
+     * Action to execute when the user selects an item in the list
+     */
+    private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    /**
      * Called to create instantiate the UI of the fragment.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.list_refresh, container, false);
 
@@ -72,13 +79,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
         // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         mAdapter = new TracksAdapter(getActivity());
 
@@ -92,6 +93,9 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
 
         registerForContextMenu(mListView);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         return rootView;
     }
@@ -140,7 +144,17 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        playTrack(position);
+        switch (mClickAction) {
+            case ACTION_ADD_SONG:
+                enqueueTrack(position, false);
+                break;
+            case ACTION_PLAY_SONG:
+                playTrack(position);
+                break;
+            case ACTION_PLAY_SONG_NEXT:
+                enqueueTrack(position, true);
+                break;
+        }
     }
 
     /**

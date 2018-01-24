@@ -22,15 +22,12 @@
 
 package org.gateshipone.odyssey.artworkdatabase;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.Map;
 

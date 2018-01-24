@@ -25,7 +25,6 @@ package org.gateshipone.odyssey.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -76,11 +75,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
 
         builder.setTitle(R.string.dialog_choose_storage_volume_title);
         mStorageVolumesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, storageVolumes);
-        builder.setAdapter(mStorageVolumesAdapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int item) {
-                mDirectorySelectedCallback.onDirectorySelected(mStorageVolumesAdapter.getItem(item), true);
-            }
-        });
+        builder.setAdapter(mStorageVolumesAdapter, (dialogInterface, item) -> mDirectorySelectedCallback.onDirectorySelected(mStorageVolumesAdapter.getItem(item), true));
 
         // Create the AlertDialog object and return it
         return builder.create();

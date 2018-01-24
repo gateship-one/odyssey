@@ -28,7 +28,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 
 public class InformationSettingsFragment extends PreferenceFragmentCompat {

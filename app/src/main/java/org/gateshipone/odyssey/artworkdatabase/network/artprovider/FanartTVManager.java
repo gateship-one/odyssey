@@ -29,7 +29,6 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.requests.OdysseyJsonObjectRequest;
@@ -111,54 +110,33 @@ public class FanartTVManager implements ArtistImageProvider {
 
         String artistURLName = Uri.encode(artist.getArtistName().replaceAll("/", " "));
 
-        getArtists(artistURLName, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                JSONArray artists;
-                try {
-                    artists = response.getJSONArray("artists");
+        getArtists(artistURLName, response -> {
+            JSONArray artists;
+            try {
+                artists = response.getJSONArray("artists");
 
-                    if (!artists.isNull(0)) {
-                        JSONObject artistObj = artists.getJSONObject(0);
-                        final String artistMBID = artistObj.getString("id");
+                if (!artists.isNull(0)) {
+                    JSONObject artistObj = artists.getJSONObject(0);
+                    final String artistMBID = artistObj.getString("id");
 
-                        getArtistImageURL(artistMBID, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                JSONArray thumbImages;
-                                try {
-                                    thumbImages = response.getJSONArray("artistthumb");
+                    getArtistImageURL(artistMBID, response1 -> {
+                        JSONArray thumbImages;
+                        try {
+                            thumbImages = response1.getJSONArray("artistthumb");
 
-                                    JSONObject firstThumbImage = thumbImages.getJSONObject(0);
-                                    artist.setMBID(artistMBID);
-                                    getArtistImage(firstThumbImage.getString("url"), artist, listener, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            errorListener.fetchVolleyError(artist, context, error);
-                                        }
-                                    });
+                            JSONObject firstThumbImage = thumbImages.getJSONObject(0);
+                            artist.setMBID(artistMBID);
+                            getArtistImage(firstThumbImage.getString("url"), artist, listener, error -> errorListener.fetchVolleyError(artist, context, error));
 
-                                } catch (JSONException e) {
-                                    errorListener.fetchJSONException(artist, context, e);
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                errorListener.fetchVolleyError(artist, context, error);
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    errorListener.fetchJSONException(artist, context, e);
+                        } catch (JSONException e) {
+                            errorListener.fetchJSONException(artist, context, e);
+                        }
+                    }, error -> errorListener.fetchVolleyError(artist, context, error));
                 }
+            } catch (JSONException e) {
+                errorListener.fetchJSONException(artist, context, e);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.fetchVolleyError(artist, context, error);
-            }
-        });
+        }, error -> errorListener.fetchVolleyError(artist, context, error));
     }
 
     /**
@@ -214,12 +192,7 @@ public class FanartTVManager implements ArtistImageProvider {
 
     @Override
     public void cancelAll() {
-        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return true;
-            }
-        });
+        mRequestQueue.cancelAll(request -> true);
     }
 
 }

@@ -30,7 +30,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -93,13 +92,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
         // set swipe refresh listener
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         mAdapter = new TracksAdapter(getActivity());
 
@@ -181,12 +174,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             if (mAdapter.isEmpty()) {
                 mToolbarAndFABCallback.setupFAB(null);
             } else {
-                mToolbarAndFABCallback.setupFAB(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        playPlaylist(0);
-                    }
-                });
+                mToolbarAndFABCallback.setupFAB(v -> playPlaylist(0));
             }
         }
     }
@@ -201,7 +189,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
                 enqueueTrack(position, false);
                 break;
             case ACTION_PLAY_SONG:
-                playPlaylist(position);
+                playTrack(position);
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
@@ -239,6 +227,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         }
 
         switch (item.getItemId()) {
+            case R.id.fragment_album_tracks_action_play:
+                playTrack(info.position);
+                return true;
             case R.id.fragment_playlist_tracks_action_enqueue:
                 enqueueTrack(info.position, false);
                 return true;
@@ -326,6 +317,22 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             } else {
                 mServiceConnection.getPBS().playPlaylistFile(mPlaylistPath, position);
             }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the PBS to enqueue the selected track and then play it.
+     *
+     * @param position the position of the selected track in the adapter
+     */
+    private void playTrack(int position) {
+        TrackModel track = (TrackModel) mAdapter.getItem(position);
+
+        try {
+            mServiceConnection.getPBS().playTrack(track);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

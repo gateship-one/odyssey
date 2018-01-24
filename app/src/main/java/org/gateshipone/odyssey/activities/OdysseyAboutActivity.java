@@ -28,7 +28,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
@@ -91,47 +90,30 @@ public class OdysseyAboutActivity extends Activity {
         ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
         getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this,R.attr.odyssey_color_primary_dark));
 
-        findViewById(R.id.odyssey_contributors).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);
+        findViewById(R.id.odyssey_contributors).setOnClickListener(view -> {
+            Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);
 
-                startActivity(myIntent);
-            }
+            startActivity(myIntent);
         });
 
-        findViewById(R.id.odyssey_thirdparty_licenses).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LicensesDialog.newInstance().show(getFragmentManager(), "LicensesDialog");
-            }
+        findViewById(R.id.odyssey_thirdparty_licenses).setOnClickListener(view -> LicensesDialog.newInstance().show(getFragmentManager(), "LicensesDialog"));
+
+        findViewById(R.id.logo_musicbrainz).setOnClickListener(view -> {
+            Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+            urlIntent.setData(Uri.parse(getString(R.string.url_musicbrainz)));
+            startActivity(urlIntent);
         });
 
-        findViewById(R.id.logo_musicbrainz).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getString(R.string.url_musicbrainz)));
-                startActivity(urlIntent);
-            }
+        findViewById(R.id.logo_lastfm).setOnClickListener(view -> {
+            Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+            urlIntent.setData(Uri.parse(getString(R.string.url_lastfm)));
+            startActivity(urlIntent);
         });
 
-        findViewById(R.id.logo_lastfm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getString(R.string.url_lastfm)));
-                startActivity(urlIntent);
-            }
-        });
-
-        findViewById(R.id.logo_fanarttv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent urlIntent = new Intent(Intent.ACTION_VIEW);
-                urlIntent.setData(Uri.parse(getString(R.string.url_fanarttv)));
-                startActivity(urlIntent);
-            }
+        findViewById(R.id.logo_fanarttv).setOnClickListener(view -> {
+            Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+            urlIntent.setData(Uri.parse(getString(R.string.url_fanarttv)));
+            startActivity(urlIntent);
         });
     }
 }
