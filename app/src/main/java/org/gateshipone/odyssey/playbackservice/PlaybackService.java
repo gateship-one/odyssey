@@ -287,8 +287,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mRepeat = state.mRepeatState;
 
         // Check if saved state is within bounds of resumed playlist
-        if (mCurrentPlayingIndex < 0 || mCurrentPlayingIndex > mCurrentList.size()) {
-            mCurrentPlayingIndex = -1;
+        int playlistSize = mCurrentList.size();
+        if (mCurrentPlayingIndex > playlistSize || mCurrentPlayingIndex < 0) {
+            mCurrentPlayingIndex = playlistSize == 0 ? -1 : 0;
         }
 
         // Internal state initialization
@@ -427,7 +428,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlayer.stop();
 
         // Reset the interal state variables
-        mCurrentPlayingIndex = -1;
+        mCurrentPlayingIndex = 0;
         mLastPosition = -1;
 
         mNextPlayingIndex = -1;
@@ -695,6 +696,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // reset random and repeat state
         mRandom = RANDOMSTATE.RANDOM_OFF;
         mRepeat = REPEATSTATE.REPEAT_OFF;
+
+        // No track remains
+        mCurrentPlayingIndex = -1;
 
         mPlaybackServiceStatusHelper.updateStatus();
 
@@ -1046,6 +1050,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Jump to next song which should be at index now
             // Jump is secured to check playlist bounds
             jumpToIndex(index);
+
+            // No track remains
+            mCurrentPlayingIndex = -1;
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
             // because of gapless playback, set next song to next one
@@ -1145,6 +1152,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                     break;
                 }
             }
+        }
+
+        if (mCurrentList.size() == 0) {
+            // No track remains
+            mCurrentPlayingIndex = -1;
         }
 
         // Send new NowPlaying because playlist changed
