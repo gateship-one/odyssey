@@ -37,9 +37,6 @@ import org.gateshipone.odyssey.utils.FilterTask;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
-import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements ArtworkManager.onNewAlbumImageListener {
 
     private final Context mContext;

@@ -219,7 +219,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         boolean filtered = mFilteredModelData.size() > 0;
 
         if (count > 0) {
-            GenericModel currentModel = (filtered ? mFilteredModelData.get(0) : mModelData.get(0));
+            T currentModel = (filtered ? mFilteredModelData.get(0) : mModelData.get(0));
 
             char lastSection;
             if (currentModel.getSectionTitle().length() > 0) {

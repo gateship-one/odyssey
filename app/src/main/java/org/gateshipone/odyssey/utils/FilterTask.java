@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class FilterTask<T extends GenericModel> extends AsyncTask<String, Object, Pair<List<T>, String>> {
+public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, Pair<List<T>, String>> {
 
     public interface SuccessCallback<T> {
         void onSuccess(final Pair<List<T>, String> result);
@@ -77,6 +77,10 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Object
         mLockRef.get().readLock().unlock();
 
         return new Pair<>(resultList, filterString);
+    }
+
+    public final AsyncTask<String, Void, Pair<List<T>,String>> execute(String filterString) {
+        return super.execute(filterString);
     }
 
     protected void onPostExecute(Pair<List<T>, String> result) {
