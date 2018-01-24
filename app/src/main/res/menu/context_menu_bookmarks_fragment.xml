@@ -26,13 +26,11 @@
 
     <item
         android:id="@+id/bookmarks_context_menu_action_resume"
-        android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/context_menu_action_resumebookmark"/>
 
     <item
         android:id="@+id/bookmarks_context_menu_action_delete"
-        android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/context_menu_action_deletebookmark"/>
 

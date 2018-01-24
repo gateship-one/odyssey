@@ -25,19 +25,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/fragment_albums_action_enqueue"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueue"/>
+        android:title="@string/context_menu_action_enqueue"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_albums_action_play"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_playalbum"/>
+        android:title="@string/context_menu_action_playalbum"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_albums_action_showartist"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/context_menu_action_showartist"/>
+        android:title="@string/context_menu_action_showartist"
+        app:showAsAction="never" />
 </menu>

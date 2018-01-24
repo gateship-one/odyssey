@@ -25,13 +25,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/fragment_files_action_add_folder"
-        android:orderInCategory="100"
         android:title="@string/context_menu_action_enqueue_folder"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/fragment_files_action_play_folder"
-        android:orderInCategory="100"
         android:title="@string/context_menu_action_play_folder"
         app:showAsAction="never" />
 </menu>
