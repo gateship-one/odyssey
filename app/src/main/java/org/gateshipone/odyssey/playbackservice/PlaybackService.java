@@ -428,7 +428,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlayer.stop();
 
         // Reset the interal state variables
-        mCurrentPlayingIndex = 0;
+        // Check if saved state is within bounds of resumed playlist
+        int playlistSize = mCurrentList.size();
+        if (mCurrentPlayingIndex > playlistSize || mCurrentPlayingIndex < 0) {
+            mCurrentPlayingIndex = playlistSize == 0 ? -1 : 0;
+        }
+
         mLastPosition = -1;
 
         mNextPlayingIndex = -1;
