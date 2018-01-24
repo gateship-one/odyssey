@@ -22,11 +22,11 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.widget.SectionIndexer;
 
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.utils.FilterTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     /**
      * Abstract list with model data used for this adapter.
      */
-    private List<T> mModelData;
+    protected List<T> mModelData;
 
     private final List<T> mFilteredModelData;
 
@@ -57,7 +57,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     private FilterTask mFilterTask;
 
-    private ReentrantReadWriteLock mLock;
+    protected ReentrantReadWriteLock mLock;
 
 
     public GenericSectionAdapter() {
@@ -286,64 +286,34 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         }
     }
 
-    protected FilterTask provideFilterTask() {
-        return new FilterTask() {
-            @Override
-            protected boolean matchesFilter(T elem, String filterString) {
-                return elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
+    void updateAfterFiltering(final Pair<List<T>, String> result) {
+        if (result.first != null && mFilterString.equals(result.second)) {
+            mLock.writeLock().lock();
+
+            mFilteredModelData.clear();
+            mFilteredModelData.addAll(result.first);
+
+            mLock.writeLock().unlock();
+
+            setScrollSpeed(0);
+            if (mSectionsEnabled) {
+                createSections();
             }
-        };
+            notifyDataSetChanged();
+        }
     }
 
-    protected abstract class FilterTask extends AsyncTask<String, Object, Pair<List<T>, String>> {
-
-        @Override
-        protected Pair<List<T>, String> doInBackground(String... lists) {
-            List<T> resultList = new ArrayList<>();
-
-            String filterString = lists[0];
-            mLock.readLock().lock();
-            for (T elem : mModelData) {
-                // Check if task was cancelled from the outside.
-                if (isCancelled()) {
-                    resultList.clear();
-                    mLock.readLock().unlock();
-                    return new Pair<>(resultList, filterString);
-                }
-                if (matchesFilter(elem, filterString)) {
-                    resultList.add(elem);
-                }
-            }
-            mLock.readLock().unlock();
-
-            return new Pair<>(resultList, filterString);
-        }
-
-        protected abstract boolean matchesFilter(final T elem, final String filterString);
-
-        protected void onPostExecute(Pair<List<T>, String> result) {
-            if (!isCancelled() && mFilterString.equals(result.second)) {
-                mLock.writeLock().lock();
-
-                mFilteredModelData.clear();
-                mFilteredModelData.addAll(result.first);
-
-                mLock.writeLock().unlock();
-
-                setScrollSpeed(0);
-                if (mSectionsEnabled) {
-                    createSections();
-                }
-                notifyDataSetChanged();
-            }
-        }
-
+    protected FilterTask provideFilterTask() {
+        return new FilterTask<>(mModelData, mLock,
+                (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase()),
+                this::updateAfterFiltering);
     }
 
     /**
      * Allows to enable/disable the support for sections of this adapter.
      * In case of enabling it creates the sections.
      * In case of disabling it will clear the data.
+     *
      * @param enabled
      */
     public void enableSections(boolean enabled) {
