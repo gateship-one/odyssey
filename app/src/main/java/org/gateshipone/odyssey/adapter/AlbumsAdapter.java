@@ -34,6 +34,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.FilterTask;
+import org.gateshipone.odyssey.utils.SectionCreator;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
@@ -142,8 +143,13 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
     @Override
     protected FilterTask provideFilterTask() {
         return new FilterTask<>(mModelData, mLock,
-                (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase()),
+                (elem, filterString) -> elem.getAlbumName().toLowerCase().contains(filterString.toLowerCase()),
                 this::updateAfterFiltering);
+    }
+
+    @Override
+    protected SectionCreator provideSectionCreator() {
+        return new SectionCreator<AlbumModel>(model -> model.getAlbumName().toUpperCase().charAt(0));
     }
 
     @Override
