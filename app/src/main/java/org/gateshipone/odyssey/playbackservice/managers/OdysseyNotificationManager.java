@@ -143,6 +143,10 @@ public class OdysseyNotificationManager {
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
+            mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
+
+            Notification notificationPublic = mNotificationBuilder.build();
+
             mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
             mNotificationBuilder.setContentText(track.getTrackArtistName());
 
@@ -189,7 +193,9 @@ public class OdysseyNotificationManager {
             }
 
             // Build the notification
+            mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
             mNotification = mNotificationBuilder.build();
+            mNotification.publicVersion = notificationPublic;
 
             // Check if run from service and check if playing or pause.
             // Pause notification should be dismissible.
