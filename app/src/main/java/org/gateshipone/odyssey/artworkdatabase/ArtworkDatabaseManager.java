@@ -445,7 +445,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
             requestCursor.close();
 
-            FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
+            FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
         }
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
