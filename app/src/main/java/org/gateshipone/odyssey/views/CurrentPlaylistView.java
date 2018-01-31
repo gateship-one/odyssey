@@ -44,9 +44,11 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private final ListView mListView;
     private final Context mContext;
 
-    private @Nullable CurrentPlaylistAdapter mCurrentPlaylistAdapter;
+    @Nullable
+    private CurrentPlaylistAdapter mCurrentPlaylistAdapter;
 
-    private @Nullable PlaybackServiceConnection mPlaybackServiceConnection;
+    @Nullable
+    private PlaybackServiceConnection mPlaybackServiceConnection;
 
     private boolean mHideArtwork;
 

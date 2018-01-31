@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -125,6 +126,7 @@ public class OdysseyMainActivity extends AppCompatActivity
     public ProgressDialog mProgressDialog;
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
 
+    @Nullable
     private PlaybackServiceConnection mServiceConnection;
 
     private Uri mSentUri;
@@ -133,6 +135,7 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
 
         // restore drag state
         if (savedInstanceState != null) {
@@ -303,7 +306,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
 
         // Create service connection
-        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
 
         // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
@@ -360,7 +362,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             nowPlayingView.onResume();
         }
 
-        mServiceConnection.openConnection();
+        if(mServiceConnection != null) {
+            mServiceConnection.openConnection();
+        }
     }
 
     @Override
@@ -390,7 +394,9 @@ public class OdysseyMainActivity extends AppCompatActivity
             nowPlayingView.onPause();
         }
 
-        mServiceConnection.closeConnection();
+        if(mServiceConnection != null) {
+            mServiceConnection.closeConnection();
+        }
     }
 
     @Override
@@ -503,7 +509,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
             try {
-                if (mServiceConnection.getPBS().getCurrentIndex() == info.position) {
+                if (mServiceConnection != null && mServiceConnection.getPBS().getCurrentIndex() == info.position) {
                     menu.findItem(R.id.view_current_playlist_action_playnext).setVisible(false);
                 }
             } catch (RemoteException e) {
@@ -1089,7 +1095,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     private void checkUri() {
         if (mSentUri != null) {
             try {
-                mServiceConnection.getPBS().playURI(mSentUri.toString());
+                if (mServiceConnection != null) {
+                    mServiceConnection.getPBS().playURI(mSentUri.toString());
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -1103,7 +1111,7 @@ public class OdysseyMainActivity extends AppCompatActivity
         @Override
         public void onConnect() {
             try {
-                if (mServiceConnection.getPBS().isBusy()) {
+                if (mServiceConnection != null && mServiceConnection.getPBS().isBusy()) {
                     // pbs is still working so show the progress dialog again
                     mProgressDialog.show();
                 } else {
