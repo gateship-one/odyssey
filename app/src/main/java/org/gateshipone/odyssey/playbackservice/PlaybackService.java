@@ -33,9 +33,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.HandlerThread;
@@ -229,6 +231,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private MetaDataLoader mMetaDataLoader;
 
+    private OdysseyComponentCallback mComponentCallback;
+
     /**
      * Called when the PlaybackService is bound by an activity.
      *
@@ -292,6 +296,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (mCurrentPlayingIndex > playlistSize || mCurrentPlayingIndex < 0) {
             mCurrentPlayingIndex = playlistSize == 0 ? -1 : 0;
         }
+
+        if (null == mComponentCallback) {
+            mComponentCallback = new OdysseyComponentCallback();
+        }
+
+        registerComponentCallbacks(mComponentCallback);
 
         // Internal state initialization
         mLastPlayingIndex = -1;
@@ -391,9 +401,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mBroadcastControlReceiver = null;
         }
 
+        unregisterComponentCallbacks(mComponentCallback);
+
         // Stop myself
         stopService();
     }
+
 
     /**
      * Directly plays uri
@@ -439,9 +452,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Broadcast the new status
         mPlaybackServiceStatusHelper.updateStatus();
-
-        // Request to stop the service
-        stopSelf();
     }
 
     /**
@@ -629,7 +639,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mSongTransitionWakelock.acquire(5000);
 
         // Logic to restart the song if playback is not progressed beyond 2000ms.
-        // This enables the behavior of CD-players which a user is used to.
+        // This enables the behavior of CD players which a user is used to.
         if (getTrackPosition() > 2000) {
             // Check if current song should be restarted
             jumpToIndex(mCurrentPlayingIndex);
@@ -782,8 +792,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
             // is necessary to handle playback start
             mNextPlayingIndex = index;
-        } else if (index < 0) {
-            // If index < 0 is requested for whatever reason stop the playback
+        } else if (index < 0 || index > mCurrentList.size()) {
+            // Invalid index
             stop();
         }
 
@@ -1639,8 +1649,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         Log.v(TAG, "Exception occured: " + exception.getReason().toString());
         Toast.makeText(getBaseContext(), TAG + ":" + exception.getReason().toString(), Toast.LENGTH_LONG).show();
         // TODO better handling?
-        // Stop service on exception for now
-        stopSelf();
+        stop();
     }
 
     /**
@@ -1886,7 +1895,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             } else if (intent.getAction().equals(ACTION_TOGGLEPAUSE)) {
                 togglePause();
             } else if (intent.getAction().equals(ACTION_QUIT)) {
-                stopSelf();
+                // Ensure state is saved when notification is swiped away
+                stopService();
             } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
                 // Check if artwork is for currently playing album
                 String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
@@ -1894,6 +1904,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
 
+    }
+
+    /**
+     * Private callback class used to monitor the memory situation of the system.
+     * If memory reaches a certain point, we will relinquish our data.
+     */
+    private class OdysseyComponentCallback implements ComponentCallbacks2 {
+
+        @Override
+        public void onTrimMemory(int level) {
+            if (level == TRIM_MEMORY_COMPLETE && getPlaybackState() != PLAYSTATE.PLAYING) {
+                stopService();
+            }
+        }
+
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+
+        }
+
+        @Override
+        public void onLowMemory() {
+        }
     }
 
 }
