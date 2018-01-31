@@ -35,6 +35,7 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -66,6 +67,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         // add listener to open equalizer
         Preference openEqualizer = findPreference(getString(R.string.pref_open_equalizer_key));
@@ -108,9 +110,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             return true;
         });
 
-
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -133,6 +132,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
+
+        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
     }
 
     /**
@@ -143,8 +144,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
-
-        mServiceConnection.openConnection();
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
@@ -165,8 +164,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
-        mServiceConnection.closeConnection();
     }
 
     /**

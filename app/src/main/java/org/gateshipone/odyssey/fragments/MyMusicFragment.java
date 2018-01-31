@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -108,14 +109,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public enum DEFAULTTAB {
         ARTISTS, ALBUMS, TRACKS
     }
-
-
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
-    }
-
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -223,6 +216,8 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
+
+        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
     }
 
     /**
@@ -232,20 +227,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onResume() {
         super.onResume();
 
-        mServiceConnection.openConnection();
-
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(getPlayButtonListener(mMyMusicViewPager.getCurrentItem()));
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mServiceConnection.closeConnection();
     }
 
     /**
