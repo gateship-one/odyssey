@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;

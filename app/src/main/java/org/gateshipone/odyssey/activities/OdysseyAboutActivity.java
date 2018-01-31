@@ -23,10 +23,8 @@
 package org.gateshipone.odyssey.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
