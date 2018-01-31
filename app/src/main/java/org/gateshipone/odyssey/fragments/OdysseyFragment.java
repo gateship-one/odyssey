@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -34,6 +35,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AbsListView;
 
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
@@ -66,6 +68,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     /**
      * ServiceConnection object to communicate with the PlaybackService
      */
+    @Nullable
     protected PlaybackServiceConnection mServiceConnection;
 
     /**
@@ -96,7 +99,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
     }
 
     @Override
@@ -117,6 +119,8 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
+
+        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
     }
 
     @Override
@@ -142,8 +146,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         mAdapter.registerDataSetObserver(mDataSetObserver);
 
-        mServiceConnection.openConnection();
-
         getContent();
 
         mTrimmingEnabled = false;
@@ -153,8 +155,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     public void onPause() {
         super.onPause();
         mTrimmingEnabled = true;
-
-        mServiceConnection.closeConnection();
 
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
     }
