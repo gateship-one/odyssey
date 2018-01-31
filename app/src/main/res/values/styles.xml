@@ -47,7 +47,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_orange</item>
     </style>
 
-    <style name="AppTheme.deepOrange" parent="AppTheme">
+    <style name="AppTheme.deeporange" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_deepOrange</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_deepOrange</item>
         <item name="odyssey_color_accent">@color/colorAccent_deepOrange</item>
@@ -71,7 +71,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_blue</item>
     </style>
 
-    <style name="AppTheme.darkGrey" parent="AppTheme">
+    <style name="AppTheme.darkgrey" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_darkGrey</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_darkGrey</item>
         <item name="odyssey_color_accent">@color/colorAccent_darkGrey</item>
@@ -95,7 +95,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_brown</item>
     </style>
 
-    <style name="AppTheme.lightGreen" parent="AppTheme">
+    <style name="AppTheme.lightgreen" parent="AppTheme">
         <item name="odyssey_color_primary">@color/colorPrimary_lightGreen</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_lightGreen</item>
         <item name="odyssey_color_accent">@color/colorAccent_lightGreen</item>
@@ -143,7 +143,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_orange</item>
     </style>
 
-    <style name="AppTheme.deepOrange_light" parent="AppThemeLight">
+    <style name="AppTheme.deeporange_light" parent="AppThemeLight">
         <item name="odyssey_color_primary">@color/colorPrimary_light_deepOrange</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_deepOrange</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_deepOrange</item>
@@ -167,7 +167,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_blue</item>
     </style>
 
-    <style name="AppTheme.darkGrey_light" parent="AppThemeLight">
+    <style name="AppTheme.darkgrey_light" parent="AppThemeLight">
         <item name="odyssey_color_primary">@color/colorPrimary_light_darkGrey</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_darkGrey</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_darkGrey</item>
@@ -191,7 +191,7 @@
         <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_brown</item>
     </style>
 
-    <style name="AppTheme.lightGreen_light" parent="AppThemeLight">
+    <style name="AppTheme.lightgreen_light" parent="AppThemeLight">
         <item name="odyssey_color_primary">@color/colorPrimary_light_lightGreen</item>
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_lightGreen</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_lightGreen</item>
