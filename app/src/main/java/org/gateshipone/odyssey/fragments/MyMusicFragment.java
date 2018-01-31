@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -113,7 +114,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
     }
 
 
@@ -223,6 +223,8 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
+
+        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
     }
 
     /**
@@ -231,8 +233,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     @Override
     public void onResume() {
         super.onResume();
-
-        mServiceConnection.openConnection();
 
         if (mToolbarAndFABCallback != null) {
             // set up play button
@@ -245,7 +245,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     @Override
     public void onPause() {
         super.onPause();
-        mServiceConnection.closeConnection();
     }
 
     /**
