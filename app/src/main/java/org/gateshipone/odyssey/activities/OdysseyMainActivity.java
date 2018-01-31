@@ -101,7 +101,7 @@ import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
 
-public class OdysseyMainActivity extends AppCompatActivity
+public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
         OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
@@ -123,11 +123,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
 
-    public ProgressDialog mProgressDialog;
-    private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
-
-    @Nullable
-    private PlaybackServiceConnection mServiceConnection;
 
     private Uri mSentUri;
 
@@ -135,8 +130,6 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
-
         // restore drag state
         if (savedInstanceState != null) {
             mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
@@ -159,50 +152,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
         }
 
-        // Read theme preference
+        // Get preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String themePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
-        boolean darkTheme = sharedPref.getBoolean(getString(R.string.pref_dark_theme_key), getResources().getBoolean(R.bool.pref_theme_dark_default));
-        if (darkTheme) {
-            if (themePref.equals(getString(R.string.pref_indigo_key))) {
-                setTheme(R.style.AppTheme_indigo);
-            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
-                setTheme(R.style.AppTheme_orange);
-            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
-                setTheme(R.style.AppTheme_deepOrange);
-            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
-                setTheme(R.style.AppTheme_blue);
-            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
-                setTheme(R.style.AppTheme_darkGrey);
-            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
-                setTheme(R.style.AppTheme_brown);
-            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
-                setTheme(R.style.AppTheme_lightGreen);
-            } else if (themePref.equals(getString(R.string.pref_red_key))) {
-                setTheme(R.style.AppTheme_red);
-            }
-        } else {
-            if (themePref.equals(getString(R.string.pref_indigo_key))) {
-                setTheme(R.style.AppTheme_indigo_light);
-            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
-                setTheme(R.style.AppTheme_orange_light);
-            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
-                setTheme(R.style.AppTheme_deepOrange_light);
-            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
-                setTheme(R.style.AppTheme_blue_light);
-            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
-                setTheme(R.style.AppTheme_darkGrey_light);
-            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
-                setTheme(R.style.AppTheme_brown_light);
-            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
-                setTheme(R.style.AppTheme_lightGreen_light);
-            } else if (themePref.equals(getString(R.string.pref_red_key))) {
-                setTheme(R.style.AppTheme_red_light);
-            }
-        }
-        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
-            setTheme(R.style.AppTheme_oledDark);
-        }
 
         super.onCreate(savedInstanceState);
 
@@ -216,11 +167,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance();
 
-        // setup progressdialog
-        mProgressDialog = new ProgressDialog(OdysseyMainActivity.this);
-        mProgressDialog.setMessage(getString(R.string.playbackservice_working));
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(true);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -305,11 +251,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             transaction.commit();
         }
 
-        // Create service connection
-        mServiceConnection.setNotifier(new ServiceConnectionListener());
 
-        // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // ask for permissions
         requestPermissionExternalStorage();
@@ -319,15 +261,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (mPBSOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOperationFinishedReceiver);
-            mPBSOperationFinishedReceiver = null;
-        }
-        mPBSOperationFinishedReceiver = new PBSOperationFinishedReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_IDLE);
-        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
-        registerReceiver(mPBSOperationFinishedReceiver, filter);
 
         NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -361,10 +294,6 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
             nowPlayingView.onResume();
         }
-
-        if(mServiceConnection != null) {
-            mServiceConnection.openConnection();
-        }
     }
 
     @Override
@@ -382,10 +311,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        if (mPBSOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOperationFinishedReceiver);
-            mPBSOperationFinishedReceiver = null;
-        }
 
         NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -393,10 +318,17 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             nowPlayingView.onPause();
         }
+    }
 
-        if(mServiceConnection != null) {
-            mServiceConnection.closeConnection();
-        }
+    @Override
+    void onServiceConnected() {
+        // the service is ready so check if odyssey was opened by a file
+        checkUri();
+    }
+
+    @Override
+    void onServiceDisconnected() {
+
     }
 
     @Override
@@ -1106,52 +1038,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         }
     }
 
-    private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
 
-        @Override
-        public void onConnect() {
-            try {
-                if (mServiceConnection != null && mServiceConnection.getPBS().isBusy()) {
-                    // pbs is still working so show the progress dialog again
-                    mProgressDialog.show();
-                } else {
-                    // pbs is not working so dismiss the progress dialog
-                    mProgressDialog.dismiss();
 
-                    // the service is ready so check if odyssey was opened by a file
-                    checkUri();
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                // error occured so dismiss the progress dialog anyway
-                mProgressDialog.dismiss();
-            }
-        }
-
-        @Override
-        public void onDisconnect() {
-            // disconnected so dismiss dialog anyway
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private class PBSOperationFinishedReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (PlaybackServiceStatusHelper.MESSAGE_WORKING.equals(intent.getAction())) {
-                runOnUiThread(() -> {
-                    if (mProgressDialog != null) {
-                        mProgressDialog.show();
-                    }
-                });
-            } else if (PlaybackServiceStatusHelper.MESSAGE_IDLE.equals(intent.getAction())) {
-                runOnUiThread(() -> {
-                    if (mProgressDialog != null) {
-                        mProgressDialog.dismiss();
-                    }
-                });
-            }
-        }
-    }
 }
