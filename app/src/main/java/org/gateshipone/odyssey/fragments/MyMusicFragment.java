@@ -110,13 +110,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         ARTISTS, ALBUMS, TRACKS
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-    }
-
-
     /**
      * Called to create instantiate the UI of the fragment.
      */
@@ -240,11 +233,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     /**
