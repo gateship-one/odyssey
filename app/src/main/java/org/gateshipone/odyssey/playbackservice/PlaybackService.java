@@ -122,6 +122,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public static final String ACTION_QUIT = "org.gateshipone.odyssey.quit";
     public static final String ACTION_TOGGLEPAUSE = "org.gateshipone.odyssey.togglepause";
 
+    private static final int INDEX_NO_TRACKS_AVAILABLE = -1;
 
     /**
      * Request code for the timeout intent when the PlaybackService is waiting to quit
@@ -427,17 +428,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Request the GaplessPlayer to stop its playback.
         mPlayer.stop();
 
-        // Reset the interal state variables
-        // Check if saved state is within bounds of resumed playlist
-        int playlistSize = mCurrentList.size();
-        if (mCurrentPlayingIndex > playlistSize || mCurrentPlayingIndex < 0) {
-            mCurrentPlayingIndex = playlistSize == 0 ? -1 : 0;
-        }
+        // Stop should always set the index to zero (if tracks are available, otherwise -1)
+        mCurrentPlayingIndex = mCurrentList.size() == 0 ? INDEX_NO_TRACKS_AVAILABLE : 0;
 
         mLastPosition = -1;
 
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
+
+
+        // Broadcast the new status
+        mPlaybackServiceStatusHelper.updateStatus();
 
         // Request to stop the service
         stopSelf();
@@ -727,7 +728,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param jumpTime Position inside the song (milliseconds)
      */
     public void jumpToIndex(int index, int jumpTime) {
-
         // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
         if (mPlayer.getActive()) {
             // Abort here if the player is still active
@@ -846,7 +846,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mCurrentList.addAll(tracklist);
 
         // If track is the first to be added, set playing index to 0
-        if (mCurrentPlayingIndex == -1) {
+        if (mCurrentPlayingIndex == INDEX_NO_TRACKS_AVAILABLE) {
             mCurrentPlayingIndex = 0;
         }
 
@@ -991,14 +991,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueTrack(TrackModel track) {
-        // Check if current song is old last one, if so set next song to MP for
+        // Check if the current song is the old last one, if so set the next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();
 
         mCurrentList.add(track);
 
         // If track is the first to be added, set playing index to 0
-        if (mCurrentPlayingIndex == -1) {
+        if (mCurrentPlayingIndex == INDEX_NO_TRACKS_AVAILABLE) {
             mCurrentPlayingIndex = 0;
         }
 
@@ -1046,18 +1046,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index Position of the track to remove
      */
     public void dequeueTrack(int index) {
+        PLAYSTATE state = getPlaybackState();
         // Check if track is currently playing, if so stop it
         if (mCurrentPlayingIndex == index) {
-            // Stop playback of currentsong
-            stop();
             // Delete song at index
             mCurrentList.remove(index);
-            // Jump to next song which should be at index now
-            // Jump is secured to check playlist bounds
-            jumpToIndex(index);
 
-            // No track remains
-            mCurrentPlayingIndex = -1;
+            // Check if a next track exists and jump to it if player was playing before
+            if (state == PLAYSTATE.PLAYING && index < mCurrentList.size()) {
+                jumpToIndex(index);
+            } else {
+                stop();
+            }
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
             // because of gapless playback, set next song to next one
@@ -1071,6 +1071,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 mNextPlayingIndex--;
             }
         }
+
+        // Check if a song remains
+        if (mCurrentList.size() == 0) {
+            // No track remains
+            stop();
+        }
+
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
     }
@@ -1084,6 +1091,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void dequeueTracks(int index) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
+
+        PLAYSTATE state = getPlaybackState();
 
         int endIndex = index + 1;
 
@@ -1099,9 +1108,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         if (mCurrentPlayingIndex >= index && mCurrentPlayingIndex < endIndex) {
-            // current song is in section so stop playing
-            stop();
-
             // remove section and update endindex accordingly
             ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
 
@@ -1115,10 +1121,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                     break;
                 }
             }
-
-            // Jump to next song which should be at endIndex now
-            // Jump is secured to check playlist bounds
-            jumpToIndex(endIndex);
+            // Check if a next track exists and jump to it if player was playing before
+            if (state == PLAYSTATE.PLAYING && endIndex < mCurrentList.size()) {
+                jumpToIndex(endIndex);
+            } else {
+                stop();
+            }
         } else if ((mCurrentPlayingIndex + 1) == index) {
             // Deletion of next song which requires extra handling
             // because of gapless playback, set next song to next one
@@ -1159,9 +1167,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         }
 
+        // Check if a song remains
         if (mCurrentList.size() == 0) {
             // No track remains
-            mCurrentPlayingIndex = -1;
+            stop();
         }
 
         // Send new NowPlaying because playlist changed
