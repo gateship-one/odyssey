@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OdysseyContributorsActivity extends Activity {
+public class OdysseyContributorsActivity extends GenericActivity {
 
     private static final String CONTRIBUTOR_NAME_KEY = "name";
 
@@ -67,5 +67,15 @@ public class OdysseyContributorsActivity extends Activity {
                 new String[] {CONTRIBUTOR_NAME_KEY, CONTRIBUTOR_TYPE_KEY}, new int[] { R.id.item_title, R.id.item_subtitle });
 
         contributors.setAdapter(adapter);
+    }
+
+    @Override
+    void onServiceConnected() {
+
+    }
+
+    @Override
+    void onServiceDisconnected() {
+
     }
 }
