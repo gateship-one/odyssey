@@ -39,7 +39,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     /**
      * Abstract list with model data used for this adapter.
      */
-    final List<T> mModelData;
+    private final List<T> mModelData;
 
     private final List<T> mFilteredModelData;
 
@@ -237,7 +237,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         }
     }
 
-    void updateAfterFiltering(final Pair<List<T>, String> result) {
+    private void updateAfterFiltering(final Pair<List<T>, String> result) {
         if (result.first != null && mFilterString.equals(result.second)) {
             mLock.readLock().unlock();
 
@@ -257,7 +257,8 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             mLock.readLock().unlock();
         }
     }
-    protected void filteringAborted() {
+
+    private void filteringAborted() {
         mLock.readLock().unlock();
     }
 
