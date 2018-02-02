@@ -38,7 +38,7 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         void onSuccess(final Pair<List<T>, String> result);
     }
 
-    public interface FailureCallback<T> {
+    public interface FailureCallback {
         void onFailure();
     }
 
@@ -50,11 +50,11 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
 
     private final SuccessCallback<T> mSuccessCallback;
 
-    private final FailureCallback<T> mFailureCallback;
+    private final FailureCallback mFailureCallback;
 
     private final WeakReference<List<T>> mModelDataRef;
 
-    public FilterTask(final List<T> modelData, final Filter<T> filter, final SuccessCallback<T> successCallback, final FailureCallback<T> failureCallback) {
+    public FilterTask(final List<T> modelData, final Filter<T> filter, final SuccessCallback<T> successCallback, final FailureCallback failureCallback) {
         mModelDataRef = new WeakReference<>(modelData);
         mFilter = filter;
         mSuccessCallback = successCallback;
@@ -84,11 +84,17 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         return super.execute(filterString);
     }
 
+    @Override
     protected void onPostExecute(Pair<List<T>, String> result) {
         if (!isCancelled()) {
             mSuccessCallback.onSuccess(result);
         } else {
             mFailureCallback.onFailure();
         }
+    }
+
+    @Override
+    protected void onCancelled() {
+        mFailureCallback.onFailure();
     }
 }
