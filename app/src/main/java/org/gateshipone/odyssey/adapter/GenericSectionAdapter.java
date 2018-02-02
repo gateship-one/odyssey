@@ -51,7 +51,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      */
     private FilterTask mFilterTask;
 
-    ReentrantReadWriteLock mLock;
+    private ReentrantReadWriteLock mLock;
 
     private final SectionCreator mSectionCreator;
 
@@ -217,6 +217,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             mFilterTask.cancel(true);
         }
         mFilterTask = provideFilterTask();
+        mLock.readLock().lock();
         mFilterTask.execute(mFilterString);
     }
 
@@ -238,6 +239,8 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
 
     void updateAfterFiltering(final Pair<List<T>, String> result) {
         if (result.first != null && mFilterString.equals(result.second)) {
+            mLock.readLock().unlock();
+
             mLock.writeLock().lock();
 
             mFilteredModelData.clear();
@@ -250,13 +253,22 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
                 createSections();
             }
             notifyDataSetChanged();
+        } else {
+            mLock.readLock().unlock();
         }
     }
+    protected void filteringAborted() {
+        mLock.readLock().unlock();
+    }
 
-    protected FilterTask provideFilterTask() {
-        return new FilterTask<>(mModelData, mLock,
-                (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase()),
-                this::updateAfterFiltering);
+    private FilterTask provideFilterTask() {
+        return new FilterTask<>(mModelData,
+                provideFilter(),
+                this::updateAfterFiltering, this::filteringAborted);
+    }
+
+    protected FilterTask.Filter<T> provideFilter() {
+        return (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
     }
 
     protected SectionCreator provideSectionCreator() {

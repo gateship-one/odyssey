@@ -38,6 +38,10 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         void onSuccess(final Pair<List<T>, String> result);
     }
 
+    public interface FailureCallback<T> {
+        void onFailure();
+    }
+
     public interface Filter<T> {
         boolean matchesFilter(final T elem, final String filterString);
     }
@@ -46,15 +50,15 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
 
     private final SuccessCallback<T> mSuccessCallback;
 
+    private final FailureCallback<T> mFailureCallback;
+
     private final WeakReference<List<T>> mModelDataRef;
 
-    private final WeakReference<ReentrantReadWriteLock> mLockRef;
-
-    public FilterTask(final List<T> modelData, final ReentrantReadWriteLock lock, final Filter<T> filter, final SuccessCallback<T> successCallback) {
+    public FilterTask(final List<T> modelData, final Filter<T> filter, final SuccessCallback<T> successCallback, final FailureCallback<T> failureCallback) {
         mModelDataRef = new WeakReference<>(modelData);
-        mLockRef = new WeakReference<>(lock);
         mFilter = filter;
         mSuccessCallback = successCallback;
+        mFailureCallback = failureCallback;
     }
 
     @Override
@@ -62,19 +66,16 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         List<T> resultList = new ArrayList<>();
 
         String filterString = lists[0];
-        mLockRef.get().readLock().lock();
         for (T elem : mModelDataRef.get()) {
             // Check if task was cancelled from the outside.
             if (isCancelled()) {
                 resultList.clear();
-                mLockRef.get().readLock().unlock();
                 return new Pair<>(resultList, filterString);
             }
             if (mFilter.matchesFilter(elem, filterString)) {
                 resultList.add(elem);
             }
         }
-        mLockRef.get().readLock().unlock();
 
         return new Pair<>(resultList, filterString);
     }
@@ -86,6 +87,8 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
     protected void onPostExecute(Pair<List<T>, String> result) {
         if (!isCancelled()) {
             mSuccessCallback.onSuccess(result);
+        } else {
+            mFailureCallback.onFailure();
         }
     }
 }

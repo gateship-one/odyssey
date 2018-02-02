@@ -140,12 +140,12 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
         }
     }
 
+
     @Override
-    protected FilterTask provideFilterTask() {
-        return new FilterTask<>(mModelData, mLock,
-                (elem, filterString) -> elem.getAlbumName().toLowerCase().contains(filterString.toLowerCase()),
-                this::updateAfterFiltering);
+    protected FilterTask.Filter<AlbumModel> provideFilter() {
+        return (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
     }
+
 
     @Override
     protected SectionCreator provideSectionCreator() {
