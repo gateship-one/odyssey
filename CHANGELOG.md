@@ -1,3 +1,10 @@
+### Version: 1.1.12 Tag: release-24 (2018-02-03) ###
+* Default action for library tracks selectable (play song, add song (default), add as next song)
+* State saving for android 8 fixed
+* Updated french and italian translations
+* Playbackservice fixes (disappearing playlist)
+* linked FAQ
+
 ### Version: 1.1.11 Tag: release-23 (2018-01-10) ###
 * Fix crash when choosing 'Play after current song' with an empty playlist
 * Fix possible problem in cover loading process
