@@ -55,6 +55,10 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      */
     private OnArtistSelectedListener mArtistSelectedCallback;
 
+    public static RecentAlbumsFragment newInstance() {
+        return new RecentAlbumsFragment();
+    }
+
     /**
      * Called to create instantiate the UI of the fragment.
      */

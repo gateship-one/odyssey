@@ -44,6 +44,10 @@ import java.util.List;
 
 public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
 
+    public static BookmarksFragment newInstance() {
+        return new BookmarksFragment();
+    }
+
     /**
      * Called to create instantiate the UI of the fragment.
      */

@@ -62,6 +62,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
+    public static AllTracksFragment newInstance() {
+        return new AllTracksFragment();
+    }
+
     /**
      * Called to create instantiate the UI of the fragment.
      */

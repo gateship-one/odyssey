@@ -36,6 +36,10 @@ public class InformationSettingsFragment extends PreferenceFragmentCompat {
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
 
+    public static InformationSettingsFragment newInstance() {
+        return new InformationSettingsFragment();
+    }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.odyssey_information_settings);
@@ -54,7 +58,6 @@ public class InformationSettingsFragment extends PreferenceFragmentCompat {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
     }
-
 
     /**
      * Called when the fragment resumes.
