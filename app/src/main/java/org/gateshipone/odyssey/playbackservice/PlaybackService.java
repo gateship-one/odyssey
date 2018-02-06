@@ -778,11 +778,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             try {
                 mPlayer.play(item.getTrackURL(), jumpTime);
             } catch (GaplessPlayer.PlaybackException e) {
-                // Handle an error of the play commant
+                // Handle an error of the play command
                 handlePlaybackException(e);
             }
 
-            // Sets the mNextPlayingIndex to the index just startet, because the PlaybackStartListener will
+            // Sets the mNextPlayingIndex to the index just started, because the PlaybackStartListener will
             // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
             // is necessary to handle playback start
             mNextPlayingIndex = index;
