@@ -738,12 +738,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param jumpTime Position inside the song (milliseconds)
      */
     public void jumpToIndex(int index, int jumpTime) {
-        // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
-        if (mPlayer.getActive()) {
-            // Abort here if the player is still active
-            return;
-        }
-
         // Cancel possible alerts registered within the AlarmManager
         cancelQuitAlert();
 
