@@ -1621,6 +1621,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.hideArtwork(enable);
     }
 
+    public void notificationPrivate(boolean enable) {
+        mPlaybackServiceStatusHelper.notificationPrivate(enable);
+    }
+
     /**
      * Handles all the exceptions from the GaplessPlayer. For now it justs stops
      * itself and outs an Toast message to the user. Thats the best we could

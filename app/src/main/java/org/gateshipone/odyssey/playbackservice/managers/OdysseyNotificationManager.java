@@ -70,6 +70,9 @@ public class OdysseyNotificationManager {
     // Notification itself
     private Notification mNotification;
 
+    //Preferences for notifications
+    private boolean mNotificationPrivate;
+
     // Save last track and last image
     private Bitmap mLastBitmap = null;
     private TrackModel mLastTrack = null;
@@ -193,7 +196,10 @@ public class OdysseyNotificationManager {
             }
 
             // Build the notification
-            mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
+            if (mNotificationPrivate) {
+                mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
+            }
+
             mNotification = mNotificationBuilder.build();
             mNotification.publicVersion = notificationPublic;
 
@@ -245,6 +251,30 @@ public class OdysseyNotificationManager {
 
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;
+    }
+
+    public void notificationPrivate(boolean enable) {
+        mNotificationPrivate = enable;
+        if (mNotification != null) {
+            mNotification.visibility = mNotificationPrivate ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC;
+
+            if (mNotificationManager != null) {
+                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+            }
+        }
+/*
+        //ATTENTION!
+        //This code would be more correct, BUT it removes the control elements when going from public to private.
+        //I don't know the reason...
+        if (mNotificationBuilder != null) {
+            mNotificationBuilder.setVisibility(mNotificationPrivate ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC);
+            mNotification = mNotificationBuilder.build();
+
+            if (mNotificationManager != null) {
+                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+            }
+        }
+*/
     }
 
     /**

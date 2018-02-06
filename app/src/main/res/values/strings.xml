@@ -250,6 +250,9 @@
     <string name="preference_use_english_wikipedia_title">Use English Wikipedia</string>
     <string name="preference_use_english_wikipedia_text">Use the English Wikipedia version to lookup pages</string>
 
+    <string name="preference_notification_private_title">Private notifications</string>
+    <string name="preference_notification_private_text">Hide media information on lock screen (depends on the lock screen privacy settings)</string>
+
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>
     <string name="preference_category_artwork_other_actions">Other actions</string>

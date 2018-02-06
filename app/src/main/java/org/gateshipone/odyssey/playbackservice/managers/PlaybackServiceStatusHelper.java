@@ -95,6 +95,8 @@ public class PlaybackServiceStatusHelper {
 
         mHideArtwork = sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_artwork_key), playbackService.getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
+        notificationPrivate(sharedPref.getBoolean(playbackService.getString(R.string.pref_notification_private_key), playbackService.getResources().getBoolean(R.bool.pref_notification_private_default)));
+
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
         mPlaybackService.sendBroadcast(settingChangedIntent);
@@ -398,6 +400,11 @@ public class PlaybackServiceStatusHelper {
 
         // Update notification and lockscreen
         updateStatus();
+    }
+
+    public void notificationPrivate(boolean enable) {
+        mNotificationManager.notificationPrivate(enable);
+        //updateStatus(); //This creates a null pointer exception!
     }
 
     /**

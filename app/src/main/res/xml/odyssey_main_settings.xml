@@ -101,5 +101,10 @@
         <Preference
             android:key="@string/pref_open_equalizer_key"
             android:title="@string/popup_menu_action_startequalizer" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_notification_private_default"
+            android:key="@string/pref_notification_private_key"
+            android:summary="@string/preference_notification_private_text"
+            android:title="@string/preference_notification_private_title" />
     </PreferenceCategory>
 </PreferenceScreen>
