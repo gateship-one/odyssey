@@ -49,11 +49,11 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     /**
      * Task used to do the filtering of the list asynchronously
      */
-    private FilterTask mFilterTask;
+    private FilterTask<T> mFilterTask;
 
     private ReentrantReadWriteLock mLock;
 
-    private final SectionCreator mSectionCreator;
+    private final SectionCreator<T> mSectionCreator;
 
     GenericSectionAdapter() {
         super();
@@ -129,16 +129,10 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     @Override
     public int getSectionForPosition(int pos) {
         if (mSectionsEnabled) {
-            String sectionTitle = ((GenericModel) getItem(pos)).getSectionTitle();
+            //noinspection unchecked
+            final T model = (T) getItem(pos);
 
-            char itemSection;
-            if (sectionTitle.length() > 0) {
-                itemSection = sectionTitle.toUpperCase().charAt(0);
-            } else {
-                itemSection = ' ';
-            }
-
-            return mSectionCreator.getSectionPositionForSection(itemSection);
+            return mSectionCreator.getSectionPositionForModel(model);
         }
         return 0;
     }
@@ -262,7 +256,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         mLock.readLock().unlock();
     }
 
-    private FilterTask provideFilterTask() {
+    private FilterTask<T> provideFilterTask() {
         return new FilterTask<>(mModelData,
                 provideFilter(),
                 this::updateAfterFiltering, this::filteringAborted);
@@ -272,8 +266,12 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         return (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
     }
 
-    protected SectionCreator provideSectionCreator() {
-        return new SectionCreator<>(model -> model.getSectionTitle().toUpperCase().charAt(0));
+    protected SectionCreator<T> provideSectionCreator() {
+        return new SectionCreator<>(model -> {
+            final String sectionTitle = model.getSectionTitle();
+
+            return sectionTitle.isEmpty() ? ' ' : sectionTitle.toUpperCase().charAt(0);
+        });
     }
 
     /**

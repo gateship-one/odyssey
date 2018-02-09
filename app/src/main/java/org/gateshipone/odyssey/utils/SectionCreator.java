@@ -53,17 +53,12 @@ public class SectionCreator<T extends GenericModel> {
     public void createSections(final List<T> modelData) {
         clearSections();
 
-        int count = modelData.size();
+        final int count = modelData.size();
 
         if (count > 0) {
             T currentModel = modelData.get(0);
 
-            char lastSection;
-            if (currentModel.getSectionTitle().length() > 0) {
-                lastSection = mSectionChooser.getSectionName(currentModel);
-            } else {
-                lastSection = ' ';
-            }
+            char lastSection = mSectionChooser.getSectionName(currentModel);
 
             mSectionList.add(String.valueOf(lastSection));
             mSectionPositions.add(0);
@@ -72,12 +67,7 @@ public class SectionCreator<T extends GenericModel> {
             for (int i = 1; i < count; i++) {
                 currentModel = modelData.get(i);
 
-                char currentSection;
-                if (currentModel.getSectionTitle().length() > 0) {
-                    currentSection = mSectionChooser.getSectionName(currentModel);
-                } else {
-                    currentSection = ' ';
-                }
+                final char currentSection = mSectionChooser.getSectionName(currentModel);
 
                 if (lastSection != currentSection) {
                     mSectionList.add("" + currentSection);
@@ -95,7 +85,9 @@ public class SectionCreator<T extends GenericModel> {
         return mSectionPositions.get(sectionIndex);
     }
 
-    public int getSectionPositionForSection(final char section) {
+    public int getSectionPositionForModel(final T model) {
+        final char section = mSectionChooser.getSectionName(model);
+
         if (mPositionSectionMap.containsKey(section)) {
             return mPositionSectionMap.get(section);
         } else {
