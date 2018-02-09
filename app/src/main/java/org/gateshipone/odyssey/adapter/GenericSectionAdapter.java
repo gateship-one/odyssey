@@ -129,8 +129,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     @Override
     public int getSectionForPosition(int pos) {
         if (mSectionsEnabled) {
-            //noinspection unchecked
-            final T model = (T) getItem(pos);
+            final T model = getItem(pos);
 
             return mSectionCreator.getSectionPositionForModel(model);
         }
@@ -168,12 +167,12 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      * @return The item at index position.
      */
     @Override
-    public Object getItem(int position) {
+    public T getItem(int position) {
         mLock.readLock().lock();
 
         int filteredSize = mFilteredModelData.size();
 
-        Object obj = filteredSize > 0 ? mFilteredModelData.get(position) : mModelData.get(position);
+        T obj = filteredSize > 0 ? mFilteredModelData.get(position) : mModelData.get(position);
 
         mLock.readLock().unlock();
 
