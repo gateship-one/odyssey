@@ -350,7 +350,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().playTrack(track);
@@ -367,7 +367,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, asNext);

@@ -350,7 +350,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
+        TrackModel clickedTrack = mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
@@ -367,7 +367,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueTrack(track, asNext);
@@ -383,7 +383,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().playTrack(track);

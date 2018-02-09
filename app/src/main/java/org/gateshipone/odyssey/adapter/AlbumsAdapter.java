@@ -80,7 +80,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AlbumModel album = (AlbumModel) getItem(position);
+        AlbumModel album = getItem(position);
         String label = album.getAlbumName();
 
         if (mUseList) {

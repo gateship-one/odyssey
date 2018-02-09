@@ -255,7 +255,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FileModel selectedFile = (FileModel) mAdapter.getItem(position);
+        FileModel selectedFile = mAdapter.getItem(position);
 
         if (selectedFile.isDirectory()) {
             // file is directory open new fragment
@@ -286,7 +286,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         MenuInflater inflater = getActivity().getMenuInflater();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        FileModel currentFile = (FileModel) mAdapter.getItem(info.position);
+        FileModel currentFile = mAdapter.getItem(info.position);
 
         if (currentFile.isFile()) {
             // show context menu for files
@@ -418,7 +418,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFile(int position) {
 
-        FileModel currentFile = (FileModel) mAdapter.getItem(position);
+        FileModel currentFile = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().playFile(currentFile.getPath());
@@ -436,7 +436,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void enqueueFile(int position, boolean asNext) {
 
-        FileModel currentFile = (FileModel) mAdapter.getItem(position);
+        FileModel currentFile = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), asNext);
@@ -471,7 +471,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFolderAndSubFolders(int position) {
 
-        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
+        FileModel currentFolder = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
@@ -488,7 +488,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void enqueueFolderAndSubFolders(int position) {
 
-        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
+        FileModel currentFolder = mAdapter.getItem(position);
 
         try {
             mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);

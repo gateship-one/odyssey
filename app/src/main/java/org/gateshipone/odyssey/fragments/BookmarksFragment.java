@@ -156,7 +156,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      */
     private void resumeBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
+        BookmarkModel bookmark = mAdapter.getItem(position);
 
         // resume state
         try {
@@ -174,7 +174,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      */
     private void deleteBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
+        BookmarkModel bookmark = mAdapter.getItem(position);
 
         // delete state
         try {

@@ -50,7 +50,7 @@ public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        PlaylistModel playlist = (PlaylistModel)getItem(position);
+        PlaylistModel playlist = getItem(position);
 
         ListViewItem listViewItem;
         // Check if a view can be recycled

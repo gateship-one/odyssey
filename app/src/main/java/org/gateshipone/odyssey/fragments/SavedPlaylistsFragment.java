@@ -150,7 +150,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         mLastPosition = position;
 
         // identify current playlist
-        PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+        PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
         String playlistName = clickedPlaylist.getPlaylistName();
         long playlistID = clickedPlaylist.getPlaylistID();
@@ -205,7 +205,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      */
     private void enqueuePlaylist(int position) {
         // identify current playlist
-        PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+        PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
         try {
             // add playlist
@@ -223,7 +223,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      */
     private void playPlaylist(int position) {
         // identify current playlist
-        PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+        PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
         try {
             // add playlist
@@ -241,7 +241,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      */
     private void deletePlaylist(final int position) {
         // identify current playlist
-        final PlaylistModel clickedPlaylist = (PlaylistModel) mAdapter.getItem(position);
+        final PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
         // delete current playlist
         final boolean reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());

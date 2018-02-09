@@ -185,7 +185,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         mLastPosition = position;
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -252,7 +252,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     private void enqueueArtist(int position) {
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -284,7 +284,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     private void playArtist(int position) {
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();

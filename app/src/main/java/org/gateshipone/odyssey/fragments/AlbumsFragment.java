@@ -139,7 +139,7 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     private void showArtist(int position) {
         // identify current artist
 
-        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
+        AlbumModel clickedAlbum = mAdapter.getItem(position);
 
         String artistTitle = clickedAlbum.getArtistName();
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());

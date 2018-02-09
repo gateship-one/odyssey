@@ -171,7 +171,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         mLastPosition = position;
 
         // identify current album
-        AlbumModel currentAlbum = (AlbumModel) mAdapter.getItem(position);
+        AlbumModel currentAlbum = mAdapter.getItem(position);
 
         Bitmap bitmap = null;
 
@@ -191,7 +191,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      */
     protected void enqueueAlbum(int position) {
         // identify current album
-        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
+        AlbumModel clickedAlbum = mAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
         // enqueue album
@@ -211,7 +211,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      */
     protected void playAlbum(int position) {
         // identify current album
-        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
+        AlbumModel clickedAlbum = mAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
         // play album

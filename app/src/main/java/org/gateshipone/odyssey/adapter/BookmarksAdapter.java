@@ -49,7 +49,7 @@ public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        BookmarkModel bookmark = (BookmarkModel) getItem(position);
+        BookmarkModel bookmark = getItem(position);
 
         ListViewItem listViewItem;
         // Check if a view can be recycled
