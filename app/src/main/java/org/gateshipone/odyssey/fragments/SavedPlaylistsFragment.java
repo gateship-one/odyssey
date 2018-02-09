@@ -57,6 +57,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      */
     private int mLastPosition = -1;
 
+    public static SavedPlaylistsFragment newInstance() {
+        return new SavedPlaylistsFragment();
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment

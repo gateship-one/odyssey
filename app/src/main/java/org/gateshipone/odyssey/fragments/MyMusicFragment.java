@@ -101,13 +101,22 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     /**
      * key value for arguments of the fragment
      */
-    public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
+    private final static String ARG_REQUESTED_TAB = "requested_tab";
 
     /**
      * enum for the default tab
      */
     public enum DEFAULTTAB {
         ARTISTS, ALBUMS, TRACKS
+    }
+
+    public static MyMusicFragment newInstance(final DEFAULTTAB defaulttab) {
+        final Bundle args = new Bundle();
+        args.putInt(ARG_REQUESTED_TAB, defaulttab.ordinal());
+
+        final MyMusicFragment fragment = new MyMusicFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**
@@ -159,7 +168,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         // only set requested tab if no state was saved
         if (args != null && savedInstanceState == null) {
-            DEFAULTTAB tab = DEFAULTTAB.values()[args.getInt(MY_MUSIC_REQUESTED_TAB)];
+            DEFAULTTAB tab = DEFAULTTAB.values()[args.getInt(ARG_REQUESTED_TAB)];
 
             switch (tab) {
                 case ARTISTS:
@@ -217,7 +226,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
 
-        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
+        mServiceConnection = ((GenericActivity) getActivity()).getPBSConnection();
     }
 
     /**
@@ -427,11 +436,11 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    return new ArtistsFragment();
+                    return ArtistsFragment.newInstance();
                 case 1:
-                    return new AlbumsFragment();
+                    return AlbumsFragment.newInstance();
                 case 2:
-                    return new AllTracksFragment();
+                    return AllTracksFragment.newInstance();
                 default:
                     return null;
             }

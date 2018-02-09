@@ -133,6 +133,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
 
                 // Check if the scroll speed currently is already 0, then start the image task right away.
                 if (mScrollSpeed == 0) {
+                    gridItem.setImageDimension(width, width);
                     gridItem.startCoverImageTask();
                 }
             }

@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -68,17 +69,17 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     /**
      * Key values for arguments of the fragment
      */
-    // FIXME move to separate class to get unified constants?
-    public final static String EXTRA_ALBUMMODEL = "albummodel";
-    public final static String EXTRA_BITMAP = "bitmap";
+    private final static String ARG_ALBUMMODEL = "albummodel";
+
+    private final static String ARG_BITMAP = "bitmap";
 
     /**
      * The information of the displayed album
      */
-
     private AlbumModel mAlbum;
 
     private CoverBitmapLoader mBitmapLoader;
+
     private Bitmap mBitmap = null;
 
     private boolean mHideArtwork;
@@ -87,6 +88,18 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    public static AlbumTracksFragment newInstance(@NonNull final AlbumModel albumModel, @Nullable final Bitmap bitmap) {
+        final Bundle args = new Bundle();
+        args.putParcelable(ARG_ALBUMMODEL, albumModel);
+        if (bitmap != null) {
+            args.putParcelable(ARG_BITMAP, bitmap);
+        }
+
+        final AlbumTracksFragment fragment = new AlbumTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -119,8 +132,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // set up toolbar
         Bundle args = getArguments();
 
-        mAlbum = args.getParcelable(EXTRA_ALBUMMODEL);
-        mBitmap = args.getParcelable(EXTRA_BITMAP);
+        mAlbum = args.getParcelable(ARG_ALBUMMODEL);
+        mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
 
@@ -179,7 +192,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                     mBitmapLoader.getAlbumImage(mAlbum, width, width);
                 });
             }
-        } else if (!mHideArtwork){
+        } else if (!mHideArtwork) {
             // Reuse image
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
@@ -188,7 +201,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 getView().post(() -> {
                     int width = rootView.getMeasuredWidth();
                     // Image too small
-                    if(mBitmap.getWidth() < width) {
+                    if (mBitmap.getWidth() < width) {
                         mBitmapLoader.getAlbumImage(mAlbum, width, width);
                     }
                 });
@@ -325,7 +338,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        getArguments().remove(EXTRA_BITMAP);
+        getArguments().remove(ARG_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -343,7 +356,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID),null);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
     }
 
     /**
@@ -419,7 +432,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
                 // set toolbar image
                 mToolbarAndFABCallback.setupToolbarImage(bm);
-                getArguments().putParcelable(EXTRA_BITMAP,bm);
+                getArguments().putParcelable(ARG_BITMAP, bm);
             });
         }
     }

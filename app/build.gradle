@@ -45,8 +45,8 @@ android {
         applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 23
-        versionName "1.1.11"
+        versionCode 24
+        versionName "1.1.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -82,5 +82,5 @@ dependencies {
     implementation "com.android.support:support-v4:${supportLibraryVersion}"
     implementation "com.android.support:design:${supportLibraryVersion}"
     implementation "com.android.support:preference-v14:${supportLibraryVersion}"
-    implementation 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.1.0'
 }

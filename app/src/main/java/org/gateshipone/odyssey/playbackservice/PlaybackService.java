@@ -738,12 +738,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param jumpTime Position inside the song (milliseconds)
      */
     public void jumpToIndex(int index, int jumpTime) {
-        // Prevent that the user freaks out and taps one song after another. This waits for finishing, to prevent race conditions.
-        if (mPlayer.getActive()) {
-            // Abort here if the player is still active
-            return;
-        }
-
         // Cancel possible alerts registered within the AlarmManager
         cancelQuitAlert();
 
@@ -784,11 +778,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             try {
                 mPlayer.play(item.getTrackURL(), jumpTime);
             } catch (GaplessPlayer.PlaybackException e) {
-                // Handle an error of the play commant
+                // Handle an error of the play command
                 handlePlaybackException(e);
             }
 
-            // Sets the mNextPlayingIndex to the index just startet, because the PlaybackStartListener will
+            // Sets the mNextPlayingIndex to the index just started, because the PlaybackStartListener will
             // set the mCurrentPlayingIndex to the mNextPlayingIndex. This ensures that no additional code
             // is necessary to handle playback start
             mNextPlayingIndex = index;
@@ -1493,33 +1487,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param filePath the path to the selected file
      * @param asNext   flag if the file should be enqueued as next
      */
-    public void enqueueFile(String filePath, boolean asNext) {
+    public void enqueueFile(final String filePath, final boolean asNext) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        FileModel currentFile = new FileModel(filePath);
+        final FileModel currentFile = new FileModel(filePath);
 
-        if (currentFile.isPlaylist()) {
-            // Parse the playlist file with a parser
-            PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
-            if (parser == null) {
-                return;
-            }
-            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
-
-            // add tracks to current playlist
-            enqueueTracks(playlistTracks);
-
-            // start meta data extraction for new tracks
-            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), playlistTracks);
-        } else {
-            TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
-
-            enqueueTrack(track, asNext);
-
-            // start meta data extraction for new tracks
-            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), Collections.singletonList(track));
-        }
+        enqueueFile(currentFile, asNext);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
@@ -1530,10 +1504,55 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * @param filePath the path to the selected file
      */
-    public void playFile(String filePath) {
-        enqueueFile(filePath, false);
+    public void playFile(final String filePath) {
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mBusy = true;
 
-        jumpToIndex(mCurrentList.size() - 1);
+        final FileModel currentFile = new FileModel(filePath);
+
+        final int enqueuedFiles = enqueueFile(currentFile, false);
+
+        if (enqueuedFiles > 0) {
+            jumpToIndex(mCurrentList.size() - enqueuedFiles);
+        }
+
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mBusy = false;
+    }
+
+    /**
+     * Creates one or multiple {@link TrackModel} for a given {@link FileModel} and then enqueue them.
+     *
+     * @param currentFile the current {@link FileModel} that should be enqueued
+     * @param asNext      Flag if the file should be enqueued as next. This will only used for single files not playlist files.
+     * @return the number of enqueued files or -1 if nothing was enqueued
+     */
+    private int enqueueFile(final FileModel currentFile, final boolean asNext) {
+        if (currentFile.isPlaylist()) {
+            // Parse the playlist file with a parser
+            PlaylistParser parser = PlaylistParserFactory.getParser(currentFile);
+            if (parser == null) {
+                return -1;
+            }
+            ArrayList<TrackModel> playlistTracks = parser.parseList(this);
+
+            // add tracks to current playlist
+            enqueueTracks(playlistTracks);
+
+            // start meta data extraction for new tracks
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), playlistTracks);
+
+            return playlistTracks.size();
+        } else {
+            TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
+
+            enqueueTrack(track, asNext);
+
+            // start meta data extraction for new tracks
+            mMetaDataLoader.getTrackListMetaData(getApplicationContext(), Collections.singletonList(track));
+
+            return 1;
+        }
     }
 
     /**

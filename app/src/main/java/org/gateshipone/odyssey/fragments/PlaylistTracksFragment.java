@@ -56,16 +56,17 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     /**
      * Key values for arguments of the fragment
      */
-    // FIXME move to separate class to get unified constants?
-    public final static String ARG_PLAYLISTTITLE = "playlisttitle";
-    public final static String ARG_PLAYLISTID = "playlistid";
+    private final static String ARG_PLAYLISTTITLE = "playlisttitle";
 
-    public final static String ARG_PLAYLISTPATH = "playlistpath";
+    private final static String ARG_PLAYLISTID = "playlistid";
+
+    private final static String ARG_PLAYLISTPATH = "playlistpath";
 
     /**
      * The information of the displayed playlist
      */
     private String mPlaylistTitle = "";
+
     private long mPlaylistID = -1;
 
     private String mPlaylistPath;
@@ -74,6 +75,26 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, final long playlistID) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
+        args.putLong(ARG_PLAYLISTID, playlistID);
+
+        final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, @NonNull final String playlistPath) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
+        args.putString(ARG_PLAYLISTPATH, playlistPath);
+
+        final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.

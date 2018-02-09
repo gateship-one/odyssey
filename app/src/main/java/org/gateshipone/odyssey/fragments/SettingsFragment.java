@@ -58,6 +58,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     private PlaybackServiceConnection mServiceConnection;
 
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
 
     /**
      * Called to do initial creation of a fragment.
@@ -67,7 +70,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         // add listener to open equalizer
         Preference openEqualizer = findPreference(getString(R.string.pref_open_equalizer_key));
@@ -82,7 +84,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-
 
             try {
                 getActivity().startActivityForResult(startEqualizerIntent, 0);
@@ -133,7 +134,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
 
-        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
+        mServiceConnection = ((GenericActivity) getActivity()).getPBSConnection();
     }
 
     /**
@@ -188,7 +189,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             startActivity(intent);
         }
     }
-
 
     public interface OnArtworkSettingsRequestedCallback {
         void openArtworkSettings();

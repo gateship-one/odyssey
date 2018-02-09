@@ -204,6 +204,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Clear the old image
         mDBManager.removeAlbumImage(context, album);
 
+        // Clear the old image from the cache
+        BitmapCache.getInstance().removeAlbumBitmap(album);
+
         // Reload the image from the internet
         fetchAlbumImage(album, context);
     }
@@ -222,16 +225,18 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         // Clear the old image
         mDBManager.removeArtistImage(context, artist);
 
+        // Clear the old image from the cache
+        BitmapCache.getInstance().removeArtistImage(artist);
+
         // Reload the image from the internet
         fetchArtistImage(artist, context);
     }
 
     /**
-     *
      * @param context
      * @param artist
-     * @param width Requested width for the image (-1 if it does not matter)
-     * @param height Requested height for the image (-1 if it does not matter)
+     * @param width   Requested width for the image (-1 if it does not matter)
+     * @param height  Requested height for the image (-1 if it does not matter)
      * @return
      * @throws ImageNotFoundException
      */
@@ -240,7 +245,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
-        if(!skipCache) {
+        if (!skipCache) {
             // Try cache first
             Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
             if (cacheImage != null && width <= cacheImage.getWidth() && height <= cacheImage.getWidth()) {
@@ -277,7 +282,7 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             return null;
         }
 
-        if(!skipCache) {
+        if (!skipCache) {
             // Try cache first
             Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
             if (cacheBitmap != null && width <= cacheBitmap.getWidth() && height <= cacheBitmap.getWidth()) {

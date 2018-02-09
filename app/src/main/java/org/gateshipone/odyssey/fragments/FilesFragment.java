@@ -84,20 +84,29 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * key values for arguments of the fragment
      */
-    public final static String ARG_DIRECTORYPATH = "directory_path";
-    public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
+    private final static String ARG_DIRECTORYPATH = "directory_path";
+
+    private final static String ARG_ISROOTDIRECTORY = "is_root_directory";
 
     /**
      * Constant for state saving
      */
     public final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
 
-
     /**
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
+    public static FilesFragment newInstance(@NonNull final String directoryPath, final boolean isRootDirectory) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_DIRECTORYPATH, directoryPath);
+        args.putBoolean(ARG_ISROOTDIRECTORY, isRootDirectory);
+
+        final FilesFragment fragment = new FilesFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
