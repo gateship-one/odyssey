@@ -30,7 +30,6 @@ import org.gateshipone.odyssey.models.GenericModel;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, Pair<List<T>, String>> {
 
