@@ -268,10 +268,17 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                     enqueueFile(position, false);
                     break;
                 case ACTION_PLAY_SONG:
-                    playFile(position);
+                    playFile(position, false);
                     break;
                 case ACTION_PLAY_SONG_NEXT:
                     enqueueFile(position, true);
+                    break;
+                case ACTION_CLEAR_AND_PLAY:
+                    if (mSearchString != null) {
+                        playFile(position, true);
+                    } else {
+                        playFolder(position);
+                    }
                     break;
             }
         }
@@ -328,7 +335,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                 enqueueFile(info.position, true);
                 return true;
             case R.id.fragment_files_action_play_file:
-                playFile(info.position);
+                playFile(info.position, false);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -416,12 +423,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      *
      * @param position the position of the selected file
      */
-    private void playFile(int position) {
+    private void playFile(final int position, final boolean clearPlaylist) {
 
         FileModel currentFile = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playFile(currentFile.getPath());
+            mServiceConnection.getPBS().playFile(currentFile.getPath(), clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

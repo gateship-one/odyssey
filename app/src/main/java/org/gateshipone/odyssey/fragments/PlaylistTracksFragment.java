@@ -215,6 +215,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
                 break;
+            case ACTION_CLEAR_AND_PLAY:
+                playPlaylist(position);
+                break;
         }
     }
 
@@ -353,7 +356,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            mServiceConnection.getPBS().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

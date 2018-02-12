@@ -75,21 +75,16 @@ public class ControlObject {
         mAction = action;
     }
 
-    public ControlObject(PLAYBACK_ACTION action, String param, boolean asNext) {
+    public ControlObject(PLAYBACK_ACTION action, String param, boolean boolParam) {
         mAction = action;
         mStringparam = param;
-        mBoolparam = asNext;
+        mBoolparam = boolParam;
     }
 
-    public ControlObject(PLAYBACK_ACTION action, TrackModel track) {
+    public ControlObject(PLAYBACK_ACTION action, TrackModel track, boolean boolParam) {
         mAction = action;
         mTrack = track;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, TrackModel track, boolean asNext) {
-        mAction = action;
-        mTrack = track;
-        mBoolparam = asNext;
+        mBoolparam = boolParam;
     }
 
     public ControlObject(PLAYBACK_ACTION action, long param) {

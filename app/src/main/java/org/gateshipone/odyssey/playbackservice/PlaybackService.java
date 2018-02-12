@@ -983,7 +983,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * @param track the current trackmodel
      */
-    public void playTrack(TrackModel track) {
+    public void playTrack(final TrackModel track, final boolean clearPlaylist) {
+        if (clearPlaylist) {
+            clearPlaylist();
+        }
+
         enqueueTrack(track);
 
         jumpToIndex(mCurrentList.size() - 1);
@@ -1504,9 +1508,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * @param filePath the path to the selected file
      */
-    public void playFile(final String filePath) {
+    public void playFile(final String filePath, final boolean clearPlaylist) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
+
+        if (clearPlaylist) {
+            clearPlaylist();
+        }
 
         final FileModel currentFile = new FileModel(filePath);
 

@@ -153,10 +153,13 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
                 enqueueTrack(position, false);
                 break;
             case ACTION_PLAY_SONG:
-                playTrack(position);
+                playTrack(position, false);
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
+                break;
+            case ACTION_CLEAR_AND_PLAY:
+                playTrack(position, true);
                 break;
         }
     }
@@ -193,7 +196,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
                 enqueueTrack(info.position, true);
                 return true;
             case R.id.fragment_all_tracks_action_play:
-                playTrack(info.position);
+                playTrack(info.position, false);
                 return true;
             case R.id.fragment_all_tracks_showartist:
                 showArtist(info.position);
@@ -226,11 +229,11 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      *
      * @param position the position of the selected track in the adapter
      */
-    private void playTrack(int position) {
+    private void playTrack(final int position, final boolean clearPlaylist) {
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            mServiceConnection.getPBS().playTrack(track, clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
