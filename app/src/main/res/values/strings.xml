@@ -198,7 +198,7 @@
     <string name="preference_library_click_action_add" translatable="false">@string/context_menu_action_enqueue</string>
     <string name="preference_library_click_action_play" translatable="false">@string/context_menu_action_playsong</string>
     <string name="preference_library_click_action_play_next" translatable="false">@string/context_menu_action_enqueueasnext</string>
-    <string name="preference_library_click_action_clear_and_play">Clear and play</string>
+    <string name="preference_library_click_action_clear_and_play">Replace and play from index</string>
 
     <string-array name="preference_library_click">
         <item>@string/preference_library_click_action_add</item>
