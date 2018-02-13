@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -220,7 +221,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void enqueueAllAlbums() {
         try {
-            mServiceConnection.getPBS().enqueueRecentAlbums();
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -229,7 +230,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void playAllAlbums() {
         try {
-            mServiceConnection.getPBS().playRecentAlbums();
+            ((GenericActivity) getActivity()).getPlaybackService().playRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

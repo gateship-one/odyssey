@@ -42,6 +42,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -266,7 +267,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -284,7 +285,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // play artist
         try {
-            mServiceConnection.getPBS().playArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

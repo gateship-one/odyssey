@@ -39,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
@@ -233,7 +234,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track, clearPlaylist);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -251,7 +252,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -35,11 +34,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AbsListView;
 
-import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import java.util.List;
 
@@ -64,12 +61,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      * The reference to the possible empty view which should replace the list view if no data is available
      */
     protected View mEmptyView;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    @Nullable
-    protected PlaybackServiceConnection mServiceConnection;
 
     /**
      * The generic adapter for the view model
@@ -119,8 +110,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
-
-        mServiceConnection = ((GenericActivity)getActivity()).getPBSConnection();
     }
 
     @Override

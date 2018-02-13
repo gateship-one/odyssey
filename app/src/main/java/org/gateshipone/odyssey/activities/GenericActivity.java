@@ -36,6 +36,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 
@@ -46,7 +47,7 @@ public abstract class GenericActivity extends AppCompatActivity {
     private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
 
     @Nullable
-    protected PlaybackServiceConnection mServiceConnection;
+    private PlaybackServiceConnection mServiceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +116,12 @@ public abstract class GenericActivity extends AppCompatActivity {
         }
     }
 
-    @Nullable
-    public PlaybackServiceConnection getPBSConnection() {
-        return mServiceConnection;
+    public IOdysseyPlaybackService getPlaybackService() throws RemoteException {
+        if (mServiceConnection != null) {
+            return mServiceConnection.getPBS();
+        } else {
+            throw new RemoteException();
+        }
     }
 
     abstract void onServiceConnected();

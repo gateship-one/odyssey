@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
@@ -316,9 +317,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         try {
             // add the playlist
             if (mPlaylistPath == null) {
-                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(mPlaylistID);
             } else {
-                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylistFile(mPlaylistPath);
             }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -337,9 +338,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         try {
             if (mPlaylistPath == null) {
-                mServiceConnection.getPBS().playPlaylist(mPlaylistID, position);
+                ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(mPlaylistID, position);
             } else {
-                mServiceConnection.getPBS().playPlaylistFile(mPlaylistPath, position);
+                ((GenericActivity) getActivity()).getPlaybackService().playPlaylistFile(mPlaylistPath, position);
             }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -356,7 +357,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track, false);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -373,7 +374,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

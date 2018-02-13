@@ -40,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.ArtistsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
@@ -268,7 +269,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -300,7 +301,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().playArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

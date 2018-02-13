@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
@@ -160,7 +161,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         // resume state
         try {
-            mServiceConnection.getPBS().resumeBookmark(bookmark.getId());
+            ((GenericActivity) getActivity()).getPlaybackService().resumeBookmark(bookmark.getId());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -178,7 +179,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         // delete state
         try {
-            mServiceConnection.getPBS().deleteBookmark(bookmark.getId());
+            ((GenericActivity) getActivity()).getPlaybackService().deleteBookmark(bookmark.getId());
 
             refreshContent();
         } catch (RemoteException e) {

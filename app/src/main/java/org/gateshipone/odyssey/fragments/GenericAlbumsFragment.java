@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.AlbumsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
@@ -196,7 +197,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
 
         // enqueue album
         try {
-            mServiceConnection.getPBS().enqueueAlbum(albumKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -216,7 +217,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
 
         // play album
         try {
-            mServiceConnection.getPBS().playAlbum(albumKey, 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

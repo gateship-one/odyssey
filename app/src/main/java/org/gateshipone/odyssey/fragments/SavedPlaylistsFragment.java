@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.loaders.PlaylistLoader;
@@ -209,7 +210,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            mServiceConnection.getPBS().enqueuePlaylist(clickedPlaylist.getPlaylistID());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(clickedPlaylist.getPlaylistID());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -227,7 +228,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            mServiceConnection.getPBS().playPlaylist(clickedPlaylist.getPlaylistID(), 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(clickedPlaylist.getPlaylistID(), 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -44,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
@@ -373,7 +374,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -389,7 +390,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track, false);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -403,7 +404,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // Enqueue complete album
 
         try {
-            mServiceConnection.getPBS().enqueueAlbum(mAlbum.getAlbumKey());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -420,7 +421,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // clear playlist and play current album
 
         try {
-            mServiceConnection.getPBS().playAlbum(mAlbum.getAlbumKey(), position);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

@@ -412,7 +412,7 @@ public class OdysseyMainActivity extends GenericActivity
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
             try {
-                if (mServiceConnection != null && mServiceConnection.getPBS().getCurrentIndex() == info.position) {
+                if (getPlaybackService().getCurrentIndex() == info.position) {
                     menu.findItem(R.id.view_current_playlist_action_playnext).setVisible(false);
                 }
             } catch (RemoteException e) {
@@ -956,9 +956,7 @@ public class OdysseyMainActivity extends GenericActivity
     private void checkUri() {
         if (mSentUri != null) {
             try {
-                if (mServiceConnection != null) {
-                    mServiceConnection.getPBS().playURI(mSentUri.toString());
-                }
+                getPlaybackService().playURI(mSentUri.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

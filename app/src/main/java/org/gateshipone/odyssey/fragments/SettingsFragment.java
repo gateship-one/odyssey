@@ -38,7 +38,6 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -52,11 +51,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      * Callback to setup toolbar and fab
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
-
-    /**
-     * Connection to the PBS for requesting information about current song/status.
-     */
-    private PlaybackServiceConnection mServiceConnection;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -80,7 +74,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
             try {
-                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, ((GenericActivity) getActivity()).getPlaybackService().getAudioSessionID());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -133,8 +127,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
         }
-
-        mServiceConnection = ((GenericActivity) getActivity()).getPBSConnection();
     }
 
     /**
