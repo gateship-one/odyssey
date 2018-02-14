@@ -83,12 +83,14 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         mFilteredModelData.clear();
         if (data == null) {
             mModelData.clear();
+            mLock.writeLock().unlock();
+            notifyDataSetChanged();
+            return;
         } else {
             mModelData.clear();
             mModelData.addAll(data);
         }
         mLock.writeLock().unlock();
-
 
         setScrollSpeed(0);
 
