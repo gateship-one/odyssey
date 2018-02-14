@@ -22,12 +22,6 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
-import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.viewitems.GridViewItem;
-import org.gateshipone.odyssey.viewitems.ListViewItem;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -35,6 +29,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.GridView;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.viewitems.GridViewItem;
+import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements ArtworkManager.onNewAlbumImageListener {
 
@@ -61,7 +61,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
 
         mUseList = useList;
         if (mUseList) {
-            mListItemHeight = (int)context.getResources().getDimension(R.dimen.material_list_item_height);
+            mListItemHeight = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
         }
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
@@ -72,14 +72,15 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
 
     /**
      * Get a View that displays the data at the specified position in the data set.
-     * @param position The position of the item within the adapter's data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
      * @param convertView The old view to reuse, if possible.
-     * @param parent The parent that this view will eventually be attached to.
+     * @param parent      The parent that this view will eventually be attached to.
      * @return A View corresponding to the data at the specified position.
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AlbumModel album = (AlbumModel)getItem(position);
+        AlbumModel album = getItem(position);
         String label = album.getAlbumName();
 
         if (mUseList) {
@@ -92,7 +93,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
                 listItem = new ListViewItem(mContext, label, this);
             }
 
-            if ( !mHideArtwork) {
+            if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
                 listItem.prepareArtworkFetching(mArtworkManager, album);
 
@@ -106,7 +107,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
         } else {
             GridViewItem gridItem;
             ViewGroup.LayoutParams layoutParams;
-            int width = ((GridView)mListView).getColumnWidth();
+            int width = ((GridView) mListView).getColumnWidth();
 
             // Check if a view can be recycled
             if (convertView != null) {
@@ -124,12 +125,13 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
             // Make sure to reset the layoutParams in case of change (rotation for example)
             gridItem.setLayoutParams(layoutParams);
 
-            if ( !mHideArtwork) {
+            if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
                 gridItem.prepareArtworkFetching(mArtworkManager, album);
 
                 // Check if the scroll speed currently is already 0, then start the image task right away.
                 if (mScrollSpeed == 0) {
+                    gridItem.setImageDimension(width, width);
                     gridItem.startCoverImageTask();
                 }
             }

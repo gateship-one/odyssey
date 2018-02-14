@@ -35,9 +35,9 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -52,11 +52,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
 
-    /**
-     * Connection to the PBS for requesting information about current song/status.
-     */
-    private PlaybackServiceConnection mServiceConnection;
-
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
 
     /**
      * Called to do initial creation of a fragment.
@@ -76,11 +74,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
             try {
-                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, ((GenericActivity) getActivity()).getPlaybackService().getAudioSessionID());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-
 
             try {
                 getActivity().startActivityForResult(startEqualizerIntent, 0);
@@ -108,9 +105,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             return true;
         });
 
-
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -144,8 +138,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onResume() {
         super.onResume();
 
-        mServiceConnection.openConnection();
-
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         if (mToolbarAndFABCallback != null) {
@@ -165,8 +157,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
-        mServiceConnection.closeConnection();
     }
 
     /**
@@ -199,7 +189,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         }
     }
-
 
     public interface OnArtworkSettingsRequestedCallback {
         void openArtworkSettings();

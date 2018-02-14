@@ -119,7 +119,7 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
                 saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
             } else {
                 // override existing bookmark
-                BookmarkModel bookmark = (BookmarkModel) mBookmarksAdapter.getItem(which);
+                BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
                 String objectTitle = bookmark.getTitle();
                 mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
             }

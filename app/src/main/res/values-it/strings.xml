@@ -21,59 +21,96 @@
   -->
 
 <resources>
+
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Per caricare dei file di musica è necessario il permesso di Storage.</string>
+    <string name="permission_request_snackbar_explanation">Per caricare i file musicali è necessario il permesso di Archiviazione.</string>
+
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Apri il navigation drawer</string>
     <string name="navigation_drawer_close">Chiudi il navigation drawer</string>
+
     <!-- nav drawer menu -->
     <string name="nav_menu_my_music">La mia musica</string>
     <string name="nav_menu_saved_playlists">Playlist</string>
     <string name="nav_menu_settings">Impostazioni</string>
     <string name="nav_menu_bookmarks">Segnalibri</string>
     <string name="nav_menu_files">File</string>
+    <string name="nav_menu_info">Informazioni</string>
+
+    <!-- activity titles -->
+    <string name="share_chooser_title">Condividi la traccia con</string>
+
     <!-- fragment titles -->
     <string name="fragment_title_my_music">La mia musica</string>
     <string name="fragment_title_saved_playlists">Playlist</string>
     <string name="fragment_title_settings">Impostazioni</string>
     <string name="fragment_title_bookmarks">Segnalibri</string>
+    <string name="fragment_title_recent_albums">Aggiunti di recente</string>
+
+    <!-- saved playlists fragment -->
+    <string name="empty_saved_playlists_message">Nessuna playlist trovata.</string>
+
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Tracce</string>
+    <string name="empty_bookmarks_message">Nessun segnalibro trovato.</string>
+
+    <!-- files fragment -->
+    <string name="empty_directory_message">Formato non supportato oppure file .nomedia trovato.</string>
+
     <!-- my music tab titles -->
     <string name="fragment_title_artists">Artisti</string>
     <string name="fragment_title_albums">Album</string>
     <string name="fragment_title_all_tracks">Tracce</string>
+    <string name="empty_artists_message">Nessun artista trovato.</string>
+    <string name="empty_tracks_message">Nessuna traccia trovata.</string>
+    <string name="empty_albums_message">Nessun album trovato.</string>
+
     <!-- dialog titles -->
     <string name="dialog_save_playlist">Salva playlist</string>
     <string name="dialog_create_bookmark">Crea segnalibro</string>
     <string name="dialog_action_cancel">Cancella</string>
     <string name="dialog_action_save">Salva</string>
-    <string name="dialog_choose_storage_volume_title">Scegli volume di storage</string>
+    <string name="dialog_choose_storage_volume_title">Scegli volume di archiviazione</string>
     <string name="dialog_choose_bookmark">Scegli segnalibro</string>
     <string name="dialog_choose_playlist">Scegli playlist</string>
     <string name="dialog_equalizer_not_found_title">Nessun equalizzatore disponibile</string>
     <string name="dialog_equalizer_not_found_message">Il tuo dispositivo non possiede un equalizzatore</string>
+
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nuova playlist</string>
     <string name="default_bookmark_title">Nuovo segnalibro</string>
     <string name="create_new_bookmark">Crea un nuovo segnalibro</string>
     <string name="create_new_playlist">Crea una nuova playlist</string>
+
     <!-- actions -->
     <string name="action_add_album">Aggiungi un album</string>
     <string name="action_add_artist_albums">Aggiungi più album</string>
-    <string name="action_switch_storage_volume">Cambia volume di storage</string>
-    <string name="action_add_directory">Aggiungi una directory alla playlist</string>
+    <string name="action_switch_storage_volume">Cambia volume di archiviazione</string>
+    <string name="action_add_directory">Aggiungi una cartella alla playlist</string>
     <string name="action_search">Cerca</string>
+    <string name="action_add_playlist">Aggiungi playlist</string>
+    <string name="action_set_default_directory">Imposta come cartella di default</string>
+    <string name="action_start_mediascanner">Aggiorna database media qui</string>
+
+    <string name="action_reset_artwork">Resetta artwork</string>
+
+    <string name="action_wikipedia_album">Apri album</string>
+    <string name="action_wikipedia_artist">Apri artista</string>
+
+    <string name="action_show_recent_albums">Album recenti</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Aggiungi alla playlist</string>
     <string name="context_menu_action_enqueueasnext">Riproduci dopo la canzone attuale</string>
     <string name="context_menu_action_playsong">Riproduci canzone</string>
-    <string name="context_menu_action_playalbum">Riproduci l’album</string>
+    <string name="context_menu_action_playalbum">"Riproduci l’album"</string>
     <string name="context_menu_action_playalbums">Riproduci gli album</string>
     <string name="context_menu_action_showartist">Mostra artista</string>
     <string name="context_menu_action_showalbum">Mostra album</string>
     <string name="context_menu_action_removetrack">Rimuovi traccia</string>
+    <string name="context_menu_action_removesection">Rimuovi selezione</string>
     <string name="context_menu_action_playplaylist">Riproduci playlist</string>
+    <string name="context_menu_action_enqueueplaylist">Aggiungi playlist</string>
     <string name="context_menu_action_deleteplaylist">Cancella playlist</string>
     <string name="context_menu_action_resumebookmark">Recupera segnalibro</string>
     <string name="context_menu_action_deletebookmark">Cancella segnalibro</string>
@@ -81,21 +118,30 @@
     <string name="context_menu_action_play_folder">Riproduci cartella</string>
     <string name="context_menu_action_enqueue_file">Aggiungi file alla playlist</string>
     <string name="context_menu_action_play_file">Riproduci file</string>
+
     <!-- popup menu titles -->
     <string name="popup_menu_action_shuffleplaylist">Riproduzione casuale playlist</string>
     <string name="popup_menu_action_clearplaylist">Svuota playlist</string>
     <string name="popup_menu_action_saveplaylist">Salva playlist</string>
     <string name="popup_menu_action_createbookmark">Crea segnalibro</string>
     <string name="popup_menu_action_startequalizer">Apri l’equalizzatore</string>
+    <string name="popup_menu_action_sharetrack">Condividi la traccia attuale</string>
+
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Mostra solo gli artisti degli album</string>
     <string name="preference_show_album_artists_only_summary">Mostra solo gli artisti degli album invece dell’intero database di artisti.</string>
 
+    <string name="preference_launch_faq">F.A.Q.</string>
+    <string name="preference_launch_faq_text">Informazioni su come ottenere aiuto per questa applicazione</string>
     <string name="preference_launch_about">Riguardo a</string>
+    <string name="preference_launch_about_text">Versione, licenza e informazioni contributori</string>
 
-    <string name="preference_theme_title">Sfondo</string>
+    <string name="preference_theme_title">Tema</string>
     <string name="preference_theme_summary">Seleziona una grafica diversa per l’applicazione</string>
-    <string name="preference_theme_message">Seleziona uno sfondo</string>
+    <string name="preference_theme_message">Seleziona un tema</string>
+
+    <string name="preference_dark_theme_title">Tema scuro</string>
+    <string name="preference_dark_theme_message">Utilizzare un tema scuro</string>
 
     <string name="preference_theme_item_indigo">Indaco</string>
     <string name="preference_theme_item_orange">Arancione</string>
@@ -104,6 +150,8 @@
     <string name="preference_theme_item_dark_grey">Grigio scuro</string>
     <string name="preference_theme_item_brown">Marrone</string>
     <string name="preference_theme_item_light_green">Verde chiaro</string>
+    <string name="preference_theme_item_oled_dark">OLED (Scuro)</string>
+    <string name="preference_theme_item_red">Rosso</string>
 
     <string name="preference_album_sort_order_title">Classificazione per album di un artista</string>
     <string name="preference_album_sort_order_message">Ordina per</string>
@@ -123,7 +171,28 @@
     <string name="preference_default_view_my_music_bookmarks">Segnalibri</string>
     <string name="preference_default_view_my_music_files">File</string>
 
+    <string name="preference_library_view_title">Seleziona vista biblioteca</string>
+    <string name="preference_library_view_message">Seleziona vista biblioteca</string>
+    <string name="preference_library_view_summary">Selezionare il tipo di visualizzazione che viene utilizzato per gli album e gli artisti.</string>
+
+    <string name="preference_library_view_grid">Griglia</string>
+    <string name="preference_library_view_list">Lista</string>
+
+    <string name="preference_show_artist_image_title">Visualizza immagine artista</string>
+    <string name="preference_show_artist_image_text">Alternare tra la copertina dell\'album e un\'immagine dell\'artista nella vista per la canzone attualmente in riproduzione</string>
+
+    <string name="preference_library_click_action_title">Azione click sulla traccia</string>
+    <string name="preference_library_click_action_summary">Seleziona l\'azione per le traccie nella libreria</string>
+    <string name="preference_library_click_action_message">Seleziona l\'azione predefinita da eseguire se fai clic su una traccia nelle viste della libreria</string>
+
     <string name="artwork_settings">Impostazioni degli artwork</string>
+
+    <string name="preference_clear_default_directory_title">Cancella la cartella di default</string>
+    <string name="preference_clear_default_directory_summary">Resetta la cartella di default ad una cartella root disponibile nel device.</string>
+
+    <string name="preference_category_design">Aspetto</string>
+    <string name="preference_category_library">Libreria</string>
+    <string name="preference_category_other">Altro</string>
 
     <!-- artwork preferences -->
     <string name="preference_artwork_album_provider_title">Provider delle immagini degli album</string>
@@ -151,28 +220,48 @@
 
     <string name="preference_artwork_wifi_only_title">Utilizza solo il WiFi per il download</string>
     <string name="preference_artwork_wifi_only_text">Il download degli artwork andrà a buon fine solo se il dispositivo è connesso tramite WiFi.</string>
+
+    <string name="preference_artwork_hide_artwork_title">Nascondi artwork</string>
+    <string name="preference_artwork_hide_artwork_text">Disabilita la visualizzazione degli artwork.</string>
+
+    <string name="preference_use_english_wikipedia_title">Usa Wikipedia in Inglese</string>
+    <string name="preference_use_english_wikipedia_text">Usa la versione Inglese di Wikipedia per il lookup delle pagine</string>
+
+    <string name="preference_category_artwork_settings">Impostazioni artwork</string>
+    <string name="preference_category_artwork_database_cleanup">Cancella database</string>
+    <string name="preference_category_artwork_other_actions">Altre azioni</string>
+
     <!-- About activity -->
     <string name="artwork_provided_by">Artwork forniti da:</string>
     <string name="license_text">Quest’applicazione è sotto licenza GPLv3. Le icone \nMaterial sono sotto licenza CC-BY di Google.</string>
-    <string name="sources_text">Il source code è disponibile su GitHub:\nhttps://github.com/gateship-one/odyssey</string>
+    <string name="sources_text">Il codice sorgente è disponibile su GitHub:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="activity_about_version">Versione: </string>
+
     <!-- PBS working message -->
     <string name="playbackservice_working">Attendere prego</string>
+
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Download massivo in corso</string>
     <string name="downloader_notification_remaining_images">Immagini scaricate:</string>
-    <string name="action_add_playlist">Aggiungi playlist</string>
-    <string name="preference_theme_item_red">Rosso</string>
-    <string name="preference_theme_item_oled_dark">OLED (Scuro)</string>
-    <string name="preference_dark_theme_message">Utilizzare uno sfondo scuro</string>
-    <string name="preference_dark_theme_title">Sfondo scuro</string>
-    <string name="context_menu_action_enqueueplaylist">Aggiungi playlist</string>
-    <string name="contributor_translator_italian">Traduzione italiana</string>
+
+    <string name="bulk_download_notice_title">Scarica immagine</string>
+    <string name="bulk_download_notice_text">Il download di una grande quantità di immagini mette a dura prova i server del servizio che hai scelto. Può accadere che un carico del server impedisca il download delle immagini. Il downloader annullerà quindi la sua azione se rileva un sovraccarico.\n\nSi prega di considerare la donazione ai servizi di grafica.</string>
+
+    <!-- Media scanner service -->
+    <string name="mediascanner_notification_title">Aggiornamento database media</string>
+    <string name="mediascanner_notification_text">Analizza file %1$d/%2$d</string>
+
+    <!-- Notification channel names -->
+    <string name="notification_channel_playback">Riproduzione</string>
+    <string name="notification_channel_downloader">Downloader</string>
+    <string name="notification_channel_library_scanner">Analizza la libreria</string>
+
+    <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributori</string>
-    <string name="preference_library_view_grid">Griglia</string>
-    <string name="preference_library_view_list">Lista</string>
-    <string name="preference_library_view_message">Seleziona vista biblioteca</string>
-    <string name="preference_library_view_title">Seleziona vista biblioteca</string>
-    <string name="preference_library_view_summary">Selezionare il tipo di visualizzazione che viene utilizzato per gli album e gli artisti.</string>
-    <string name="contributor_translator_french">Traduzione in francese</string>
+    <string name="contributor_translator_italian">Traduzione Italiana</string>
+    <string name="contributor_translator_french">Traduzione Francese</string>
+    <string name="contributor_translator_polish">Traduzione Polacco</string>
+
+    <!-- Thirdparty Licenses dialog -->
+    <string name="odyssey_thirdparty_licenses_dialog_title">Licenze di Terze Parti</string>
 </resources>

@@ -1,3 +1,18 @@
+### Version: 1.1.13 Tag: release-25 (2018-02-14) ###
+* add replace and play from index as additional default action for library tracks
+* fix not playing tracks from the filebrowser properly
+* fix moving to the last song of a playlist file (.m3u, .pls)
+* fix bitmap scaling in gridview
+* clear bitmap cache properly after remove artwork image
+* prevent crashes after device rotation
+
+### Version: 1.1.12 Tag: release-24 (2018-02-03) ###
+* Default action for library tracks selectable (play song, add song (default), add as next song)
+* State saving for android 8 fixed
+* Updated french and italian translations
+* Playbackservice fixes (disappearing playlist)
+* linked FAQ
+
 ### Version: 1.1.11 Tag: release-23 (2018-01-10) ###
 * Fix crash when choosing 'Play after current song' with an empty playlist
 * Fix possible problem in cover loading process

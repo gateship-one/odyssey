@@ -60,8 +60,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         mService.get().getHandler().sendMessage(msg);
     }
 
-    public void playTrack(TrackModel track) throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYTRACK, track);
+    public void playTrack(TrackModel track, boolean clearPlaylist) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYTRACK, track, clearPlaylist);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -338,8 +338,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void playFile(String filePath) throws RemoteException {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYFILE, filePath);
+    public void playFile(String filePath, boolean clearPlaylist) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYFILE, filePath, clearPlaylist);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

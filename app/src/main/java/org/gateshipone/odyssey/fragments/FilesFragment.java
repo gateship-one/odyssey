@@ -46,6 +46,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
@@ -84,20 +85,29 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * key values for arguments of the fragment
      */
-    public final static String ARG_DIRECTORYPATH = "directory_path";
-    public final static String ARG_ISROOTDIRECTORY = "is_root_directory";
+    private final static String ARG_DIRECTORYPATH = "directory_path";
+
+    private final static String ARG_ISROOTDIRECTORY = "is_root_directory";
 
     /**
      * Constant for state saving
      */
     public final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
 
-
     /**
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
+    public static FilesFragment newInstance(@NonNull final String directoryPath, final boolean isRootDirectory) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_DIRECTORYPATH, directoryPath);
+        args.putBoolean(ARG_ISROOTDIRECTORY, isRootDirectory);
+
+        final FilesFragment fragment = new FilesFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -246,7 +256,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FileModel selectedFile = (FileModel) mAdapter.getItem(position);
+        FileModel selectedFile = mAdapter.getItem(position);
 
         if (selectedFile.isDirectory()) {
             // file is directory open new fragment
@@ -259,10 +269,17 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                     enqueueFile(position, false);
                     break;
                 case ACTION_PLAY_SONG:
-                    playFile(position);
+                    playFile(position, false);
                     break;
                 case ACTION_PLAY_SONG_NEXT:
                     enqueueFile(position, true);
+                    break;
+                case ACTION_CLEAR_AND_PLAY:
+                    if (mSearchString != null) {
+                        playFile(position, true);
+                    } else {
+                        playFolder(position);
+                    }
                     break;
             }
         }
@@ -277,7 +294,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         MenuInflater inflater = getActivity().getMenuInflater();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        FileModel currentFile = (FileModel) mAdapter.getItem(info.position);
+        FileModel currentFile = mAdapter.getItem(info.position);
 
         if (currentFile.isFile()) {
             // show context menu for files
@@ -319,7 +336,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
                 enqueueFile(info.position, true);
                 return true;
             case R.id.fragment_files_action_play_file:
-                playFile(info.position);
+                playFile(info.position, false);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -407,12 +424,12 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      *
      * @param position the position of the selected file
      */
-    private void playFile(int position) {
+    private void playFile(final int position, final boolean clearPlaylist) {
 
-        FileModel currentFile = (FileModel) mAdapter.getItem(position);
+        FileModel currentFile = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playFile(currentFile.getPath());
+            ((GenericActivity) getActivity()).getPlaybackService().playFile(currentFile.getPath(), clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -427,10 +444,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void enqueueFile(int position, boolean asNext) {
 
-        FileModel currentFile = (FileModel) mAdapter.getItem(position);
+        FileModel currentFile = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueFile(currentFile.getPath(), asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueFile(currentFile.getPath(), asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -447,7 +464,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         try {
             // compute position
             int index = position - mCurrentDirectory.getNumberOfSubFolders();
-            mServiceConnection.getPBS().playDirectory(mCurrentDirectory.getPath(), index);
+            ((GenericActivity) getActivity()).getPlaybackService().playDirectory(mCurrentDirectory.getPath(), index);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -462,10 +479,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void playFolderAndSubFolders(int position) {
 
-        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
+        FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
+            ((GenericActivity) getActivity()).getPlaybackService().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -479,10 +496,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private void enqueueFolderAndSubFolders(int position) {
 
-        FileModel currentFolder = (FileModel) mAdapter.getItem(position);
+        FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -496,7 +513,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void playCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().playDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
+            ((GenericActivity) getActivity()).getPlaybackService().playDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -525,7 +542,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void enqueueCurrentFolderAndSubFolders() {
 
         try {
-            mServiceConnection.getPBS().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

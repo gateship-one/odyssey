@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
@@ -43,6 +44,10 @@ import org.gateshipone.odyssey.models.BookmarkModel;
 import java.util.List;
 
 public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
+
+    public static BookmarksFragment newInstance() {
+        return new BookmarksFragment();
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -152,11 +157,11 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      */
     private void resumeBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
+        BookmarkModel bookmark = mAdapter.getItem(position);
 
         // resume state
         try {
-            mServiceConnection.getPBS().resumeBookmark(bookmark.getId());
+            ((GenericActivity) getActivity()).getPlaybackService().resumeBookmark(bookmark.getId());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -170,11 +175,11 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      */
     private void deleteBookmark(int position) {
         // identify current bookmark
-        BookmarkModel bookmark = (BookmarkModel) mAdapter.getItem(position);
+        BookmarkModel bookmark = mAdapter.getItem(position);
 
         // delete state
         try {
-            mServiceConnection.getPBS().deleteBookmark(bookmark.getId());
+            ((GenericActivity) getActivity()).getPlaybackService().deleteBookmark(bookmark.getId());
 
             refreshContent();
         } catch (RemoteException e) {

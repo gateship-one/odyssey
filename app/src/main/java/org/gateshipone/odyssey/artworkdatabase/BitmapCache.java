@@ -34,12 +34,11 @@ import java.util.Map;
 /**
  * Simple LRU-based caching for album & artist images. This could reduce CPU usage
  * for the cost of memory usage by caching decoded {@link Bitmap} objects in a {@link LruCache}.
- * FIXME monitor memory usage and trim if necessary
  */
 public class BitmapCache {
     private static final String TAG = BitmapCache.class.getSimpleName();
 
-    private static final int mMaxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
+    private static final int mMaxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
     /**
      * Maximum size of the cache in kilobytes
@@ -92,8 +91,7 @@ public class BitmapCache {
      * @return Bitmap if cache hit, null otherwise
      */
     public synchronized Bitmap requestAlbumBitmap(AlbumModel album) {
-        Bitmap bitmap = mCache.get(getAlbumHash(album));
-        return bitmap;
+        return mCache.get(getAlbumHash(album));
     }
 
     /**
@@ -109,17 +107,26 @@ public class BitmapCache {
     }
 
     /**
+     * Removes an album image from the cache
+     *
+     * @param album Album object to use for cache key
+     */
+    public synchronized void removeAlbumBitmap(AlbumModel album) {
+        mCache.remove(getAlbumHash(album));
+    }
+
+    /**
      * Private hash method for cache key
      *
      * @param album Album to calculate the key from
      * @return Hash string for cache key
      */
     private String getAlbumHash(AlbumModel album) {
-        String hashString = "ALBUM_";
+        String hashString = ALBUM_PREFIX;
         final long albumID = album.getAlbumID();
 
         // Use albumID as key if available
-        if ( albumID != -1 ) {
+        if (albumID != -1) {
             hashString += String.valueOf(albumID);
             return hashString;
         }
@@ -131,18 +138,6 @@ public class BitmapCache {
         hashString += albumArtist + '_' + albumName;
         return hashString;
     }
-
-    /**
-     * Private hash method for cache key
-     *
-     * @param albumName  Album name to calculate key from
-     * @param artistName Album artist name to calculate key from
-     * @return Hash string for cache key
-     */
-    private String getAlbumHash(String albumName, String artistName) {
-        return ALBUM_PREFIX + artistName + '_' + albumName;
-    }
-
 
     /*
      * Begin of artist image handling
@@ -161,13 +156,22 @@ public class BitmapCache {
     /**
      * Puts an artist image to the cache
      *
-     * @param artist Artist used as cache key
+     * @param artist Artist object used as cache key
      * @param bm     Bitmap to store in cache
      */
     public synchronized void putArtistImage(ArtistModel artist, Bitmap bm) {
         if (bm != null) {
             mCache.put(getArtistHash(artist), bm);
         }
+    }
+
+    /**
+     * Removes an artist image from the cache
+     *
+     * @param artist Artist object used as cache key
+     */
+    public synchronized void removeArtistImage(ArtistModel artist) {
+        mCache.remove(getArtistHash(artist));
     }
 
     /**
@@ -182,7 +186,7 @@ public class BitmapCache {
         final long artistID = artist.getArtistID();
 
         // Use albumID as key if available
-        if ( artistID != -1 ) {
+        if (artistID != -1) {
             hashString += String.valueOf(artistID);
             return hashString;
         }
@@ -200,15 +204,15 @@ public class BitmapCache {
         int missCount = mCache.missCount();
         int hitCount = mCache.hitCount();
         if (missCount > 0) {
-            Log.v(TAG, "Cache hit count: " + hitCount + " miss count: " + missCount + " Miss rate: " + ((hitCount * 100) / missCount)+ '%');
+            Log.v(TAG, "Cache hit count: " + hitCount + " miss count: " + missCount + " Miss rate: " + ((hitCount * 100) / missCount) + '%');
         }
-        Log.v(TAG,"Memory usage: " + (getMemoryUsage() /(1024*1024)) + " MB");
+        Log.v(TAG, "Memory usage: " + (getMemoryUsage() / (1024 * 1024)) + " MB");
     }
 
-    private long getMemoryUsage()  {
-        Map<String,Bitmap> snapShot = mCache.snapshot();
+    private long getMemoryUsage() {
+        Map<String, Bitmap> snapShot = mCache.snapshot();
         long bytes = 0;
-        for(Bitmap bitmap : snapShot.values()) {
+        for (Bitmap bitmap : snapShot.values()) {
             bytes += bitmap.getAllocationByteCount();
         }
 

@@ -23,15 +23,10 @@
 package org.gateshipone.odyssey.activities;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -51,7 +46,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.ContextMenu;
@@ -89,8 +83,6 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
-import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
@@ -100,7 +92,7 @@ import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
 
-public class OdysseyMainActivity extends AppCompatActivity
+public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
         OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
@@ -109,23 +101,22 @@ public class OdysseyMainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
+
     private DRAG_STATUS mSavedNowPlayingDragStatus = null;
 
     private VIEW_SWITCHER_STATUS mNowPlayingViewSwitcherStatus;
+
     private VIEW_SWITCHER_STATUS mSavedNowPlayingViewSwitcherStatus = null;
 
     private FileExplorerHelper mFileExplorerHelper = null;
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.gateshipone.odyssey.requestedview";
+
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.gateshipone.odyssey.requestedview.nowplaying";
 
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
+
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
-
-    public ProgressDialog mProgressDialog;
-    private PBSOperationFinishedReceiver mPBSOperationFinishedReceiver = null;
-
-    private PlaybackServiceConnection mServiceConnection;
 
     private Uri mSentUri;
 
@@ -133,7 +124,6 @@ public class OdysseyMainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         // restore drag state
         if (savedInstanceState != null) {
             mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
@@ -156,50 +146,8 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
         }
 
-        // Read theme preference
+        // Get preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String themePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
-        boolean darkTheme = sharedPref.getBoolean(getString(R.string.pref_dark_theme_key), getResources().getBoolean(R.bool.pref_theme_dark_default));
-        if (darkTheme) {
-            if (themePref.equals(getString(R.string.pref_indigo_key))) {
-                setTheme(R.style.AppTheme_indigo);
-            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
-                setTheme(R.style.AppTheme_orange);
-            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
-                setTheme(R.style.AppTheme_deepOrange);
-            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
-                setTheme(R.style.AppTheme_blue);
-            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
-                setTheme(R.style.AppTheme_darkGrey);
-            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
-                setTheme(R.style.AppTheme_brown);
-            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
-                setTheme(R.style.AppTheme_lightGreen);
-            } else if (themePref.equals(getString(R.string.pref_red_key))) {
-                setTheme(R.style.AppTheme_red);
-            }
-        } else {
-            if (themePref.equals(getString(R.string.pref_indigo_key))) {
-                setTheme(R.style.AppTheme_indigo_light);
-            } else if (themePref.equals(getString(R.string.pref_orange_key))) {
-                setTheme(R.style.AppTheme_orange_light);
-            } else if (themePref.equals(getString(R.string.pref_deeporange_key))) {
-                setTheme(R.style.AppTheme_deepOrange_light);
-            } else if (themePref.equals(getString(R.string.pref_blue_key))) {
-                setTheme(R.style.AppTheme_blue_light);
-            } else if (themePref.equals(getString(R.string.pref_darkgrey_key))) {
-                setTheme(R.style.AppTheme_darkGrey_light);
-            } else if (themePref.equals(getString(R.string.pref_brown_key))) {
-                setTheme(R.style.AppTheme_brown_light);
-            } else if (themePref.equals(getString(R.string.pref_lightgreen_key))) {
-                setTheme(R.style.AppTheme_lightGreen_light);
-            } else if (themePref.equals(getString(R.string.pref_red_key))) {
-                setTheme(R.style.AppTheme_red_light);
-            }
-        }
-        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
-            setTheme(R.style.AppTheme_oledDark);
-        }
 
         super.onCreate(savedInstanceState);
 
@@ -213,11 +161,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance();
 
-        // setup progressdialog
-        mProgressDialog = new ProgressDialog(OdysseyMainActivity.this);
-        mProgressDialog.setMessage(getString(R.string.playbackservice_working));
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setIndeterminate(true);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -251,25 +194,13 @@ public class OdysseyMainActivity extends AppCompatActivity
             Fragment fragment;
 
             switch (navId) {
-                case R.id.nav_my_music:
-                    fragment = new MyMusicFragment();
-
-                    MyMusicFragment.DEFAULTTAB defaultTab = getDefaultTab();
-
-                    Bundle args = new Bundle();
-                    args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
-
-                    fragment.setArguments(args);
-                    break;
                 case R.id.nav_saved_playlists:
-                    fragment = new SavedPlaylistsFragment();
+                    fragment = SavedPlaylistsFragment.newInstance();
                     break;
                 case R.id.nav_bookmarks:
-                    fragment = new BookmarksFragment();
+                    fragment = BookmarksFragment.newInstance();
                     break;
                 case R.id.nav_files:
-                    fragment = new FilesFragment();
-
                     // open the default directory
                     List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
@@ -280,34 +211,18 @@ public class OdysseyMainActivity extends AppCompatActivity
                         defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
                     }
 
-                    args = new Bundle();
-                    args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
-                    args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, storageVolumesList.contains(defaultDirectory));
-
-                    fragment.setArguments(args);
+                    fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
                     break;
+                case R.id.nav_my_music:
                 default:
-                    fragment = new MyMusicFragment();
-
-                    defaultTab = getDefaultTab();
-
-                    args = new Bundle();
-                    args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
-
-                    fragment.setArguments(args);
+                    fragment = MyMusicFragment.newInstance(getDefaultTab());
+                    break;
             }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.commit();
         }
-
-        // Create service connection
-        mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
-        mServiceConnection.setNotifier(new ServiceConnectionListener());
-
-        // suggest that we want to change the music audio stream by hardware volume controls even if no music is currently played
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // ask for permissions
         requestPermissionExternalStorage();
@@ -317,15 +232,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (mPBSOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOperationFinishedReceiver);
-            mPBSOperationFinishedReceiver = null;
-        }
-        mPBSOperationFinishedReceiver = new PBSOperationFinishedReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_IDLE);
-        filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
-        registerReceiver(mPBSOperationFinishedReceiver, filter);
 
         NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -359,8 +265,6 @@ public class OdysseyMainActivity extends AppCompatActivity
             }
             nowPlayingView.onResume();
         }
-
-        mServiceConnection.openConnection();
     }
 
     @Override
@@ -378,10 +282,6 @@ public class OdysseyMainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        if (mPBSOperationFinishedReceiver != null) {
-            unregisterReceiver(mPBSOperationFinishedReceiver);
-            mPBSOperationFinishedReceiver = null;
-        }
 
         NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
@@ -389,8 +289,17 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             nowPlayingView.onPause();
         }
+    }
 
-        mServiceConnection.closeConnection();
+    @Override
+    void onServiceConnected() {
+        // the service is ready so check if odyssey was opened by a file
+        checkUri();
+    }
+
+    @Override
+    void onServiceDisconnected() {
+
     }
 
     @Override
@@ -503,7 +412,7 @@ public class OdysseyMainActivity extends AppCompatActivity
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
             try {
-                if (mServiceConnection.getPBS().getCurrentIndex() == info.position) {
+                if (getPlaybackService().getCurrentIndex() == info.position) {
                     menu.findItem(R.id.view_current_playlist_action_playnext).setVisible(false);
                 }
             } catch (RemoteException e) {
@@ -610,21 +519,12 @@ public class OdysseyMainActivity extends AppCompatActivity
         Fragment fragment = null;
 
         if (id == R.id.nav_my_music) {
-            fragment = new MyMusicFragment();
-
-            MyMusicFragment.DEFAULTTAB defaultTab = getDefaultTab();
-
-            Bundle args = new Bundle();
-            args.putInt(MyMusicFragment.MY_MUSIC_REQUESTED_TAB, defaultTab.ordinal());
-
-            fragment.setArguments(args);
+            fragment = MyMusicFragment.newInstance(getDefaultTab());
         } else if (id == R.id.nav_saved_playlists) {
-            fragment = new SavedPlaylistsFragment();
+            fragment = SavedPlaylistsFragment.newInstance();
         } else if (id == R.id.nav_bookmarks) {
-            fragment = new BookmarksFragment();
+            fragment = BookmarksFragment.newInstance();
         } else if (id == R.id.nav_files) {
-            fragment = new FilesFragment();
-
             // open the default directory
             List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
@@ -636,16 +536,11 @@ public class OdysseyMainActivity extends AppCompatActivity
                 defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
             }
 
-            Bundle args = new Bundle();
-            args.putString(FilesFragment.ARG_DIRECTORYPATH, defaultDirectory);
-            args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, storageVolumesList.contains(defaultDirectory));
-
-            fragment.setArguments(args);
-
+            fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
         } else if (id == R.id.nav_settings) {
-            fragment = new SettingsFragment();
+            fragment = SettingsFragment.newInstance();
         } else if (id == R.id.nav_information) {
-            fragment = new InformationSettingsFragment();
+            fragment = InformationSettingsFragment.newInstance();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -663,17 +558,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onArtistSelected(ArtistModel artist, Bitmap bitmap) {
         // Create fragment and give it an argument for the selected article
-        ArtistAlbumsFragment newFragment = new ArtistAlbumsFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(ArtistAlbumsFragment.ARG_ARTISTMODEL, artist);
+        ArtistAlbumsFragment newFragment = ArtistAlbumsFragment.newInstance(artist, bitmap);
 
-        if(bitmap != null) {
-            args.putParcelable(ArtistAlbumsFragment.ARG_BITMAP, bitmap);
-        }
-
-        newFragment.setArguments(args);
-
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
         newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
@@ -693,17 +580,9 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onAlbumSelected(AlbumModel album, Bitmap bitmap) {
         // Create fragment and give it an argument for the selected article
-        AlbumTracksFragment newFragment = new AlbumTracksFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(AlbumTracksFragment.EXTRA_ALBUMMODEL, album);
+        AlbumTracksFragment newFragment = AlbumTracksFragment.newInstance(album, bitmap);
 
-        if(bitmap != null) {
-            args.putParcelable(AlbumTracksFragment.EXTRA_BITMAP, bitmap);
-        }
-
-        newFragment.setArguments(args);
-
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
         newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
@@ -723,21 +602,17 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onDirectorySelected(String dirPath, boolean isRootDirectory) {
         // Create fragment and give it an argument for the selected directory
-        FilesFragment newFragment = new FilesFragment();
-        Bundle args = new Bundle();
-        args.putString(FilesFragment.ARG_DIRECTORYPATH, dirPath);
-        args.putBoolean(FilesFragment.ARG_ISROOTDIRECTORY, isRootDirectory);
-
-        newFragment.setArguments(args);
+        FilesFragment newFragment = FilesFragment.newInstance(dirPath, isRootDirectory);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         if (!isRootDirectory) {
             // no root directory so set a enter / exit transition
-            newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
-            newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+            final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+            newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
+            newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
         }
 
         transaction.replace(R.id.fragment_container, newFragment);
@@ -796,18 +671,37 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void onPlaylistSelected(String playlistTitle, long playlistID) {
         // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = new PlaylistTracksFragment();
-        Bundle args = new Bundle();
-        args.putString(PlaylistTracksFragment.ARG_PLAYLISTTITLE, playlistTitle);
-        args.putLong(PlaylistTracksFragment.ARG_PLAYLISTID, playlistID);
+        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlistTitle, playlistID);
 
-        newFragment.setArguments(args);
-
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+        final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
+
+        // Replace whatever is in the fragment_container view with this
+        // fragment,
+        // and add the transaction to the back stack so the user can navigate
+        // back
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack("PlaylistTracksFragment");
+
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    @Override
+    public void onPlaylistFileSelected(String name, String path) {
+        // Create fragment and give it an argument for the selected playlist
+        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(name, path);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // set enter / exit animation
+        final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -894,16 +788,16 @@ public class OdysseyMainActivity extends AppCompatActivity
     @Override
     public void openArtworkSettings() {
         // Create fragment and give it an argument for the selected directory
-        ArtworkSettingsFragment newFragment = new ArtworkSettingsFragment();
-
+        ArtworkSettingsFragment newFragment = ArtworkSettingsFragment.newInstance();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
+        final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
+        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
 
         transaction.addToBackStack("ArtworkSettingsFragment");
 
@@ -984,16 +878,16 @@ public class OdysseyMainActivity extends AppCompatActivity
 
             // Always expand the toolbar to show the complete image
             AppBarLayout appbar = findViewById(R.id.appbar);
-            appbar.setExpanded(true,false);
+            appbar.setExpanded(true, false);
         }
     }
 
     @Override
     public void onRecentAlbumsSelected() {
         // Create fragment
-        RecentAlbumsFragment newFragment = new RecentAlbumsFragment();
+        RecentAlbumsFragment newFragment = RecentAlbumsFragment.newInstance();
 
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
         newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
@@ -1054,33 +948,6 @@ public class OdysseyMainActivity extends AppCompatActivity
         return navId;
     }
 
-    @Override
-    public void onPlaylistFileSelected(String name, String path) {
-        // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = new PlaylistTracksFragment();
-        Bundle args = new Bundle();
-        args.putString(PlaylistTracksFragment.ARG_PLAYLISTTITLE, name);
-        args.putString(PlaylistTracksFragment.ARG_PLAYLISTPATH, path);
-
-        newFragment.setArguments(args);
-
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, getResources().getConfiguration().getLayoutDirection())));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, getResources().getConfiguration().getLayoutDirection())));
-
-        // Replace whatever is in the fragment_container view with this
-        // fragment,
-        // and add the transaction to the back stack so the user can navigate
-        // back
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack("PlaylistTracksFragment");
-
-        // Commit the transaction
-        transaction.commit();
-    }
-
     /**
      * Check if odyssey was opened via a file.
      * <p>
@@ -1089,61 +956,12 @@ public class OdysseyMainActivity extends AppCompatActivity
     private void checkUri() {
         if (mSentUri != null) {
             try {
-                mServiceConnection.getPBS().playURI(mSentUri.toString());
+                getPlaybackService().playURI(mSentUri.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
 
             mSentUri = null;
-        }
-    }
-
-    private class ServiceConnectionListener implements PlaybackServiceConnection.ConnectionNotifier {
-
-        @Override
-        public void onConnect() {
-            try {
-                if (mServiceConnection.getPBS().isBusy()) {
-                    // pbs is still working so show the progress dialog again
-                    mProgressDialog.show();
-                } else {
-                    // pbs is not working so dismiss the progress dialog
-                    mProgressDialog.dismiss();
-
-                    // the service is ready so check if odyssey was opened by a file
-                    checkUri();
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                // error occured so dismiss the progress dialog anyway
-                mProgressDialog.dismiss();
-            }
-        }
-
-        @Override
-        public void onDisconnect() {
-            // disconnected so dismiss dialog anyway
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private class PBSOperationFinishedReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (PlaybackServiceStatusHelper.MESSAGE_WORKING.equals(intent.getAction())) {
-                runOnUiThread(() -> {
-                    if (mProgressDialog != null) {
-                        mProgressDialog.show();
-                    }
-                });
-            } else if (PlaybackServiceStatusHelper.MESSAGE_IDLE.equals(intent.getAction())) {
-                runOnUiThread(() -> {
-                    if (mProgressDialog != null) {
-                        mProgressDialog.dismiss();
-                    }
-                });
-            }
         }
     }
 }

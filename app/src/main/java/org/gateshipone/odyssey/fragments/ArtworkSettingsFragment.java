@@ -51,6 +51,10 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      */
     private PlaybackServiceConnection mServiceConnection = null;
 
+    public static ArtworkSettingsFragment newInstance() {
+        return new ArtworkSettingsFragment();
+    }
+
     /**
      * Called to do initial creation of a fragment.
      * <p>
@@ -183,7 +187,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             } else if (key.equals(downloadWifiOnlyKey)) {
                 artworkManager.setWifiOnly(sharedPreferences.getBoolean(downloadWifiOnlyKey, getResources().getBoolean(R.bool.pref_download_wifi_default)));
             }
-        } else if ( key.equals(getString(R.string.pref_hide_artwork_key))) {
+        } else if (key.equals(getString(R.string.pref_hide_artwork_key))) {
             boolean hideArtwork = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_artwork_default));
             try {
                 mServiceConnection.getPBS().hideArtworkChanged(hideArtwork);

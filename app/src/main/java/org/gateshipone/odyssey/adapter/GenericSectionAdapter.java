@@ -22,32 +22,26 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.widget.SectionIndexer;
 
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.utils.FilterTask;
+import org.gateshipone.odyssey.utils.SectionCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class GenericSectionAdapter<T extends GenericModel> extends ScrollSpeedAdapter implements SectionIndexer {
     private static final String TAG = "GenericSectionAdapter";
-    /**
-     * Variables used for sectioning (fast scroll).
-     */
-    private final ArrayList<String> mSectionList;
-    private final ArrayList<Integer> mSectionPositions;
-    private final HashMap<Character, Integer> mPositionSectionMap;
 
     /**
      * Abstract list with model data used for this adapter.
      */
-    protected List<T> mModelData;
+    private final List<T> mModelData;
 
-    protected final List<T> mFilteredModelData;
+    private final List<T> mFilteredModelData;
 
     private String mFilterString;
 
@@ -55,19 +49,16 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     /**
      * Task used to do the filtering of the list asynchronously
      */
-    private FilterTask mFilterTask;
+    private FilterTask<T> mFilterTask;
 
     private ReentrantReadWriteLock mLock;
 
+    private final SectionCreator<T> mSectionCreator;
 
-    public GenericSectionAdapter() {
+    GenericSectionAdapter() {
         super();
 
         mLock = new ReentrantReadWriteLock();
-
-        mSectionList = new ArrayList<>();
-        mSectionPositions = new ArrayList<>();
-        mPositionSectionMap = new HashMap<>();
 
         mModelData = new ArrayList<>();
 
@@ -75,6 +66,8 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         mFilterString = "";
 
         mSectionsEnabled = true;
+
+        mSectionCreator = provideSectionCreator();
     }
 
     /**
@@ -90,12 +83,14 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         mFilteredModelData.clear();
         if (data == null) {
             mModelData.clear();
+            mLock.writeLock().unlock();
+            notifyDataSetChanged();
+            return;
         } else {
             mModelData.clear();
             mModelData.addAll(data);
         }
         mLock.writeLock().unlock();
-
 
         setScrollSpeed(0);
 
@@ -108,11 +103,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             notifyDataSetChanged();
         } else {
             // Refilter the new data
-            if (mFilterTask != null) {
-                mFilterTask.cancel(true);
-            }
-            mFilterTask = new FilterTask();
-            mFilterTask.execute(mFilterString);
+            startFilterTask();
         }
     }
 
@@ -125,7 +116,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     @Override
     public int getPositionForSection(int sectionIndex) {
         if (mSectionsEnabled) {
-            return mSectionPositions.get(sectionIndex);
+            return mSectionCreator.getPositionForIndex(sectionIndex);
         } else {
             return 0;
         }
@@ -140,19 +131,9 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     @Override
     public int getSectionForPosition(int pos) {
         if (mSectionsEnabled) {
-            String sectionTitle = ((GenericModel) getItem(pos)).getSectionTitle();
+            final T model = getItem(pos);
 
-            char itemSection;
-            if (sectionTitle.length() > 0) {
-                itemSection = sectionTitle.toUpperCase().charAt(0);
-            } else {
-                itemSection = ' ';
-            }
-
-            if (mPositionSectionMap.containsKey(itemSection)) {
-                return mPositionSectionMap.get(itemSection);
-            }
-            return 0;
+            return mSectionCreator.getSectionPositionForModel(model);
         }
         return 0;
     }
@@ -163,7 +144,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     @Override
     public Object[] getSections() {
         if (mSectionsEnabled) {
-            return mSectionList.toArray();
+            return mSectionCreator.getSectionList().toArray();
         }
         return null;
     }
@@ -188,12 +169,12 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
      * @return The item at index position.
      */
     @Override
-    public Object getItem(int position) {
+    public T getItem(int position) {
         mLock.readLock().lock();
 
         int filteredSize = mFilteredModelData.size();
 
-        Object obj = filteredSize > 0 ? mFilteredModelData.get(position) : mModelData.get(position);
+        T obj = filteredSize > 0 ? mFilteredModelData.get(position) : mModelData.get(position);
 
         mLock.readLock().unlock();
 
@@ -215,60 +196,24 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
     private void createSections() {
         // Get write lock, to ensure count does not change during execution
         mLock.writeLock().lock();
-        mSectionList.clear();
-        mSectionPositions.clear();
-        mPositionSectionMap.clear();
-
-        int count = getCount();
-        boolean filtered = mFilteredModelData.size() > 0;
-
-        if (count > 0) {
-            GenericModel currentModel = (filtered ? mFilteredModelData.get(0) : mModelData.get(0));
-
-            char lastSection;
-            if (currentModel.getSectionTitle().length() > 0) {
-                lastSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
-            } else {
-                lastSection = ' ';
-            }
-
-            mSectionList.add(String.valueOf(lastSection));
-            mSectionPositions.add(0);
-            mPositionSectionMap.put(lastSection, mSectionList.size() - 1);
-
-            for (int i = 1; i < count; i++) {
-                currentModel = (filtered ? mFilteredModelData.get(i) : mModelData.get(i));
-
-                char currentSection;
-                if (currentModel.getSectionTitle().length() > 0) {
-                    currentSection = currentModel.getSectionTitle().toUpperCase().charAt(0);
-                } else {
-                    currentSection = ' ';
-                }
-
-                if (lastSection != currentSection) {
-                    mSectionList.add("" + currentSection);
-
-                    lastSection = currentSection;
-                    mSectionPositions.add(i);
-                    mPositionSectionMap.put(currentSection, mSectionList.size() - 1);
-                }
-
-            }
-        }
+        mSectionCreator.createSections(mFilteredModelData.size() > 0 ? mFilteredModelData : mModelData);
         mLock.writeLock().unlock();
     }
 
     public void applyFilter(String filterString) {
         if (!filterString.equals(mFilterString)) {
             mFilterString = filterString;
-            if (mFilterTask != null) {
-                mFilterTask.cancel(true);
-            }
-            mFilterTask = new FilterTask();
-            mFilterTask.execute(filterString);
+            startFilterTask();
         }
+    }
 
+    private void startFilterTask() {
+        if (mFilterTask != null) {
+            mFilterTask.cancel(true);
+        }
+        mFilterTask = provideFilterTask();
+        mLock.readLock().lock();
+        mFilterTask.execute(mFilterString);
     }
 
     public void removeFilter() {
@@ -287,53 +232,54 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
         }
     }
 
-    private class FilterTask extends AsyncTask<String, Object, Pair<List<T>, String>> {
-
-        @Override
-        protected Pair<List<T>, String> doInBackground(String... lists) {
-            List<T> resultList = new ArrayList<>();
-
-            String filterString = lists[0];
-            mLock.readLock().lock();
-            for (T elem : mModelData) {
-                // Check if task was cancelled from the outside.
-                if (isCancelled()) {
-                    resultList.clear();
-                    mLock.readLock().unlock();
-                    return new Pair<>(resultList, filterString);
-                }
-                if (elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase())) {
-                    resultList.add(elem);
-                }
-            }
+    private void updateAfterFiltering(final Pair<List<T>, String> result) {
+        if (result.first != null && mFilterString.equals(result.second)) {
             mLock.readLock().unlock();
 
-            return new Pair<>(resultList, filterString);
-        }
+            mLock.writeLock().lock();
 
-        protected void onPostExecute(Pair<List<T>, String> result) {
-            if (!isCancelled() && mFilterString.equals(result.second)) {
-                mLock.writeLock().lock();
+            mFilteredModelData.clear();
+            mFilteredModelData.addAll(result.first);
 
-                mFilteredModelData.clear();
-                mFilteredModelData.addAll(result.first);
+            mLock.writeLock().unlock();
 
-                mLock.writeLock().unlock();
-
-                setScrollSpeed(0);
-                if (mSectionsEnabled) {
-                    createSections();
-                }
-                notifyDataSetChanged();
+            setScrollSpeed(0);
+            if (mSectionsEnabled) {
+                createSections();
             }
+            notifyDataSetChanged();
+        } else {
+            mLock.readLock().unlock();
         }
+    }
 
+    private void filteringAborted() {
+        mLock.readLock().unlock();
+    }
+
+    private FilterTask<T> provideFilterTask() {
+        return new FilterTask<>(mModelData,
+                provideFilter(),
+                this::updateAfterFiltering, this::filteringAborted);
+    }
+
+    protected FilterTask.Filter<T> provideFilter() {
+        return (elem, filterString) -> elem.getSectionTitle().toLowerCase().contains(filterString.toLowerCase());
+    }
+
+    protected SectionCreator<T> provideSectionCreator() {
+        return new SectionCreator<>(model -> {
+            final String sectionTitle = model.getSectionTitle();
+
+            return sectionTitle.isEmpty() ? ' ' : sectionTitle.toUpperCase().charAt(0);
+        });
     }
 
     /**
      * Allows to enable/disable the support for sections of this adapter.
      * In case of enabling it creates the sections.
      * In case of disabling it will clear the data.
+     *
      * @param enabled
      */
     public void enableSections(boolean enabled) {
@@ -342,9 +288,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             createSections();
         } else {
             mLock.writeLock().lock();
-            mSectionList.clear();
-            mSectionPositions.clear();
-            mPositionSectionMap.clear();
+            mSectionCreator.clearSections();
             mLock.writeLock().unlock();
         }
         notifyDataSetChanged();

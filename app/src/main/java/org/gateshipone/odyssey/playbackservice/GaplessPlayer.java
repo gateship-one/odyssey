@@ -674,21 +674,6 @@ public class GaplessPlayer {
         }
     }
 
-    /**
-     * Returns whether {@link GaplessPlayer} is active or inactive so it can receive commands
-     *
-     * @return True if this class is busy and false if it is not doing important work.
-     */
-    synchronized boolean getActive() {
-        if (mSecondPreparing) {
-            return true;
-        } else if (!mCurrentPrepared && (mCurrentMediaPlayer != null)) {
-            return true;
-        }
-
-        return false;
-    }
-
     private void dumpAudioEffectsState() {
         AudioEffect.Descriptor effects[] = AudioEffect.queryEffects();
         Log.v(TAG,"Found audio effects: " + effects.length);

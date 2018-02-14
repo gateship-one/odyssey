@@ -45,9 +45,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
@@ -61,11 +61,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * Callback to setup toolbar and fab
      */
     protected ToolbarAndFABCallback mToolbarAndFABCallback;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    private PlaybackServiceConnection mServiceConnection;
 
     /**
      * Save the viewpager for later usage
@@ -100,7 +95,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     /**
      * key value for arguments of the fragment
      */
-    public final static String MY_MUSIC_REQUESTED_TAB = "ARG_REQUESTED_TAB";
+    private final static String ARG_REQUESTED_TAB = "requested_tab";
 
     /**
      * enum for the default tab
@@ -109,13 +104,14 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         ARTISTS, ALBUMS, TRACKS
     }
 
+    public static MyMusicFragment newInstance(final DEFAULTTAB defaulttab) {
+        final Bundle args = new Bundle();
+        args.putInt(ARG_REQUESTED_TAB, defaulttab.ordinal());
 
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
+        final MyMusicFragment fragment = new MyMusicFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
-
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -166,7 +162,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         // only set requested tab if no state was saved
         if (args != null && savedInstanceState == null) {
-            DEFAULTTAB tab = DEFAULTTAB.values()[args.getInt(MY_MUSIC_REQUESTED_TAB)];
+            DEFAULTTAB tab = DEFAULTTAB.values()[args.getInt(ARG_REQUESTED_TAB)];
 
             switch (tab) {
                 case ARTISTS:
@@ -232,20 +228,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onResume() {
         super.onResume();
 
-        mServiceConnection.openConnection();
-
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(getPlayButtonListener(mMyMusicViewPager.getCurrentItem()));
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_my_music), true, true, false);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mServiceConnection.closeConnection();
     }
 
     /**
@@ -260,7 +248,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
                 return v -> {
                     // play all tracks on device
                     try {
-                        mServiceConnection.getPBS().playAllTracks(mSearchString);
+                        ((GenericActivity) getActivity()).getPlaybackService().playAllTracks(mSearchString);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -440,11 +428,11 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    return new ArtistsFragment();
+                    return ArtistsFragment.newInstance();
                 case 1:
-                    return new AlbumsFragment();
+                    return AlbumsFragment.newInstance();
                 case 2:
-                    return new AllTracksFragment();
+                    return AllTracksFragment.newInstance();
                 default:
                     return null;
             }

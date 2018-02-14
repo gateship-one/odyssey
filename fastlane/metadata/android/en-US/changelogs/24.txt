@@ -1,0 +1,5 @@
+* Default action for library tracks selectable (play song, add song (default), add as next song)
+* State saving for android 8 fixed
+* Updated french and italian translations
+* Playbackservice fixes (disappearing playlist)
+* linked FAQ

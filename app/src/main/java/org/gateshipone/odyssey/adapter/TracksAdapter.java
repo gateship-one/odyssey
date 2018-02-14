@@ -71,7 +71,7 @@ public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TrackModel track = (TrackModel) getItem(position);
+        TrackModel track = getItem(position);
 
         ListViewItem listViewItem;
         // Check if a view can be recycled

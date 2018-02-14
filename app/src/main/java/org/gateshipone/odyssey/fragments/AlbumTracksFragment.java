@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -43,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
@@ -68,17 +70,17 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     /**
      * Key values for arguments of the fragment
      */
-    // FIXME move to separate class to get unified constants?
-    public final static String EXTRA_ALBUMMODEL = "albummodel";
-    public final static String EXTRA_BITMAP = "bitmap";
+    private final static String ARG_ALBUMMODEL = "albummodel";
+
+    private final static String ARG_BITMAP = "bitmap";
 
     /**
      * The information of the displayed album
      */
-
     private AlbumModel mAlbum;
 
     private CoverBitmapLoader mBitmapLoader;
+
     private Bitmap mBitmap = null;
 
     private boolean mHideArtwork;
@@ -87,6 +89,18 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    public static AlbumTracksFragment newInstance(@NonNull final AlbumModel albumModel, @Nullable final Bitmap bitmap) {
+        final Bundle args = new Bundle();
+        args.putParcelable(ARG_ALBUMMODEL, albumModel);
+        if (bitmap != null) {
+            args.putParcelable(ARG_BITMAP, bitmap);
+        }
+
+        final AlbumTracksFragment fragment = new AlbumTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -119,8 +133,8 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // set up toolbar
         Bundle args = getArguments();
 
-        mAlbum = args.getParcelable(EXTRA_ALBUMMODEL);
-        mBitmap = args.getParcelable(EXTRA_BITMAP);
+        mAlbum = args.getParcelable(ARG_ALBUMMODEL);
+        mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
 
@@ -179,7 +193,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                     mBitmapLoader.getAlbumImage(mAlbum, width, width);
                 });
             }
-        } else if (!mHideArtwork){
+        } else if (!mHideArtwork) {
             // Reuse image
             mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
             mToolbarAndFABCallback.setupToolbarImage(mBitmap);
@@ -188,7 +202,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 getView().post(() -> {
                     int width = rootView.getMeasuredWidth();
                     // Image too small
-                    if(mBitmap.getWidth() < width) {
+                    if (mBitmap.getWidth() < width) {
                         mBitmapLoader.getAlbumImage(mAlbum, width, width);
                     }
                 });
@@ -233,6 +247,9 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
+                break;
+            case ACTION_CLEAR_AND_PLAY:
+                playAlbum(position);
                 break;
         }
     }
@@ -325,7 +342,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        getArguments().remove(EXTRA_BITMAP);
+        getArguments().remove(ARG_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -337,13 +354,13 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
+        TrackModel clickedTrack = mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID),null);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
     }
 
     /**
@@ -354,10 +371,10 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -370,10 +387,10 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -387,7 +404,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // Enqueue complete album
 
         try {
-            mServiceConnection.getPBS().enqueueAlbum(mAlbum.getAlbumKey());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -404,7 +421,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
         // clear playlist and play current album
 
         try {
-            mServiceConnection.getPBS().playAlbum(mAlbum.getAlbumKey(), position);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -419,7 +436,7 @@ public class AlbumTracksFragment extends OdysseyFragment<TrackModel> implements 
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
                 // set toolbar image
                 mToolbarAndFABCallback.setupToolbarImage(bm);
-                getArguments().putParcelable(EXTRA_BITMAP,bm);
+                getArguments().putParcelable(ARG_BITMAP, bm);
             });
         }
     }

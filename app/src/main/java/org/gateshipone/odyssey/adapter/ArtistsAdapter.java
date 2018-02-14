@@ -81,7 +81,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArtistModel artist = (ArtistModel) getItem(position);
+        ArtistModel artist = getItem(position);
         String label = artist.getArtistName();
 
         if (mUseList) {

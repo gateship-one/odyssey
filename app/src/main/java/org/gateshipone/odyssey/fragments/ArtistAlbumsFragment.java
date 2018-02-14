@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
@@ -41,6 +42,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -60,14 +62,27 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     /**
      * key values for arguments of the fragment
      */
-    // FIXME move to separate class to get unified constants?
-    public final static String ARG_ARTISTMODEL = "artistmodel";
-    public final static String ARG_BITMAP = "bitmap";
+    private final static String ARG_ARTISTMODEL = "artistmodel";
+
+    private final static String ARG_BITMAP = "bitmap";
 
     private CoverBitmapLoader mBitmapLoader;
+
     private Bitmap mBitmap;
 
     private boolean mHideArtwork;
+
+    public static ArtistAlbumsFragment newInstance(@NonNull final ArtistModel artistModel, @Nullable final Bitmap bitmap) {
+        final Bundle args = new Bundle();
+        args.putParcelable(ARG_ARTISTMODEL, artistModel);
+        if (bitmap != null) {
+            args.putParcelable(ARG_BITMAP, bitmap);
+        }
+
+        final ArtistAlbumsFragment fragment = new ArtistAlbumsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -125,7 +140,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
                     int width = rootView.getWidth();
 
                     // Image too small
-                    if(mBitmap.getWidth() < width) {
+                    if (mBitmap.getWidth() < width) {
                         mBitmapLoader.getArtistImage(mArtist, width, width);
                     }
                 });
@@ -252,7 +267,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -270,7 +285,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
         // play artist
         try {
-            mServiceConnection.getPBS().playArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -285,7 +300,7 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
                 mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
                 // set toolbar image
                 mToolbarAndFABCallback.setupToolbarImage(bm);
-                getArguments().putParcelable(ARG_BITMAP,bm);
+                getArguments().putParcelable(ARG_BITMAP, bm);
             });
         }
     }

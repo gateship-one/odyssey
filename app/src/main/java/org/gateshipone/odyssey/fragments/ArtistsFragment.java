@@ -40,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.ArtistsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
@@ -63,6 +64,10 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Save the last scroll position to resume there
      */
     private int mLastPosition = -1;
+
+    public static ArtistsFragment newInstance() {
+        return new ArtistsFragment();
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -117,14 +122,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsAdapter) mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsAdapter) mAdapter);
     }
 
     /**
@@ -181,7 +186,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         mLastPosition = position;
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -248,7 +253,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     private void enqueueArtist(int position) {
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -264,7 +269,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().enqueueArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -280,7 +285,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     private void playArtist(int position) {
 
         // identify current artist
-        ArtistModel currentArtist = (ArtistModel) mAdapter.getItem(position);
+        ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
         long artistID = currentArtist.getArtistID();
@@ -296,7 +301,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            mServiceConnection.getPBS().playArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

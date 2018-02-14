@@ -51,7 +51,7 @@ public class FilesAdapter extends GenericSectionAdapter<FileModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        FileModel file = (FileModel)getItem(position);
+        FileModel file = getItem(position);
 
         ListViewItem listViewItem;
         // Check if a view can be recycled

@@ -42,8 +42,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestFinishedListener {
     private static final String TAG = LimitingRequestQueue.class.getSimpleName();
-    private Cache mCache;
-    private Network mNetwork;
 
     private Timer mLimiterTimer;
 
@@ -58,20 +56,18 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
 
     private LimitingRequestQueue(Cache cache, Network network) {
         super(cache, network, 1);
-        mCache = cache;
-        mNetwork = network;
         mLimitingRequestQueue = new LinkedBlockingQueue<>();
         mLimiterTimer = null;
         super.addRequestFinishedListener(this);
     }
 
     public synchronized static LimitingRequestQueue getInstance(Context context) {
-        if ( null == mInstance ) {
+        if (null == mInstance) {
             Network network = new BasicNetwork(new HurlStack());
             // 10MB disk cache
             Cache cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024 * 10);
 
-            mInstance = new LimitingRequestQueue(cache,network);
+            mInstance = new LimitingRequestQueue(cache, network);
             mInstance.start();
         }
         return mInstance;
@@ -79,17 +75,16 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
 
     @Override
     public void onRequestFinished(Request request) {
-        Log.v(TAG,"Request finished");
+        Log.v(TAG, "Request finished");
     }
-
 
     @Override
     public <T> Request<T> add(Request<T> request) {
-        if ( null == request ) {
+        if (null == request) {
             return null;
         }
-        Log.v(TAG,"RATE LIMITING REQUEST ADDED");
-        synchronized (mLimitingRequestQueue ) {
+        Log.v(TAG, "RATE LIMITING REQUEST ADDED");
+        synchronized (mLimitingRequestQueue) {
             mLimitingRequestQueue.add(request);
             if (null == mLimiterTimer) {
                 // Timer currently not running
@@ -100,7 +95,6 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         return request;
     }
 
-
     private <T> void realAddRequest(Request<T> request) {
         super.add(request);
     }
@@ -108,25 +102,25 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
     private class LimiterTask extends TimerTask {
         @Override
         public void run() {
-            synchronized (mLimitingRequestQueue ) {
+            synchronized (mLimitingRequestQueue) {
                 Request request = mLimitingRequestQueue.poll();
                 if (null != request) {
                     realAddRequest(request);
-                    Log.v(TAG,"RATE LIMITING FORWARED");
+                    Log.v(TAG, "RATE LIMITING FORWARED");
                 } else {
                     // Stop the timer, no requests left
                     mLimiterTimer.cancel();
                     mLimiterTimer.purge();
                     mLimiterTimer = null;
-                    Log.v(TAG,"RATE LIMITING EMPTY, STOPPING");
+                    Log.v(TAG, "RATE LIMITING EMPTY, STOPPING");
                 }
             }
-
         }
     }
 
     /**
      * Cancels all requests in this queue for which the given filter applies.
+     *
      * @param filter The filtering function to use
      */
     public void cancelAll(RequestFilter filter) {
@@ -134,7 +128,7 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         synchronized (mLimitingRequestQueue) {
             for (Request<?> request : mLimitingRequestQueue) {
                 if (filter.apply(request)) {
-                    Log.v(TAG,"Canceling request: " + request);
+                    Log.v(TAG, "Canceling request: " + request);
                     request.cancel();
                     mLimitingRequestQueue.remove(request);
                 }

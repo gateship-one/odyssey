@@ -191,4 +191,5 @@
     <string name="preference_launch_faq">F.A.Q.</string>
     <string name="preference_launch_faq_text">Hilfestellungen für diese Anwendung</string>
     <string name="preference_launch_about_text">Informationen über die Version, Lizenz und die Mitwirkenden</string>
+    <string name="preference_library_click_action_clear_and_play">Ersetzen und ab Index spielen</string>
 </resources>

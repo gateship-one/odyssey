@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
 import org.gateshipone.odyssey.loaders.TrackLoader;
@@ -56,16 +57,17 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     /**
      * Key values for arguments of the fragment
      */
-    // FIXME move to separate class to get unified constants?
-    public final static String ARG_PLAYLISTTITLE = "playlisttitle";
-    public final static String ARG_PLAYLISTID = "playlistid";
+    private final static String ARG_PLAYLISTTITLE = "playlisttitle";
 
-    public final static String ARG_PLAYLISTPATH = "playlistpath";
+    private final static String ARG_PLAYLISTID = "playlistid";
+
+    private final static String ARG_PLAYLISTPATH = "playlistpath";
 
     /**
      * The information of the displayed playlist
      */
     private String mPlaylistTitle = "";
+
     private long mPlaylistID = -1;
 
     private String mPlaylistPath;
@@ -74,6 +76,26 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, final long playlistID) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
+        args.putLong(ARG_PLAYLISTID, playlistID);
+
+        final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, @NonNull final String playlistPath) {
+        final Bundle args = new Bundle();
+        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
+        args.putString(ARG_PLAYLISTPATH, playlistPath);
+
+        final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -194,6 +216,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
                 break;
+            case ACTION_CLEAR_AND_PLAY:
+                playPlaylist(position);
+                break;
         }
     }
 
@@ -292,9 +317,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         try {
             // add the playlist
             if (mPlaylistPath == null) {
-                mServiceConnection.getPBS().enqueuePlaylist(mPlaylistID);
+                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(mPlaylistID);
             } else {
-                mServiceConnection.getPBS().enqueuePlaylistFile(mPlaylistPath);
+                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylistFile(mPlaylistPath);
             }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -313,9 +338,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         try {
             if (mPlaylistPath == null) {
-                mServiceConnection.getPBS().playPlaylist(mPlaylistID, position);
+                ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(mPlaylistID, position);
             } else {
-                mServiceConnection.getPBS().playPlaylistFile(mPlaylistPath, position);
+                ((GenericActivity) getActivity()).getPlaybackService().playPlaylistFile(mPlaylistPath, position);
             }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
@@ -329,10 +354,10 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param position the position of the selected track in the adapter
      */
     private void playTrack(int position) {
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -346,10 +371,10 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

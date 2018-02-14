@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +44,10 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     private final ListView mListView;
     private final Context mContext;
 
+    @Nullable
     private CurrentPlaylistAdapter mCurrentPlaylistAdapter;
 
+    @Nullable
     private PlaybackServiceConnection mPlaybackServiceConnection;
 
     private boolean mHideArtwork;
@@ -73,6 +76,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * This will create a new Adapter.
      */
     public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection) {
+        if(playbackServiceConnection == null) {
+            return;
+        }
         mPlaybackServiceConnection = playbackServiceConnection;
 
         mCurrentPlaylistAdapter = new CurrentPlaylistAdapter(mContext, mPlaybackServiceConnection);
@@ -92,6 +98,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     public void unregisterPBSeviceConnection() {
         mListView.setAdapter(null);
         mPlaybackServiceConnection = null;
+        mCurrentPlaylistAdapter = null;
     }
 
     /**
@@ -100,7 +107,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
-            mPlaybackServiceConnection.getPBS().jumpTo(position);
+            if(mPlaybackServiceConnection != null) {
+                mPlaybackServiceConnection.getPBS().jumpTo(position);
+            }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -114,14 +123,20 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @return The {@link CurrentPlaylistAdapter.VIEW_TYPES} of the view for the selected item.
      */
     public CurrentPlaylistAdapter.VIEW_TYPES getItemViewType(int position) {
-        return CurrentPlaylistAdapter.VIEW_TYPES.values()[mCurrentPlaylistAdapter.getItemViewType(position)];
+        if (mCurrentPlaylistAdapter != null) {
+            return CurrentPlaylistAdapter.VIEW_TYPES.values()[mCurrentPlaylistAdapter.getItemViewType(position)];
+        } else {
+            return CurrentPlaylistAdapter.VIEW_TYPES.TYPE_TRACK_ITEM;
+        }
     }
 
     /**
      * The playlist has changed so update the view.
      */
     public void playlistChanged(NowPlayingInformation info) {
-        mCurrentPlaylistAdapter.updateState(info);
+        if (mCurrentPlaylistAdapter != null) {
+            mCurrentPlaylistAdapter.updateState(info);
+        }
         // set the selection to the current track, so the list view will positioned appropriately
         mListView.setSelection(info.getPlayingIndex());
     }
@@ -133,7 +148,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void removeTrack(int position) {
         try {
-            mPlaybackServiceConnection.getPBS().dequeueTrack(position);
+            if(mPlaybackServiceConnection != null) {
+                mPlaybackServiceConnection.getPBS().dequeueTrack(position);
+            }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -147,7 +164,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void removeSection(int position) {
         try {
-            mPlaybackServiceConnection.getPBS().dequeueTracks(position);
+            if(mPlaybackServiceConnection != null) {
+                mPlaybackServiceConnection.getPBS().dequeueTracks(position);
+            }
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -160,6 +179,9 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public void enqueueTrackAsNext(int position) {
+        if(mPlaybackServiceConnection == null || mCurrentPlaylistAdapter == null) {
+            return;
+        }
         // save track
         TrackModel track = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
 
@@ -181,9 +203,11 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public String getAlbumKey(int position) {
-        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
-
-        return clickedTrack.getTrackAlbumKey();
+        if(mCurrentPlaylistAdapter != null) {
+            TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
+            return clickedTrack.getTrackAlbumKey();
+        }
+        return "";
     }
 
     /**
@@ -192,9 +216,11 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public String getArtistTitle(int position) {
-        TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
-
-        return clickedTrack.getTrackArtistName();
+        if(mCurrentPlaylistAdapter != null) {
+            TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
+            return clickedTrack.getTrackArtistName();
+        }
+        return "";
     }
 
     public void hideArtwork(boolean enable) {

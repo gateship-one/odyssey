@@ -39,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.TrackLoader;
@@ -61,6 +62,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
+
+    public static AllTracksFragment newInstance() {
+        return new AllTracksFragment();
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -149,10 +154,13 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
                 enqueueTrack(position, false);
                 break;
             case ACTION_PLAY_SONG:
-                playTrack(position);
+                playTrack(position, false);
                 break;
             case ACTION_PLAY_SONG_NEXT:
                 enqueueTrack(position, true);
+                break;
+            case ACTION_CLEAR_AND_PLAY:
+                playTrack(position, true);
                 break;
         }
     }
@@ -189,7 +197,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
                 enqueueTrack(info.position, true);
                 return true;
             case R.id.fragment_all_tracks_action_play:
-                playTrack(info.position);
+                playTrack(info.position, false);
                 return true;
             case R.id.fragment_all_tracks_showartist:
                 showArtist(info.position);
@@ -207,7 +215,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
     private void showArtist(int position) {
         // identify current artist
 
-        TrackModel clickedTrack = (TrackModel) mAdapter.getItem(position);
+        TrackModel clickedTrack = mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
@@ -222,11 +230,11 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      *
      * @param position the position of the selected track in the adapter
      */
-    private void playTrack(int position) {
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+    private void playTrack(final int position, final boolean clearPlaylist) {
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().playTrack(track);
+            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -241,10 +249,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      */
     private void enqueueTrack(int position, boolean asNext) {
 
-        TrackModel track = (TrackModel) mAdapter.getItem(position);
+        TrackModel track = mAdapter.getItem(position);
 
         try {
-            mServiceConnection.getPBS().enqueueTrack(track, asNext);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

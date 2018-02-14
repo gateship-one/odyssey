@@ -37,7 +37,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.indigo"
-        tools:ignore="AllowBackup">
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <activity
             android:name=".activities.OdysseySplashActivity"

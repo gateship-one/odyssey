@@ -37,7 +37,6 @@ import android.widget.AbsListView;
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import java.util.List;
 
@@ -62,11 +61,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
      * The reference to the possible empty view which should replace the list view if no data is available
      */
     protected View mEmptyView;
-
-    /**
-     * ServiceConnection object to communicate with the PlaybackService
-     */
-    protected PlaybackServiceConnection mServiceConnection;
 
     /**
      * The generic adapter for the view model
@@ -96,7 +90,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mServiceConnection = new PlaybackServiceConnection(getActivity().getApplicationContext());
     }
 
     @Override
@@ -142,8 +135,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
 
         mAdapter.registerDataSetObserver(mDataSetObserver);
 
-        mServiceConnection.openConnection();
-
         getContent();
 
         mTrimmingEnabled = false;
@@ -153,8 +144,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends Fragment i
     public void onPause() {
         super.onPause();
         mTrimmingEnabled = true;
-
-        mServiceConnection.closeConnection();
 
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
     }

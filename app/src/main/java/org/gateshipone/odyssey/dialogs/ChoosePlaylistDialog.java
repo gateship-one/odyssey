@@ -119,7 +119,7 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
                 saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
             } else {
                 // override existing bookmark
-                PlaylistModel playlist = (PlaylistModel) mPlaylistsListViewAdapter.getItem(which);
+                PlaylistModel playlist = mPlaylistsListViewAdapter.getItem(which);
                 String objectTitle = playlist.getPlaylistName();
                 mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);
             }

@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -54,6 +55,10 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * Listener to open an artist
      */
     private OnArtistSelectedListener mArtistSelectedCallback;
+
+    public static RecentAlbumsFragment newInstance() {
+        return new RecentAlbumsFragment();
+    }
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -205,7 +210,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
     private void showArtist(int position) {
         // identify current artist
 
-        AlbumModel clickedAlbum = (AlbumModel) mAdapter.getItem(position);
+        AlbumModel clickedAlbum = mAdapter.getItem(position);
 
         String artistTitle = clickedAlbum.getArtistName();
         long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
@@ -216,7 +221,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void enqueueAllAlbums() {
         try {
-            mServiceConnection.getPBS().enqueueRecentAlbums();
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -225,7 +230,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void playAllAlbums() {
         try {
-            mServiceConnection.getPBS().playRecentAlbums();
+            ((GenericActivity) getActivity()).getPlaybackService().playRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
