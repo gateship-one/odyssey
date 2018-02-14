@@ -148,6 +148,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.setStyle(notificationStyle);
             mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
 
+            //Build the public notification
             Notification notificationPublic = mNotificationBuilder.build();
 
             mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
@@ -195,7 +196,7 @@ public class OdysseyNotificationManager {
                 }
             }
 
-            // Build the notification
+            // Build the private notification
             if (mNotificationPrivate) {
                 mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
             }
@@ -262,19 +263,6 @@ public class OdysseyNotificationManager {
                 mNotificationManager.notify(NOTIFICATION_ID, mNotification);
             }
         }
-/*
-        //ATTENTION!
-        //This code would be more correct, BUT it removes the control elements when going from public to private.
-        //I don't know the reason...
-        if (mNotificationBuilder != null) {
-            mNotificationBuilder.setVisibility(mNotificationPrivate ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC);
-            mNotification = mNotificationBuilder.build();
-
-            if (mNotificationManager != null) {
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-            }
-        }
-*/
     }
 
     /**
