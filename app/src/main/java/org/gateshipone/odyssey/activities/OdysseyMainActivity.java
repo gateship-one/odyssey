@@ -118,9 +118,15 @@ public class OdysseyMainActivity extends GenericActivity
 
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
 
+    public final static String MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS = "org.gateshipone.odyssey.backtosettings";
+
+    public final static String MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS_VALUE = "org.gateshipone.odyssey.backtosettings.value";
+
     private Uri mSentUri;
 
     private boolean mShowNPV = false;
+
+    private boolean mBackToSettings = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,10 @@ public class OdysseyMainActivity extends GenericActivity
 
                     if (extras != null && extras.getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, "").equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
                         mShowNPV = true;
+                    }
+
+                    if (extras != null && extras.getString(MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS, "").equals(MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS_VALUE)) {
+                        mBackToSettings = true;
                     }
                 }
             }
@@ -215,7 +225,15 @@ public class OdysseyMainActivity extends GenericActivity
                     break;
                 case R.id.nav_my_music:
                 default:
-                    fragment = MyMusicFragment.newInstance(getDefaultTab());
+                    if (mBackToSettings) {
+                        fragment = SettingsFragment.newInstance();
+                        mBackToSettings = false;
+                        if (navigationView != null) {
+                            navigationView.setCheckedItem(R.id.nav_settings);
+                        }
+                    } else {
+                        fragment = MyMusicFragment.newInstance(getDefaultTab());
+                    }
                     break;
             }
 
