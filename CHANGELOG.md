@@ -1,9 +1,10 @@
-### Version: 1.1.13 Tag: release-XX (2018-XX-XX) ###
-* add replace and play from index add additional default action for library tracks
+### Version: 1.1.13 Tag: release-25 (2018-02-14) ###
+* add replace and play from index as additional default action for library tracks
 * fix not playing tracks from the filebrowser properly
 * fix moving to the last song of a playlist file (.m3u, .pls)
 * fix bitmap scaling in gridview
 * clear bitmap cache properly after remove artwork image
+* prevent crashes after device rotation
 
 ### Version: 1.1.12 Tag: release-24 (2018-02-03) ###
 * Default action for library tracks selectable (play song, add song (default), add as next song)

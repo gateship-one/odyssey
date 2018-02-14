@@ -1,0 +1,6 @@
+* add replace and play from index as additional default action for library tracks
+* fix not playing tracks from the filebrowser properly
+* fix moving to the last song of a playlist file (.m3u, .pls)
+* fix bitmap scaling in gridview
+* clear bitmap cache properly after remove artwork image
+* prevent crashes after device rotation
