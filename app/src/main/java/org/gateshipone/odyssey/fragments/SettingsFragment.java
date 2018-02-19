@@ -178,7 +178,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_theme_key)) || key.equals(getString(R.string.pref_dark_theme_key))) {
             Intent intent = getActivity().getIntent();
-            intent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS, OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS_VALUE);
+            intent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS, true);
             getActivity().finish();
             startActivity(intent);
         }
