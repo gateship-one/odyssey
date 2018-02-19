@@ -185,6 +185,8 @@
     <string name="preference_library_click_action_summary">Seleziona l\'azione per le traccie nella libreria</string>
     <string name="preference_library_click_action_message">Seleziona l\'azione predefinita da eseguire se fai clic su una traccia nelle viste della libreria</string>
 
+    <string name="preference_library_click_action_clear_and_play">Sostituisci e riproduci dall\'indice.</string>
+
     <string name="artwork_settings">Impostazioni degli artwork</string>
 
     <string name="preference_clear_default_directory_title">Cancella la cartella di default</string>
