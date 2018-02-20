@@ -118,12 +118,16 @@ public class OdysseyMainActivity extends GenericActivity
 
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
 
+    public final static String MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS = "org.gateshipone.odyssey.backtosettings";
+
     private Uri mSentUri;
 
     private boolean mShowNPV = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean mBackToSettings = false;
+
         // restore drag state
         if (savedInstanceState != null) {
             mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
@@ -139,8 +143,12 @@ public class OdysseyMainActivity extends GenericActivity
                     // odyssey was opened by widget or notification
                     final Bundle extras = intent.getExtras();
 
-                    if (extras != null && extras.getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, "").equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
-                        mShowNPV = true;
+                    if (extras != null) {
+                        if (extras.getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, "").equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
+                            mShowNPV = true;
+                        }
+
+                        mBackToSettings = extras.getBoolean(MAINACTIVITY_INTENT_EXTRA_BACKTOSETTINGS, false);
                     }
                 }
             }
@@ -178,7 +186,7 @@ public class OdysseyMainActivity extends GenericActivity
             mDrawerToggle.syncState();
         }
 
-        int navId = getDefaultViewID();
+        int navId = mBackToSettings ? R.id.nav_settings : getDefaultViewID();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
@@ -212,6 +220,9 @@ public class OdysseyMainActivity extends GenericActivity
                     }
 
                     fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
+                    break;
+                case R.id.nav_settings:
+                    fragment = SettingsFragment.newInstance();
                     break;
                 case R.id.nav_my_music:
                 default:
