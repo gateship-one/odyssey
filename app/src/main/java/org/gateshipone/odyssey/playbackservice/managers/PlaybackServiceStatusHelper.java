@@ -404,7 +404,6 @@ public class PlaybackServiceStatusHelper {
 
     public void notificationPrivate(boolean enable) {
         mNotificationManager.notificationPrivate(enable);
-        //updateStatus(); //This creates a null pointer exception!
     }
 
     /**
