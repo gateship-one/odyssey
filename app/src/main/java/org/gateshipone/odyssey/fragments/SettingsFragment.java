@@ -184,7 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if (key.equals(getString(R.string.pref_notification_private_key))) {
             try {
                 boolean notificationPrivate = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_notification_private_default));
-                mServiceConnection.getPBS().notificationPrivateChanged(notificationPrivate);
+                ((GenericActivity)getActivity()).getPlaybackService().notificationPrivateChanged(notificationPrivate);
             } catch (RemoteException e) {
             }
         }
