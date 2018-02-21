@@ -148,14 +148,14 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.setStyle(notificationStyle);
             mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
 
+            // Remove unnecessary time info
+            mNotificationBuilder.setShowWhen(false);
+
             //Build the public notification
             Notification notificationPublic = mNotificationBuilder.build();
 
             mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
             mNotificationBuilder.setContentText(track.getTrackArtistName());
-
-            // Remove unnecessary time info
-            mNotificationBuilder.setShowWhen(false);
 
             // Cover but only if changed
             if (mLastTrack == null || !track.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
