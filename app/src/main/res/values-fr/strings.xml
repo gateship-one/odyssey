@@ -186,6 +186,7 @@
     <string name="preference_library_click_action_title">Suivi d\'action</string>
     <string name="preference_library_click_action_summary">Sélectionner l\'action à surveiller dans la bibliothèque</string>
     <string name="preference_library_click_action_message">Sélectionner l\'action par défaut à surveiller lors d\'appui sur une piste musicale dans les vues de la bibliothèque</string>
+    <string name="preference_library_click_action_clear_and_play">Remplacer et lire depuis l\'index</string>
 
     <string name="artwork_settings">Paramètres des illustrations</string>
 
