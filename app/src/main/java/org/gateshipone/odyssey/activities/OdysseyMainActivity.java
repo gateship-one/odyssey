@@ -98,6 +98,12 @@ public class OdysseyMainActivity extends GenericActivity
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
         OnPlaylistSelectedListener, OnPlaylistFileSelectedListener, OnDirectorySelectedListener {
 
+    public enum REQUESTEDVIEW {
+        NONE,
+        NOWPLAYING,
+        SETTINGS
+    }
+
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DRAG_STATUS mNowPlayingDragStatus;
@@ -112,8 +118,6 @@ public class OdysseyMainActivity extends GenericActivity
 
     public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.gateshipone.odyssey.requestedview";
 
-    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW = "org.gateshipone.odyssey.requestedview.nowplaying";
-
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
 
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
@@ -124,6 +128,8 @@ public class OdysseyMainActivity extends GenericActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean switchToSettings = false;
+
         // restore drag state
         if (savedInstanceState != null) {
             mSavedNowPlayingDragStatus = DRAG_STATUS.values()[savedInstanceState.getInt(MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS)];
@@ -139,8 +145,19 @@ public class OdysseyMainActivity extends GenericActivity
                     // odyssey was opened by widget or notification
                     final Bundle extras = intent.getExtras();
 
-                    if (extras != null && extras.getString(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, "").equals(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW_NOWPLAYINGVIEW)) {
-                        mShowNPV = true;
+                    if (extras != null) {
+                        REQUESTEDVIEW requestedView = REQUESTEDVIEW.values()[extras.getInt(MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, REQUESTEDVIEW.NONE.ordinal())];
+
+                        switch (requestedView) {
+                            case NONE:
+                                break;
+                            case NOWPLAYING:
+                                mShowNPV = true;
+                                break;
+                            case SETTINGS:
+                                switchToSettings = true;
+                                break;
+                        }
                     }
                 }
             }
@@ -178,7 +195,7 @@ public class OdysseyMainActivity extends GenericActivity
             mDrawerToggle.syncState();
         }
 
-        int navId = getDefaultViewID();
+        int navId = switchToSettings ? R.id.nav_settings : getDefaultViewID();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
@@ -212,6 +229,9 @@ public class OdysseyMainActivity extends GenericActivity
                     }
 
                     fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
+                    break;
+                case R.id.nav_settings:
+                    fragment = SettingsFragment.newInstance();
                     break;
                 case R.id.nav_my_music:
                 default:
