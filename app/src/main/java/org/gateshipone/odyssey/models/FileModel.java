@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FileModel implements GenericModel,Comparable<FileModel> {
+public class FileModel implements GenericModel, Comparable<FileModel> {
 
     /**
      * The file object for this instance
@@ -53,8 +53,8 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      * Static list of valid file extensions
      */
     private static final List<String> fileExtensions = new ArrayList<>(Arrays.asList("3gp", "aac",
-            "flac", "imy", "m4a", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus", "ota", "rtttl",
-            "rtx", "ts", "wav", "wma", "xmf", "nomedia", "m3u", "pls"));
+            "flac", "imy", "m3u", "m4a", "m4b", "mid", "mkv", "mp3", "mp4", "mxmf", "ogg", "oga", "opus",
+            "ota", "pls", "rtttl", "rtx", "ts", "wav", "wma", "xmf", "nomedia"));
 
     private static final List<String> playlistExtensions = new ArrayList<>(Arrays.asList("m3u", "pls"));
 
@@ -134,8 +134,8 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
      * Return if the file object is a playlist
      */
     public boolean isPlaylist() {
-        for (String ext: playlistExtensions) {
-            if(mFile.getPath().toLowerCase().endsWith(ext)) {
+        for (String ext : playlistExtensions) {
+            if (mFile.getPath().toLowerCase().endsWith(ext)) {
                 return true;
             }
         }
@@ -156,7 +156,7 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
         // get all files in the current folder
         File[] filesArray = mFile.listFiles(mFileExtensionFilter);
 
-        if ( null == filesArray ) {
+        if (null == filesArray) {
             return files;
         }
         // create FileModel instances
@@ -185,7 +185,7 @@ public class FileModel implements GenericModel,Comparable<FileModel> {
         // get all files in the current folder
         File[] filesArray = mFile.listFiles(mFileExtensionFilter);
 
-        if ( null == filesArray ) {
+        if (null == filesArray) {
             return numberOfSubFolders;
         }
 
