@@ -171,14 +171,9 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // get the trackmodel for the current position from the PBS
-        TrackModel currentTrack;
-        try {
-            if (mPBS != null) {
-                currentTrack = mPBS.getPlaylistSong(position);
-            } else {
-                currentTrack = new TrackModel();
-            }
-        } catch (RemoteException e) {
+        TrackModel currentTrack = (TrackModel) getItem(position);
+
+        if (currentTrack == null) {
             currentTrack = new TrackModel();
         }
 
