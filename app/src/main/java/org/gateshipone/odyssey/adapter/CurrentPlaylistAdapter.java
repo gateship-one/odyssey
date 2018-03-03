@@ -132,11 +132,11 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
      */
     @Override
     public int getItemViewType(int position) {
-        // Get MPDTrack at the given index used for this item.
+        // Get TrackModel at the given index used for this item.
         TrackModel track = (TrackModel) getItem(position);
         boolean newAlbum = false;
 
-        // Check if the track was available in local data set already (or is currently fetching)
+        // check if item should be a section view
         if (track != null) {
             TrackModel previousTrack;
             if (position > 0) {
