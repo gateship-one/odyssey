@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
@@ -46,12 +45,14 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     }
 
     private final Context mContext;
-    IOdysseyPlaybackService mPBS;
-
-    private int mCurrentPlayingIndex = -1;
-    private int mPlaylistSize = 0;
 
     private final ArtworkManager mArtworkManager;
+
+    private PlaybackServiceConnection mPlaybackServiceConnection;
+
+    private int mCurrentPlayingIndex = -1;
+
+    private int mPlaylistSize = 0;
 
     private boolean mHideArtwork;
 
@@ -64,14 +65,13 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
         super();
 
         mContext = context;
-
+        mPlaybackServiceConnection = playbackServiceConnection;
 
         try {
-            mPBS = playbackServiceConnection.getPBS();
-            mPlaylistSize = mPBS.getPlaylistSize();
-            mCurrentPlayingIndex = mPBS.getCurrentIndex();
+            mPlaylistSize = mPlaybackServiceConnection.getPBS().getPlaylistSize();
+            mCurrentPlayingIndex = mPlaybackServiceConnection.getPBS().getCurrentIndex();
         } catch (RemoteException e) {
-            mPBS = null;
+            mPlaybackServiceConnection = null;
             e.printStackTrace();
         }
 
@@ -97,11 +97,11 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     @Override
     public Object getItem(int position) {
         try {
-            if (mPBS != null) {
+            if (mPlaybackServiceConnection != null) {
                 // Check cache first for a hit
                 TrackModel track = mTrackCache.get(position);
                 if (track == null) {
-                    track = mPBS.getPlaylistSong(position);
+                    track = mPlaybackServiceConnection.getPBS().getPlaylistSong(position);
                     mTrackCache.put(position, track);
                 }
                 return track;
@@ -198,7 +198,7 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
             } else {
                 listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
             }
-            if ( !mHideArtwork ) {
+            if (!mHideArtwork) {
                 listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
             } else {
                 // Instead reset image
