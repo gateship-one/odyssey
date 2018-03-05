@@ -289,6 +289,9 @@
     <string name="notification_channel_downloader">Downloader</string>
     <string name="notification_channel_library_scanner">Library scanner</string>
 
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Content hidden</string>
+
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributors</string>
     <string name="contributor_team" translatable="false">Team Gateship One</string>

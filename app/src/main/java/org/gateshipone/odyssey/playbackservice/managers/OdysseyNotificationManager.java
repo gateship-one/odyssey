@@ -146,9 +146,7 @@ public class OdysseyNotificationManager {
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
-
-            String notificationPublicText = mContext.getString(android.content.res.Resources.getSystem().getIdentifier("notification_hidden_text", "string", "android"));
-            mNotificationBuilder.setContentTitle(notificationPublicText);
+            mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
 
             // Remove unnecessary time info
             mNotificationBuilder.setShowWhen(false);
