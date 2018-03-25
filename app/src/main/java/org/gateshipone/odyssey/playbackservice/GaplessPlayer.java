@@ -180,13 +180,13 @@ public class GaplessPlayer {
             mCurrentMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
                     FormatHelper.encodeURI(uri));
         } catch (IllegalArgumentException e) {
-            throw new PlaybackException(REASON.ArgumentError);
+            throw new PlaybackException(REASON.ArgumentError, uri, e);
         } catch (SecurityException e) {
-            throw new PlaybackException(REASON.SecurityError);
+            throw new PlaybackException(REASON.SecurityError, uri, e);
         } catch (IllegalStateException e) {
-            throw new PlaybackException(REASON.StateError);
+            throw new PlaybackException(REASON.StateError, uri, e);
         } catch (IOException e) {
-            throw new PlaybackException(REASON.IOError);
+            throw new PlaybackException(REASON.IOError, uri, e);
         }
 
         // Save parameters for later usage
@@ -364,7 +364,7 @@ public class GaplessPlayer {
         // prepare finish then.
         if (mCurrentMediaPlayer == null) {
             // This call makes absolutely no sense at this point so abort
-            throw new PlaybackException(REASON.StateError);
+            throw new PlaybackException(REASON.StateError, uri, null);
         }
         // Next mediaplayer already set, clear it first.
         if (mNextMediaPlayer != null) {
@@ -398,13 +398,13 @@ public class GaplessPlayer {
                 mNextMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
                         FormatHelper.encodeURI(uri));
             } catch (IllegalArgumentException e) {
-                throw new PlaybackException(REASON.ArgumentError);
+                throw new PlaybackException(REASON.ArgumentError, uri, e);
             } catch (SecurityException e) {
-                throw new PlaybackException(REASON.SecurityError);
+                throw new PlaybackException(REASON.SecurityError, uri, e);
             } catch (IllegalStateException e) {
-                throw new PlaybackException(REASON.StateError);
+                throw new PlaybackException(REASON.StateError, uri, e);
             } catch (IOException e) {
-                throw new PlaybackException(REASON.IOError);
+                throw new PlaybackException(REASON.IOError, uri, e);
             }
 
             // Save the uri for latter usage
@@ -414,7 +414,7 @@ public class GaplessPlayer {
             try {
                 mSecondPreparingLock.acquire();
             } catch (InterruptedException e) {
-                throw new PlaybackException(REASON.StateError);
+                throw new PlaybackException(REASON.StateError, uri, e);
             }
 
             // If the first MediaPlayer is prepared already just start the second prepare here.
@@ -663,14 +663,23 @@ public class GaplessPlayer {
      */
     class PlaybackException extends Exception {
 
-        REASON mReason;
+        final REASON mReason;
 
-        private PlaybackException(REASON reason) {
+        final String mFilePath;
+
+        private PlaybackException(final REASON reason, final String filePath, final Throwable throwable) {
+            super(throwable);
+
             mReason = reason;
+            mFilePath = filePath;
         }
 
         REASON getReason() {
             return mReason;
+        }
+
+        String getFilePath() {
+            return mFilePath;
         }
     }
 

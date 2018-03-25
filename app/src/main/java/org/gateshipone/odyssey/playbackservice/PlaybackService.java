@@ -1673,8 +1673,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * think of now :P.
      */
     private void handlePlaybackException(GaplessPlayer.PlaybackException exception) {
-        Log.v(TAG, "Exception occured: " + exception.getReason().toString());
-        Toast.makeText(getBaseContext(), TAG + ":" + exception.getReason().toString(), Toast.LENGTH_LONG).show();
+        Log.e(TAG, "Exception " + exception.getReason().toString() + "occurred with file " + exception.getFilePath(), exception.getCause());
+        Toast.makeText(getBaseContext(), TAG + ":" + exception.getReason().toString() + " - " + exception.getFilePath(), Toast.LENGTH_LONG).show();
         // TODO better handling?
         stop();
     }
