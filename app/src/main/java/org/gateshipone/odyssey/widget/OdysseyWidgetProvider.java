@@ -187,7 +187,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (nowPlaying) {
             // add intent only if playing is active
-            mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING);
+            mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING.ordinal());
         }
         PendingIntent mainPendingIntent = PendingIntent.getActivity(mContext, INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mViews.setOnClickPendingIntent(R.id.widget_big_cover, mainPendingIntent);
