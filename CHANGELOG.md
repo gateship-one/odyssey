@@ -1,4 +1,4 @@
-### Version: 1.1.XX Tag: release-XX (2018-XX-XX) ###
+### Version: 1.1.14 Tag: release-26 (2018-04-09) ###
 * updated french and italian translations
 * support .m4b files in the filebrowser (playback may not be supported by all devices)
 * further stability fixes for the playback connection
