@@ -1,3 +1,9 @@
+### Version: 1.1.XX Tag: release-XX (2018-XX-XX) ###
+* updated french and italian translations
+* support .m4b files in the filebrowser (playback may not be supported by all devices)
+* further stability fixes for the playback connection
+* improved behaviour when odyssey is opened by notification
+
 ### Version: 1.1.13 Tag: release-25 (2018-02-14) ###
 * add replace and play from index as additional default action for library tracks
 * fix not playing tracks from the filebrowser properly
