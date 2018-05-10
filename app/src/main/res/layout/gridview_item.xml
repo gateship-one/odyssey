@@ -22,8 +22,8 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_item_height">
 
     <ViewSwitcher
         android:id="@+id/grid_item_view_switcher"
@@ -52,8 +52,8 @@
     </ViewSwitcher>
 
     <View
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:background="?android:selectableItemBackground"
         android:clickable="false" />
@@ -64,8 +64,8 @@
         android:layout_alignParentBottom="true">
 
         <View
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:background="?attr/odyssey_grid_gradient"/>
 

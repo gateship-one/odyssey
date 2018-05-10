@@ -78,15 +78,15 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             long timeScrollPerRow = currentTime - mLastTime;
 
 
-            if ( view instanceof GridView) {
-                GridView gw = (GridView)view;
+            if (view instanceof GridView) {
+                GridView gw = (GridView) view;
                 mScrollSpeed = (int) (1000 / timeScrollPerRow) * gw.getNumColumns();
             } else {
                 mScrollSpeed = (int) (1000 / timeScrollPerRow);
             }
 
             // Calculate how many items per second of loading images is possible
-            int possibleItems = (int)(1000/mAdapter.getAverageImageLoadTime());
+            int possibleItems = (int) (1000 / mAdapter.getAverageImageLoadTime());
 
 
             // Set the scrollspeed in the adapter

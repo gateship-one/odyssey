@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -32,6 +33,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,20 +43,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
+import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
+import org.gateshipone.odyssey.listener.RecyclerViewOnItemClickListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
+import org.gateshipone.odyssey.utils.GridItemDecoration;
+import org.gateshipone.odyssey.utils.RecyclerScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
+import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
+import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends GenericAlbumsFragment implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener {
+public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener, RecyclerViewOnItemClickListener.OnItemClickListener {
     private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
     /**
      * {@link ArtistModel} to show albums for
@@ -72,6 +86,16 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
 
     private boolean mHideArtwork;
 
+    /**
+     * Listener to open an album
+     */
+    protected OnAlbumSelectedListener mAlbumSelectedCallback;
+
+    /**
+     * Save the last scroll position to resume there
+     */
+    protected int mLastPosition = -1;
+
     public static ArtistAlbumsFragment newInstance(@NonNull final ArtistModel artistModel, @Nullable final Bitmap bitmap) {
         final Bundle args = new Bundle();
         args.putParcelable(ARG_ARTISTMODEL, artistModel);
@@ -90,7 +114,70 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.recycler_list_refresh, container, false);
+
+        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+
+        // get swipe layout
+        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
+        // set swipe colors
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        // set swipe refresh listener
+        mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
+
+        mRecyclerView = rootView.findViewById(R.id.recycler_view);
+
+        final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+
+        if (useList) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            mRecyclerView.addItemDecoration(dividerItemDecoration);
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+            final int halfSpacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_half_spacing);
+            final int spacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
+            final GridItemDecoration gridItemDecoration = new GridItemDecoration(spacingOffsetPX, halfSpacingOffsetPX);
+            mRecyclerView.addItemDecoration(gridItemDecoration);
+
+            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    final int recyclerViewWidth = mRecyclerView.getMeasuredWidth();
+
+                    if (recyclerViewWidth > 0) {
+                        // layout finished so remove observer
+                        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        final float gridItemWidth = getResources().getDimension(R.dimen.grid_item_height);
+
+                        final int newSpanCount = Math.max((int) Math.floor(recyclerViewWidth / gridItemWidth), 2);
+
+                        final GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
+                        layoutManager.setSpanCount(newSpanCount);
+
+                        mRecyclerView.requestLayout();
+                    }
+                }
+            });
+        }
+
+        mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext().getApplicationContext(), useList);
+
+        mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerScrollSpeedListener(mRecyclerAdapter));
+        mRecyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(getContext(), this));
+
+        registerForContextMenu(mRecyclerView);
+
+        // get empty view
+        mEmptyView = rootView.findViewById(R.id.empty_view);
+
+        // set empty view message
+        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_albums_message);
 
         // read arguments
         Bundle args = getArguments();
@@ -107,14 +194,12 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
         return rootView;
     }
 
-    /**
-     * Called when the fragment resumes.
-     * <p/>
-     * Set up toolbar and play button.
-     */
     @Override
     public void onResume() {
         super.onResume();
+
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
+
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(v -> playArtist());
@@ -156,7 +241,111 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
     public void onPause() {
         super.onPause();
 
+//        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+
         ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
+    }
+
+    /**
+     * Called when the fragment is first attached to its context.
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnAlbumSelectedListener");
+        }
+
+        try {
+            mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+        }
+    }
+
+    /**
+     * Called when the loader finished loading its data.
+     *
+     * @param loader The used loader itself
+     * @param data   Data of the loader
+     */
+    @Override
+    public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
+        super.onLoadFinished(loader, data);
+
+        // Reset old scroll position
+        if (mLastPosition >= 0) {
+            mRecyclerView.getLayoutManager().scrollToPosition(mLastPosition);
+            mLastPosition = -1;
+        }
+    }
+
+    /**
+     * Callback when an item in the GridView was clicked.
+     */
+    @Override
+    public void onItemClick(int position) {
+        // save last scroll position
+        mLastPosition = position;
+
+        // identify current album
+        AlbumModel currentAlbum = mRecyclerAdapter.getItem(position);
+
+        Bitmap bitmap = null;
+
+        final View view = mRecyclerView.getChildAt(position);
+
+        // Check if correct view type, to be safe
+        if (view instanceof GenericImageViewItem) {
+            bitmap = ((GenericImageViewItem) view).getBitmap();
+        }
+
+        // send the event to the host activity
+        mAlbumSelectedCallback.onAlbumSelected(currentAlbum, bitmap);
+    }
+
+    /**
+     * Call the PBS to enqueue the selected album.
+     *
+     * @param position the position of the selected album in the adapter
+     */
+    protected void enqueueAlbum(int position) {
+        // identify current album
+        AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
+        String albumKey = clickedAlbum.getAlbumKey();
+
+        // enqueue album
+        try {
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Call the PBS to play the selected album.
+     * A previous playlist will be cleared.
+     *
+     * @param position the position of the selected album in the adapter
+     */
+    protected void playAlbum(int position) {
+        // identify current album
+        AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
+        String albumKey = clickedAlbum.getAlbumKey();
+
+        // play album
+        try {
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, 0);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -189,7 +378,8 @@ public class ArtistAlbumsFragment extends GenericAlbumsFragment implements Cover
      */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        OdysseyRecyclerView.RecyclerViewContextMenuInfo info =
+                (OdysseyRecyclerView.RecyclerViewContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {
             return super.onContextItemSelected(item);
