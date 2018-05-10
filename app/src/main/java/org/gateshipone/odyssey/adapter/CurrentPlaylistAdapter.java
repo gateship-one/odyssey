@@ -27,6 +27,7 @@ import android.os.RemoteException;
 import android.support.v4.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -34,8 +35,20 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
-public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
+public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAdapter {
+
+    /**
+     * Variable to store the current scroll speed. Used for image view optimizations
+     */
+    private int mScrollSpeed;
+
+    /**
+     * Smoothed average(exponential smoothing) value
+     */
+    private long mAvgImageTime;
+
     private static final int CACHE_SIZE = 250;
+
     private static final String TAG = CurrentPlaylistAdapter.class.getSimpleName();
 
     public enum VIEW_TYPES {
@@ -229,5 +242,40 @@ public class CurrentPlaylistAdapter extends ScrollSpeedAdapter {
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Sets the scrollspeed in items per second.
+     *
+     * @param speed Items per seconds as Integer.
+     */
+    public void setScrollSpeed(int speed) {
+        mScrollSpeed = speed;
+    }
+
+    /**
+     * Returns the smoothed average loading time of images.
+     * This value is used by the scrollspeed listener to determine if
+     * the scrolling is slow enough to render images (artist, album images)
+     *
+     * @return Average time to load an image in ms
+     */
+    public long getAverageImageLoadTime() {
+        return mAvgImageTime == 0 ? 1 : mAvgImageTime;
+    }
+
+    /**
+     * This method adds new loading times to the smoothed average.
+     * Should only be called from the async cover loader.
+     *
+     * @param time Time in ms to load a image
+     */
+    public void addImageLoadTime(long time) {
+        // Implement exponential smoothing here
+        if (mAvgImageTime == 0) {
+            mAvgImageTime = time;
+        } else {
+            mAvgImageTime = (long) (((1 - mSmoothingFactor) * mAvgImageTime) + (mSmoothingFactor * time));
+        }
     }
 }

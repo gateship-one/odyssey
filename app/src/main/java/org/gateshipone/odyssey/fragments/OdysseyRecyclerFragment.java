@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2018 Team Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,36 +22,26 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.database.DataSetObserver;
 import android.support.v4.app.LoaderManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AbsListView;
 
-import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
+import org.gateshipone.odyssey.adapter.GenericRecyclerViewAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
 
-abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
+abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
 
-    /**
-     * The reference to the possible abstract list view
-     */
-    protected AbsListView mListView;
+    protected RecyclerView mRecyclerView;
 
     /**
      * The reference to the possible empty view which should replace the list view if no data is available
      */
     protected View mEmptyView;
 
-    /**
-     * The generic adapter for the view model
-     */
-    protected GenericSectionAdapter<T> mAdapter;
+    protected GenericRecyclerViewAdapter<T, VH> mRecyclerAdapter;
 
-    /**
-     * Observer to be notified if the dataset of the adapter changed.
-     */
     private OdysseyDataSetObserver mDataSetObserver;
 
     /**
@@ -67,7 +57,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
             mDataSetObserver = new OdysseyDataSetObserver();
         }
 
-        mAdapter.registerDataSetObserver(mDataSetObserver);
+        mRecyclerAdapter.registerAdapterDataObserver(mDataSetObserver);
 
         getContent();
 
@@ -79,48 +69,32 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
         super.onPause();
         mTrimmingEnabled = true;
 
-        mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        mRecyclerAdapter.unregisterAdapterDataObserver(mDataSetObserver);
     }
 
     @Override
     void swapModel(List<T> model) {
         // Transfer the data to the adapter so that the views can use it
-        mAdapter.swapModel(model);
+        mRecyclerAdapter.swapModel(model);
     }
 
     @Override
     void resetModel() {
         // Clear the model data of the adapter.
-        mAdapter.swapModel(null);
-    }
-
-    /**
-     * Method to apply a filter to the view model of the fragment.
-     */
-    public void applyFilter(String filter) {
-        mAdapter.applyFilter(filter);
-    }
-
-    /**
-     * Method to remove a previous set filter.
-     */
-    public void removeFilter() {
-        mAdapter.removeFilter();
+        mRecyclerAdapter.swapModel(null);
     }
 
     /**
      * Method to show or hide the listview according to the state of the adapter.
      */
     private void updateView() {
-        if (mListView != null && mEmptyView != null) {
-            if (mAdapter.isEmpty()) {
-                // show empty message
-                mListView.setVisibility(View.GONE);
-                mEmptyView.setVisibility(View.VISIBLE);
-            } else {
-                // show list view
-                mListView.setVisibility(View.VISIBLE);
+        if (mRecyclerView != null) {
+            if (mRecyclerAdapter.getItemCount() > 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
                 mEmptyView.setVisibility(View.GONE);
+            } else {
+                mRecyclerView.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -130,14 +104,7 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
      * Private observer class to keep informed if the dataset of the adapter has changed.
      * This will trigger an update of the view.
      */
-    private class OdysseyDataSetObserver extends DataSetObserver {
-
-        @Override
-        public void onInvalidated() {
-            super.onInvalidated();
-
-            updateView();
-        }
+    private class OdysseyDataSetObserver extends RecyclerView.AdapterDataObserver {
 
         @Override
         public void onChanged() {

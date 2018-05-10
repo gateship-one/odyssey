@@ -462,7 +462,13 @@ public class OdysseyMainActivity extends GenericActivity
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        AdapterView.AdapterContextMenuInfo info = null;
+
+        try {
+            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            // TODO
+        }
 
         if (info == null) {
             return super.onContextItemSelected(item);

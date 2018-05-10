@@ -22,38 +22,24 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.widget.BaseAdapter;
-
 /**
  * Abstract adapter used for speed optimizations on asynchronous cover loading.
  * This is necessary to load covers only at certain scroll speed to not put
  * to much load on the CPU during scrolling.
  */
-public abstract class ScrollSpeedAdapter extends BaseAdapter {
-
-    /**
-     * Variable to store the current scroll speed. Used for image view optimizations
-     */
-    protected int mScrollSpeed;
+public interface ScrollSpeedAdapter {
 
     /**
      * Determines how the new time value affects the average (0.0(new value has no effect) - 1.0(average is only the new value, no smoothing)
      */
-    private static final float mSmoothingFactor = 0.3f;
-
-    /**
-     * Smoothed average(exponential smoothing) value
-     */
-    private long mAvgImageTime;
+    float mSmoothingFactor = 0.3f;
 
     /**
      * Sets the scrollspeed in items per second.
      *
      * @param speed Items per seconds as Integer.
      */
-    public void setScrollSpeed(int speed) {
-        mScrollSpeed = speed;
-    }
+    void setScrollSpeed(int speed);
 
     /**
      * Returns the smoothed average loading time of images.
@@ -62,9 +48,7 @@ public abstract class ScrollSpeedAdapter extends BaseAdapter {
      *
      * @return Average time to load an image in ms
      */
-    public long getAverageImageLoadTime() {
-        return mAvgImageTime == 0 ? 1 : mAvgImageTime;
-    }
+    long getAverageImageLoadTime();
 
     /**
      * This method adds new loading times to the smoothed average.
@@ -72,13 +56,6 @@ public abstract class ScrollSpeedAdapter extends BaseAdapter {
      *
      * @param time Time in ms to load a image
      */
-    public void addImageLoadTime(long time) {
-        // Implement exponential smoothing here
-        if (mAvgImageTime == 0) {
-            mAvgImageTime = time;
-        } else {
-            mAvgImageTime = (long) (((1 - mSmoothingFactor) * mAvgImageTime) + (mSmoothingFactor * time));
-        }
-    }
+    void addImageLoadTime(long time);
 
 }

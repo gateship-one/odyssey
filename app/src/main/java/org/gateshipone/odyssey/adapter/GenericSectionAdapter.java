@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.adapter;
 
 import android.support.v4.util.Pair;
+import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 
 import org.gateshipone.odyssey.models.GenericModel;
@@ -33,8 +34,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class GenericSectionAdapter<T extends GenericModel> extends ScrollSpeedAdapter implements SectionIndexer {
+public abstract class GenericSectionAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
     private static final String TAG = "GenericSectionAdapter";
+
+    /**
+     * Variable to store the current scroll speed. Used for image view optimizations
+     */
+    int mScrollSpeed;
+
+    /**
+     * Smoothed average(exponential smoothing) value
+     */
+    private long mAvgImageTime;
 
     /**
      * Abstract list with model data used for this adapter.
@@ -292,5 +303,40 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Scro
             mLock.writeLock().unlock();
         }
         notifyDataSetChanged();
+    }
+
+    /**
+     * Sets the scrollspeed in items per second.
+     *
+     * @param speed Items per seconds as Integer.
+     */
+    public void setScrollSpeed(int speed) {
+        mScrollSpeed = speed;
+    }
+
+    /**
+     * Returns the smoothed average loading time of images.
+     * This value is used by the scrollspeed listener to determine if
+     * the scrolling is slow enough to render images (artist, album images)
+     *
+     * @return Average time to load an image in ms
+     */
+    public long getAverageImageLoadTime() {
+        return mAvgImageTime == 0 ? 1 : mAvgImageTime;
+    }
+
+    /**
+     * This method adds new loading times to the smoothed average.
+     * Should only be called from the async cover loader.
+     *
+     * @param time Time in ms to load a image
+     */
+    public void addImageLoadTime(long time) {
+        // Implement exponential smoothing here
+        if (mAvgImageTime == 0) {
+            mAvgImageTime = time;
+        } else {
+            mAvgImageTime = (long) (((1 - mSmoothingFactor) * mAvgImageTime) + (mSmoothingFactor * time));
+        }
     }
 }
