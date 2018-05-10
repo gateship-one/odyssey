@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
@@ -43,7 +44,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
     private final boolean mUseList;
 
-    private final int mItemHeight;
+    private int mItemSize;
 
     public AlbumsRecyclerViewAdapter(final Context context, final boolean useList) {
         super();
@@ -52,11 +53,10 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
         mUseList = useList;
         if (mUseList) {
-            mItemHeight = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
+            mItemSize = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
         } else {
-            mItemHeight = (int) context.getResources().getDimension(R.dimen.grid_item_height);
+            mItemSize = (int) context.getResources().getDimension(R.dimen.grid_item_height);
         }
-
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mHideArtwork = sharedPreferences.getBoolean(context.getString(R.string.pref_hide_artwork_key), context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
@@ -70,6 +70,12 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
             return new GenericViewItemHolder(view);
         } else {
             final GridViewItem view = new GridViewItem(parent.getContext(), "", this);
+
+            if (!mUseList) {
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemSize);
+                view.setLayoutParams(layoutParams);
+            }
+
             return new GenericViewItemHolder(view);
         }
     }
@@ -80,18 +86,30 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
         holder.setTitle(album.getAlbumName());
 
+        if (!mUseList) {
+            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            layoutParams.height = mItemSize;
+            holder.itemView.setLayoutParams(layoutParams);
+        }
+
         if (!mHideArtwork) {
             // This will prepare the view for fetching the image from the internet if not already saved in local database.
             holder.prepareArtworkFetching(mArtworkManager, album);
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
             if (mScrollSpeed == 0) {
-                holder.setImageDimensions(mItemHeight, mItemHeight);
+                holder.setImageDimensions(mItemSize, mItemSize);
                 holder.startCoverImageTask();
             }
         }
 
         holder.itemView.setLongClickable(true);
+    }
+
+    public void setItemSize(int size) {
+        mItemSize = size;
+
+        notifyDataSetChanged();
     }
 
     @Override

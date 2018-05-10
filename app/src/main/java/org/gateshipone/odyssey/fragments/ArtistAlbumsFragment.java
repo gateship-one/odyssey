@@ -131,10 +131,14 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
 
+        mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext().getApplicationContext(), useList);
+
         if (useList) {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
             mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+            mRecyclerView.setAdapter(mRecyclerAdapter);
         } else {
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
@@ -143,16 +147,18 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
             final GridItemDecoration gridItemDecoration = new GridItemDecoration(spacingOffsetPX, halfSpacingOffsetPX);
             mRecyclerView.addItemDecoration(gridItemDecoration);
 
+            mRecyclerView.setAdapter(mRecyclerAdapter);
+
             mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    final int recyclerViewWidth = mRecyclerView.getMeasuredWidth();
+                    final int recyclerViewWidth = mRecyclerView.getWidth();
 
                     if (recyclerViewWidth > 0) {
                         // layout finished so remove observer
                         mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                        final float gridItemWidth = getResources().getDimension(R.dimen.grid_item_height);
+                        final float gridItemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_height);
 
                         final int newSpanCount = Math.max((int) Math.floor(recyclerViewWidth / gridItemWidth), 2);
 
@@ -160,14 +166,15 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
                         layoutManager.setSpanCount(newSpanCount);
 
                         mRecyclerView.requestLayout();
+
+                        // pass the columnWidth to the adapter to adjust the size of the griditems
+                        final int columnWidth = recyclerViewWidth / newSpanCount;
+                        ((AlbumsRecyclerViewAdapter)mRecyclerView.getAdapter()).setItemSize(columnWidth);
                     }
                 }
             });
         }
 
-        mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext().getApplicationContext(), useList);
-
-        mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerScrollSpeedListener(mRecyclerAdapter));
         mRecyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(getContext(), this));
 
