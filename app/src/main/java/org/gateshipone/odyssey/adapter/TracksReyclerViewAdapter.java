@@ -53,7 +53,7 @@ public class TracksReyclerViewAdapter extends GenericRecyclerViewAdapter<TrackMo
     public void onBindViewHolder(@NonNull ListViewItemViewHolder holder, int position) {
         final TrackModel track = getItem(position);
 
-        holder.setAlbumTrack(holder.itemView.getContext(), track, mShowDiscNumber);
+        holder.setAlbumTrack(track, mShowDiscNumber);
 
         holder.itemView.setLongClickable(true);
     }

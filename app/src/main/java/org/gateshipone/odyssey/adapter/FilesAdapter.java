@@ -57,7 +57,7 @@ public class FilesAdapter extends GenericSectionAdapter<FileModel> {
         // Check if a view can be recycled
         if (convertView != null) {
             listViewItem = (ListViewItem) convertView;
-            listViewItem.setFile(mContext, file);
+            listViewItem.setFile(file);
         } else {
             // Create new view if no reusable is available
             listViewItem = new ListViewItem(mContext, file, this);

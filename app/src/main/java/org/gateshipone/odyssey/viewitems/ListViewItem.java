@@ -142,7 +142,7 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final TrackModel track, final String sectionTitle, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
         this(context, adapter);
 
-        setTrack(context, track, sectionTitle, isPlaying);
+        setTrack(track, sectionTitle, isPlaying);
     }
 
     /**
@@ -158,7 +158,7 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final TrackModel track, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
         this(context, false, adapter);
 
-        setTrack(context, track, isPlaying);
+        setTrack(track, isPlaying);
     }
 
     /**
@@ -173,7 +173,7 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final FileModel file, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
 
-        setFile(context, file);
+        setFile(file);
     }
 
     /**
@@ -188,7 +188,7 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final PlaylistModel playlist, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
 
-        setPlaylist(context, playlist);
+        setPlaylist(playlist);
 
         // hide subtitles
         mSubtitleView.setVisibility(GONE);
@@ -207,16 +207,15 @@ public class ListViewItem extends GenericImageViewItem {
     public ListViewItem(final Context context, final BookmarkModel bookmark, final ScrollSpeedAdapter adapter) {
         this(context, true, adapter);
 
-        setBookmark(context, bookmark);
+        setBookmark(bookmark);
     }
 
     /**
      * Extracts the information from a track model (without currently played track indicator).
      *
-     * @param context The current context.
      * @param track   The current track model.
      */
-    public void setAlbumTrack(final Context context, final TrackModel track, final boolean showDiscNumber) {
+    public void setAlbumTrack(final TrackModel track, final boolean showDiscNumber) {
         // title (number + name)
         String trackTitle = "";
         int trackNumber = track.getTrackNumber();
@@ -248,7 +247,7 @@ public class ListViewItem extends GenericImageViewItem {
         }
 
         // duration
-        String trackDuration = FormatHelper.formatTracktimeFromMS(context, track.getTrackDuration());
+        String trackDuration = FormatHelper.formatTracktimeFromMS(getContext(), track.getTrackDuration());
 
         setTitle(trackTitle);
         setSubtitle(trackSubtitle);
@@ -258,12 +257,11 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a track model.
      *
-     * @param context   The current context.
      * @param track     The current track model.
      * @param isPlaying Flag if the current item should be marked as currently played track.
      */
-    public void setTrack(final Context context, final TrackModel track, final boolean isPlaying) {
-        setAlbumTrack(context, track, false);
+    public void setTrack(final TrackModel track, final boolean isPlaying) {
+        setAlbumTrack(track, false);
 
         setPlaying(isPlaying);
     }
@@ -271,13 +269,12 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a track model with section title.
      *
-     * @param context      The current context.
      * @param track        The current track model.
      * @param sectionTitle The title of the section.
      * @param isPlaying    Flag if the current item should be marked as currently played track.
      */
-    public void setTrack(final Context context, final TrackModel track, final String sectionTitle, final boolean isPlaying) {
-        setAlbumTrack(context, track, false);
+    public void setTrack(final TrackModel track, final String sectionTitle, final boolean isPlaying) {
+        setAlbumTrack(track, false);
 
         setSectionTitle(sectionTitle);
 
@@ -287,10 +284,11 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a bookmark model.
      *
-     * @param context  The current context.
      * @param bookmark The current bookmark model.
      */
-    public void setBookmark(final Context context, final BookmarkModel bookmark) {
+    public void setBookmark(final BookmarkModel bookmark) {
+        final Context context = getContext();
+
         // title
         String bookmarkTitle = bookmark.getTitle();
 
@@ -332,10 +330,11 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a playlist model.
      *
-     * @param context  The current context.
      * @param playlist The current playlist model.
      */
-    public void setPlaylist(final Context context, final PlaylistModel playlist) {
+    public void setPlaylist(final PlaylistModel playlist) {
+        final Context context = getContext();
+
         // title
         String playlistTitle = playlist.getPlaylistName();
 
@@ -356,10 +355,11 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a file model.
      *
-     * @param context The current context.
      * @param file    The current file model.
      */
-    public void setFile(final Context context, final FileModel file) {
+    public void setFile(final FileModel file) {
+        final Context context = getContext();
+
         // title
         String title = file.getName();
 

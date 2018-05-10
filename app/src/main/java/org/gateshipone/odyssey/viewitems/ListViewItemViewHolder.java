@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewitems;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import org.gateshipone.odyssey.models.TrackModel;
@@ -33,7 +32,7 @@ public class ListViewItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void setAlbumTrack(final Context context, final TrackModel trackModel, final boolean mShowDiscNumber) {
-        ((ListViewItem) itemView).setAlbumTrack(context, trackModel, mShowDiscNumber);
+    public void setAlbumTrack(final TrackModel trackModel, final boolean mShowDiscNumber) {
+        ((ListViewItem) itemView).setAlbumTrack(trackModel, mShowDiscNumber);
     }
 }
