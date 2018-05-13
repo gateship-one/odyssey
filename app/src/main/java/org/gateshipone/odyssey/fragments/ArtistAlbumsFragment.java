@@ -248,7 +248,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onPause() {
         super.onPause();
 
-//        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter)mRecyclerAdapter);
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
     }
