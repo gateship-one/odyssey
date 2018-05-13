@@ -49,7 +49,6 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksReyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
-import org.gateshipone.odyssey.listener.RecyclerViewOnItemClickListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -64,7 +63,7 @@ import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, ListViewItemViewHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, RecyclerViewOnItemClickListener.OnItemClickListener {
+public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, ListViewItemViewHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
     /**
      * Listener to open an artist
@@ -122,7 +121,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Lis
         final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mRecyclerAdapter);
-        mRecyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(getContext(), this));
+        mRecyclerView.addOnItemClicklistener(this);
 
         registerForContextMenu(mRecyclerView);
 

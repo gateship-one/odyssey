@@ -51,7 +51,6 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
-import org.gateshipone.odyssey.listener.RecyclerViewOnItemClickListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -66,7 +65,7 @@ import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener, RecyclerViewOnItemClickListener.OnItemClickListener {
+public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
     /**
      * {@link ArtistModel} to show albums for
@@ -176,7 +175,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         }
 
         mRecyclerView.addOnScrollListener(new RecyclerScrollSpeedListener(mRecyclerAdapter));
-        mRecyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(getContext(), this));
+        mRecyclerView.addOnItemClicklistener(this);
 
         registerForContextMenu(mRecyclerView);
 

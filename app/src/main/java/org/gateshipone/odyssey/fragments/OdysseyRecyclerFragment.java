@@ -28,12 +28,13 @@ import android.view.View;
 
 import org.gateshipone.odyssey.adapter.GenericRecyclerViewAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
 abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
 
-    protected RecyclerView mRecyclerView;
+    protected OdysseyRecyclerView mRecyclerView;
 
     /**
      * The reference to the possible empty view which should replace the list view if no data is available
