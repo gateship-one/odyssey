@@ -27,11 +27,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
@@ -65,19 +66,19 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
     @NonNull
     @Override
     public GenericViewItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        GenericImageViewItem view;
+
         if (mUseList) {
-            final ListViewItem view = new ListViewItem(parent.getContext(), "", this);
-            return new GenericViewItemHolder(view);
+            view = new ListViewItem(parent.getContext(), "", this);
+            view.setBackgroundResource(ThemeUtils.getThemeRessourceId(parent.getContext(), R.attr.selectableItemBackground));
         } else {
-            final GridViewItem view = new GridViewItem(parent.getContext(), "", this);
+            view = new GridViewItem(parent.getContext(), "", this);
 
-            if (!mUseList) {
-                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemSize);
-                view.setLayoutParams(layoutParams);
-            }
-
-            return new GenericViewItemHolder(view);
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemSize);
+            view.setLayoutParams(layoutParams);
         }
+
+        return new GenericViewItemHolder(view);
     }
 
     @Override

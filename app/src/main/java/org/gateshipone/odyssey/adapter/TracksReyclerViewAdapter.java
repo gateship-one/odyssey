@@ -25,7 +25,9 @@ package org.gateshipone.odyssey.adapter;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItemViewHolder;
 
@@ -46,6 +48,7 @@ public class TracksReyclerViewAdapter extends GenericRecyclerViewAdapter<TrackMo
     @Override
     public ListViewItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ListViewItem view = new ListViewItem(parent.getContext(), false, this);
+        view.setBackgroundResource(ThemeUtils.getThemeRessourceId(parent.getContext(), R.attr.selectableItemBackground));
         return new ListViewItemViewHolder(view);
     }
 
