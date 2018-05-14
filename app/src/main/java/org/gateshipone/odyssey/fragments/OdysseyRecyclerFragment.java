@@ -23,11 +23,18 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.support.v4.app.LoaderManager;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.adapter.GenericRecyclerViewAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.utils.GridItemDecoration;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
@@ -100,6 +107,45 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
         }
     }
 
+    protected void setLinearLayoutManagerAndDecoration() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    protected void setGridLayoutManagerAndDecoration() {
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        final int halfSpacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_half_spacing);
+        final int spacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
+        final GridItemDecoration gridItemDecoration = new GridItemDecoration(spacingOffsetPX, halfSpacingOffsetPX);
+        mRecyclerView.addItemDecoration(gridItemDecoration);
+
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                final int recyclerViewWidth = mRecyclerView.getWidth();
+
+                if (recyclerViewWidth > 0) {
+                    // layout finished so remove observer
+                    mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                    final float gridItemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_height);
+
+                    final int newSpanCount = Math.max((int) Math.floor(recyclerViewWidth / gridItemWidth), 2);
+
+                    final GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
+                    layoutManager.setSpanCount(newSpanCount);
+
+                    mRecyclerView.requestLayout();
+
+                    // pass the columnWidth to the adapter to adjust the size of the griditems
+                    final int columnWidth = recyclerViewWidth / newSpanCount;
+                    ((AlbumsRecyclerViewAdapter)mRecyclerView.getAdapter()).setItemSize(columnWidth);
+                }
+            }
+        });
+    }
 
     /**
      * Private observer class to keep informed if the dataset of the adapter has changed.

@@ -33,8 +33,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -117,11 +115,10 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Lis
 
         // get listview
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.addOnItemClicklistener(this);
+
+        setLinearLayoutManagerAndDecoration();
 
         registerForContextMenu(mRecyclerView);
 

@@ -133,45 +133,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext().getApplicationContext(), useList);
 
         if (useList) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-            mRecyclerView.addItemDecoration(dividerItemDecoration);
-
             mRecyclerView.setAdapter(mRecyclerAdapter);
+
+            setLinearLayoutManagerAndDecoration();
         } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-            final int halfSpacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_half_spacing);
-            final int spacingOffsetPX = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
-            final GridItemDecoration gridItemDecoration = new GridItemDecoration(spacingOffsetPX, halfSpacingOffsetPX);
-            mRecyclerView.addItemDecoration(gridItemDecoration);
-
             mRecyclerView.setAdapter(mRecyclerAdapter);
 
-            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    final int recyclerViewWidth = mRecyclerView.getWidth();
-
-                    if (recyclerViewWidth > 0) {
-                        // layout finished so remove observer
-                        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                        final float gridItemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_height);
-
-                        final int newSpanCount = Math.max((int) Math.floor(recyclerViewWidth / gridItemWidth), 2);
-
-                        final GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
-                        layoutManager.setSpanCount(newSpanCount);
-
-                        mRecyclerView.requestLayout();
-
-                        // pass the columnWidth to the adapter to adjust the size of the griditems
-                        final int columnWidth = recyclerViewWidth / newSpanCount;
-                        ((AlbumsRecyclerViewAdapter)mRecyclerView.getAdapter()).setItemSize(columnWidth);
-                    }
-                }
-            });
+            setGridLayoutManagerAndDecoration();
         }
 
         mRecyclerView.addOnScrollListener(new RecyclerScrollSpeedListener(mRecyclerAdapter));
