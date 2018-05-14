@@ -84,6 +84,10 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
                 final int firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
                 final int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
 
+                if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+
                 final int visibleItemCount = lastVisibleItemPosition - firstVisibleItemPosition;
 
                 for (int i = 0; i <= visibleItemCount; i++) {
@@ -95,18 +99,24 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
             return;
         }
 
-        int firstVisibleItem;
-        int visibleItemCount;
+        int firstVisibleItemPosition;
+        int lastVisibleItemPosition;
 
         if (layoutManager instanceof LinearLayoutManager) {
-            firstVisibleItem = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-            visibleItemCount = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition() - firstVisibleItem;
+            firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
         } else {
             return;
         }
 
+        if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
+            return;
+        }
+
+        final int visibleItemCount = lastVisibleItemPosition - firstVisibleItemPosition;
+
         // New row started if this is true.
-        if (firstVisibleItem != mLastFirstVisibleItem) {
+        if (firstVisibleItemPosition != mLastFirstVisibleItem) {
             final long currentTime = System.currentTimeMillis();
             if (currentTime == mLastTime) {
                 return;
@@ -127,12 +137,12 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
             mAdapter.setScrollSpeed(mScrollSpeed);
 
             // Save values for next comparsion
-            mLastFirstVisibleItem = firstVisibleItem;
+            mLastFirstVisibleItem = firstVisibleItemPosition;
             mLastTime = currentTime;
             // Start the grid image loader task only if scroll speed is slow enough:
             // The devices is able to render the images needed for the scroll speed
             if (mScrollSpeed < possibleItems) {
-                for (int i = 0; i < visibleItemCount; i++) {
+                for (int i = 0; i <= visibleItemCount; i++) {
                     GenericImageViewItem item = (GenericImageViewItem) recyclerView.getChildAt(i);
                     item.startCoverImageTask();
                 }
