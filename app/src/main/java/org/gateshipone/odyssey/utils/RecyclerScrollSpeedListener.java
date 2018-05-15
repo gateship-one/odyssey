@@ -58,6 +58,10 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
                 final int firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
                 final int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
 
+                if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+
                 final int visibleItemCount = lastVisibleItemPosition - firstVisibleItemPosition;
 
                 for (int i = 0; i <= visibleItemCount; i++) {
