@@ -462,62 +462,56 @@ public class OdysseyMainActivity extends GenericActivity
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = null;
+        final ContextMenu.ContextMenuInfo menuInfo = item.getMenuInfo();
 
-        try {
-            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        } catch (ClassCastException e) {
-            // TODO
-        }
+        if (menuInfo instanceof AdapterView.AdapterContextMenuInfo) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        if (info == null) {
-            return super.onContextItemSelected(item);
-        }
+            CurrentPlaylistView currentPlaylistView = findViewById(R.id.now_playing_playlist);
 
-        CurrentPlaylistView currentPlaylistView = findViewById(R.id.now_playing_playlist);
+            if (currentPlaylistView != null && mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
+                switch (item.getItemId()) {
+                    case R.id.view_current_playlist_action_playnext:
+                        currentPlaylistView.enqueueTrackAsNext(info.position);
+                        return true;
+                    case R.id.view_current_playlist_action_remove_track:
+                        currentPlaylistView.removeTrack(info.position);
+                        return true;
+                    case R.id.view_current_playlist_action_remove_section:
+                        currentPlaylistView.removeSection(info.position);
+                        return true;
+                    case R.id.view_current_playlist_action_showalbum: {
+                        String albumKey = currentPlaylistView.getAlbumKey(info.position);
+                        AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
 
-        if (currentPlaylistView != null && mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
-            switch (item.getItemId()) {
-                case R.id.view_current_playlist_action_playnext:
-                    currentPlaylistView.enqueueTrackAsNext(info.position);
-                    return true;
-                case R.id.view_current_playlist_action_remove_track:
-                    currentPlaylistView.removeTrack(info.position);
-                    return true;
-                case R.id.view_current_playlist_action_remove_section:
-                    currentPlaylistView.removeSection(info.position);
-                    return true;
-                case R.id.view_current_playlist_action_showalbum: {
-                    String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                    AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                        coordinatorLayout.setVisibility(View.VISIBLE);
 
-                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-                    coordinatorLayout.setVisibility(View.VISIBLE);
+                        NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
+                        if (nowPlayingView != null) {
+                            nowPlayingView.minimize();
+                        }
 
-                    NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
-                    if (nowPlayingView != null) {
-                        nowPlayingView.minimize();
+                        onAlbumSelected(tmpAlbum, null);
+                        return true;
                     }
+                    case R.id.view_current_playlist_action_showartist: {
+                        String artistTitle = currentPlaylistView.getArtistTitle(info.position);
+                        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
-                    onAlbumSelected(tmpAlbum, null);
-                    return true;
-                }
-                case R.id.view_current_playlist_action_showartist: {
-                    String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-                    long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                        coordinatorLayout.setVisibility(View.VISIBLE);
 
-                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-                    coordinatorLayout.setVisibility(View.VISIBLE);
-
-                    NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
-                    if (nowPlayingView != null) {
-                        nowPlayingView.minimize();
+                        NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
+                        if (nowPlayingView != null) {
+                            nowPlayingView.minimize();
+                        }
+                        onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+                        return true;
                     }
-                    onArtistSelected(new ArtistModel(artistTitle, artistID), null);
-                    return true;
+                    default:
+                        return super.onContextItemSelected(item);
                 }
-                default:
-                    return super.onContextItemSelected(item);
             }
         }
 
