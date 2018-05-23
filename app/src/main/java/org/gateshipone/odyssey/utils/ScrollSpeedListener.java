@@ -39,11 +39,9 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
     private int mScrollSpeed = 0;
 
     private final ScrollSpeedAdapter mAdapter;
-    private final AbsListView mListView;
 
-    public ScrollSpeedListener(ScrollSpeedAdapter adapter, AbsListView listView) {
+    public ScrollSpeedListener(ScrollSpeedAdapter adapter) {
         super();
-        mListView = listView;
         mAdapter = adapter;
     }
 
@@ -56,8 +54,8 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             // if idle load images for all visible items
             mScrollSpeed = 0;
             mAdapter.setScrollSpeed(0);
-            for (int i = 0; i <= mListView.getLastVisiblePosition() - mListView.getFirstVisiblePosition(); i++) {
-                GenericImageViewItem item = (GenericImageViewItem) mListView.getChildAt(i);
+            for (int i = 0; i <= view.getLastVisiblePosition() - view.getFirstVisiblePosition(); i++) {
+                GenericImageViewItem item = (GenericImageViewItem) view.getChildAt(i);
                 item.startCoverImageTask();
             }
         }
@@ -99,7 +97,7 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
             // The devices is able to render the images needed for the scroll speed
             if (mScrollSpeed < possibleItems) {
                 for (int i = 0; i < visibleItemCount; i++) {
-                    GenericImageViewItem item = (GenericImageViewItem) mListView.getChildAt(i);
+                    GenericImageViewItem item = (GenericImageViewItem) view.getChildAt(i);
                     item.startCoverImageTask();
                 }
             }

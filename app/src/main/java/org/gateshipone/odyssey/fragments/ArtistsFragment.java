@@ -103,7 +103,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         mAdapter = new ArtistsAdapter(getActivity(), mListView, useList);
 
         mListView.setAdapter(mAdapter);
-        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter, mListView));
+        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter));
         mListView.setOnItemClickListener(this);
 
         // get empty view

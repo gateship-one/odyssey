@@ -85,7 +85,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
         mCurrentPlaylistAdapter.hideArtwork(mHideArtwork);
 
         mListView.setAdapter(mCurrentPlaylistAdapter);
-        mListView.setOnScrollListener(new ScrollSpeedListener(mCurrentPlaylistAdapter, mListView));
+        mListView.setOnScrollListener(new ScrollSpeedListener(mCurrentPlaylistAdapter));
 
         // set the selection to the current track, so the list view will positioned appropriately
         try {

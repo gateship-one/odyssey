@@ -95,7 +95,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         mAdapter = new AlbumsAdapter(getActivity(), mListView, useList);
 
         mListView.setAdapter(mAdapter);
-        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter, mListView));
+        mListView.setOnScrollListener(new ScrollSpeedListener(mAdapter));
         mListView.setOnItemClickListener(this);
 
         // get empty view
