@@ -34,12 +34,26 @@ public class GridViewItem extends GenericImageViewItem {
     private final TextView mTitleView;
 
     /**
-     * Constructor that already sets the values for each view.
+     * Base constructor to create a section-type element.
+     *
+     * @param context The current context.
+     * @param adapter The scroll speed adapter for cover loading.
      */
-    public GridViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
+    public GridViewItem(final Context context, final ScrollSpeedAdapter adapter) {
         super(context, R.layout.gridview_item, R.id.grid_item_cover_image, R.id.grid_item_view_switcher, adapter);
 
         mTitleView = findViewById(R.id.grid_item_title);
+    }
+
+    /**
+     * Constructor that already sets the title of the gridview.
+     *
+     * @param context The current context.
+     * @param title The title of the item.
+     * @param adapter The scroll speed adapter for cover loading.
+     */
+    public GridViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
+        this(context, adapter);
 
         mTitleView.setText(title);
     }

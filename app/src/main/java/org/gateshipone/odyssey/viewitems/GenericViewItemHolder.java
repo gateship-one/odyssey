@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.TrackModel;
 
 public class GenericViewItemHolder extends RecyclerView.ViewHolder {
 
@@ -50,6 +51,10 @@ public class GenericViewItemHolder extends RecyclerView.ViewHolder {
     }
 
     public void setImageDimensions(final int width, final int height) {
+        ((GenericImageViewItem) itemView).setImageDimension(width, height);
+    }
 
+    public void setAlbumTrack(final TrackModel trackModel, final boolean mShowDiscNumber) {
+        ((ListViewItem) itemView).setAlbumTrack(trackModel, mShowDiscNumber);
     }
 }

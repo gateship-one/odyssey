@@ -43,6 +43,11 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
     private int mScrollSpeed;
 
     /**
+     * Determines how the new time value affects the average (0.0(new value has no effect) - 1.0(average is only the new value, no smoothing)
+     */
+    private static final float mSmoothingFactor = 0.3f;
+
+    /**
      * Smoothed average(exponential smoothing) value
      */
     private long mAvgImageTime;

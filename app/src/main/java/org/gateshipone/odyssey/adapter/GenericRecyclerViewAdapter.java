@@ -37,16 +37,31 @@ public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH exte
     int mScrollSpeed;
 
     /**
+     * Determines how the new time value affects the average (0.0(new value has no effect) - 1.0(average is only the new value, no smoothing)
+     */
+    private static final float mSmoothingFactor = 0.3f;
+
+    /**
      * Smoothed average(exponential smoothing) value
      */
     private long mAvgImageTime;
 
+    /**
+     * Abstract list with model data used for this adapter.
+     */
     private final List<T> mModelData;
 
     GenericRecyclerViewAdapter() {
         mModelData = new ArrayList<>();
+        mScrollSpeed = 0;
     }
 
+    /**
+     * Swaps the model of this adapter. This sets the dataset on which the
+     * adapter creates the List or Griditems. Clears old model data.
+     *
+     * @param data Actual model data
+     */
     public void swapModel(final List<T> data) {
         if (data == null) {
             mModelData.clear();
@@ -75,6 +90,7 @@ public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH exte
      *
      * @param speed Items per seconds as Integer.
      */
+    @Override
     public void setScrollSpeed(int speed) {
         mScrollSpeed = speed;
     }
@@ -86,6 +102,7 @@ public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH exte
      *
      * @return Average time to load an image in ms
      */
+    @Override
     public long getAverageImageLoadTime() {
         return mAvgImageTime == 0 ? 1 : mAvgImageTime;
     }
@@ -96,6 +113,7 @@ public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH exte
      *
      * @param time Time in ms to load a image
      */
+    @Override
     public void addImageLoadTime(long time) {
         // Implement exponential smoothing here
         if (mAvgImageTime == 0) {

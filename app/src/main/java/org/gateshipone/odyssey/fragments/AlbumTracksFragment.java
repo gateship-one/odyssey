@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
-import org.gateshipone.odyssey.adapter.TracksReyclerViewAdapter;
+import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
@@ -56,12 +56,12 @@ import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.viewitems.ListViewItemViewHolder;
+import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, ListViewItemViewHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
+public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
     /**
      * Listener to open an artist
@@ -111,7 +111,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Lis
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.recycler_list, container, false);
 
-        mRecyclerAdapter = new TracksReyclerViewAdapter(false);
+        mRecyclerAdapter = new TracksRecyclerViewAdapter(false);
 
         // get listview
         mRecyclerView = rootView.findViewById(R.id.recycler_view);

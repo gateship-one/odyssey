@@ -23,16 +23,11 @@
 package org.gateshipone.odyssey.adapter;
 
 /**
- * Abstract adapter used for speed optimizations on asynchronous cover loading.
+ * Interface used for speed optimizations on asynchronous cover loading.
  * This is necessary to load covers only at certain scroll speed to not put
  * to much load on the CPU during scrolling.
  */
 public interface ScrollSpeedAdapter {
-
-    /**
-     * Determines how the new time value affects the average (0.0(new value has no effect) - 1.0(average is only the new value, no smoothing)
-     */
-    float mSmoothingFactor = 0.3f;
 
     /**
      * Sets the scrollspeed in items per second.

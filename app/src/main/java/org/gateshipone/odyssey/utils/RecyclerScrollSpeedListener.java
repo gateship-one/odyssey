@@ -58,6 +58,7 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
                 final int firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
                 final int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
 
+                // just return if the recyclerview has no data
                 if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
                     return;
                 }
@@ -113,6 +114,7 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
             return;
         }
 
+        // just return if the recyclerview has no data
         if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
             return;
         }

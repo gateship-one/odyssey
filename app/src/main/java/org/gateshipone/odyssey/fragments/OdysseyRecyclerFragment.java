@@ -41,6 +41,9 @@ import java.util.List;
 
 abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
 
+    /**
+     * The reference to the possible recyclerview
+     */
     protected OdysseyRecyclerView mRecyclerView;
 
     /**
@@ -48,8 +51,14 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
      */
     protected View mEmptyView;
 
+    /**
+     * The generic adapter for the view model
+     */
     protected GenericRecyclerViewAdapter<T, VH> mRecyclerAdapter;
 
+    /**
+     * Observer to be notified if the dataset of the adapter changed.
+     */
     private OdysseyDataSetObserver mDataSetObserver;
 
     /**
@@ -93,7 +102,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
     }
 
     /**
-     * Method to show or hide the listview according to the state of the adapter.
+     * Method to show or hide the recyclerview according to the state of the adapter.
      */
     private void updateView() {
         if (mRecyclerView != null) {
@@ -107,12 +116,22 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
         }
     }
 
+    /**
+     * Method to setup the recyclerview with a linear layout manager and a default item decoration.
+     * Make sure to call this method after the recyclerview was set.
+     */
     protected void setLinearLayoutManagerAndDecoration() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+    /**
+     * Method to setup the recyclerview with a grid layout manager and a spacing item decoration.
+     * Make sure to call this method after the recyclerview was set.
+     * <p>
+     * This method will also add an observer to adjust the spancount of the grid after an orientation change.
+     */
     protected void setGridLayoutManagerAndDecoration() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
@@ -121,6 +140,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
         final GridItemDecoration gridItemDecoration = new GridItemDecoration(spacingOffsetPX, halfSpacingOffsetPX);
         mRecyclerView.addItemDecoration(gridItemDecoration);
 
+        // add an observer to set the spancount after the layout was inflated in order to get a dynamic spancount related to the available space.
         mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -132,6 +152,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
 
                     final float gridItemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_height);
 
+                    // the minimum spancount should always be 2
                     final int newSpanCount = Math.max((int) Math.floor(recyclerViewWidth / gridItemWidth), 2);
 
                     final GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
@@ -141,7 +162,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
 
                     // pass the columnWidth to the adapter to adjust the size of the griditems
                     final int columnWidth = recyclerViewWidth / newSpanCount;
-                    ((AlbumsRecyclerViewAdapter)mRecyclerView.getAdapter()).setItemSize(columnWidth);
+                    ((AlbumsRecyclerViewAdapter) mRecyclerView.getAdapter()).setItemSize(columnWidth);
                 }
             }
         });

@@ -32,6 +32,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * Subclass of the standard recyclerview that adds a convenience method for a item clicklistener
+ * and adds the option to handle a proper context menu.
+ */
 public class OdysseyRecyclerView extends RecyclerView {
 
     public interface OnItemClickListener {

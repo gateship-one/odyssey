@@ -45,6 +45,10 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
     private final boolean mUseList;
 
+    /**
+     * the size of the item in pixel
+     * this will be used to adjust griditems and select a proper dimension for the image loading process
+     */
     private int mItemSize;
 
     public AlbumsRecyclerViewAdapter(final Context context, final boolean useList) {
@@ -70,10 +74,13 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
         if (mUseList) {
             view = new ListViewItem(parent.getContext(), "", this);
-            view.setBackgroundResource(ThemeUtils.getThemeRessourceId(parent.getContext(), R.attr.selectableItemBackground));
+
+            // set a selectable background manually
+            view.setBackgroundResource(ThemeUtils.getThemeResourceId(parent.getContext(), R.attr.selectableItemBackground));
         } else {
             view = new GridViewItem(parent.getContext(), "", this);
 
+            // apply custom layout params to ensure that the griditems have equal size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemSize);
             view.setLayoutParams(layoutParams);
         }
@@ -88,6 +95,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
         holder.setTitle(album.getAlbumName());
 
         if (!mUseList) {
+            // for griditems adjust the height each time data is set
             ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
             layoutParams.height = mItemSize;
             holder.itemView.setLayoutParams(layoutParams);
@@ -104,9 +112,17 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
             }
         }
 
+        // We have to set this to make the context menu working with recycler views.
         holder.itemView.setLongClickable(true);
     }
 
+    /**
+     * Sets the itemsize for each item.
+     * This value will adjust the height of a griditem and will be used for image loading.
+     * Calling this method will notify any registered observers that the data set has changed.
+     *
+     * @param size The new size in pixel.
+     */
     public void setItemSize(int size) {
         mItemSize = size;
 

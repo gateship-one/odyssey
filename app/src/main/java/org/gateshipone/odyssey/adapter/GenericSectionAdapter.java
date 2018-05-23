@@ -43,6 +43,11 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
     int mScrollSpeed;
 
     /**
+     * Determines how the new time value affects the average (0.0(new value has no effect) - 1.0(average is only the new value, no smoothing)
+     */
+    private static final float mSmoothingFactor = 0.3f;
+
+    /**
      * Smoothed average(exponential smoothing) value
      */
     private long mAvgImageTime;
@@ -79,11 +84,13 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
         mSectionsEnabled = true;
 
         mSectionCreator = provideSectionCreator();
+
+        mScrollSpeed = 0;
     }
 
     /**
      * Swaps the model of this adapter. This sets the dataset on which the
-     * adapter creates the GridItems. This should generally be safe to jll.
+     * adapter creates the GridItems. This should generally be safe to call.
      * Clears old section data and model data and recreates sectionScrolling
      * data.
      *

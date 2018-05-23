@@ -464,6 +464,7 @@ public class OdysseyMainActivity extends GenericActivity
     public boolean onContextItemSelected(MenuItem item) {
         final ContextMenu.ContextMenuInfo menuInfo = item.getMenuInfo();
 
+        // we have two types of adapter context menuinfo classes so we have to make sure the current item contains the correct type of menuinfo
         if (menuInfo instanceof AdapterView.AdapterContextMenuInfo) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 

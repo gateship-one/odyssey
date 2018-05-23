@@ -27,10 +27,19 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * Helper class to generate spacing between griditems in a recyclerview.
+ */
 public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
+    /**
+     * The offset in pixel for the outer offset of the grid.
+     */
     private final int mSpacingOffsetPX;
 
+    /**
+     * The offset in pixel for the inner offset of the grid
+     */
     private final int mHalfSpacingOffsetPX;
 
     public GridItemDecoration(final int spacingOffsetPX, final int halfSpacingOffsetPX) {
@@ -42,12 +51,14 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         final int position = parent.getChildAdapterPosition(view);
 
+        // get the current number of columns for the grid
         final int spanCount = ((GridLayoutManager) parent.getLayoutManager()).getSpanCount();
 
         final int left = isFirstInRow(position, spanCount) ? 0 : mHalfSpacingOffsetPX;
         final int top = isInFirstRow(position, spanCount) ? 0 : mSpacingOffsetPX;
         final int right = isLastInRow(position, spanCount) ? 0 : mHalfSpacingOffsetPX;
 
+        // the offset for the bottom should always be 0 because the top margin of the next row will apply.
         outRect.set(left, top, right, 0);
     }
 

@@ -28,36 +28,39 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
-import org.gateshipone.odyssey.viewitems.ListViewItemViewHolder;
 
 import java.util.List;
 
-public class TracksReyclerViewAdapter extends GenericRecyclerViewAdapter<TrackModel, ListViewItemViewHolder> {
+public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackModel, GenericViewItemHolder> {
 
     private final boolean mShouldShowDiscNumber;
 
     private boolean mShowDiscNumber;
 
-    public TracksReyclerViewAdapter(final boolean shouldShowDiscNumber) {
+    public TracksRecyclerViewAdapter(final boolean shouldShowDiscNumber) {
         super();
         mShouldShowDiscNumber = shouldShowDiscNumber;
     }
 
     @NonNull
     @Override
-    public ListViewItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GenericViewItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ListViewItem view = new ListViewItem(parent.getContext(), false, this);
-        view.setBackgroundResource(ThemeUtils.getThemeRessourceId(parent.getContext(), R.attr.selectableItemBackground));
-        return new ListViewItemViewHolder(view);
+
+        // set a selectable background manually
+        view.setBackgroundResource(ThemeUtils.getThemeResourceId(parent.getContext(), R.attr.selectableItemBackground));
+        return new GenericViewItemHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListViewItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GenericViewItemHolder holder, int position) {
         final TrackModel track = getItem(position);
 
         holder.setAlbumTrack(track, mShowDiscNumber);
 
+        // We have to set this to make the context menu working with recycler views.
         holder.itemView.setLongClickable(true);
     }
 
