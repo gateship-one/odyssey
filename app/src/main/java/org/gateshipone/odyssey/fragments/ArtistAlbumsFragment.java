@@ -33,9 +33,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +40,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
@@ -56,7 +52,6 @@ import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
-import org.gateshipone.odyssey.utils.GridItemDecoration;
 import org.gateshipone.odyssey.utils.RecyclerScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
@@ -249,7 +244,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
      * @param data   Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
+    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
         super.onLoadFinished(loader, data);
 
         // Reset old scroll position
@@ -329,6 +324,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
         return new AlbumLoader(getActivity(), mArtist.getArtistID());

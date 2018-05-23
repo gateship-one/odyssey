@@ -140,7 +140,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
      * @param data   Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> data) {
+    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> data) {
         super.onLoadFinished(loader, data);
     }
 

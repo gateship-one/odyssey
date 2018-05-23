@@ -153,7 +153,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * @param data   Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
+    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
         super.onLoadFinished(loader, data);
 
         // Reset old scroll position

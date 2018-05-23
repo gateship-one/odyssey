@@ -167,7 +167,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * @param model  Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
+    public void onLoadFinished(@NonNull Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
         super.onLoadFinished(loader, model);
 
         // Reset old scroll position

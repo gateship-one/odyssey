@@ -223,6 +223,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<FileModel>> onCreateLoader(int id, Bundle bundle) {
         return new FileLoader(getActivity(), mCurrentDirectory);
@@ -238,7 +239,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * @param model  Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<FileModel>> loader, List<FileModel> model) {
+    public void onLoadFinished(@NonNull Loader<List<FileModel>> loader, List<FileModel> model) {
         super.onLoadFinished(loader, model);
 
         if (mToolbarAndFABCallback != null) {

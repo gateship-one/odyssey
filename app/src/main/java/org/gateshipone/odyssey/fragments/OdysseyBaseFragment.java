@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.fragments;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -134,7 +135,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
      * @param model  Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<T>> loader, List<T> model) {
+    public void onLoadFinished(@NonNull Loader<List<T>> loader, List<T> model) {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
@@ -151,7 +152,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
      * @param loader Loader that was resetted.
      */
     @Override
-    public void onLoaderReset(Loader<List<T>> loader) {
+    public void onLoaderReset(@NonNull Loader<List<T>> loader) {
         resetModel();
     }
 

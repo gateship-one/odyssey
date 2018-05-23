@@ -119,6 +119,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         }
     }
 
+    @NonNull
     @Override
     public Loader<List<PlaylistModel>> onCreateLoader(int arg0, Bundle bundle) {
         return new PlaylistLoader(getActivity(), false);
@@ -131,7 +132,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      * @param data   Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
+    public void onLoadFinished(@NonNull Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
         super.onLoadFinished(loader, data);
 
         // Reset old scroll position

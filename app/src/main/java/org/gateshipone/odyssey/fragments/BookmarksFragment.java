@@ -100,6 +100,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
         return new BookmarkLoader(getActivity(), false);

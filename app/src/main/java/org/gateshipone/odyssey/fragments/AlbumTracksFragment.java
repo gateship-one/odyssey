@@ -226,6 +226,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         return new TrackLoader(getActivity(), mAlbum.getAlbumKey());

@@ -116,6 +116,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
         // recents albums

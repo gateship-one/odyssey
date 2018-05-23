@@ -169,6 +169,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param bundle Optional arguments
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @NonNull
     @Override
     public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
         if (mPlaylistPath == null) {
@@ -188,7 +189,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param model  Data of the loader
      */
     @Override
-    public void onLoadFinished(Loader<List<TrackModel>> loader, List<TrackModel> model) {
+    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> model) {
         super.onLoadFinished(loader, model);
 
         if (mToolbarAndFABCallback != null) {
