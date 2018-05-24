@@ -41,6 +41,11 @@
             android:key="@string/pref_show_npv_artist_image_key"
             android:summary="@string/preference_show_artist_image_text"
             android:title="@string/preference_show_artist_image_title" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_npv_show_playlist_default"
+            android:key="@string/pref_npv_show_playlist_key"
+            android:summary="@string/preference_npv_show_playlist_text"
+            android:title="@string/preference_npv_show_playlist_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_category_library">
         <CheckBoxPreference

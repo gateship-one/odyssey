@@ -266,6 +266,16 @@ public class OdysseyMainActivity extends GenericActivity
              */
             if (mShowNPV) {
                 nowPlayingView.setDragOffset(0.0f);
+
+                // check preferences if the playlist should be shown
+                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+                final boolean showPlaylist = sharedPref.getBoolean(getString(R.string.pref_npv_show_playlist_key), getResources().getBoolean(R.bool.pref_npv_show_playlist_default));
+
+                if (showPlaylist) {
+                    mNowPlayingViewSwitcherStatus = VIEW_SWITCHER_STATUS.PLAYLIST_VIEW;
+                    nowPlayingView.setViewSwitcherStatus(mNowPlayingViewSwitcherStatus);
+                }
                 mShowNPV = false;
             } else {
                 // set drag status
