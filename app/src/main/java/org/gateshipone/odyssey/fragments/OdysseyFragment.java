@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.view.View;
 import android.widget.AbsListView;
@@ -97,8 +98,8 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
     /**
      * Method to apply a filter to the view model of the fragment.
      */
-    public void applyFilter(String filter) {
-        mAdapter.applyFilter(filter);
+    public void applyFilter(@NonNull String filter) {
+        mAdapter.applyFilter(filter.trim());
     }
 
     /**
