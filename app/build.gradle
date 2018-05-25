@@ -74,7 +74,8 @@ android {
 
 ext{
     // define support library version
-    supportLibraryVersion = '27.1.1'
+    // TODO we should test device rotation which active search before upgrading to a new version
+    supportLibraryVersion = '27.0.2'
 }
 
 dependencies {
