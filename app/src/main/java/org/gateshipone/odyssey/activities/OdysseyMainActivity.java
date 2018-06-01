@@ -80,6 +80,7 @@ import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
+import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
@@ -96,7 +97,8 @@ public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
         OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
-        OnPlaylistSelectedListener, OnPlaylistFileSelectedListener, OnDirectorySelectedListener {
+        OnPlaylistSelectedListener, OnPlaylistFileSelectedListener, OnDirectorySelectedListener,
+        OnStartSleepTimerListener {
 
     public enum REQUESTEDVIEW {
         NONE,
@@ -654,6 +656,23 @@ public class OdysseyMainActivity extends GenericActivity
 
         // Commit the transaction
         transaction.commit();
+    }
+
+    @Override
+    public void onStartSleepTimer(final long durationMS) {
+        try {
+            // save used duration to initialize the duration picker next time with this value
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            sharedPrefEditor.putLong(getString(R.string.pref_last_used_sleep_timer_key), durationMS);
+            sharedPrefEditor.apply();
+
+            // TODO show snackbar to tell the user that sleep timer is now active
+
+            getPlaybackService().startSleepTimer(durationMS);
+        } catch(RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override

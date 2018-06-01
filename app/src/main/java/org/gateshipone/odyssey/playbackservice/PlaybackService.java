@@ -131,6 +131,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private static final int TIMEOUT_INTENT_QUIT_REQUEST_CODE = 5;
 
+    private static final int TIMEOUT_INTENT_SLEEP_REQUEST_CODE = 6;
+
     /**
      * Timeout time that the PlaybackService waits until it stops itself in milliseconds. (5 Minutes)
      */
@@ -454,11 +456,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.updateStatus();
     }
 
+    public void startSleepTimer(final long durationMS) {
+        // TODO work in progress
+        // add proper cancel calls
+        // use a new action instead of quit and call notifyLastFM and then call quit
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Intent quitIntent = new Intent(ACTION_QUIT);
+        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, quitPI);
+    }
+
+    private void cancelSleepTimer() {
+        // TODO this should be called in case of any pbs action called from outside
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Intent quitIntent = new Intent(ACTION_QUIT);
+        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.cancel(quitPI);
+    }
+
     /**
      * Pauses playback (if one is running) otherwise is doing nothing.
      */
     public void pause() {
-        // Check if GaplessPlayer is playing something
+         // Check if GaplessPlayer is playing something
         if (mPlayer.isRunning()) {
             // Pause the playback before saving the position
             mPlayer.pause();

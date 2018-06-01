@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2018 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -25,38 +26,31 @@
     <group android:id="@+id/action_group_playlist">
         <item
             android:id="@+id/view_nowplaying_action_shuffleplaylist"
-
             android:title="@string/popup_menu_action_shuffleplaylist"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/view_nowplaying_action_saveplaylist"
-
             android:title="@string/popup_menu_action_saveplaylist"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/view_nowplaying_action_clearplaylist"
-
             android:title="@string/popup_menu_action_clearplaylist"
             app:showAsAction="never" />
     </group>
 
     <item
         android:id="@+id/view_nowplaying_action_createbookmark"
-
         android:title="@string/popup_menu_action_createbookmark"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/view_nowplaying_action_startequalizer"
-
         android:title="@string/popup_menu_action_startequalizer"
         app:showAsAction="never" />
 
-    <item
-
-        android:title="@string/action_wikipedia">
+    <item android:title="@string/action_wikipedia">
         <menu>
             <item
                 android:id="@+id/action_wikipedia_album"
@@ -69,8 +63,12 @@
 
     <item
         android:id="@+id/view_nowplaying_action_share_track"
-
         android:title="@string/popup_menu_action_sharetrack"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/view_nowplaying_action_start_sleep_timer"
+        android:title="Start sleep timer (replace me)"
         app:showAsAction="never" />
 
 </menu>
