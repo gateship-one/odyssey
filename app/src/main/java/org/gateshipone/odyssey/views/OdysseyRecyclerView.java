@@ -30,6 +30,7 @@ import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 
 /**
@@ -108,6 +109,7 @@ public class OdysseyRecyclerView extends RecyclerView {
         public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent motionEvent) {
             final View childView = view.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
             if (childView != null && mGestureDetector.onTouchEvent(motionEvent)) {
+                childView.playSoundEffect(SoundEffectConstants.CLICK);
                 mOnItemClickListener.onItemClick(view.getChildAdapterPosition(childView));
                 return true;
             }
