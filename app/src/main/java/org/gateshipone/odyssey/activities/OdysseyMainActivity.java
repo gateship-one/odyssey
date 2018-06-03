@@ -666,9 +666,17 @@ public class OdysseyMainActivity extends GenericActivity
             sharedPrefEditor.putLong(getString(R.string.pref_last_used_sleep_timer_key), durationMS);
             sharedPrefEditor.apply();
 
-            // TODO show snackbar to tell the user that sleep timer is now active
-
             getPlaybackService().startSleepTimer(durationMS);
+
+            // show a snackbar to inform the user that the sleep timer is now set
+            View layout = findViewById(R.id.drawer_layout);
+            if (layout != null) {
+                Snackbar sb = Snackbar.make(layout, R.string.snackbar_sleep_timer_confirmation_message, Snackbar.LENGTH_SHORT);
+                // style the snackbar text
+                TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                sb.show();
+            }
         } catch(RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

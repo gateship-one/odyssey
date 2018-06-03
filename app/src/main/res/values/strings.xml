@@ -312,4 +312,7 @@
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_sleep_timer_confirmation_message">Sleep timer set</string>
 </resources>
