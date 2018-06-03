@@ -183,6 +183,9 @@
     <string name="preference_show_artist_image_title">Image de l\'artiste</string>
     <string name="preference_show_artist_image_text">Afficher alternativement la couverture de l\'album et une image de l\'artiste, dans la vue de la piste musicale en cours de lecture</string>
 
+    <string name="preference_npv_show_playlist_title">Liste de lecture</string>
+    <string name="preference_npv_show_playlist_text">Afficher la liste de lecture lors de l\'ouverture via un widget ou une notification d\'Odyssey en cours d\'utilisation</string>
+
     <string name="preference_library_click_action_title">Suivi d\'action</string>
     <string name="preference_library_click_action_summary">Sélectionner l\'action à surveiller dans la bibliothèque</string>
     <string name="preference_library_click_action_message">Sélectionner l\'action par défaut à surveiller lors d\'appui sur une piste musicale dans les vues de la bibliothèque</string>
