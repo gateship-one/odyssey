@@ -69,6 +69,8 @@ public class PlaybackServiceStatusHelper {
 
     private boolean mHideArtwork;
 
+    private boolean mNotificationPrivate;
+
     // Notification manager
     private OdysseyNotificationManager mNotificationManager;
 
@@ -221,7 +223,7 @@ public class PlaybackServiceStatusHelper {
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, track.getTrackDuration());
 
-            if (mHideArtwork) {
+            if (mHideArtwork || mNotificationPrivate) {
                 metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
             }
 
@@ -369,7 +371,10 @@ public class PlaybackServiceStatusHelper {
             // Try to get old metadata to save image retrieval.
             MediaMetadataCompat.Builder metaDataBuilder;
             metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
-            metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+
+            if (mNotificationPrivate) metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
+            else metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+
             mMediaSession.setMetadata(metaDataBuilder.build());
             mNotificationManager.setNotificationImage(bm);
         }
@@ -403,7 +408,12 @@ public class PlaybackServiceStatusHelper {
     }
 
     public void notificationPrivate(boolean enable) {
-        mNotificationManager.notificationPrivate(enable);
+      mNotificationPrivate = enable;
+      mNotificationManager.notificationPrivate(enable);
+
+//      this.hideArtwork(mHideArtwork);
+      mLastTrack = null;
+      updateStatus();
     }
 
     /**
