@@ -1944,11 +1944,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (intentAction != null) {
                 switch (intentAction) {
                     case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
-                    /*
-                        Check if audio focus is currently lost. For example an incoming call gets picked up
-                        and now the user disconnects the headphone. The music should not resume when the call
-                        is finished and the audio focus is regained.
-                     */
+                        /*
+                            Check if audio focus is currently lost. For example an incoming call gets picked up
+                            and now the user disconnects the headphone. The music should not resume when the call
+                            is finished and the audio focus is regained.
+                         */
                         if (mLostAudioFocus) {
                             mLostAudioFocus = false;
                         }

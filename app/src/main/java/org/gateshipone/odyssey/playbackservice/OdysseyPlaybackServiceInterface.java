@@ -102,12 +102,18 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void startSleepTimer(long durationMS) throws RemoteException {
-        mService.get().startSleepTimer(durationMS);
-    }
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_START_SLEEPTIMER, durationMS);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+}
 
     @Override
     public void cancelSleepTimer() throws RemoteException {
-        mService.get().cancelSleepTimer();
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_CANCEL_SLEEPTIMER);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
     }
 
     @Override

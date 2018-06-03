@@ -152,6 +152,12 @@ public class PlaybackServiceHandler extends Handler {
                 case ODYSSEY_PLAYRECENTALBUMS:
                     mService.get().playRecentAlbums();
                     break;
+                case ODYSSEY_START_SLEEPTIMER:
+                    mService.get().startSleepTimer(msgObj.getLongParam());
+                    break;
+                case ODYSSEY_CANCEL_SLEEPTIMER:
+                    mService.get().cancelSleepTimer();
+                    break;
             }
 
             mLock.release();
