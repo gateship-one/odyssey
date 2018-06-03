@@ -123,6 +123,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public static final String ACTION_STOP = "org.gateshipone.odyssey.stop";
     public static final String ACTION_QUIT = "org.gateshipone.odyssey.quit";
     public static final String ACTION_TOGGLEPAUSE = "org.gateshipone.odyssey.togglepause";
+    public static final String ACTION_SLEEPSTOP = "org.gateshipone.odyssey.sleepstop";
 
     private static final int INDEX_NO_TRACKS_AVAILABLE = -1;
 
@@ -324,6 +325,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             intentFilter.addAction(ACTION_NEXT);
             intentFilter.addAction(ACTION_STOP);
             intentFilter.addAction(ACTION_QUIT);
+            intentFilter.addAction(ACTION_SLEEPSTOP);
 
             intentFilter.addAction(ArtworkManager.ACTION_NEW_ARTWORK_READY);
 
@@ -396,6 +398,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void onDestroy() {
         // Cancel any pending quit alerts
         cancelQuitAlert();
+        cancelSleepTimer();
 
         // Unregister a existing broadcastreceiver
         if (mBroadcastControlReceiver != null) {
@@ -461,15 +464,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add proper cancel calls
         // use a new action instead of quit and call notifyLastFM and then call quit
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent quitIntent = new Intent(ACTION_QUIT);
+        Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
         PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, quitPI);
     }
 
-    private void cancelSleepTimer() {
-        // TODO this should be called in case of any pbs action called from outside
+    public void cancelSleepTimer() {
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent quitIntent = new Intent(ACTION_QUIT);
+        Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
         PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.cancel(quitPI);
     }
@@ -478,7 +480,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Pauses playback (if one is running) otherwise is doing nothing.
      */
     public void pause() {
-         // Check if GaplessPlayer is playing something
+        // Check if GaplessPlayer is playing something
         if (mPlayer.isRunning()) {
             // Pause the playback before saving the position
             mPlayer.pause();
@@ -1215,6 +1217,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private void stopService() {
         // Cancel possible cancel timers
         cancelQuitAlert();
+        cancelSleepTimer();
 
         // Save the current playback position
         mLastPosition = getTrackPosition();
@@ -1937,34 +1940,55 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                /* Check if audio focus is currently lost. For example an incoming call gets picked up
-                and now the user disconnects the headphone. The music should not resume when the call
-                is finished and the audio focus is regained.
-                 */
-                if (mLostAudioFocus) {
-                    mLostAudioFocus = false;
+            final String intentAction = intent.getAction();
+            if (intentAction != null) {
+                switch (intentAction) {
+                    case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
+                    /*
+                        Check if audio focus is currently lost. For example an incoming call gets picked up
+                        and now the user disconnects the headphone. The music should not resume when the call
+                        is finished and the audio focus is regained.
+                     */
+                        if (mLostAudioFocus) {
+                            mLostAudioFocus = false;
+                        }
+                        pause();
+                        break;
+                    case ACTION_PLAY:
+                        resume();
+                        break;
+                    case ACTION_PAUSE:
+                        pause();
+                        break;
+                    case ACTION_NEXT:
+                        setNextTrack();
+                        break;
+                    case ACTION_PREVIOUS:
+                        setPreviousTrack();
+                        break;
+                    case ACTION_STOP:
+                        stop();
+                        break;
+                    case ACTION_TOGGLEPAUSE:
+                        togglePause();
+                        break;
+                    case ACTION_QUIT:
+                        // Ensure state is saved when notification is swiped away
+                        stopService();
+                        break;
+                    case ArtworkManager.ACTION_NEW_ARTWORK_READY:
+                        // Check if artwork is for currently playing album
+                        String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
+                        mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
+                        break;
+                    case ACTION_SLEEPSTOP:
+                        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
+                            // Notify simple last.fm scrobbler about playback stop
+                            mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_COMPLETE);
+                        }
+                        stopService();
+                        break;
                 }
-                pause();
-            } else if (intent.getAction().equals(ACTION_PLAY)) {
-                resume();
-            } else if (intent.getAction().equals(ACTION_PAUSE)) {
-                pause();
-            } else if (intent.getAction().equals(ACTION_NEXT)) {
-                setNextTrack();
-            } else if (intent.getAction().equals(ACTION_PREVIOUS)) {
-                setPreviousTrack();
-            } else if (intent.getAction().equals(ACTION_STOP)) {
-                stop();
-            } else if (intent.getAction().equals(ACTION_TOGGLEPAUSE)) {
-                togglePause();
-            } else if (intent.getAction().equals(ACTION_QUIT)) {
-                // Ensure state is saved when notification is swiped away
-                stopService();
-            } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
-                // Check if artwork is for currently playing album
-                String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-                mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
             }
         }
 

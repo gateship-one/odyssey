@@ -106,6 +106,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void cancelSleepTimer() throws RemoteException {
+        mService.get().cancelSleepTimer();
+    }
+
+    @Override
     public boolean isBusy() throws RemoteException {
         return mService.get().isBusy();
     }

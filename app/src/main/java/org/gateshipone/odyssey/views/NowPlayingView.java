@@ -432,6 +432,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "TimeDurationDialog");
                 return true;
             }
+            case R.id.view_nowplaying_action_cancel_sleep_timer: {
+                try {
+                    mServiceConnection.getPBS().cancelSleepTimer();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
             default:
                 return false;
         }

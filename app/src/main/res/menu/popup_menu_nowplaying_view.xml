@@ -68,7 +68,12 @@
 
     <item
         android:id="@+id/view_nowplaying_action_start_sleep_timer"
-        android:title="Start sleep timer (replace me)"
+        android:title="@string/pop_menu_action_start_sleep_timer"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/view_nowplaying_action_cancel_sleep_timer"
+        android:title="@string/pop_menu_action_cancel_sleep_timer"
         app:showAsAction="never" />
 
 </menu>
