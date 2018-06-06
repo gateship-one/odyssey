@@ -69,7 +69,7 @@ public class PlaybackServiceStatusHelper {
 
     private boolean mHideArtwork;
 
-    private boolean mNotificationPrivate;
+    private boolean mHideMediaOnLockscreen;
 
     // Notification manager
     private OdysseyNotificationManager mNotificationManager;
@@ -97,7 +97,7 @@ public class PlaybackServiceStatusHelper {
 
         mHideArtwork = sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_artwork_key), playbackService.getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
-        notificationPrivate(sharedPref.getBoolean(playbackService.getString(R.string.pref_notification_private_key), playbackService.getResources().getBoolean(R.bool.pref_notification_private_default)));
+        hideMediaOnLockscreen(sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_media_on_lockscreen_key), playbackService.getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default)));
 
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
@@ -223,7 +223,7 @@ public class PlaybackServiceStatusHelper {
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, track.getTrackDuration());
 
-            if (mHideArtwork || mNotificationPrivate) {
+            if (mHideArtwork || mHideMediaOnLockscreen) {
                 metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
             }
 
@@ -372,9 +372,11 @@ public class PlaybackServiceStatusHelper {
             MediaMetadataCompat.Builder metaDataBuilder;
             metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
 
-            if (mNotificationPrivate) metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
-            else metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
-
+            if (mHideMediaOnLockscreen) {
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
+            } else {
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+            }
             mMediaSession.setMetadata(metaDataBuilder.build());
             mNotificationManager.setNotificationImage(bm);
         }
@@ -407,11 +409,14 @@ public class PlaybackServiceStatusHelper {
         updateStatus();
     }
 
-    public void notificationPrivate(boolean enable) {
-      mNotificationPrivate = enable;
-      mNotificationManager.notificationPrivate(enable);
+    /**
+    * Hides all visible artwork on the lockscreen (notification, lockscreen background).
+    * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
+    */
+    public void hideMediaOnLockscreen(boolean enable) {
+      mHideMediaOnLockscreen = enable;
+      mNotificationManager.hideMediaOnLockscreen(enable);
 
-//      this.hideArtwork(mHideArtwork);
       mLastTrack = null;
       updateStatus();
     }

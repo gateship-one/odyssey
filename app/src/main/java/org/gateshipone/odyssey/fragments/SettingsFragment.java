@@ -181,10 +181,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             startActivity(intent);
         }
 
-        if (key.equals(getString(R.string.pref_notification_private_key))) {
+        if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
             try {
-                boolean notificationPrivate = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_notification_private_default));
-                ((GenericActivity)getActivity()).getPlaybackService().notificationPrivateChanged(notificationPrivate);
+                boolean hideMediaOnLockscreen = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default));
+                ((GenericActivity)getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
             } catch (RemoteException e) {
             }
         }

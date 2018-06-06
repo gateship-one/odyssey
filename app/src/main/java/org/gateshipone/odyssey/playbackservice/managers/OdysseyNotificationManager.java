@@ -71,7 +71,7 @@ public class OdysseyNotificationManager {
     private Notification mNotification;
 
     //Preferences for notifications
-    private boolean mNotificationPrivate;
+    private boolean mHideMediaOnLockscreen;
 
     // Save last track and last image
     private Bitmap mLastBitmap = null;
@@ -197,7 +197,7 @@ public class OdysseyNotificationManager {
             }
 
             // Build the private notification
-            if (mNotificationPrivate) {
+            if (mHideMediaOnLockscreen) {
                 mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
             }
 
@@ -254,10 +254,16 @@ public class OdysseyNotificationManager {
         mHideArtwork = enable;
     }
 
-    public void notificationPrivate(boolean enable) {
-        mNotificationPrivate = enable;
+    /*
+    * Set the visibility (PRIVATE, PUBLIC) of the notification to allow hiding sensitive content.
+    * Updates the notification immediately.
+    * @param enable True to set visibility to PRIVATE, false for PUBLIC
+    * 
+    */
+    public void hideMediaOnLockscreen(boolean enable) {
+        mHideMediaOnLockscreen = enable;
         if (mNotification != null) {
-            mNotification.visibility = mNotificationPrivate ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC;
+            mNotification.visibility = mHideMediaOnLockscreen ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC;
 
             if (mNotificationManager != null) {
                 mNotificationManager.notify(NOTIFICATION_ID, mNotification);

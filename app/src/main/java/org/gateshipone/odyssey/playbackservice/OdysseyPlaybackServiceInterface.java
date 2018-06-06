@@ -96,8 +96,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void notificationPrivateChanged(boolean enabled) throws RemoteException {
-        mService.get().notificationPrivate(enabled);
+    public void hideMediaOnLockscreenChanged(boolean enabled) throws RemoteException {
+        mService.get().hideMediaOnLockscreen(enabled);
     }
 
     @Override

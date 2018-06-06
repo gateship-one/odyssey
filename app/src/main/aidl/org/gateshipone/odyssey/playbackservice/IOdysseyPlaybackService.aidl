@@ -105,5 +105,5 @@ interface IOdysseyPlaybackService {
 
     void hideArtworkChanged(boolean enabled);
 
-    void notificationPrivateChanged(boolean enabled);
+    void hideMediaOnLockscreenChanged(boolean enabled);
 }
