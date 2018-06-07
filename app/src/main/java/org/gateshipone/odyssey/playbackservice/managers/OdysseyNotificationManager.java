@@ -66,6 +66,9 @@ public class OdysseyNotificationManager {
     // Notification itself
     private Notification mNotification;
 
+    //Preferences for notifications
+    private boolean mHideMediaOnLockscreen;
+
     // Save last track and last image
     private Bitmap mLastBitmap = null;
     private TrackModel mLastTrack = null;
@@ -139,11 +142,16 @@ public class OdysseyNotificationManager {
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
-            mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
-            mNotificationBuilder.setContentText(track.getTrackArtistName());
+            mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
 
             // Remove unnecessary time info
             mNotificationBuilder.setShowWhen(false);
+
+            //Build the public notification
+            Notification notificationPublic = mNotificationBuilder.build();
+
+            mNotificationBuilder.setContentTitle(track.getTrackDisplayedName());
+            mNotificationBuilder.setContentText(track.getTrackArtistName());
 
             // Cover but only if changed
             if (mLastTrack == null || !track.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
@@ -156,8 +164,13 @@ public class OdysseyNotificationManager {
                 mNotificationBuilder.setLargeIcon(mLastBitmap);
             }
 
-            // Build the notification
+            // Build the private notification
+            if (mHideMediaOnLockscreen) {
+                mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
+            }
+
             mNotification = mNotificationBuilder.build();
+            mNotification.publicVersion = notificationPublic;
 
             // Check if run from service and check if playing or pause.
             // Pause notification should be dismissible.
@@ -207,6 +220,23 @@ public class OdysseyNotificationManager {
 
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;
+    }
+
+    /*
+    * Set the visibility (PRIVATE, PUBLIC) of the notification to allow hiding sensitive content.
+    * Updates the notification immediately.
+    * @param enable True to set visibility to PRIVATE, false for PUBLIC
+    * 
+    */
+    public void hideMediaOnLockscreen(boolean enable) {
+        mHideMediaOnLockscreen = enable;
+        if (mNotification != null) {
+            mNotification.visibility = mHideMediaOnLockscreen ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC;
+
+            if (mNotificationManager != null) {
+                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+            }
+        }
     }
 
     /**

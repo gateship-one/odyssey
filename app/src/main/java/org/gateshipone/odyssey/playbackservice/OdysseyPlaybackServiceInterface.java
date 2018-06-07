@@ -96,6 +96,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void hideMediaOnLockscreenChanged(boolean enabled) throws RemoteException {
+        mService.get().hideMediaOnLockscreen(enabled);
+    }
+
+    @Override
     public boolean isBusy() throws RemoteException {
         return mService.get().isBusy();
     }

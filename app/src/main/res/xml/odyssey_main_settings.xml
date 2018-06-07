@@ -106,5 +106,10 @@
         <Preference
             android:key="@string/pref_open_equalizer_key"
             android:title="@string/popup_menu_action_startequalizer" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_hide_media_on_lockscreen_default"
+            android:key="@string/pref_hide_media_on_lockscreen_key"
+            android:summary="@string/preference_hide_media_on_lockscreen_text"
+            android:title="@string/preference_hide_media_on_lockscreen_title" />
     </PreferenceCategory>
 </PreferenceScreen>

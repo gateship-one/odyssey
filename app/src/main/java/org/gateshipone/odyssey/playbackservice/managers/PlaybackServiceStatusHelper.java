@@ -69,6 +69,8 @@ public class PlaybackServiceStatusHelper {
 
     private boolean mHideArtwork;
 
+    private boolean mHideMediaOnLockscreen;
+
     // Notification manager
     private OdysseyNotificationManager mNotificationManager;
 
@@ -94,6 +96,8 @@ public class PlaybackServiceStatusHelper {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(playbackService);
 
         mHideArtwork = sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_artwork_key), playbackService.getResources().getBoolean(R.bool.pref_hide_artwork_default));
+
+        hideMediaOnLockscreen(sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_media_on_lockscreen_key), playbackService.getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default)));
 
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
@@ -219,7 +223,7 @@ public class PlaybackServiceStatusHelper {
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, track.getTrackNumber());
             metaDataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, track.getTrackDuration());
 
-            if (mHideArtwork) {
+            if (mHideArtwork || mHideMediaOnLockscreen) {
                 metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
             }
 
@@ -367,7 +371,12 @@ public class PlaybackServiceStatusHelper {
             // Try to get old metadata to save image retrieval.
             MediaMetadataCompat.Builder metaDataBuilder;
             metaDataBuilder = new MediaMetadataCompat.Builder(mMediaSession.getController().getMetadata());
-            metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+
+            if (mHideMediaOnLockscreen) {
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, null);
+            } else {
+                metaDataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bm);
+            }
             mMediaSession.setMetadata(metaDataBuilder.build());
             mNotificationManager.setNotificationImage(bm);
         }
@@ -398,6 +407,18 @@ public class PlaybackServiceStatusHelper {
 
         // Update notification and lockscreen
         updateStatus();
+    }
+
+    /**
+    * Hides all visible artwork on the lockscreen (notification, lockscreen background).
+    * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
+    */
+    public void hideMediaOnLockscreen(boolean enable) {
+      mHideMediaOnLockscreen = enable;
+      mNotificationManager.hideMediaOnLockscreen(enable);
+
+      mLastTrack = null;
+      updateStatus();
     }
 
     /**

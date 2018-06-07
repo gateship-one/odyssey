@@ -182,6 +182,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             getActivity().finish();
             startActivity(intent);
         }
+
+        if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
+            try {
+                boolean hideMediaOnLockscreen = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default));
+                ((GenericActivity)getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
+            } catch (RemoteException e) {
+            }
+        }
     }
 
     public interface OnArtworkSettingsRequestedCallback {

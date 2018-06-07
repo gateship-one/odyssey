@@ -1663,8 +1663,22 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         return mBusy;
     }
 
+    /**
+    * Hide the artwork completely?
+    * Visibility of lockscreen background also depends on {@link #hideMediaOnLockscreen(boolean)}.
+    * @param enable True to hide, false to show.
+    */
     public void hideArtwork(boolean enable) {
         mPlaybackServiceStatusHelper.hideArtwork(enable);
+    }
+
+    /**
+    * Hide the media content (lockscreen background, notification) on the locksscreen?
+    * Visibility of lockscreen background also depends on {@link #hideArtwork(boolean)}.
+    * @param enable True to hide, false to show.
+    */
+    public void hideMediaOnLockscreen(boolean enable) {
+        mPlaybackServiceStatusHelper.hideMediaOnLockscreen(enable);
     }
 
     /**

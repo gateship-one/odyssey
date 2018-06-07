@@ -104,4 +104,6 @@ interface IOdysseyPlaybackService {
     boolean isBusy();
 
     void hideArtworkChanged(boolean enabled);
+
+    void hideMediaOnLockscreenChanged(boolean enabled);
 }

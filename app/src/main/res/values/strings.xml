@@ -1,4 +1,5 @@
 <!--
+
   ~ Copyright (C) 2018 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -255,6 +256,9 @@
     <string name="preference_use_english_wikipedia_title">Use English Wikipedia</string>
     <string name="preference_use_english_wikipedia_text">Use the English Wikipedia version to lookup pages</string>
 
+    <string name="preference_hide_media_on_lockscreen_title">Privacy on lockscreen</string>
+    <string name="preference_hide_media_on_lockscreen_text">Hide media information on lock screen: artwork and notification (depends on the lock screen privacy settings)</string>
+
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>
     <string name="preference_category_artwork_other_actions">Other actions</string>
@@ -288,6 +292,9 @@
     <string name="notification_channel_playback">Playback</string>
     <string name="notification_channel_downloader">Downloader</string>
     <string name="notification_channel_library_scanner">Library scanner</string>
+
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Content hidden</string>
 
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Contributors</string>
