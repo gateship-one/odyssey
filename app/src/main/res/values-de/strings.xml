@@ -194,4 +194,7 @@
     <string name="preference_library_click_action_clear_and_play">Ersetzen und ab Index spielen</string>
     <string name="preference_npv_show_playlist_title">Starte mit Wiedergabeliste</string>
     <string name="preference_npv_show_playlist_text">Zeige die Wiedergabeliste wenn während der Wiedergabe Odyssey über ein Widget oder Benachrichtigung gestartet wird</string>
+    <string name="preference_hide_media_on_lockscreen_title">Private Benachrichtigung</string>
+    <string name="preference_hide_media_on_lockscreen_text">Versteckt Medieninformationen auf dem Sperrbildschirm (Abhängig von den Benachrichtungseinstellungen des Systems)</string>
+    <string name="notification_sensitive_content_replacement">Inhalt ausgeblendet</string>
 </resources>
