@@ -80,7 +80,7 @@
     <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer</string>
     <string name="error_dialog_ok_action" translatable="false">@android:string/ok</string>
     <string name="dialog_sleep_timer">Set sleep time</string>
-    <string name="dialog_sleep_timer_separator">:</string>
+    <string name="dialog_sleep_timer_separator" translatable="false">:</string>
     <string name="dialog_sleep_timer_action_start">Start</string>
 
     <!-- dialog default names  -->
