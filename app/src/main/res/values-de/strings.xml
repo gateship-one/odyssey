@@ -200,4 +200,9 @@
     <string name="action_npv_show_playlist">Zeige Wiedergabeliste</string>
     <string name="action_npv_show_cover">Zeige Cover</string>
     <string name="action_npv_more_options">Weitere Optionen</string>
+    <string name="dialog_sleep_timer_action_start">Start</string>
+    <string name="dialog_sleep_timer">Setze Abschaltdauer</string>
+    <string name="pop_menu_action_start_sleep_timer">Aktiviere zeitbasierte Abschaltung</string>
+    <string name="pop_menu_action_cancel_sleep_timer">Stoppe zeitbasierte Abschaltung</string>
+    <string name="snackbar_sleep_timer_confirmation_message">Zeitbasierte Abschaltung aktiviert</string>
 </resources>
