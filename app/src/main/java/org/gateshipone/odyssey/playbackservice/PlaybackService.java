@@ -459,21 +459,26 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.updateStatus();
     }
 
+    /**
+     * Starts a timer with the given duration. After the timer is finished the playback will be stopped.
+     *
+     * @param durationMS the duration in milliseconds
+     */
     public void startSleepTimer(final long durationMS) {
-        // TODO work in progress
-        // add proper cancel calls
-        // use a new action instead of quit and call notifyLastFM and then call quit
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
-        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, quitPI);
+        final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
+        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, sleepPI);
     }
 
+    /**
+     * Cancel an already started sleep timer.
+     */
     public void cancelSleepTimer() {
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
-        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        am.cancel(quitPI);
+        final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
+        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.cancel(sleepPI);
     }
 
     /**
@@ -1690,19 +1695,21 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-    * Hide the artwork completely?
-    * Visibility of lockscreen background also depends on {@link #hideMediaOnLockscreen(boolean)}.
-    * @param enable True to hide, false to show.
-    */
+     * Hide the artwork completely?
+     * Visibility of lockscreen background also depends on {@link #hideMediaOnLockscreen(boolean)}.
+     *
+     * @param enable True to hide, false to show.
+     */
     public void hideArtwork(boolean enable) {
         mPlaybackServiceStatusHelper.hideArtwork(enable);
     }
 
     /**
-    * Hide the media content (lockscreen background, notification) on the locksscreen?
-    * Visibility of lockscreen background also depends on {@link #hideArtwork(boolean)}.
-    * @param enable True to hide, false to show.
-    */
+     * Hide the media content (lockscreen background, notification) on the locksscreen?
+     * Visibility of lockscreen background also depends on {@link #hideArtwork(boolean)}.
+     *
+     * @param enable True to hide, false to show.
+     */
     public void hideMediaOnLockscreen(boolean enable) {
         mPlaybackServiceStatusHelper.hideMediaOnLockscreen(enable);
     }
