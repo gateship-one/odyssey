@@ -55,25 +55,25 @@ public class PlaybackServiceConnection implements ServiceConnection {
 
     /**
      * Called when the connection is established successfully
-     * @param name Name of the connected component
+     *
+     * @param name    Name of the connected component
      * @param service Service that the connection was established to
      */
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
+    public synchronized void onServiceConnected(ComponentName name, IBinder service) {
         mPlaybackService = IOdysseyPlaybackService.Stub.asInterface(service);
-        if (mPlaybackService != null) {
-        }
-        if (mNotifier != null) {
+        if (mPlaybackService != null && mNotifier != null) {
             mNotifier.onConnect();
         }
     }
 
     /**
      * Called when the service connection was disconnected for some reason (crash?)
+     *
      * @param name Name of the closed component
      */
     @Override
-    public void onServiceDisconnected(ComponentName name) {
+    public synchronized void onServiceDisconnected(ComponentName name) {
         mPlaybackService = null;
         if (mNotifier != null) {
             mNotifier.onDisconnect();
@@ -107,6 +107,7 @@ public class PlaybackServiceConnection implements ServiceConnection {
 
     /**
      * Sets an callback handler
+     *
      * @param notifier Callback handler for connection state changes
      */
     public void setNotifier(ConnectionNotifier notifier) {
