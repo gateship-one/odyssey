@@ -205,4 +205,6 @@
     <string name="pop_menu_action_start_sleep_timer">Aktiviere zeitbasierte Abschaltung</string>
     <string name="pop_menu_action_cancel_sleep_timer">Stoppe zeitbasierte Abschaltung</string>
     <string name="snackbar_sleep_timer_confirmation_message">Zeitbasierte Abschaltung aktiviert</string>
+    <string name="dialog_sleep_timer_duration_minutes">Minuten</string>
+    <string name="dialog_sleep_timer_duration_seconds">Sekunden</string>
 </resources>

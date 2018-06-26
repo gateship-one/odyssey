@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2018 Team Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -21,26 +20,54 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center">
+    android:layout_height="wrap_content">
 
     <NumberPicker
         android:id="@+id/duration_minutes_picker"
         android:layout_width="wrap_content"
+        android:layout_toStartOf="@+id/divider"
         android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/material_standard_horizontal_spacing"
+        android:layout_below="@id/duration_minutes_picker"
+        android:layout_alignStart="@id/duration_minutes_picker"
+        android:layout_alignEnd="@id/duration_minutes_picker"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@string/dialog_sleep_timer_duration_minutes" />
+
+    <TextView
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignTop="@id/duration_minutes_picker"
+        android:layout_alignBottom="@id/duration_minutes_picker"
+        android:gravity="center_vertical"
         android:layout_marginStart="@dimen/material_standard_horizontal_spacing"
+        android:layout_marginEnd="@dimen/material_standard_horizontal_spacing"
         android:text="@string/dialog_sleep_timer_separator" />
 
     <NumberPicker
         android:id="@+id/duration_seconds_picker"
         android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/divider"
         android:layout_height="wrap_content" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/duration_seconds_picker"
+        android:layout_alignStart="@id/duration_seconds_picker"
+        android:layout_alignEnd="@id/duration_seconds_picker"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:text="@string/dialog_sleep_timer_duration_seconds" />
+
+</RelativeLayout>
