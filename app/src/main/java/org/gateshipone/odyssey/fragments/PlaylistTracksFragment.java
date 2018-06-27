@@ -156,7 +156,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     public void onResume() {
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mPlaylistTitle, false, false, false);mToolbarAndFABCallback.setupFAB(v -> playPlaylist(0));
+            mToolbarAndFABCallback.setupToolbar(mPlaylistTitle, false, false, false);
             // Enable FAB correctly for now, can be disabled later
             mToolbarAndFABCallback.setupFAB(v -> playPlaylist(0));
         }
