@@ -965,6 +965,22 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             menu.setGroupEnabled(R.id.action_group_playlist, false);
             menu.setGroupVisible(R.id.action_group_playlist, false);
         }
+
+        boolean hasActiveSleepTimer = false;
+        try {
+            hasActiveSleepTimer = mServiceConnection.getPBS().hasActiveSleepTimer();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        if (hasActiveSleepTimer) {
+            menu.findItem(R.id.view_nowplaying_action_start_sleep_timer).setVisible(false);
+            menu.findItem(R.id.view_nowplaying_action_cancel_sleep_timer).setVisible(true);
+        } else {
+            menu.findItem(R.id.view_nowplaying_action_start_sleep_timer).setVisible(true);
+            menu.findItem(R.id.view_nowplaying_action_cancel_sleep_timer).setVisible(false);
+        }
+
         // Open the menu itself
         popupMenu.show();
     }

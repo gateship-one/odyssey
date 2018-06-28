@@ -237,6 +237,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private OdysseyComponentCallback mComponentCallback;
 
     /**
+     * Flag if the sleep timer is active
+     */
+    private boolean mActiveSleepTimer;
+
+    /**
      * Called when the PlaybackService is bound by an activity.
      *
      * @param intent Intent used for binding.
@@ -342,11 +347,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // set up random generator used for random playback
         mRandomGenerator = new Random();
 
-
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);
 
         mMetaDataLoader = new MetaDataLoader(this);
+
+        mActiveSleepTimer = false;
     }
 
     /**
@@ -465,6 +471,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param durationMS the duration in milliseconds
      */
     public void startSleepTimer(final long durationMS) {
+        mActiveSleepTimer = true;
+
         final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
         final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -475,10 +483,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Cancel an already started sleep timer.
      */
     public void cancelSleepTimer() {
+        mActiveSleepTimer = false;
+
         final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
         final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.cancel(sleepPI);
+    }
+
+    public boolean hasActiveSleepTimer() {
+        return mActiveSleepTimer;
     }
 
     /**

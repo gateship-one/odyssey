@@ -109,4 +109,5 @@ interface IOdysseyPlaybackService {
 
     void startSleepTimer(long durationMS);
     void cancelSleepTimer();
+    boolean hasActiveSleepTimer();
 }
