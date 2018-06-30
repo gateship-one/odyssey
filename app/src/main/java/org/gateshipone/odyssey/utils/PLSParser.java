@@ -36,14 +36,13 @@ import java.util.ArrayList;
 public class PLSParser extends PlaylistParser {
     private static final String TAG = PLSParser.class.getSimpleName();
 
-    private final FileModel mFile;
 
     public PLSParser(FileModel file) {
-        mFile = file;
+        super(file);
     }
 
     @Override
-    public ArrayList<TrackModel> parseList(Context context) {
+    public ArrayList<String> getFileURLsFromFile(Context context) {
         Uri uri = FormatHelper.encodeURI(mFile.getPath());
         InputStream inputStream;
         try {
@@ -59,40 +58,17 @@ public class PLSParser extends PlaylistParser {
 
         BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        // Try to check if file paths in playlist are relativ or absolute
         String line = "";
-        try {
-            line = bufReader.readLine();
-            while (!line.startsWith("File")) {
-                line = bufReader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String tmpPath = line.substring(line.indexOf('=') + 1);
-
-        String pathPrefix = "";
-
-        File tmpFile = new File(tmpPath);
-        if (!tmpFile.exists()) {
-            String plPath = uri.getPath();
-            plPath = plPath.substring(0, plPath.lastIndexOf('/'));
-            while (!plPath.isEmpty()) {
-                tmpFile = new File(plPath + '/' + tmpPath);
-                if (!tmpFile.exists() && plPath.contains("/")) {
-                    plPath = plPath.substring(0, plPath.lastIndexOf('/'));
-                } else {
-                    pathPrefix = plPath;
-                    break;
-                }
-            }
-
-        }
 
         ArrayList<String> urls = new ArrayList<>();
-        while (line != null) {
-            if (!line.startsWith("File")) {
+        do {
+            try {
+                line = bufReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (line == null || !line.startsWith("File")) {
                 try {
                     line = bufReader.readLine();
                 } catch (IOException e) {
@@ -100,24 +76,11 @@ public class PLSParser extends PlaylistParser {
                 }
                 continue;
             }
-            tmpPath = line.substring(line.indexOf('=') + 1);
-            String tmpUrl;
-            if (!pathPrefix.isEmpty()) {
-                tmpUrl = pathPrefix + '/' + tmpPath;
-            } else {
-                tmpUrl = tmpPath;
-            }
-            if (new File(tmpUrl).exists()) {
-                urls.add(tmpUrl);
-            }
-            try {
-                line = bufReader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
 
-        return createTrackModels(context, urls);
+            urls.add(line.substring(line.indexOf('=') + 1));
+        } while (line != null);
+
+
+        return urls;
     }
 }

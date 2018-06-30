@@ -36,14 +36,13 @@ import java.util.ArrayList;
 public class M3UParser extends PlaylistParser {
     private static final String TAG = M3UParser.class.getSimpleName();
 
-    private final FileModel mFile;
 
     public M3UParser(FileModel playlistFile) {
-        mFile = playlistFile;
+        super(playlistFile);
     }
 
     @Override
-    public ArrayList<TrackModel> parseList(Context context) {
+    public ArrayList<String> getFileURLsFromFile(Context context) {
         Uri uri = FormatHelper.encodeURI(mFile.getPath());
 
         InputStream inputStream;
@@ -60,37 +59,16 @@ public class M3UParser extends PlaylistParser {
 
         BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        // Try to check if file paths in playlist are relativ or absolute
         String line = "";
-        try {
-            line = bufReader.readLine();
-            while (line.startsWith("#")) {
-                line = bufReader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String pathPrefix = "";
-
-        File tmpFile = new File(line);
-        if (!tmpFile.exists()) {
-            String plPath = uri.getPath();
-            plPath = plPath.substring(0, plPath.lastIndexOf('/'));
-            while (!plPath.isEmpty()) {
-                tmpFile = new File(plPath + '/' + line);
-                if (!tmpFile.exists() && plPath.contains("/")) {
-                    plPath = plPath.substring(0, plPath.lastIndexOf('/'));
-                } else {
-                    pathPrefix = plPath;
-                    break;
-                }
-            }
-        }
-
         ArrayList<String> urls = new ArrayList<>();
-        while (line != null) {
-            if (line.startsWith("#")) {
+        do {
+            try {
+                line = bufReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (line == null || line.startsWith("#")) {
                 try {
                     line = bufReader.readLine();
                 } catch (IOException e) {
@@ -98,23 +76,11 @@ public class M3UParser extends PlaylistParser {
                 }
                 continue;
             }
-            String tmpUrl;
-            if (!pathPrefix.isEmpty()) {
-                tmpUrl = pathPrefix + '/' + line;
-            } else {
-                tmpUrl = line;
-            }
-            if (new File(tmpUrl).exists()) {
-                urls.add(tmpUrl);
-            }
-            try {
-                line = bufReader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
+            urls.add(line);
+        } while (line != null);
 
 
-        return createTrackModels(context,urls);
+        return urls;
     }
 }
