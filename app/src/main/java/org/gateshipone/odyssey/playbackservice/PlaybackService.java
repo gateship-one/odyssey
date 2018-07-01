@@ -1284,6 +1284,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Set nextTrack to next in list
             if ((mCurrentPlayingIndex + 1 < mCurrentList.size()) && mCurrentPlayingIndex >= 0) {
                 mNextPlayingIndex = mCurrentPlayingIndex + 1;
+            } else {
+                // Now song left to play, set next index to end
+                mNextPlayingIndex = INDEX_NO_TRACKS_AVAILABLE;
             }
         }
         // Notify GaplessPlayer
