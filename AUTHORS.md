@@ -6,6 +6,7 @@
  - Kévin Minions - French Translation
  - mray (GitHub user) - Image tweaks
  - Daria Szatan - Polish Translation
+ - Dennis Guse - Optional private notification
 
  and more, see: [Contributors](https://github.com/gateship-one/odyssey/graphs/contributors)
 
