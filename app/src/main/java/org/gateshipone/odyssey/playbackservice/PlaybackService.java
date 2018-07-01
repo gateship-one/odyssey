@@ -1285,7 +1285,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if ((mCurrentPlayingIndex + 1 < mCurrentList.size()) && mCurrentPlayingIndex >= 0) {
                 mNextPlayingIndex = mCurrentPlayingIndex + 1;
             } else {
-                // Now song left to play, set next index to end
+                // No song left to play, set next index to end
                 mNextPlayingIndex = INDEX_NO_TRACKS_AVAILABLE;
             }
         }
