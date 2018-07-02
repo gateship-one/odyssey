@@ -104,7 +104,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
-                    android:background="?android:selectableItemBackground"
+                    android:background="?attr:actionBarItemBackground"
                     android:baselineAlignBottom="false"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_queue_music_24dp"
@@ -116,7 +116,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
-                    android:background="?android:selectableItemBackground"
+                    android:background="?attr:actionBarItemBackground"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_more_vert_24dp"
                     android:tint="?attr/odyssey_color_text_accent" />
