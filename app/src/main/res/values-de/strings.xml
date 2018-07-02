@@ -197,4 +197,7 @@
     <string name="preference_hide_media_on_lockscreen_title">Private Benachrichtigung</string>
     <string name="preference_hide_media_on_lockscreen_text">Versteckt Medieninformationen auf dem Sperrbildschirm (Abhängig von den Benachrichtungseinstellungen des Systems)</string>
     <string name="notification_sensitive_content_replacement">Inhalt ausgeblendet</string>
+    <string name="action_npv_show_playlist">Zeige Wiedergabeliste</string>
+    <string name="action_npv_show_cover">Zeige Cover</string>
+    <string name="action_npv_more_options">Weitere Optionen</string>
 </resources>

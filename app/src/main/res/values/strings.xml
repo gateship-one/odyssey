@@ -104,6 +104,10 @@
 
     <string name="action_show_recent_albums">Recent albums</string>
 
+    <string name="action_npv_show_playlist">Show playlist</string>
+    <string name="action_npv_show_cover">Show cover</string>
+    <string name="action_npv_more_options">More options</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Add to playlist</string>
     <string name="context_menu_action_enqueueasnext">Play after current song</string>

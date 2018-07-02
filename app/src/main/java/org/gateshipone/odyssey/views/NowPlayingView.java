@@ -43,6 +43,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.TooltipCompat;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -848,19 +849,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         // Add listeners to top playlist button
         mTopPlaylistButton.setOnClickListener(v -> {
 
-            // get color for playlist button
-            int color;
             if (mViewSwitcher.getCurrentView() != mPlaylistView) {
-                color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                setViewSwitcherStatus(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.PLAYLIST_VIEW);
             } else {
-                color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+                setViewSwitcherStatus(NowPlayingDragStatusReceiver.VIEW_SWITCHER_STATUS.COVER_VIEW);
             }
-
-            // tint the button
-            mTopPlaylistButton.setImageTintList(ColorStateList.valueOf(color));
-
-            // toggle between cover and playlistview
-            mViewSwitcher.showNext();
 
             // report the change of the view
             if (mDragStatusReceiver != null) {
@@ -874,9 +867,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 }
             }
         });
+        TooltipCompat.setTooltipText(mTopPlaylistButton, getResources().getString(R.string.action_npv_show_playlist));
 
         // Add listener to top menu button
         topMenuButton.setOnClickListener(this::showAdditionalOptionsMenu);
+        TooltipCompat.setTooltipText(topMenuButton, getResources().getString(R.string.action_npv_more_options));
 
         // Add listener to bottom repeat button
         mBottomRepeatButton.setOnClickListener(arg0 -> {
@@ -1286,6 +1281,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     mViewSwitcher.showNext();
                 }
                 color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+                TooltipCompat.setTooltipText(mTopPlaylistButton, getResources().getString(R.string.action_npv_show_playlist));
                 break;
             case PLAYLIST_VIEW:
                 // change the view only if the requested view is not displayed
@@ -1293,6 +1289,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                     mViewSwitcher.showNext();
                 }
                 color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                TooltipCompat.setTooltipText(mTopPlaylistButton, getResources().getString(R.string.action_npv_show_cover));
                 break;
         }
 
