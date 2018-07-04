@@ -1,0 +1,6 @@
+* improved scrolling behaviour for AlbumTracks and ArtistAlbums
+* further stability fixes for the playback connection
+* option to show the playlist when open by widget or notification and playback is active
+* improved playlist parsing (.m3u, .pls) 
+* remove trailing whitespaces in search ([Issue #153](https://github.com/gateship-one/odyssey/issues/153))
+* optional private notification (thanks to Dennis Guse)

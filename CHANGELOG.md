@@ -1,12 +1,10 @@
-### Version: X Tag: release-X (2018-XX-XX) ###
+### Version: 1.1.15 Tag: release-27 (2018-07-04) ###
 * improved scrolling behaviour for AlbumTracks and ArtistAlbums
 * further stability fixes for the playback connection
 * option to show the playlist when open by widget or notification and playback is active
 * improved playlist parsing (.m3u, .pls) 
 * remove trailing whitespaces in search ([Issue #153](https://github.com/gateship-one/odyssey/issues/153))
 * optional private notification (thanks to Dennis Guse)
-* optional sleep timer ([Issue #149](https://github.com/gateship-one/odyssey/issues/149))
-* support for local album covers (supported formats: {cover|folder|artwork}.{jpg|jpeg|png}) ([Issue #99](https://github.com/gateship-one/odyssey/issues/99))
 
 ### Version: 1.1.14 Tag: release-26 (2018-04-09) ###
 * updated french and italian translations
