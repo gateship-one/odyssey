@@ -1,3 +1,6 @@
+### Version: X.X.XX Tag: release-XX (2018-XX-XX) ###
+* optional sleep timer ([Issue #149](https://github.com/gateship-one/odyssey/issues/149))
+
 ### Version: 1.1.15 Tag: release-27 (2018-07-04) ###
 * improved scrolling behaviour for AlbumTracks and ArtistAlbums
 * further stability fixes for the playback connection
