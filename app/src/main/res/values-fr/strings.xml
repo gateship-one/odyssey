@@ -99,6 +99,10 @@
 
     <string name="action_show_recent_albums">Albums récents</string>
 
+    <string name="action_npv_show_playlist">Afficher la liste de lecture</string>
+    <string name="action_npv_show_cover">Afficher la couverture</string>
+    <string name="action_npv_more_options">Plus d\'options</string>
+
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Ajouter à la liste de lecture</string>
     <string name="context_menu_action_enqueueasnext">Écouter après la piste musicale en cours</string>
@@ -235,6 +239,9 @@
     <string name="preference_use_english_wikipedia_title">Wikipédia anglais</string>
     <string name="preference_use_english_wikipedia_text">Utilisez la version anglaise de Wikipédia pour les recherches</string>
 
+    <string name="preference_hide_media_on_lockscreen_title">Notification privée</string>
+    <string name="preference_hide_media_on_lockscreen_text">Masquer les informations du média sur l\'écran de déverrouillage\n(dépend des paramètres de confidentialité de votre écran de déverrouillage système)</string>
+
     <string name="preference_category_artwork_settings">Paramètres des illustrations</string>
     <string name="preference_category_artwork_database_cleanup">Nettoyer la base de données</string>
     <string name="preference_category_artwork_other_actions">Autres actions</string>
@@ -265,6 +272,9 @@
     <string name="notification_channel_playback">Lecture</string>
     <string name="notification_channel_downloader">Téléchargements</string>
     <string name="notification_channel_library_scanner">Analyse Audiothèque</string>
+
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Contenu masqué</string>
 
     <!-- Contributors activity -->
     <string name="odyssey_contributors_title">Collaborateurs</string>
