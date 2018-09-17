@@ -23,7 +23,7 @@
 package org.gateshipone.odyssey.loaders;
 
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
+import androidx.loader.content.AsyncTaskLoader;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;

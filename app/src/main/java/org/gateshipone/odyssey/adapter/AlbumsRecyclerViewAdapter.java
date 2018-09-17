@@ -25,7 +25,7 @@ package org.gateshipone.odyssey.adapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;

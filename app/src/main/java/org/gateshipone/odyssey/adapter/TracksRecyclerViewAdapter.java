@@ -22,7 +22,7 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;

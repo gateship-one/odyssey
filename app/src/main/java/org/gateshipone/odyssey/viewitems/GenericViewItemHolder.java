@@ -22,7 +22,7 @@
 
 package org.gateshipone.odyssey.viewitems;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;

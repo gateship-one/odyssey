@@ -24,10 +24,8 @@ package org.gateshipone.odyssey.activities;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 
 public class OdysseySplashActivity extends AppCompatActivity {
 

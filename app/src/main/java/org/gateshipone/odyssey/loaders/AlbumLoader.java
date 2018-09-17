@@ -31,7 +31,7 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.content.AsyncTaskLoader;
+import androidx.loader.content.AsyncTaskLoader;
 
 public class AlbumLoader extends AsyncTaskLoader<List<AlbumModel>> {
 

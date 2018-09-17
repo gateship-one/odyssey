@@ -22,7 +22,7 @@
 
 package org.gateshipone.odyssey.loaders;
 
-import android.support.v4.content.AsyncTaskLoader;
+import androidx.loader.content.AsyncTaskLoader;
 import android.content.Context;
 
 import org.gateshipone.odyssey.R;

@@ -24,8 +24,8 @@ package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.animation.AnimationUtils;

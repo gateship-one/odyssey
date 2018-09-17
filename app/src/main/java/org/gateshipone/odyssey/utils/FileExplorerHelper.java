@@ -24,7 +24,7 @@ package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;

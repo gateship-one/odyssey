@@ -22,7 +22,7 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.gateshipone.odyssey.models.GenericModel;
 

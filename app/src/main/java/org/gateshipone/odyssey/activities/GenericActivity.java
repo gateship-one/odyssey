@@ -32,8 +32,8 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;

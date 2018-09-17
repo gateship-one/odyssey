@@ -22,7 +22,7 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 

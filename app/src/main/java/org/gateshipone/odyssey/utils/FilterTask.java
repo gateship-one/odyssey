@@ -23,7 +23,7 @@
 package org.gateshipone.odyssey.utils;
 
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import org.gateshipone.odyssey.models.GenericModel;
 

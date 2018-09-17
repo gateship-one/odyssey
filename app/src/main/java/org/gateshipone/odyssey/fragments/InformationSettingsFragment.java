@@ -24,7 +24,7 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;

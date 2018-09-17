@@ -22,14 +22,14 @@
 
 package org.gateshipone.odyssey.utils;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
 

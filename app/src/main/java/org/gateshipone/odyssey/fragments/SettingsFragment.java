@@ -29,13 +29,14 @@ import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
@@ -104,7 +105,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // add listener to clear the default directory
         Preference clearDefaultDirectory = findPreference(getString(R.string.pref_clear_default_directory_key));
         clearDefaultDirectory.setOnPreferenceClickListener(preference -> {
-            SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
             sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
             sharedPrefEditor.apply();
             return true;

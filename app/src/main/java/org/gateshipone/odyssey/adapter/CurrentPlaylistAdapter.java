@@ -24,7 +24,7 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.support.v4.util.LruCache;
+import androidx.collection.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;

@@ -24,7 +24,7 @@ package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;

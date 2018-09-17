@@ -23,8 +23,8 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
-import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
 import android.view.View;
 import android.widget.AbsListView;
 
