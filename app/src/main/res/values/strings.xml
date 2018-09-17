@@ -274,7 +274,7 @@
     <string name="activity_about_version">Version:</string>
 
     <string name="url_musicbrainz" translatable="false">https://www.musicbrainz.org</string>
-    <string name="url_lastfm" translatable="false">http://www.last.fm</string>
+    <string name="url_lastfm" translatable="false">https://www.last.fm</string>
     <string name="url_fanarttv" translatable="false">https://fanart.tv</string>
     <string name="url_faq" translatable="false">https://github.com/gateship-one/odyssey/wiki/FAQ</string>
 
