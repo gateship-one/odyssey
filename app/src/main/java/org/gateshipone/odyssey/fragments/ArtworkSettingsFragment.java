@@ -30,6 +30,9 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
@@ -38,6 +41,7 @@ import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -161,6 +165,15 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.odyssey_artwork_settings);
         PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_artwork_settings, false);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        // we have to set the background color at this point otherwise we loose the ripple effect
+        view.setBackgroundColor(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_background));
+
+        return view;
     }
 
     /**

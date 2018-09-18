@@ -268,7 +268,6 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:background">?attr/odyssey_color_background</item>
     </style>
 
     <style name="AppTheme.NavDrawerHeader" parent="AppTheme">
@@ -331,7 +330,6 @@
         <item name="colorPrimary">?attr/odyssey_color_accent</item>
         <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:background">?attr/odyssey_color_background</item>
     </style>
 
     <style name="AppThemeLight.NavDrawerHeader" parent="AppThemeLight">
