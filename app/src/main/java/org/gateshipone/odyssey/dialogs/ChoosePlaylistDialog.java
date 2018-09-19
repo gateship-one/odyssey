@@ -24,25 +24,22 @@ package org.gateshipone.odyssey.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
-import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
-import java.util.List;
-
-public class ChoosePlaylistDialog extends DialogFragment implements LoaderManager.LoaderCallbacks<List<PlaylistModel>> {
+public class ChoosePlaylistDialog extends DialogFragment {
 
     /**
      * Listener to save the bookmark
@@ -65,39 +62,6 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnSaveDialogListener");
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id   The id of the loader
-     * @param args Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<List<PlaylistModel>> onCreateLoader(int id, Bundle args) {
-        return new PlaylistLoader(getActivity(), true);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
-        mPlaylistsListViewAdapter.swapModel(data);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<PlaylistModel>> loader) {
-        mPlaylistsListViewAdapter.swapModel(null);
     }
 
     /**
@@ -128,8 +92,9 @@ public class ChoosePlaylistDialog extends DialogFragment implements LoaderManage
             getDialog().cancel();
         });
 
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
+        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true)).get(PlaylistViewModel.class);
+        model.getData()
+                .observe(this, data -> mPlaylistsListViewAdapter.swapModel(data));
 
         // set divider
         AlertDialog dlg = builder.create();
