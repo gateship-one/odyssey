@@ -280,10 +280,7 @@ public class FileModel implements GenericModel, Comparable<FileModel> {
                 // get file extension
                 String ext = getFileExtension(filename);
 
-                if (mExtensions.contains(ext)) {
-                    // filename has valid extension
-                    return true;
-                }
+                return mExtensions.contains(ext);
             }
 
             // filename has no valid extension
