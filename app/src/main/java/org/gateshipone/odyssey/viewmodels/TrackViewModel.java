@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -91,5 +93,38 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
                 setData(result);
             }
         }.execute();
+    }
+
+    public static class TrackViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        private final String mAlbumKey;
+
+        private final long mPlaylistID;
+
+        private TrackViewModelFactory(final Application application, final String albumKey, final long playlistID) {
+            mApplication = application;
+            mAlbumKey = albumKey;
+            mPlaylistID = playlistID;
+        }
+
+        public TrackViewModelFactory(final Application application) {
+            this(application, "", -1);
+        }
+
+        public TrackViewModelFactory(final Application application, final String albumKey) {
+            this(application, albumKey, -1);
+        }
+
+        public TrackViewModelFactory(final Application application, final long playlistID) {
+            this(application, "", playlistID);
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new TrackViewModel(mApplication, mAlbumKey, mPlaylistID);
+        }
     }
 }

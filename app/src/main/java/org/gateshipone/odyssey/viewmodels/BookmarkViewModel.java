@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -74,5 +76,23 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
             }
 
         }.execute();
+    }
+
+    public static class BookmarkViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        private final boolean mAddHeader;
+
+        public BookmarkViewModelFactory(final Application application, final boolean addHeader) {
+            mApplication = application;
+            mAddHeader = addHeader;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new BookmarkViewModel(mApplication, mAddHeader);
+        }
     }
 }

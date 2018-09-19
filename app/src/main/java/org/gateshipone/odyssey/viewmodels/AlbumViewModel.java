@@ -24,6 +24,9 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -33,6 +36,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class AlbumViewModel extends GenericViewModel<AlbumModel> {
@@ -96,5 +100,34 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
             }
 
         }.execute();
+    }
+
+    public static class AlbumViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        private final long mArtistID;
+
+        private final boolean mLoadRecent;
+
+        private AlbumViewModelFactory(final Application application, final long artistID, final boolean loadRecent) {
+            mApplication = application;
+            mArtistID = artistID;
+            mLoadRecent = loadRecent;
+        }
+
+        public AlbumViewModelFactory(final Application application, final boolean loadRecent) {
+            this(application, -1, loadRecent);
+        }
+
+        public AlbumViewModelFactory(final Application application, final long artistID) {
+            this(application, artistID, false);
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new AlbumViewModel(mApplication, mArtistID, mLoadRecent);
+        }
     }
 }

@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -74,5 +76,23 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                 setData(result);
             }
         }.execute();
+    }
+
+    public static class PlaylistViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        private final boolean mAddHeader;
+
+        public PlaylistViewModelFactory(final Application application, final boolean addHeader) {
+            mApplication = application;
+            mAddHeader = addHeader;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new PlaylistViewModel(mApplication, mAddHeader);
+        }
     }
 }

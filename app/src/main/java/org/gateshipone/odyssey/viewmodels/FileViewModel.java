@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -60,5 +62,23 @@ public class FileViewModel extends GenericViewModel<FileModel> {
                 setData(result);
             }
         }.execute();
+    }
+
+    public static class FileViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        private final FileModel mCurrentDirectory;
+
+        public FileViewModelFactory(final Application application, final FileModel directory) {
+            mApplication = application;
+            mCurrentDirectory = directory;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new FileViewModel(mApplication, mCurrentDirectory);
+        }
     }
 }
