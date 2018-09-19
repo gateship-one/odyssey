@@ -154,12 +154,12 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
         @Override
         public void onTrimMemory(int level) {
-            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
-                // TODO remove livedata as well?
-                resetModel();
-
-                mDataReady = false;
-            }
+//            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
+//                // TODO remove livedata as well?
+////                resetModel();
+//
+//                mDataReady = false;
+//            }
         }
 
         @Override
