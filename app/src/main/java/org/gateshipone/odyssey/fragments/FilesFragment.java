@@ -59,6 +59,7 @@ import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 import org.gateshipone.odyssey.viewmodels.FileViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -169,12 +170,18 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             mSearchString = savedInstanceState.getString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
         }
 
-        final FileViewModel model = ViewModelProviders.of(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+        final FileViewModel model = (FileViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
     }
+
+    @Override
+    GenericViewModel<FileModel> getViewModel() {
+        return ViewModelProviders.of(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

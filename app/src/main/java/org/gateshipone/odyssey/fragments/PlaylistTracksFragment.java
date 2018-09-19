@@ -50,6 +50,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.util.List;
@@ -147,11 +148,16 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
-        final TrackViewModel model = ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
+        final TrackViewModel model = (TrackViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<TrackModel> getViewModel() {
+        return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
     }
 
     /**

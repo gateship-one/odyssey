@@ -30,6 +30,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -63,6 +64,8 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
     abstract void swapModel(List<T> model);
 
     abstract void resetModel();
+
+    abstract GenericViewModel<T> getViewModel();
 
     @Override
     public void onAttach(Context context) {
@@ -102,7 +105,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
         mDataReady = false;
 
-        // TODO refresh data
+        getViewModel().reloadData();
     }
 
     /**

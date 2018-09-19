@@ -40,6 +40,7 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -62,11 +63,16 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         // Inflate the layout for this fragment
         final View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        final AlbumViewModel model = ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), false)).get(AlbumViewModel.class);
+        final AlbumViewModel model = (AlbumViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<AlbumModel> getViewModel() {
+        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), false)).get(AlbumViewModel.class);
     }
 
     /**

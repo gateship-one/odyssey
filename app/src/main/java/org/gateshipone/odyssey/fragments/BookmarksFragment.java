@@ -42,6 +42,7 @@ import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -76,11 +77,16 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         registerForContextMenu(mListView);
 
-        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), false)).get(BookmarkViewModel.class);
+        final BookmarkViewModel model = (BookmarkViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<BookmarkModel> getViewModel() {
+        return ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), false)).get(BookmarkViewModel.class);
     }
 
     /**

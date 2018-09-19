@@ -56,6 +56,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
@@ -160,12 +161,17 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
-        final AlbumViewModel model = ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        final AlbumViewModel model = (AlbumViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<AlbumModel> getViewModel() {
+        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
     }
 
     @Override

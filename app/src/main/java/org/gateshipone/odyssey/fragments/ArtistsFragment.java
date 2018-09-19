@@ -52,6 +52,7 @@ import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -117,11 +118,16 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // register for context menu
         registerForContextMenu(mListView);
 
-        final ArtistViewModel model = ViewModelProviders.of(this).get(ArtistViewModel.class);
+        final ArtistViewModel model = (ArtistViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<ArtistModel> getViewModel() {
+        return ViewModelProviders.of(this).get(ArtistViewModel.class);
     }
 
     @Override

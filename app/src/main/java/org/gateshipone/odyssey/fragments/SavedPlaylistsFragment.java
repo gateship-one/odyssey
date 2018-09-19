@@ -45,6 +45,7 @@ import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 import java.util.List;
@@ -87,11 +88,16 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // register for context menu
         registerForContextMenu(mListView);
 
-        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
+        final PlaylistViewModel model = (PlaylistViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<PlaylistModel> getViewModel() {
+        return ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
     }
 
     /**
@@ -243,9 +249,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // delete current playlist
         final boolean reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
 
-//        if (reloadData) {
-//            // reload data
-//            getLoaderManager().restartLoader(0, getArguments(), this);
-//        }
+        if (reloadData) {
+            // reload data
+            refreshContent();
+        }
     }
 }

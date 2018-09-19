@@ -48,6 +48,7 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
@@ -75,11 +76,16 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         // disable sections for this fragment
         mAdapter.enableSections(false);
 
-        final AlbumViewModel model = ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), true)).get(AlbumViewModel.class);
+        final AlbumViewModel model = (AlbumViewModel) getViewModel();
         model.getData()
                 .observe(this, this::onDataReady);
 
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<AlbumModel> getViewModel() {
+        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), true)).get(AlbumViewModel.class);
     }
 
     /**
