@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,6 +57,8 @@ import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
+import org.gateshipone.odyssey.viewmodels.FileViewModel;
 
 import java.util.List;
 
@@ -166,6 +169,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             mSearchString = savedInstanceState.getString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
         }
 
+        final FileViewModel model = ViewModelProviders.of(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -216,31 +223,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         }
     }
 
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
     @Override
-    public Loader<List<FileModel>> onCreateLoader(int id, Bundle bundle) {
-        return new FileLoader(getActivity(), mCurrentDirectory);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * The FAB will be hidden if the model is empty.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<FileModel>> loader, List<FileModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<FileModel> model) {
+        super.onDataReady(model);
 
         if (mToolbarAndFABCallback != null) {
             // set up play button

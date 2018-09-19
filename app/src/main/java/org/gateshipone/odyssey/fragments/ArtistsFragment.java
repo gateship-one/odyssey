@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -50,6 +51,7 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
+import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
 
 import java.util.List;
 
@@ -115,6 +117,10 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // register for context menu
         registerForContextMenu(mListView);
 
+        final ArtistViewModel model = ViewModelProviders.of(this).get(ArtistViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -148,27 +154,9 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         }
     }
 
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
     @Override
-    public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
-        return new ArtistLoader(getActivity());
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<ArtistModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -176,6 +164,35 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
             mLastPosition = -1;
         }
     }
+
+    //    /**
+//     * This method creates a new loader for this fragment.
+//     *
+//     * @param id     The id of the loader
+//     * @param bundle Optional arguments
+//     * @return Return a new Loader instance that is ready to start loading.
+//     */
+//    @Override
+//    public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
+//        return new ArtistLoader(getActivity());
+//    }
+
+//    /**
+//     * Called when the loader finished loading its data.
+//     *
+//     * @param loader The used loader itself
+//     * @param model  Data of the loader
+//     */
+//    @Override
+//    public void onLoadFinished(@NonNull Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
+//        super.onLoadFinished(loader, model);
+//
+//        // Reset old scroll position
+//        if (mLastPosition >= 0) {
+//            mListView.setSelection(mLastPosition);
+//            mLastPosition = -1;
+//        }
+//    }
 
     /**
      * Callback when an item in the ListView was clicked.

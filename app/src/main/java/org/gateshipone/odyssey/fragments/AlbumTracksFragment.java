@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -57,6 +58,8 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
@@ -142,6 +145,10 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        final TrackViewModel model = ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumKey())).get(TrackViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -217,19 +224,6 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         super.onPause();
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mAlbum.getAlbumKey());
     }
 
     /**

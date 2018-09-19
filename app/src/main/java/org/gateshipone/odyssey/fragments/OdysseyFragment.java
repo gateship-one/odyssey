@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
 import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -33,7 +32,7 @@ import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
 
-abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
+abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> {
 
     /**
      * The reference to the possible abstract list view

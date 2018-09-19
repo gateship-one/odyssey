@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.util.List;
 
@@ -102,6 +104,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        final TrackViewModel model = ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -119,29 +125,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity());
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        super.onLoadFinished(loader, data);
     }
 
     /**

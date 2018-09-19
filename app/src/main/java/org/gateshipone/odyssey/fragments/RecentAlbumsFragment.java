@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
 
 import java.util.List;
 
@@ -72,6 +74,10 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
         // disable sections for this fragment
         mAdapter.enableSections(false);
+
+        final AlbumViewModel model = ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), true)).get(AlbumViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
 
         return rootView;
     }
@@ -107,20 +113,6 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        // recents albums
-        return new AlbumLoader(getActivity(), true);
     }
 
     /**

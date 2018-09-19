@@ -146,15 +146,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         }
     }
 
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<AlbumModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {

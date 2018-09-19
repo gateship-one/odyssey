@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -31,7 +32,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.Loader;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -48,7 +48,6 @@ import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
@@ -56,6 +55,7 @@ import org.gateshipone.odyssey.utils.RecyclerScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
@@ -160,6 +160,11 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
+        final AlbumViewModel model = ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
+
         return rootView;
     }
 
@@ -210,7 +215,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter)mRecyclerAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
     }
@@ -237,15 +242,9 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         }
     }
 
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<AlbumModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -315,19 +314,6 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        return new AlbumLoader(getActivity(), mArtist.getArtistID());
     }
 
     /**

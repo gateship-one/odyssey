@@ -39,7 +39,7 @@ import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
+abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> {
 
     /**
      * The reference to the possible recyclerview

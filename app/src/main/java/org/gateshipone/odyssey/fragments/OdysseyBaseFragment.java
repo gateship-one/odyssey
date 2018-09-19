@@ -25,10 +25,7 @@ package org.gateshipone.odyssey.fragments;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
@@ -36,7 +33,7 @@ import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
 
-abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment implements LoaderManager.LoaderCallbacks<List<T>> {
+abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment {
 
     /**
      * Callback to setup toolbar and fab
@@ -104,7 +101,8 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         }
 
         mDataReady = false;
-        getLoaderManager().restartLoader(0, getArguments(), this);
+
+        // TODO refresh data
     }
 
     /**
@@ -121,21 +119,11 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
             }
 
             // Prepare loader ( start new one or reuse old )
-            getLoaderManager().initLoader(0, getArguments(), this);
+            // TODO refresh data?
         }
     }
 
-    /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * If the new model is empty a special empty view will be shown if exists.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<T>> loader, List<T> model) {
+    protected void onDataReady(List<T> model) {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
@@ -144,16 +132,6 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         mDataReady = true;
 
         swapModel(model);
-    }
-
-    /**
-     * If the loader is reset, the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<T>> loader) {
-        resetModel();
     }
 
     /**
@@ -174,7 +152,9 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         @Override
         public void onTrimMemory(int level) {
             if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
-                getLoaderManager().destroyLoader(0);
+                // TODO remove livedata as well?
+                resetModel();
+
                 mDataReady = false;
             }
         }

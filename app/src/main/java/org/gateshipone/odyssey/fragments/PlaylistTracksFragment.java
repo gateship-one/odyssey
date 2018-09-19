@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.util.List;
 
@@ -145,6 +147,10 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        final TrackViewModel model = ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -163,35 +169,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         super.onResume();
     }
 
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
     @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        if (mPlaylistPath == null) {
-            return new TrackLoader(getActivity().getApplicationContext(), mPlaylistID);
-        } else {
-            return new PlaylistTrackLoader(getActivity().getApplicationContext(), mPlaylistPath);
-        }
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * The FAB will be hidden if the model is empty.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<TrackModel> model) {
+        super.onDataReady(model);
 
         if (mToolbarAndFABCallback != null) {
             // set up play button
@@ -392,9 +372,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void removeTrackFromPlaylist(int position) {
         final boolean reloadData = MusicLibraryHelper.removeTrackFromPlaylist(mPlaylistID, position, getActivity().getApplicationContext());
 
-        if (reloadData) {
-            // reload data
-            getLoaderManager().restartLoader(0, getArguments(), this);
-        }
+//        if (reloadData) {
+//            // reload data
+//            getLoaderManager().restartLoader(0, getArguments(), this);
+//        }
     }
 }

@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -40,6 +41,7 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
+import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 
 import java.util.List;
 
@@ -74,6 +76,10 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         registerForContextMenu(mListView);
 
+        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), false)).get(BookmarkViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -91,19 +97,6 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
-        return new BookmarkLoader(getActivity(), false);
     }
 
     /**

@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.RemoteException;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 import java.util.List;
 
@@ -84,6 +87,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // register for context menu
         registerForContextMenu(mListView);
 
+        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
+        model.getData()
+                .observe(this, this::onDataReady);
+
         return rootView;
     }
 
@@ -119,21 +126,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         }
     }
 
-    @NonNull
     @Override
-    public Loader<List<PlaylistModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new PlaylistLoader(getActivity(), false);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<PlaylistModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -248,9 +243,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // delete current playlist
         final boolean reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
 
-        if (reloadData) {
-            // reload data
-            getLoaderManager().restartLoader(0, getArguments(), this);
-        }
+//        if (reloadData) {
+//            // reload data
+//            getLoaderManager().restartLoader(0, getArguments(), this);
+//        }
     }
 }
