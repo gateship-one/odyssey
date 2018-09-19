@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.views;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;

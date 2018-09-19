@@ -116,10 +116,6 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // register for context menu
         registerForContextMenu(mListView);
 
-        final ArtistViewModel model = (ArtistViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

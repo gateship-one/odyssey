@@ -39,8 +39,6 @@ import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 
-import java.util.List;
-
 public class ChooseBookmarkDialog extends DialogFragment {
 
     /**

@@ -115,14 +115,17 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
      * of memory pressure.
      */
     public void getContent() {
+        // TODO should we always do this?
+        getViewModel().getData().observe(this, this::onDataReady);
+
         // Check if data was fetched already or not (or removed because of trimming)
         if (!mDataReady) {
             if (mSwipeRefreshLayout != null) {
                 mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             }
 
-            // Prepare loader ( start new one or reuse old )
-            // TODO refresh data?
+            // TODO should we always do this?
+            getViewModel().reloadData();
         }
     }
 
@@ -132,7 +135,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         }
 
         // Indicate that the data is ready now.
-        mDataReady = true;
+        mDataReady = model != null;
 
         swapModel(model);
     }
@@ -154,12 +157,12 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
         @Override
         public void onTrimMemory(int level) {
-//            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
-//                // TODO remove livedata as well?
-////                resetModel();
-//
-//                mDataReady = false;
-//            }
+            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
+                // TODO should we do this anymore?
+                getViewModel().clearData();
+
+                mDataReady = false;
+            }
         }
 
         @Override

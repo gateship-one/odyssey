@@ -72,10 +72,6 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         // disable sections for this fragment
         mAdapter.enableSections(false);
 
-        final AlbumViewModel model = (AlbumViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

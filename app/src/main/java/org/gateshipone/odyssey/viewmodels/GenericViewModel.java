@@ -40,15 +40,11 @@ public abstract class GenericViewModel<T extends GenericModel> extends AndroidVi
 
     GenericViewModel(@NonNull final Application application) {
         super(application);
+
+        mData = new MutableLiveData<>();
     }
 
     public LiveData<List<T>> getData() {
-        if (mData == null) {
-            mData = new MutableLiveData<>();
-
-            loadData();
-        }
-
         return mData;
     }
 
@@ -57,7 +53,7 @@ public abstract class GenericViewModel<T extends GenericModel> extends AndroidVi
     }
 
     public void clearData() {
-        // TODO what should we do here
+        mData.setValue(null);
     }
 
     protected void setData(final List<T> data) {

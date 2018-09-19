@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

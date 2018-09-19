@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
-import android.os.RemoteException;
 
 import org.gateshipone.odyssey.models.TrackModel;
 

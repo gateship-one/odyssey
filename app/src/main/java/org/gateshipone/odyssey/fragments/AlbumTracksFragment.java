@@ -141,10 +141,6 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
-        final TrackViewModel model = (TrackViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

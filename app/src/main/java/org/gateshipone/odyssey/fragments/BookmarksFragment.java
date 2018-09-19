@@ -73,10 +73,6 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         registerForContextMenu(mListView);
 
-        final BookmarkViewModel model = (BookmarkViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

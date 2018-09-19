@@ -167,10 +167,6 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             mSearchString = savedInstanceState.getString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
         }
 
-        final FileViewModel model = (FileViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

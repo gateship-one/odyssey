@@ -101,10 +101,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
-        final TrackViewModel model = (TrackViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

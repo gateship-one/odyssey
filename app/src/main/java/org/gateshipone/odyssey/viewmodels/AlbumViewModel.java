@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.SharedPreferences;
@@ -36,7 +35,6 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class AlbumViewModel extends GenericViewModel<AlbumModel> {

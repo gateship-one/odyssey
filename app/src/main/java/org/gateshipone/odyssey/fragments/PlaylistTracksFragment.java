@@ -146,10 +146,6 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
-        final GenericViewModel<TrackModel> model = getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
         return rootView;
     }
 

@@ -161,11 +161,6 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
-        final AlbumViewModel model = (AlbumViewModel) getViewModel();
-        model.getData()
-                .observe(this, this::onDataReady);
-
-
         return rootView;
     }
 
