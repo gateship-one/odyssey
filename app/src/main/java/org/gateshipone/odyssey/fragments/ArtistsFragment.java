@@ -165,35 +165,6 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         }
     }
 
-    //    /**
-//     * This method creates a new loader for this fragment.
-//     *
-//     * @param id     The id of the loader
-//     * @param bundle Optional arguments
-//     * @return Return a new Loader instance that is ready to start loading.
-//     */
-//    @Override
-//    public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
-//        return new ArtistLoader(getActivity());
-//    }
-
-//    /**
-//     * Called when the loader finished loading its data.
-//     *
-//     * @param loader The used loader itself
-//     * @param model  Data of the loader
-//     */
-//    @Override
-//    public void onLoadFinished(@NonNull Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
-//        super.onLoadFinished(loader, model);
-//
-//        // Reset old scroll position
-//        if (mLastPosition >= 0) {
-//            mListView.setSelection(mLastPosition);
-//            mLastPosition = -1;
-//        }
-//    }
-
     /**
      * Callback when an item in the ListView was clicked.
      */
