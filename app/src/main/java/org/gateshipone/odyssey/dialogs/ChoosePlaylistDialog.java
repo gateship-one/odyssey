@@ -95,6 +95,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
         final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true)).get(PlaylistViewModel.class);
         model.getData()
                 .observe(this, data -> mPlaylistsListViewAdapter.swapModel(data));
+        model.reloadData();
 
         // set divider
         AlertDialog dlg = builder.create();

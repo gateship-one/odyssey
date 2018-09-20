@@ -95,6 +95,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
         final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true)).get(BookmarkViewModel.class);
         model.getData()
                 .observe(this, data -> mBookmarksAdapter.swapModel(data));
+        model.reloadData();
 
         // set divider
         AlertDialog dlg = builder.create();
