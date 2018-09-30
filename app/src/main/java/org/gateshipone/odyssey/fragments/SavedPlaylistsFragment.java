@@ -85,6 +85,9 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // register for context menu
         registerForContextMenu(mListView);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
     }
 

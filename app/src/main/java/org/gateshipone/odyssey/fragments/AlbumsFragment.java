@@ -61,6 +61,9 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         // Inflate the layout for this fragment
         final View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
     }
 

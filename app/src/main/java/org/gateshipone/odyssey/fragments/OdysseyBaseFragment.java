@@ -115,9 +115,6 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
      * of memory pressure.
      */
     public void getContent() {
-        // TODO should we always do this?
-        getViewModel().getData().observe(this, this::onDataReady);
-
         // Check if data was fetched already or not (or removed because of trimming)
         if (!mDataReady) {
             if (mSwipeRefreshLayout != null) {

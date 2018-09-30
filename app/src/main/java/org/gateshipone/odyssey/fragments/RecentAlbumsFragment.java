@@ -72,6 +72,9 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         // disable sections for this fragment
         mAdapter.enableSections(false);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
     }
 
