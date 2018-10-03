@@ -810,17 +810,25 @@ public class MusicLibraryHelper {
      * @return The created {@link TrackModel} or null if the track couldn't be found in the mediastore.
      */
     static TrackModel getTrackForUri(final Uri uri, final Context context) {
+        final String uriPath = uri.getPath();
+        final String uriScheme = uri.getScheme();
+        final String uriLastPathSegment = uri.getLastPathSegment();
+
+        if (uriPath == null) {
+            return null;
+        }
+
         TrackModel track = null;
 
         String whereVal[] = {uri.getPath()};
 
         String where = MediaStore.Audio.Media.DATA + "=?";
 
-        if (uri.getScheme().equals("content")) {
+        if (uriScheme != null && uriScheme.equals("content")) {
             // special handling for content urls
-            final String parts[] = uri.getLastPathSegment().split(":");
+            final String parts[] = uriLastPathSegment != null ? uriLastPathSegment.split(":") : null;
 
-            if (parts.length > 1) {
+            if (parts != null && parts.length > 1) {
                 if (parts[0].equals("audio")) {
                     whereVal = new String[]{parts[1]};
                     where = MediaStore.Audio.Media._ID + "=?";
