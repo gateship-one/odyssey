@@ -43,7 +43,7 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
      */
     private final boolean mAddHeader;
 
-    public BookmarkViewModel(@NonNull final Application application, final boolean addHeader) {
+    private BookmarkViewModel(@NonNull final Application application, final boolean addHeader) {
         super(application);
 
         mAddHeader = addHeader;

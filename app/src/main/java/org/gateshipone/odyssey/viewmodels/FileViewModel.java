@@ -41,7 +41,7 @@ public class FileViewModel extends GenericViewModel<FileModel> {
      */
     private final FileModel mCurrentDirectory;
 
-    public FileViewModel(@NonNull final Application application, final FileModel directory) {
+    private FileViewModel(@NonNull final Application application, final FileModel directory) {
         super(application);
 
         mCurrentDirectory = directory;

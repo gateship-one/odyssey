@@ -43,7 +43,7 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
      */
     private final String mPath;
 
-    public PlaylistTrackViewModel(@NonNull final Application application, final String playlistPath) {
+    private PlaylistTrackViewModel(@NonNull final Application application, final String playlistPath) {
         super(application);
 
         mPath = playlistPath;

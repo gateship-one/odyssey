@@ -56,14 +56,6 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
         mLoadRecent = loadRecent;
     }
 
-    public AlbumViewModel(@NonNull final Application application, final long artistId) {
-        this(application, artistId, false);
-    }
-
-    public AlbumViewModel(@NonNull final Application application, final boolean loadRecent) {
-        this(application, -1, true);
-    }
-
     @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {

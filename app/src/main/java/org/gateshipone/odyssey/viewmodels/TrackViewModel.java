@@ -53,18 +53,6 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
         mPlaylistID = playlistID;
     }
 
-    public TrackViewModel(@NonNull final Application application) {
-        this(application, "", -1);
-    }
-
-    public TrackViewModel(@NonNull final Application application, String albumKey) {
-        this(application, albumKey, -1);
-    }
-
-    public TrackViewModel(@NonNull final Application application, long playlistID) {
-        this(application, "", playlistID);
-    }
-
     @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {

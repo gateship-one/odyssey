@@ -43,7 +43,7 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
      */
     private final boolean mAddHeader;
 
-    public PlaylistViewModel(@NonNull final Application application, final boolean addHeader) {
+    private PlaylistViewModel(@NonNull final Application application, final boolean addHeader) {
         super(application);
 
         mAddHeader = addHeader;
