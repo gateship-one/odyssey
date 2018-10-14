@@ -319,5 +319,5 @@
 
     <!-- Snackbar -->
     <string name="snackbar_sleep_timer_confirmation_message">Sleep timer set</string>
-    <string name="snackbar_uri_not_supported_message">The selected file %1$s is not supported.</string>
+    <string name="snackbar_uri_not_supported_message">The selected path %1$s is not supported.</string>
 </resources>
