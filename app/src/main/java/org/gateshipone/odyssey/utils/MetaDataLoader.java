@@ -29,6 +29,7 @@ import android.text.TextUtils;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,10 +97,11 @@ public class MetaDataLoader {
 
         try {
             // try to read the file metadata
-
             final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
-            retriever.setDataSource(context, uri);
+            FileInputStream fileInputStream = new FileInputStream(trackUrl);
+            retriever.setDataSource(fileInputStream.getFD());
+            fileInputStream.close();
 
             final String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 
