@@ -1024,7 +1024,7 @@ public class OdysseyMainActivity extends GenericActivity
                     e.printStackTrace();
                 }
             } else {
-                // show a snackbar to inform the user that the sleep timer is now set
+                // show a snackbar to inform the user that the selected file could not be played
                 final View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
                     final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
