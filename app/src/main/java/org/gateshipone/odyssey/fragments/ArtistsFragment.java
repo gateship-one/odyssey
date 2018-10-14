@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -157,6 +158,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         }
     }
 
+    /**
+     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     *
+     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
+     *
+     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     */
     @Override
     protected void onDataReady(List<ArtistModel> model) {
         super.onDataReady(model);

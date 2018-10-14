@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
@@ -226,6 +227,13 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         }
     }
 
+    /**
+     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     *
+     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
+     *
+     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     */
     @Override
     protected void onDataReady(List<FileModel> model) {
         super.onDataReady(model);

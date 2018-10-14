@@ -75,24 +75,29 @@ public class ChoosePlaylistDialog extends DialogFragment {
 
         mPlaylistsListViewAdapter = new SavedPlaylistsAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_playlist).setAdapter(mPlaylistsListViewAdapter, (dialog, which) -> {
+        builder
+                .setTitle(R.string.dialog_choose_playlist)
+                .setAdapter(mPlaylistsListViewAdapter, (dialog, which) -> {
 
-            if (which == 0) {
-                // open save dialog to create a new bookmark
-                SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
-                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
-            } else {
-                // override existing bookmark
-                PlaylistModel playlist = mPlaylistsListViewAdapter.getItem(which);
-                String objectTitle = playlist.getPlaylistName();
-                mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);
-            }
-        }).setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
-            // User cancelled the dialog dont save object
-            getDialog().cancel();
-        });
+                    if (which == 0) {
+                        // open save dialog to create a new bookmark
+                        SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
+                        saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                    } else {
+                        // override existing bookmark
+                        PlaylistModel playlist = mPlaylistsListViewAdapter.getItem(which);
+                        String objectTitle = playlist.getPlaylistName();
+                        mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
+                    // User cancelled the dialog dont save object
+                    getDialog().cancel();
+                });
 
-        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true)).get(PlaylistViewModel.class);
+        // setup playlist ViewModel
+        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true))
+                .get(PlaylistViewModel.class);
         model.getData()
                 .observe(this, data -> mPlaylistsListViewAdapter.swapModel(data));
         model.reloadData();

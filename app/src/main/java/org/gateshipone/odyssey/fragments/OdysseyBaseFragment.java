@@ -63,8 +63,6 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
     abstract void swapModel(List<T> model);
 
-    abstract void resetModel();
-
     abstract GenericViewModel<T> getViewModel();
 
     @Override
@@ -121,11 +119,17 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
                 mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             }
 
-            // TODO should we always do this?
             getViewModel().reloadData();
         }
     }
 
+    /**
+     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     *
+     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
+     *
+     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     */
     protected void onDataReady(List<T> model) {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
@@ -155,7 +159,6 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         @Override
         public void onTrimMemory(int level) {
             if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
-                // TODO should we do this anymore?
                 getViewModel().clearData();
 
                 mDataReady = false;

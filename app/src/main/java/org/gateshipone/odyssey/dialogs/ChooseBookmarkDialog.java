@@ -75,24 +75,29 @@ public class ChooseBookmarkDialog extends DialogFragment {
 
         mBookmarksAdapter = new BookmarksAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksAdapter, (dialog, which) -> {
+        builder
+                .setTitle(R.string.dialog_choose_bookmark)
+                .setAdapter(mBookmarksAdapter, (dialog, which) -> {
 
-            if (which == 0) {
-                // open save dialog to create a new bookmark
-                SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
-                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
-            } else {
-                // override existing bookmark
-                BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
-                String objectTitle = bookmark.getTitle();
-                mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
-            }
-        }).setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
-            // User cancelled the dialog dont save object
-            getDialog().cancel();
-        });
+                    if (which == 0) {
+                        // open save dialog to create a new bookmark
+                        SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
+                        saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                    } else {
+                        // override existing bookmark
+                        BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
+                        String objectTitle = bookmark.getTitle();
+                        mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
+                    // User cancelled the dialog dont save object
+                    getDialog().cancel();
+                });
 
-        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true)).get(BookmarkViewModel.class);
+        // setup bookmark ViewModel
+        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true))
+                .get(BookmarkViewModel.class);
         model.getData()
                 .observe(this, data -> mBookmarksAdapter.swapModel(data));
         model.reloadData();

@@ -379,9 +379,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void removeTrackFromPlaylist(int position) {
         final boolean reloadData = MusicLibraryHelper.removeTrackFromPlaylist(mPlaylistID, position, getActivity().getApplicationContext());
 
-//        if (reloadData) {
-//            // reload data
-//            getLoaderManager().restartLoader(0, getArguments(), this);
-//        }
+        if (reloadData) {
+            // reload data
+            refreshContent();
+        }
     }
 }

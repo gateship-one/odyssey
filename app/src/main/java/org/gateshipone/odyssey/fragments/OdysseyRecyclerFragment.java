@@ -94,12 +94,6 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
         mRecyclerAdapter.swapModel(model);
     }
 
-    @Override
-    void resetModel() {
-        // Clear the model data of the adapter.
-        mRecyclerAdapter.swapModel(null);
-    }
-
     /**
      * Method to show or hide the recyclerview according to the state of the adapter.
      */

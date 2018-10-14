@@ -88,12 +88,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
         mAdapter.swapModel(model);
     }
 
-    @Override
-    void resetModel() {
-        // Clear the model data of the adapter.
-        mAdapter.swapModel(null);
-    }
-
     /**
      * Method to apply a filter to the view model of the fragment.
      */

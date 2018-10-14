@@ -27,6 +27,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -128,6 +129,13 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         }
     }
 
+    /**
+     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     *
+     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
+     *
+     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     */
     @Override
     protected void onDataReady(List<PlaylistModel> model) {
         super.onDataReady(model);
