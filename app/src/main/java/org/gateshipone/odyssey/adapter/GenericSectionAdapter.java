@@ -230,7 +230,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
             mFilterTask.cancel(true);
         }
         mFilterTask = provideFilterTask();
-        mLock.readLock().lock();
+
         mFilterTask.execute(mFilterString);
     }
 
@@ -252,8 +252,6 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
 
     private void updateAfterFiltering(final Pair<List<T>, String> result) {
         if (result.first != null && mFilterString.equals(result.second)) {
-            mLock.readLock().unlock();
-
             mLock.writeLock().lock();
 
             mFilteredModelData.clear();
@@ -266,17 +264,15 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
                 createSections();
             }
             notifyDataSetChanged();
-        } else {
-            mLock.readLock().unlock();
         }
     }
 
     private void filteringAborted() {
-        mLock.readLock().unlock();
+        // Do nothing for now (readLock gets unlocked by FilterTask)
     }
 
     private FilterTask<T> provideFilterTask() {
-        return new FilterTask<>(mModelData,
+        return new FilterTask<>(mModelData, mLock.readLock(),
                 provideFilter(),
                 this::updateAfterFiltering, this::filteringAborted);
     }

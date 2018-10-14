@@ -30,6 +30,7 @@ import org.gateshipone.odyssey.models.GenericModel;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, Pair<List<T>, String>> {
 
@@ -53,11 +54,14 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
 
     private final WeakReference<List<T>> mModelDataRef;
 
-    public FilterTask(final List<T> modelData, final Filter<T> filter, final SuccessCallback<T> successCallback, final FailureCallback failureCallback) {
+    private final ReentrantReadWriteLock.ReadLock mReadLock;
+
+    public FilterTask(final List<T> modelData, final ReentrantReadWriteLock.ReadLock readLock, final Filter<T> filter, final SuccessCallback<T> successCallback, final FailureCallback failureCallback) {
         mModelDataRef = new WeakReference<>(modelData);
         mFilter = filter;
         mSuccessCallback = successCallback;
         mFailureCallback = failureCallback;
+        mReadLock = readLock;
     }
 
     @Override
@@ -65,10 +69,12 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         List<T> resultList = new ArrayList<>();
 
         String filterString = lists[0];
+        mReadLock.lock();
         for (T elem : mModelDataRef.get()) {
             // Check if task was cancelled from the outside.
             if (isCancelled()) {
                 resultList.clear();
+                mReadLock.unlock();
                 return new Pair<>(resultList, filterString);
             }
             if (mFilter.matchesFilter(elem, filterString)) {
@@ -76,6 +82,7 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
             }
         }
 
+        mReadLock.unlock();
         return new Pair<>(resultList, filterString);
     }
 
