@@ -48,6 +48,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -85,6 +86,7 @@ import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
+import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
@@ -677,7 +679,7 @@ public class OdysseyMainActivity extends GenericActivity
                 sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                 sb.show();
             }
-        } catch(RemoteException e) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -1013,10 +1015,25 @@ public class OdysseyMainActivity extends GenericActivity
      */
     private void checkUri() {
         if (mSentUri != null) {
-            try {
-                getPlaybackService().playURI(mSentUri.toString());
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            final String filePath = FileUtils.getFilePathFromUri(this, mSentUri);
+
+            if (filePath != null) {
+                try {
+                    getPlaybackService().playURI(filePath);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // show a snackbar to inform the user that the selected file could not be played
+                final View layout = findViewById(R.id.drawer_layout);
+                if (layout != null) {
+                    final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
+                    final Snackbar sb = Snackbar.make(layout, errorMsg, Snackbar.LENGTH_SHORT);
+                    // style the snackbar text
+                    final TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                    sb.show();
+                }
             }
 
             mSentUri = null;

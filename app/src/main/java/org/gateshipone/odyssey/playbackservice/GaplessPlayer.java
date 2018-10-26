@@ -22,17 +22,22 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.util.Log;
 
 import org.gateshipone.odyssey.utils.FormatHelper;
@@ -176,9 +181,10 @@ public class GaplessPlayer {
         // Set the type of the stream to music.
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            // Set the datasource of the player to the provider URI
-            mCurrentMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
-                    FormatHelper.encodeURI(uri));
+            // create a file descriptor for the given uri
+            FileInputStream fileInputStream = new FileInputStream(uri);
+            mCurrentMediaPlayer.setDataSource(fileInputStream.getFD());
+            fileInputStream.close();
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError, uri, e);
         } catch (SecurityException e) {
@@ -645,12 +651,12 @@ public class GaplessPlayer {
 
                 } else {
                     /*
-                    * Playback stopped. Signal android desire to close audio effect session
-                    */
+                     * Playback stopped. Signal android desire to close audio effect session
+                     */
                     Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
                     audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
                     audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-                    Log.v(TAG,"Closing effect for session: " + audioSessionID + " because playback ended");
+                    Log.v(TAG, "Closing effect for session: " + audioSessionID + " because playback ended");
                     mPlaybackService.sendBroadcast(audioEffectIntent);
                 }
             }
@@ -685,14 +691,14 @@ public class GaplessPlayer {
 
     private void dumpAudioEffectsState() {
         AudioEffect.Descriptor effects[] = AudioEffect.queryEffects();
-        Log.v(TAG,"Found audio effects: " + effects.length);
-        for(AudioEffect.Descriptor effect : effects) {
-            Log.v(TAG,"AudioEffect: " + effect.name + " connect mode: " + effect.connectMode + " implementor: " + effect.implementor);
+        Log.v(TAG, "Found audio effects: " + effects.length);
+        for (AudioEffect.Descriptor effect : effects) {
+            Log.v(TAG, "AudioEffect: " + effect.name + " connect mode: " + effect.connectMode + " implementor: " + effect.implementor);
         }
     }
 
     int getAudioSessionID() {
-        if ( mCurrentMediaPlayer != null && mCurrentPrepared) {
+        if (mCurrentMediaPlayer != null && mCurrentPrepared) {
             return mCurrentMediaPlayer.getAudioSessionId();
         }
         return -1;
@@ -703,7 +709,7 @@ public class GaplessPlayer {
      */
     private void startReleaseTask() {
         synchronized (mReleasePlayerTimer) {
-            if(mReleasePlayerTask != null) {
+            if (mReleasePlayerTask != null) {
                 mReleasePlayerTask.cancel();
             }
             mReleasePlayerTask = new ReleaseGaplessPlayerTask();
@@ -716,7 +722,7 @@ public class GaplessPlayer {
      */
     private void stopReleaseTask() {
         synchronized (mReleasePlayerTimer) {
-            if(mReleasePlayerTask != null) {
+            if (mReleasePlayerTask != null) {
                 mReleasePlayerTask.cancel();
                 mReleasePlayerTask = null;
             }
@@ -729,7 +735,7 @@ public class GaplessPlayer {
     private class ReleaseGaplessPlayerTask extends TimerTask {
         @Override
         public void run() {
-            Log.v(TAG,"Release player object");
+            Log.v(TAG, "Release player object");
             synchronized (mReleasePlayerTimer) {
                 mReleasePlayerTask = null;
             }

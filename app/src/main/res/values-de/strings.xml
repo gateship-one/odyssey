@@ -207,4 +207,5 @@
     <string name="snackbar_sleep_timer_confirmation_message">Zeitbasierte Abschaltung aktiviert</string>
     <string name="dialog_sleep_timer_duration_minutes">Minuten</string>
     <string name="dialog_sleep_timer_duration_seconds">Sekunden</string>
+    <string name="snackbar_uri_not_supported_message">Der ausgewählte Pfad %1$s wird nicht unterstützt.</string>
 </resources>

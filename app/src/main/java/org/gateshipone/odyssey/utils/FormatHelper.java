@@ -28,6 +28,7 @@ import android.net.Uri;
 
 import org.gateshipone.odyssey.R;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -115,7 +116,7 @@ public class FormatHelper {
      * @return
      */
     public static Uri encodeURI(final String uri) {
-        Uri encodedUri = Uri.parse(uri);
+        Uri encodedUri = Uri.parse(Uri.encode(uri, "/"));
 
         String scheme = encodedUri.getScheme();
 
