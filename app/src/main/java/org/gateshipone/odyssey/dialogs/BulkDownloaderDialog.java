@@ -23,13 +23,13 @@
 package org.gateshipone.odyssey.dialogs;
 
 import android.app.Dialog;
-import android.os.Build;
-import android.support.v4.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import org.gateshipone.odyssey.R;

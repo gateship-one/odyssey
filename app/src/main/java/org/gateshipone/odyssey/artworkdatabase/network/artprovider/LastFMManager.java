@@ -30,13 +30,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
-import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
-import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
-import org.gateshipone.odyssey.artworkdatabase.network.requests.OdysseyJsonObjectRequest;
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artworkdatabase.network.requests.AlbumImageByteRequest;
 import org.gateshipone.odyssey.artworkdatabase.network.requests.ArtistImageByteRequest;
+import org.gateshipone.odyssey.artworkdatabase.network.requests.OdysseyJsonObjectRequest;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
+import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
 import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;

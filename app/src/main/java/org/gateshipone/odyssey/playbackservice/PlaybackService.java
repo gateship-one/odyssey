@@ -22,13 +22,6 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Random;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -58,6 +51,13 @@ import org.gateshipone.odyssey.utils.MetaDataLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PlaylistParser;
 import org.gateshipone.odyssey.utils.PlaylistParserFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 

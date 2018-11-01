@@ -22,11 +22,9 @@
 
 package org.gateshipone.odyssey.utils;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 

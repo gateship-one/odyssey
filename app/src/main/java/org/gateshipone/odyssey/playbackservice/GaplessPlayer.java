@@ -22,25 +22,21 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
-
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
-import android.net.Uri;
 import android.util.Log;
 
 import org.gateshipone.odyssey.utils.FormatHelper;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
 /**
  * This class provides an easy to use interface for the android provided

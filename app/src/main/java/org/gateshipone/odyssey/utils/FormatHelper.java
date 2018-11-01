@@ -28,7 +28,6 @@ import android.net.Uri;
 
 import org.gateshipone.odyssey.R;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
