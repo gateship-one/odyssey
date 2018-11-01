@@ -65,7 +65,7 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
                     // this bookmark represents the action to create a new bookmark in the dialog
                     bookmarks.add(new BookmarkModel(-1, application.getString(R.string.create_new_bookmark), -1));
                 }
-                bookmarks.addAll(new OdysseyDatabaseManager(application).getBookmarks());
+                bookmarks.addAll(OdysseyDatabaseManager.getInstance(application).getBookmarks());
 
                 return bookmarks;
             }

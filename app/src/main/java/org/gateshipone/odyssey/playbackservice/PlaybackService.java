@@ -285,7 +285,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
         // set up the OdysseyDatabaseManager
-        mDatabaseManager = new OdysseyDatabaseManager(getApplicationContext());
+        mDatabaseManager = OdysseyDatabaseManager.getInstance(getApplicationContext());
 
         // read a possible saved playlist from the database
         mCurrentList = mDatabaseManager.readPlaylist();

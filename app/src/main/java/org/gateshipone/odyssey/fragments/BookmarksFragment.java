@@ -39,6 +39,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.models.BookmarkModel;
+import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
@@ -172,14 +173,8 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         // identify current bookmark
         BookmarkModel bookmark = mAdapter.getItem(position);
 
-        // delete state
-        try {
-            ((GenericActivity) getActivity()).getPlaybackService().deleteBookmark(bookmark.getId());
+        OdysseyDatabaseManager.getInstance(getActivity().getApplicationContext()).removeState(bookmark.getId());
 
-            refreshContent();
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        refreshContent();
     }
 }

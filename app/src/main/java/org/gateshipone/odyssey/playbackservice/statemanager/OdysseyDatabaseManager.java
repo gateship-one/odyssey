@@ -50,6 +50,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     private static final int DATABASE_VERSION = 21;
 
+    private static OdysseyDatabaseManager mInstance;
+
     /**
      * Array of returned columns from the StateTracks table
      */
@@ -61,9 +63,17 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     private String[] projectionState = {StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TRACKNUMBER, StateTable.COLUMN_TRACKPOSITION, StateTable.COLUMN_RANDOM_STATE, StateTable.COLUMN_REPEAT_STATE};
 
-    public OdysseyDatabaseManager(final Context context) {
+    private OdysseyDatabaseManager(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
+    public static synchronized OdysseyDatabaseManager getInstance(Context context) {
+        if (null == mInstance) {
+            mInstance = new OdysseyDatabaseManager(context);
+        }
+        return mInstance;
+    }
+
 
     /**
      * Called when the database is created for the first time.
