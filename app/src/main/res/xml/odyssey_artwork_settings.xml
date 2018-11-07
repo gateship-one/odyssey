@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2018 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -85,7 +84,9 @@
             android:title="@string/preference_artwork_clear_blocked_album"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_artwork_other_actions">
+    <PreferenceCategory
+        android:title="@string/preference_category_artwork_other_actions"
+        app:iconSpaceReserved="false">
         <Preference
             android:key="@string/pref_bulk_load_key"
             android:summary="@string/preference_artwork_bulk_load_summary"
