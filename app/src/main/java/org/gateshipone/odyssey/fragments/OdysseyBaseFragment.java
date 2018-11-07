@@ -125,11 +125,11 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
-     *
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
      * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
      *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     protected void onDataReady(List<T> model) {
         if (mSwipeRefreshLayout != null) {
