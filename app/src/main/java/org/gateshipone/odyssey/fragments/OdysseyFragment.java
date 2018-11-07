@@ -23,8 +23,6 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
-import androidx.annotation.NonNull;
-import androidx.loader.app.LoaderManager;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -33,7 +31,9 @@ import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
 
-abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
+import androidx.annotation.NonNull;
+
+abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> {
 
     /**
      * The reference to the possible abstract list view
@@ -87,12 +87,6 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
     void swapModel(List<T> model) {
         // Transfer the data to the adapter so that the views can use it
         mAdapter.swapModel(model);
-    }
-
-    @Override
-    void resetModel() {
-        // Clear the model data of the adapter.
-        mAdapter.swapModel(null);
     }
 
     /**

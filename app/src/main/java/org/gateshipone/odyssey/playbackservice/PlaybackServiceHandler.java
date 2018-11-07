@@ -22,12 +22,12 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.Semaphore;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
+import java.lang.ref.WeakReference;
+import java.util.concurrent.Semaphore;
 
 public class PlaybackServiceHandler extends Handler {
     private final WeakReference<PlaybackService> mService;

@@ -25,11 +25,9 @@ package org.gateshipone.odyssey.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.RemoteException;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -44,14 +42,18 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.ArtistsAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
-import org.gateshipone.odyssey.loaders.ArtistLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
+import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements AdapterView.OnItemClickListener {
     public static final String TAG = ArtistsFragment.class.getSimpleName();
@@ -115,7 +117,15 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // register for context menu
         registerForContextMenu(mListView);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<ArtistModel> getViewModel() {
+        return ViewModelProviders.of(this).get(ArtistViewModel.class);
     }
 
     @Override
@@ -149,26 +159,15 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     }
 
     /**
-     * This method creates a new loader for this fragment.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
-    public Loader<List<ArtistModel>> onCreateLoader(int id, Bundle bundle) {
-        return new ArtistLoader(getActivity());
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<ArtistModel>> loader, List<ArtistModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<ArtistModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {

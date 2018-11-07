@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import androidx.annotation.NonNull;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
@@ -32,6 +31,8 @@ import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackModel, GenericViewItemHolder> {
 

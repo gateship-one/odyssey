@@ -38,8 +38,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import org.gateshipone.odyssey.R;
@@ -51,6 +49,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class MediaScannerService extends Service {
     private static final String TAG = MediaScannerService.class.getSimpleName();

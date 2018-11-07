@@ -71,10 +71,17 @@ android {
     }
 }
 
+ext{
+    // define lifecycle library version
+    lifecycle_version = '1.1.1'
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.1.0-alpha01'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.android.volley:volley:1.1.0'
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
 }

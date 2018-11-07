@@ -24,8 +24,6 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -36,12 +34,14 @@ import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
-import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AlbumsFragment extends GenericAlbumsFragment {
 
@@ -60,7 +60,17 @@ public class AlbumsFragment extends GenericAlbumsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return super.onCreateView(inflater, container, savedInstanceState);
+        final View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
+        return rootView;
+    }
+
+    @Override
+    GenericViewModel<AlbumModel> getViewModel() {
+        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), false)).get(AlbumViewModel.class);
     }
 
     /**
@@ -77,20 +87,6 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        // all albums
-        return new AlbumLoader(getActivity(), false);
     }
 
     /**

@@ -27,8 +27,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -42,14 +40,16 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
-import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AllTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
@@ -102,7 +102,15 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<TrackModel> getViewModel() {
+        return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
     }
 
     /**
@@ -119,29 +127,6 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity());
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> data) {
-        super.onLoadFinished(loader, data);
     }
 
     /**

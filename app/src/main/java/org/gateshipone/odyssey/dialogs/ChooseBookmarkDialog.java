@@ -27,23 +27,20 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
-import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 
-public class ChooseBookmarkDialog extends DialogFragment implements LoaderManager.LoaderCallbacks<List<BookmarkModel>> {
+public class ChooseBookmarkDialog extends DialogFragment {
 
     /**
      * Listener to save the bookmark
@@ -69,39 +66,6 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
     }
 
     /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id   The id of the loader
-     * @param args Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle args) {
-        return new BookmarkLoader(getActivity(), true);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
-     */
-    @Override
-    public void onLoadFinished(Loader<List<BookmarkModel>> loader, List<BookmarkModel> data) {
-        mBookmarksAdapter.swapModel(data);
-    }
-
-    /**
-     * If a loader is reset the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(Loader<List<BookmarkModel>> loader) {
-        mBookmarksAdapter.swapModel(null);
-    }
-
-    /**
      * Create the dialog to choose to override an existing bookmark or to create a new bookmark.
      */
     @NonNull
@@ -112,25 +76,32 @@ public class ChooseBookmarkDialog extends DialogFragment implements LoaderManage
 
         mBookmarksAdapter = new BookmarksAdapter(getActivity());
 
-        builder.setTitle(R.string.dialog_choose_bookmark).setAdapter(mBookmarksAdapter, (dialog, which) -> {
+        builder
+                .setTitle(R.string.dialog_choose_bookmark)
+                .setAdapter(mBookmarksAdapter, (dialog, which) -> {
 
-            if (which == 0) {
-                // open save dialog to create a new bookmark
-                SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
-                saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
-            } else {
-                // override existing bookmark
-                BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
-                String objectTitle = bookmark.getTitle();
-                mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
-            }
-        }).setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
-            // User cancelled the dialog dont save object
-            getDialog().cancel();
-        });
+                    if (which == 0) {
+                        // open save dialog to create a new bookmark
+                        SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
+                        saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                    } else {
+                        // override existing bookmark
+                        BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
+                        String objectTitle = bookmark.getTitle();
+                        mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.BOOKMARK);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
+                    // User cancelled the dialog dont save object
+                    getDialog().cancel();
+                });
 
-        // Prepare loader ( start new one or reuse old )
-        getLoaderManager().initLoader(0, getArguments(), this);
+        // setup bookmark ViewModel
+        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true))
+                .get(BookmarkViewModel.class);
+        model.getData()
+                .observe(this, data -> mBookmarksAdapter.swapModel(data));
+        model.reloadData();
 
         // set divider
         AlertDialog dlg = builder.create();

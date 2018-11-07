@@ -464,22 +464,10 @@ public class MusicLibraryHelper {
             // sort tracks by albumkey
             if (o1.getTrackAlbumKey().equals(o2.getTrackAlbumKey())) {
                 // sort by tracknumber
-                if (o1.getTrackNumber() < o2.getTrackNumber()) {
-                    return -1;
-                } else if (o1.getTrackNumber() == o2.getTrackNumber()) {
-                    return 0;
-                } else {
-                    return 1;
-                }
+                return Integer.compare(o1.getTrackNumber(), o2.getTrackNumber());
             } else {
                 // sort tracks by date descending
-                if (o1.getDateAdded() < o2.getDateAdded()) {
-                    return 1;
-                } else if (o1.getDateAdded() == o2.getDateAdded()) {
-                    return 0;
-                } else {
-                    return -1;
-                }
+                return Integer.compare(o2.getDateAdded(), o1.getDateAdded());
             }
         });
 
@@ -576,14 +564,14 @@ public class MusicLibraryHelper {
 
                 if (values.size() > chunkSize) {
                     // insert valid tracks
-                    PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[values.size()]));
+                    PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[0]));
 
                     values.clear();
                 }
             }
 
             // insert valid tracks
-            PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[values.size()]));
+            PermissionHelper.bulkInsert(context, currentRow, values.toArray(new ContentValues[0]));
         }
     }
 
@@ -821,18 +809,26 @@ public class MusicLibraryHelper {
      * @param context The application context to access the content resolver.
      * @return The created {@link TrackModel} or null if the track couldn't be found in the mediastore.
      */
-    public static TrackModel getTrackForUri(final Uri uri, final Context context) {
+    static TrackModel getTrackForUri(final Uri uri, final Context context) {
+        final String uriPath = uri.getPath();
+        final String uriScheme = uri.getScheme();
+        final String uriLastPathSegment = uri.getLastPathSegment();
+
+        if (uriPath == null) {
+            return null;
+        }
+
         TrackModel track = null;
 
         String whereVal[] = {uri.getPath()};
 
         String where = MediaStore.Audio.Media.DATA + "=?";
 
-        if (uri.getScheme().equals("content")) {
+        if (uriScheme != null && uriScheme.equals("content")) {
             // special handling for content urls
-            final String parts[] = uri.getLastPathSegment().split(":");
+            final String parts[] = uriLastPathSegment != null ? uriLastPathSegment.split(":") : null;
 
-            if (parts.length > 1) {
+            if (parts != null && parts.length > 1) {
                 if (parts[0].equals("audio")) {
                     whereVal = new String[]{parts[1]};
                     where = MediaStore.Audio.Media._ID + "=?";
@@ -873,7 +869,7 @@ public class MusicLibraryHelper {
      * @param context  The application context to access the content resolver.
      * @return The list of {@link FileModel} of all music files.
      */
-    public static List<FileModel> getMediaFilesForPath(final String basePath, final Context context) {
+    static List<FileModel> getMediaFilesForPath(final String basePath, final Context context) {
         final List<FileModel> files = new ArrayList<>();
 
         final String whereVal[] = {basePath + "%"};

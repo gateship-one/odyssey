@@ -29,10 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.loader.content.Loader;
-import androidx.core.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +44,6 @@ import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -57,9 +52,14 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
@@ -142,7 +142,15 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<TrackModel> getViewModel() {
+        return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumKey())).get(TrackViewModel.class);
     }
 
     /**
@@ -217,19 +225,6 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         super.onPause();
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        return new TrackLoader(getActivity(), mAlbum.getAlbumKey());
     }
 
     /**

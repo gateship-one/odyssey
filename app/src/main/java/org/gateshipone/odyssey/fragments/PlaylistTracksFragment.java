@@ -27,9 +27,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
-import androidx.core.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,14 +40,19 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
-import org.gateshipone.odyssey.loaders.PlaylistTrackLoader;
-import org.gateshipone.odyssey.loaders.TrackLoader;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.PlaylistTrackViewModel;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
@@ -145,7 +147,19 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<TrackModel> getViewModel() {
+        if (mPlaylistPath == null) {
+            return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
+        } else {
+            return ViewModelProviders.of(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistPath)).get(PlaylistTrackViewModel.class);
+        }
     }
 
     /**
@@ -163,35 +177,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         super.onResume();
     }
 
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
     @Override
-    public Loader<List<TrackModel>> onCreateLoader(int id, Bundle bundle) {
-        if (mPlaylistPath == null) {
-            return new TrackLoader(getActivity().getApplicationContext(), mPlaylistID);
-        } else {
-            return new PlaylistTrackLoader(getActivity().getApplicationContext(), mPlaylistPath);
-        }
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * The FAB will be hidden if the model is empty.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
-     */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<TrackModel>> loader, List<TrackModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<TrackModel> model) {
+        super.onDataReady(model);
 
         if (mToolbarAndFABCallback != null) {
             // set up play button
@@ -394,7 +382,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         if (reloadData) {
             // reload data
-            getLoaderManager().restartLoader(0, getArguments(), this);
+            refreshContent();
         }
     }
 }

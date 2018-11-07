@@ -27,9 +27,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
-import androidx.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +45,9 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> implements AdapterView.OnItemClickListener {
 
@@ -114,14 +114,14 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsAdapter) mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter) mAdapter);
     }
 
     /**
@@ -147,14 +147,15 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     }
 
     /**
-     * Called when the loader finished loading its data.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<AlbumModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {

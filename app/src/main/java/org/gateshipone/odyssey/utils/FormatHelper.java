@@ -115,7 +115,7 @@ public class FormatHelper {
      * @return
      */
     public static Uri encodeURI(final String uri) {
-        Uri encodedUri = Uri.parse(uri);
+        Uri encodedUri = Uri.parse(Uri.encode(uri, "/"));
 
         String scheme = encodedUri.getScheme();
 

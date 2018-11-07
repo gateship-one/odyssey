@@ -31,22 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -57,6 +41,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
@@ -85,6 +75,7 @@ import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
+import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
@@ -92,6 +83,18 @@ import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
@@ -677,7 +680,7 @@ public class OdysseyMainActivity extends GenericActivity
                 sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                 sb.show();
             }
-        } catch(RemoteException e) {
+        } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -1013,10 +1016,25 @@ public class OdysseyMainActivity extends GenericActivity
      */
     private void checkUri() {
         if (mSentUri != null) {
-            try {
-                getPlaybackService().playURI(mSentUri.toString());
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            final String filePath = FileUtils.getFilePathFromUri(this, mSentUri);
+
+            if (filePath != null) {
+                try {
+                    getPlaybackService().playURI(filePath);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // show a snackbar to inform the user that the selected file could not be played
+                final View layout = findViewById(R.id.drawer_layout);
+                if (layout != null) {
+                    final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
+                    final Snackbar sb = Snackbar.make(layout, errorMsg, Snackbar.LENGTH_SHORT);
+                    // style the snackbar text
+                    final TextView sbText = sb.getView().findViewById(R.id.snackbar_text);
+                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                    sb.show();
+                }
             }
 
             mSentUri = null;

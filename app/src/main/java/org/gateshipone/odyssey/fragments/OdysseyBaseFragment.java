@@ -25,18 +25,17 @@ package org.gateshipone.odyssey.fragments;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
-abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment implements LoaderManager.LoaderCallbacks<List<T>> {
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment {
 
     /**
      * Callback to setup toolbar and fab
@@ -65,7 +64,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
     abstract void swapModel(List<T> model);
 
-    abstract void resetModel();
+    abstract GenericViewModel<T> getViewModel();
 
     @Override
     public void onAttach(Context context) {
@@ -104,7 +103,8 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         }
 
         mDataReady = false;
-        getLoaderManager().restartLoader(0, getArguments(), this);
+
+        getViewModel().reloadData();
     }
 
     /**
@@ -120,40 +120,26 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
                 mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             }
 
-            // Prepare loader ( start new one or reuse old )
-            getLoaderManager().initLoader(0, getArguments(), this);
+            getViewModel().reloadData();
         }
     }
 
     /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * If the new model is empty a special empty view will be shown if exists.
+     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
      *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
+     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
+     *
+     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
      */
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<T>> loader, List<T> model) {
+    protected void onDataReady(List<T> model) {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(false));
         }
 
         // Indicate that the data is ready now.
-        mDataReady = true;
+        mDataReady = model != null;
 
         swapModel(model);
-    }
-
-    /**
-     * If the loader is reset, the model data should be cleared.
-     *
-     * @param loader Loader that was resetted.
-     */
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<T>> loader) {
-        resetModel();
     }
 
     /**
@@ -174,7 +160,8 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         @Override
         public void onTrimMemory(int level) {
             if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
-                getLoaderManager().destroyLoader(0);
+                getViewModel().clearData();
+
                 mDataReady = false;
             }
         }

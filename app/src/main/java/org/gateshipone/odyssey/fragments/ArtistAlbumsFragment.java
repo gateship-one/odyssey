@@ -29,10 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.loader.content.Loader;
-import androidx.core.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +44,6 @@ import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.loaders.AlbumLoader;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
@@ -56,9 +51,16 @@ import org.gateshipone.odyssey.utils.RecyclerScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
+import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
@@ -160,7 +162,15 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<AlbumModel> getViewModel() {
+        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
     }
 
     @Override
@@ -210,7 +220,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter)mRecyclerAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
     }
@@ -238,14 +248,15 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     }
 
     /**
-     * Called when the loader finished loading its data.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<AlbumModel>> loader, List<AlbumModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<AlbumModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -315,19 +326,6 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<AlbumModel>> onCreateLoader(int id, Bundle bundle) {
-        return new AlbumLoader(getActivity(), mArtist.getArtistID());
     }
 
     /**

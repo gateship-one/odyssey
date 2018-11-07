@@ -22,11 +22,6 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import androidx.loader.app.LoaderManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -39,7 +34,12 @@ import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
 
-abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> implements LoaderManager.LoaderCallbacks<List<T>> {
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> {
 
     /**
      * The reference to the possible recyclerview
@@ -93,12 +93,6 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
     void swapModel(List<T> model) {
         // Transfer the data to the adapter so that the views can use it
         mRecyclerAdapter.swapModel(model);
-    }
-
-    @Override
-    void resetModel() {
-        // Clear the model data of the adapter.
-        mRecyclerAdapter.swapModel(null);
     }
 
     /**

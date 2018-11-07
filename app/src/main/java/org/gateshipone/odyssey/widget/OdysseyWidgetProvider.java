@@ -32,9 +32,9 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.RemoteViews;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
-import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
@@ -116,14 +116,14 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             mLastCover = null;
             mLastTrack = null;
             setWidgetContent(mLastInfo);
-        } else if ( intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
+        } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
             // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
             String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-            if ( mLastTrack != null && mLastTrack.getTrackAlbumKey().equals(albumKey)) {
+            if (mLastTrack != null && mLastTrack.getTrackAlbumKey().equals(albumKey)) {
                 CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
 
                 if (!mHideArtwork) {
-                    coverLoader.getImage(mLastTrack,-1,-1);
+                    coverLoader.getImage(mLastTrack, -1, -1);
                 }
                 mLastCover = null;
             }
@@ -155,7 +155,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     CoverBitmapLoader coverLoader = new CoverBitmapLoader(mContext, new CoverReceiver());
 
                     if (!mHideArtwork) {
-                        coverLoader.getImage(item,-1,-1);
+                        coverLoader.getImage(item, -1, -1);
                     }
                     mLastCover = null;
                 } else if (mLastTrack.getTrackAlbumKey().equals(item.getTrackAlbumKey()) && mLastCover != null) {

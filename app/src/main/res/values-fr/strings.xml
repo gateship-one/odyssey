@@ -75,6 +75,10 @@
     <string name="dialog_choose_playlist">Sélectionner une liste de lecture</string>
     <string name="dialog_equalizer_not_found_title">Égaliseur non-disponible</string>
     <string name="dialog_equalizer_not_found_message">Aucun égaliseur sur l\'appareil</string>
+    <string name="dialog_sleep_timer">Régler l\'arrêt programmé</string>
+    <string name="dialog_sleep_timer_action_start">Démarrer</string>
+    <string name="dialog_sleep_timer_duration_minutes">Minutes</string>
+    <string name="dialog_sleep_timer_duration_seconds">Secondes</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nouvelle liste de lecture</string>
@@ -130,6 +134,8 @@
     <string name="popup_menu_action_createbookmark">Créer un marque-page</string>
     <string name="popup_menu_action_startequalizer">Ouvrir l\'égaliseur</string>
     <string name="popup_menu_action_sharetrack">Partager la piste musicale</string>
+    <string name="pop_menu_action_start_sleep_timer">Démarrer l\'arrêt programmé</string>
+    <string name="pop_menu_action_cancel_sleep_timer">Annuler l\'arrêt programmé</string>
 
     <!-- templates : translatable="false" -->
 
@@ -285,4 +291,7 @@
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licences tierces</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_sleep_timer_confirmation_message">Arrêt programmé réglé</string>
 </resources>

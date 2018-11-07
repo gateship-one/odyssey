@@ -23,10 +23,8 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
-import android.os.RemoteException;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
+import android.os.RemoteException;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -40,11 +38,15 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
-import org.gateshipone.odyssey.loaders.PlaylistLoader;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
 
@@ -84,7 +86,15 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // register for context menu
         registerForContextMenu(mListView);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<PlaylistModel> getViewModel() {
+        return ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
     }
 
     /**
@@ -119,21 +129,16 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         }
     }
 
-    @NonNull
-    @Override
-    public Loader<List<PlaylistModel>> onCreateLoader(int arg0, Bundle bundle) {
-        return new PlaylistLoader(getActivity(), false);
-    }
-
     /**
-     * Called when the loader finished loading its data.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * @param loader The used loader itself
-     * @param data   Data of the loader
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<PlaylistModel>> loader, List<PlaylistModel> data) {
-        super.onLoadFinished(loader, data);
+    protected void onDataReady(List<PlaylistModel> model) {
+        super.onDataReady(model);
 
         // Reset old scroll position
         if (mLastPosition >= 0) {
@@ -250,7 +255,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         if (reloadData) {
             // reload data
-            getLoaderManager().restartLoader(0, getArguments(), this);
+            refreshContent();
         }
     }
 }

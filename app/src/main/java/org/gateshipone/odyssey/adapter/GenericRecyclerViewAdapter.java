@@ -22,12 +22,12 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements ScrollSpeedAdapter {
 

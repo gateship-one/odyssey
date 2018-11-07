@@ -24,10 +24,11 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+
+import androidx.preference.PreferenceFragmentCompat;
 
 
 public class InformationSettingsFragment extends PreferenceFragmentCompat {

@@ -29,12 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-import androidx.appcompat.widget.SearchView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,13 +45,21 @@ import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
-import org.gateshipone.odyssey.loaders.FileLoader;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.FileViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
 
@@ -166,8 +168,17 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             mSearchString = savedInstanceState.getString(FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING);
         }
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
     }
+
+    @Override
+    GenericViewModel<FileModel> getViewModel() {
+        return ViewModelProviders.of(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -217,30 +228,15 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     }
 
     /**
-     * This method creates a new loader for this fragment.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<FileModel>> onCreateLoader(int id, Bundle bundle) {
-        return new FileLoader(getActivity(), mCurrentDirectory);
-    }
-
-    /**
-     * Called when the loader finished loading its data.
-     * <p/>
-     * The refresh indicator will be stopped if a refreshlayout exists.
-     * The FAB will be hidden if the model is empty.
-     *
-     * @param loader The used loader itself
-     * @param model  Data of the loader
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
-    public void onLoadFinished(@NonNull Loader<List<FileModel>> loader, List<FileModel> model) {
-        super.onLoadFinished(loader, model);
+    protected void onDataReady(List<FileModel> model) {
+        super.onDataReady(model);
 
         if (mToolbarAndFABCallback != null) {
             // set up play button

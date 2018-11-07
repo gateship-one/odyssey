@@ -23,12 +23,17 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class FileUtils {
 
@@ -36,6 +41,20 @@ public class FileUtils {
      * The directory name for all artwork images and subfolders
      */
     private static final String ARTWORK_DIR = "artworks";
+
+    private static final String MEDIA_AUTHORITY = "com.android.providers.media.documents";
+
+    private static final String DOWNLOADS_AUTHORITY = "com.android.providers.downloads.documents";
+
+    private static final String EXTERNAL_STORAGE_AUTHORITY = "com.android.externalstorage.documents";
+
+    private static final String CONTENT_SCHEME = "content";
+
+    private static final String FILE_SCHEME = "file";
+
+    private static final String AUDIO_MEDIA_TYPE = "audio";
+
+    private static final String RAW_TYPE = "raw";
 
     /**
      * Create a SHA256 Hash for the given input strings.
@@ -92,9 +111,10 @@ public class FileUtils {
 
     /**
      * Generates the full absolute file path for an artwork image
-     * @param context Context used for directory resolving
+     *
+     * @param context  Context used for directory resolving
      * @param fileName Filename used as a basis
-     * @param dirName Directory suffix
+     * @param dirName  Directory suffix
      * @return Full absolute file path
      */
     public static String getFullArtworkFilePath(final Context context, final String fileName, final String dirName) {
@@ -128,5 +148,130 @@ public class FileUtils {
             }
             artworkDir.delete();
         }
+    }
+
+    /**
+     * Currently only this solutions seems to work properly we should investigate this more and change this.
+     *
+     * @param context The application context.
+     * @param uri     The given {@link Uri}.
+     * @return The extracted file path or null if the given {@link Uri} is not supported.
+     */
+    public static String getFilePathFromUri(final Context context, final Uri uri) {
+        if (DocumentsContract.isDocumentUri(context, uri)) {
+            // handle document uri
+
+            final String docId = DocumentsContract.getDocumentId(uri);
+            final String[] split = docId.split(":", 2);
+
+            if (split.length < 2) {
+                return null;
+            }
+
+            final String type = split[0];
+
+            if (isExternalStorageDocument(uri)) {
+                // handle external storage uri
+
+                final List<String> storageLocations = FileExplorerHelper.getInstance().getStorageVolumes(context);
+
+                for (final String storageLocation : storageLocations) {
+                    final String potentialFilePath = storageLocation + "/" + split[1];
+
+                    final File file = new File(potentialFilePath);
+
+                    if (file.exists()) {
+                        return potentialFilePath;
+                    }
+                }
+
+                return null;
+            } else if (isDownloadsDocument(uri)) {
+                // handle downloads uri
+
+                if (RAW_TYPE.equalsIgnoreCase(type)) {
+                    // handle raw uri
+
+                    final String potentialFilePath = split[1];
+
+                    final File file = new File(potentialFilePath);
+
+                    if (file.exists()) {
+                        return potentialFilePath;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    // TODO any other case is currently not supported
+                    return null;
+                }
+            } else if (isMediaDocument(uri)) {
+                // handle media uri
+
+                if (AUDIO_MEDIA_TYPE.equalsIgnoreCase(type)) {
+                    // extract path with audio content uri
+                    return extractPathFromUri(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, "_id=?", new String[]{split[1]});
+                } else {
+                    // we only support audio uri
+
+                    return null;
+                }
+            }
+        }
+
+        return extractPathFromUri(context, uri, null, null);
+    }
+
+    /**
+     * Method to extract a path from a given uri with optional arguments.
+     *
+     * @param context       The application context.
+     * @param uri           The given {@link Uri}.
+     * @param selection     Optional selection statement.
+     * @param selectionArgs Optional selection arguments.
+     * @return The extracted path or null if the scheme of the uri is not supported.
+     */
+    private static String extractPathFromUri(final Context context, final Uri uri, final String selection, final String[] selectionArgs) {
+        if (CONTENT_SCHEME.equalsIgnoreCase(uri.getScheme())) {
+            // handle content uri
+
+            String[] projection = {MediaStore.Audio.Media.DATA};
+
+            final Cursor cursor = PermissionHelper.query(context, uri, projection, selection, selectionArgs, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    final int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+
+                    final String filePath = cursor.getString(columnIndex);
+
+                    cursor.close();
+
+                    return filePath;
+                }
+            }
+
+            return null;
+        } else if (FILE_SCHEME.equalsIgnoreCase(uri.getScheme())) {
+            // handle file uri
+
+            return uri.getPath();
+        } else {
+            // currently we don't support any other uri scheme
+
+            return null;
+        }
+    }
+
+    private static boolean isExternalStorageDocument(Uri uri) {
+        return EXTERNAL_STORAGE_AUTHORITY.equals(uri.getAuthority());
+    }
+
+    private static boolean isDownloadsDocument(Uri uri) {
+        return DOWNLOADS_AUTHORITY.equals(uri.getAuthority());
+    }
+
+    private static boolean isMediaDocument(Uri uri) {
+        return MEDIA_AUTHORITY.equals(uri.getAuthority());
     }
 }

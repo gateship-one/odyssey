@@ -23,17 +23,18 @@
 package org.gateshipone.odyssey.dialogs;
 
 import android.app.Dialog;
-import android.os.Build;
-import androidx.fragment.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
 import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;

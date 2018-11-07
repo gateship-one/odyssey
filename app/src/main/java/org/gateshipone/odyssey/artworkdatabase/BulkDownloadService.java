@@ -37,12 +37,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class BulkDownloadService extends Service implements ArtworkManager.BulkLoadingProgressCallback {
     private static final String TAG = BulkDownloadService.class.getSimpleName();

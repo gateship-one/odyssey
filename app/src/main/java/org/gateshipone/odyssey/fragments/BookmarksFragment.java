@@ -24,8 +24,6 @@ package org.gateshipone.odyssey.fragments;
 
 import android.os.Bundle;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.loader.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -38,10 +36,13 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
-import org.gateshipone.odyssey.loaders.BookmarkLoader;
 import org.gateshipone.odyssey.models.BookmarkModel;
+import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
+import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
 
@@ -74,7 +75,15 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         registerForContextMenu(mListView);
 
+        // setup observer for the live data
+        getViewModel().getData().observe(this, this::onDataReady);
+
         return rootView;
+    }
+
+    @Override
+    GenericViewModel<BookmarkModel> getViewModel() {
+        return ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), false)).get(BookmarkViewModel.class);
     }
 
     /**
@@ -91,19 +100,6 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
-    }
-
-    /**
-     * This method creates a new loader for this fragment.
-     *
-     * @param id     The id of the loader
-     * @param bundle Optional arguments
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @NonNull
-    @Override
-    public Loader<List<BookmarkModel>> onCreateLoader(int id, Bundle bundle) {
-        return new BookmarkLoader(getActivity(), false);
     }
 
     /**
@@ -178,14 +174,8 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         // identify current bookmark
         BookmarkModel bookmark = mAdapter.getItem(position);
 
-        // delete state
-        try {
-            ((GenericActivity) getActivity()).getPlaybackService().deleteBookmark(bookmark.getId());
+        OdysseyDatabaseManager.getInstance(getActivity().getApplicationContext()).removeState(bookmark.getId());
 
-            refreshContent();
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        refreshContent();
     }
 }

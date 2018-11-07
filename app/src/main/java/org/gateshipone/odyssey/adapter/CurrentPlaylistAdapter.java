@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.os.RemoteException;
-import androidx.collection.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,6 +33,8 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
+
+import androidx.collection.LruCache;
 
 public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAdapter {
 

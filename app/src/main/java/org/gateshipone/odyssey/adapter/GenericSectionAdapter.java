@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import androidx.core.util.Pair;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 
@@ -33,6 +32,8 @@ import org.gateshipone.odyssey.utils.SectionCreator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import androidx.core.util.Pair;
 
 public abstract class GenericSectionAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
     private static final String TAG = "GenericSectionAdapter";
@@ -230,7 +231,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
             mFilterTask.cancel(true);
         }
         mFilterTask = provideFilterTask();
-        mLock.readLock().lock();
+
         mFilterTask.execute(mFilterString);
     }
 
@@ -252,8 +253,6 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
 
     private void updateAfterFiltering(final Pair<List<T>, String> result) {
         if (result.first != null && mFilterString.equals(result.second)) {
-            mLock.readLock().unlock();
-
             mLock.writeLock().lock();
 
             mFilteredModelData.clear();
@@ -266,17 +265,15 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
                 createSections();
             }
             notifyDataSetChanged();
-        } else {
-            mLock.readLock().unlock();
         }
     }
 
     private void filteringAborted() {
-        mLock.readLock().unlock();
+        // Do nothing for now (readLock gets unlocked by FilterTask)
     }
 
     private FilterTask<T> provideFilterTask() {
-        return new FilterTask<>(mModelData,
+        return new FilterTask<>(mModelData, mLock.readLock(),
                 provideFilter(),
                 this::updateAfterFiltering, this::filteringAborted);
     }

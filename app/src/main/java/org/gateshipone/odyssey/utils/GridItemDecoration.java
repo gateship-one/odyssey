@@ -23,9 +23,10 @@
 package org.gateshipone.odyssey.utils;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 /**
  * Helper class to generate spacing between griditems in a recyclerview.
