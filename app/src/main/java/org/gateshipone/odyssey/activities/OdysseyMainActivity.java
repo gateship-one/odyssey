@@ -1031,7 +1031,7 @@ public class OdysseyMainActivity extends GenericActivity
                     final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
                     final Snackbar sb = Snackbar.make(layout, errorMsg, Snackbar.LENGTH_SHORT);
                     // style the snackbar text
-                    final TextView sbText = sb.getView().findViewById(R.id.snackbar_text);
+                    final TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
