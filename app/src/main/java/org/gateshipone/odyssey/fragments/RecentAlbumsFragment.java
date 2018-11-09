@@ -105,7 +105,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -121,7 +121,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_albums_fragment, menu);
@@ -134,7 +134,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {
@@ -164,7 +164,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // TODO use own optionsmenu
         menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
@@ -187,7 +187,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_playlist_tracks:
                 enqueueAllAlbums();

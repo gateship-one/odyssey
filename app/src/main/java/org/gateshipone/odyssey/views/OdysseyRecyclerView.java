@@ -107,7 +107,7 @@ public class OdysseyRecyclerView extends RecyclerView {
         }
 
         @Override
-        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent motionEvent) {
             final View childView = view.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
             if (childView != null && mGestureDetector.onTouchEvent(motionEvent)) {
                 childView.playSoundEffect(SoundEffectConstants.CLICK);
@@ -118,7 +118,7 @@ public class OdysseyRecyclerView extends RecyclerView {
         }
 
         @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
         }
 

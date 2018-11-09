@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.utils;
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,7 +47,7 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
     }
 
     @Override
-    public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
+    public void onScrollStateChanged(@NonNull final RecyclerView recyclerView, final int newState) {
         if (newState == SCROLL_STATE_IDLE) {
             // if idle load images for all visible items
             mScrollSpeed = 0;
@@ -74,7 +75,7 @@ public class RecyclerScrollSpeedListener extends RecyclerView.OnScrollListener {
     }
 
     @Override
-    public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+    public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 
         if (dx == 0 && dy == 0) {

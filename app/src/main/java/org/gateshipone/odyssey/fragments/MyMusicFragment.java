@@ -204,7 +204,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -340,7 +340,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_my_music, menu);
 
@@ -384,7 +384,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_show_recent_albums:
                 mRecentAlbumsSelectedListener.onRecentAlbumsSelected();
@@ -409,14 +409,14 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         @NonNull
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
             OdysseyFragment fragment = (OdysseyFragment) super.instantiateItem(container, position);
             mRegisteredFragments.put(position, fragment);
             return fragment;
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             mRegisteredFragments.remove(position);
             super.destroyItem(container, position, object);
         }
@@ -426,6 +426,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             return POSITION_NONE;
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int i) {
             switch (i) {

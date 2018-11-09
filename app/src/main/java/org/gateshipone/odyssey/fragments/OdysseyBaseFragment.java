@@ -32,6 +32,7 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -67,7 +68,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
     abstract GenericViewModel<T> getViewModel();
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         if (null == mComponentCallback) {

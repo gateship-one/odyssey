@@ -28,6 +28,7 @@ import android.os.Bundle;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceFragmentCompat;
 
 
@@ -50,7 +51,7 @@ public class InformationSettingsFragment extends PreferenceFragmentCompat {
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         try {

@@ -50,7 +50,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
     private ArrayAdapter<String> mStorageVolumesAdapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented

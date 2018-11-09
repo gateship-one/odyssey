@@ -53,7 +53,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
     private SavedPlaylistsAdapter mPlaylistsListViewAdapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented

@@ -128,7 +128,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
