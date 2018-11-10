@@ -1,0 +1,6 @@
+* optional sleep timer
+* fix possible deadlock in the search function
+* updated french translation
+* fix ripple effect in the settings
+* fix crash for files containing colons in the filename
+* fix files with colons in the filename couldn't be played
