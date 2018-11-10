@@ -1,5 +1,10 @@
-### Version: X.X.XX Tag: release-XX (2018-XX-XX) ###
+### Version: 1.1.16 Tag: release-28 (2018-11-10) ###
 * optional sleep timer ([Issue #149](https://github.com/gateship-one/odyssey/issues/149))
+* fix possible deadlock in the search function
+* updated french translation
+* fix ripple effect in the settings
+* fix crash for files containing colons in the filename ([Issue #167](https://github.com/gateship-one/odyssey/issues/167))
+* fix files with colons in the filename couldn't be played
 
 ### Version: 1.1.15 Tag: release-27 (2018-07-04) ###
 * improved scrolling behaviour for AlbumTracks and ArtistAlbums
