@@ -294,4 +294,5 @@
 
     <!-- Snackbar -->
     <string name="snackbar_sleep_timer_confirmation_message">Arrêt programmé réglé</string>
+    <string name="snackbar_uri_not_supported_message">Le chemin sélectionné %1$s n\'est pas pris en charge</string>
 </resources>
