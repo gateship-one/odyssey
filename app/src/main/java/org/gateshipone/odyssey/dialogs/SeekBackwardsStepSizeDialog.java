@@ -1,28 +1,29 @@
 /*
- *  Copyright (C) 2018 Team Gateship-One
- *  (Hendrik Borghorst & Frederik Luetkes)
+ * Copyright (C) 2019 Team Team Gateship-One
+ * (Hendrik Borghorst & Frederik Luetkes)
  *
- *  The AUTHORS.md file contains a detailed contributors list:
- *  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
+ * The AUTHORS.md file contains a detailed contributors list:
+ * <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
-package org.gateshipone.odyssey.views;
+package org.gateshipone.odyssey.dialogs;
 
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -30,35 +31,40 @@ import android.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
 public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
+
     private SeekBar mSeekBar;
 
     private TextView mDialogLabel;
 
     private int mStepSize;
 
-    PlaybackServiceConnection mPBSConnection;
+    private PlaybackServiceConnection mPBSConnection;
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.resume_step_size_dialog, container, false);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        // Use the Builder class for convenient dialog construction
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        mSeekBar = rootView.findViewById(R.id.volume_seekbar);
-        mDialogLabel = rootView.findViewById(R.id.dialog_text);
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View seekView = inflater.inflate(R.layout.resume_step_size_dialog, null);
+
+        mSeekBar = seekView.findViewById(R.id.volume_seekbar);
+        mDialogLabel = seekView.findViewById(R.id.dialog_text);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -67,26 +73,28 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
         mSeekBar.setProgress(mStepSize);
         mSeekBar.setOnSeekBarChangeListener(this);
 
-        rootView.findViewById(R.id.button_ok).setOnClickListener(v -> {
+        updateLabels();
+
+        builder.setView(seekView);
+
+        builder.setPositiveButton(R.string.error_dialog_ok_action, ((dialog, which) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(getString(R.string.pref_seek_backwards_key), mStepSize);
             editor.apply();
+
             try {
                 mPBSConnection.getPBS().changeAutoBackwardsSeekAmount(mStepSize);
-            } catch (RemoteException e) {
-
+            } catch (RemoteException ignored) {
             }
+
             dismiss();
-        });
-
-        rootView.findViewById(R.id.button_cancel).setOnClickListener(v -> dismiss());
-
-        updateLabels();
+        }));
+        builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> dismiss());
 
         mPBSConnection = new PlaybackServiceConnection(getContext());
         mPBSConnection.openConnection();
 
-        return rootView;
+        return builder.create();
     }
 
     @Override

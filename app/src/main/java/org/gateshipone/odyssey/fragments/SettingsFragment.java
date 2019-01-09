@@ -40,7 +40,7 @@ import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.views.SeekBackwardsStepSizeDialog;
+import org.gateshipone.odyssey.dialogs.SeekBackwardsStepSizeDialog;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

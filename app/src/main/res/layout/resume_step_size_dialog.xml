@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Team Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -22,17 +21,19 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="@dimen/material_standard_horizontal_spacing"
-    >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/dialog_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
-        android:textSize="@dimen/material_font_style_size_title" />
+        tools:text="@string/preference_resume_step_size_dialog_title"
+        android:textSize="@dimen/material_font_style_size_subheading" />
 
     <SeekBar
         android:id="@+id/volume_seekbar"
@@ -41,31 +42,4 @@
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
         android:max="60" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_ok"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/error_dialog_ok_action"
-            android:textAlignment="center"
-            android:textColor="?attr/colorAccent"
-            style="?attr/borderlessButtonStyle" />
-
-        <Button
-            android:id="@+id/button_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/dialog_action_cancel"
-            android:textAlignment="center"
-            android:textColor="?attr/colorAccent"
-            style="?attr/borderlessButtonStyle"/>
-    </LinearLayout>
 </LinearLayout>
