@@ -40,6 +40,7 @@ import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.views.SeekBackwardsStepSizeDialog;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,6 +110,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
             sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
             sharedPrefEditor.apply();
+            return true;
+        });
+
+        Preference backwardsSeek = findPreference(getString(R.string.pref_seek_backwards_key));
+        backwardsSeek.setOnPreferenceClickListener(preference -> {
+            SeekBackwardsStepSizeDialog dialog = new SeekBackwardsStepSizeDialog();
+            dialog.show(getFragmentManager(), "Volume steps");
             return true;
         });
 

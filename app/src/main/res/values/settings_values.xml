@@ -96,6 +96,9 @@
     <string name="pref_open_equalizer_key" translatable="false">pref_open_equalizer</string>
     <string name="pref_view_library_key" translatable="false">pref_view_library_key</string>
 
+    <string name="pref_seek_backwards_key" translatable="false">pref_backward_seek</string>
+    <integer name="pref_seek_backwards_default" translatable="false">0</integer>
+
     <string name="pref_show_npv_hint" translatable="false">pref_show_npv_hint</string>
 
     <string name="pref_last_used_sleep_timer_key" translatable="false">pref_last_used_sleep_timer_key</string>
