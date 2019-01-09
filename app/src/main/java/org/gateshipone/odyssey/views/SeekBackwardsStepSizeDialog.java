@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.views;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import android.widget.TextView;
 
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -46,6 +49,8 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
     private TextView mDialogLabel;
 
     private int mStepSize;
+
+    PlaybackServiceConnection mPBSConnection;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,12 +71,20 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(getString(R.string.pref_seek_backwards_key), mStepSize);
             editor.apply();
+            try {
+                mPBSConnection.getPBS().changeAutoBackwardsSeekAmount(mStepSize);
+            } catch (RemoteException e) {
+
+            }
             dismiss();
         });
 
         rootView.findViewById(R.id.button_cancel).setOnClickListener(v -> dismiss());
 
         updateLabels();
+
+        mPBSConnection = new PlaybackServiceConnection(getContext());
+        mPBSConnection.openConnection();
 
         return rootView;
     }
