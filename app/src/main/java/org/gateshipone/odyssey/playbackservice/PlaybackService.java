@@ -245,7 +245,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private boolean mActiveSleepTimer;
 
     /**
-     * Amount in seconds to automatically seek backwards on resume
+     * Amount in milliseconds to automatically seek backwards on resume
      */
     private int mAutoBackwardsAmount;
 
