@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.v4.util.Pair;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 
@@ -33,6 +32,8 @@ import org.gateshipone.odyssey.utils.SectionCreator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import androidx.core.util.Pair;
 
 public abstract class GenericSectionAdapter<T extends GenericModel> extends BaseAdapter implements SectionIndexer, ScrollSpeedAdapter {
     private static final String TAG = "GenericSectionAdapter";

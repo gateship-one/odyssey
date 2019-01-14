@@ -24,10 +24,7 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
@@ -35,6 +32,10 @@ import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManag
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
 

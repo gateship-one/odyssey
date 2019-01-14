@@ -20,8 +20,11 @@
   ~
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/preference_category_artwork_settings">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/preference_category_artwork_settings"
+        app:iconSpaceReserved="false">
         <ListPreference
             android:defaultValue="@string/pref_artwork_provider_album_default"
             android:dialogTitle="@string/preference_artwork_album_provider_title"
@@ -30,7 +33,8 @@
             android:key="@string/pref_album_provider_key"
             android:persistent="true"
             android:summary="@string/preference_artwork_album_provider_summary"
-            android:title="@string/preference_artwork_album_provider_title" />
+            android:title="@string/preference_artwork_album_provider_title"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_artwork_provider_artist_default"
             android:dialogTitle="@string/preference_artwork_artist_provider_title"
@@ -39,42 +43,54 @@
             android:key="@string/pref_artist_provider_key"
             android:persistent="true"
             android:summary="@string/preference_artwork_artist_provider_summary"
-            android:title="@string/preference_artwork_artist_provider_title" />
+            android:title="@string/preference_artwork_artist_provider_title"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_download_wifi_default"
             android:key="@string/pref_download_wifi_only_key"
             android:persistent="true"
             android:summary="@string/preference_artwork_wifi_only_text"
-            android:title="@string/preference_artwork_wifi_only_title" />
+            android:title="@string/preference_artwork_wifi_only_title"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_hide_artwork_default"
             android:key="@string/pref_hide_artwork_key"
             android:persistent="true"
             android:summary="@string/preference_artwork_hide_artwork_text"
-            android:title="@string/preference_artwork_hide_artwork_title" />
+            android:title="@string/preference_artwork_hide_artwork_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_artwork_database_cleanup">
+    <PreferenceCategory
+        android:title="@string/preference_category_artwork_database_cleanup"
+        app:iconSpaceReserved="false">
         <Preference
             android:key="@string/pref_clear_artist_key"
             android:summary="@string/preference_artwork_clear_artist_summary"
-            android:title="@string/preference_artwork_clear_artist" />
+            android:title="@string/preference_artwork_clear_artist"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_clear_album_key"
             android:summary="@string/preference_artwork_clear_album_summary"
-            android:title="@string/preference_artwork_clear_album" />
+            android:title="@string/preference_artwork_clear_album"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_clear_blocked_artist_key"
             android:summary="@string/preference_artwork_clear_blocked_artist_summary"
-            android:title="@string/preference_artwork_clear_blocked_artist" />
+            android:title="@string/preference_artwork_clear_blocked_artist"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_clear_blocked_album_key"
             android:summary="@string/preference_artwork_clear_blocked_album_summary"
-            android:title="@string/preference_artwork_clear_blocked_album" />
+            android:title="@string/preference_artwork_clear_blocked_album"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_artwork_other_actions">
+    <PreferenceCategory
+        android:title="@string/preference_category_artwork_other_actions"
+        app:iconSpaceReserved="false">
         <Preference
             android:key="@string/pref_bulk_load_key"
             android:summary="@string/preference_artwork_bulk_load_summary"
-            android:title="@string/preference_artwork_bulk_load" />
+            android:title="@string/preference_artwork_bulk_load"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>

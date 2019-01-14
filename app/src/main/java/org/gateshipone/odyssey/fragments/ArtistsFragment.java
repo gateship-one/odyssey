@@ -22,15 +22,12 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -54,6 +51,9 @@ import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements AdapterView.OnItemClickListener {
     public static final String TAG = ArtistsFragment.class.getSimpleName();
@@ -79,7 +79,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // Inflate the layout for this fragment
         View rootView;
 
-        SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
         String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
@@ -146,7 +146,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -159,11 +159,11 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
     protected void onDataReady(List<ArtistModel> model) {
@@ -212,7 +212,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_artists_fragment, menu);
@@ -225,7 +225,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {

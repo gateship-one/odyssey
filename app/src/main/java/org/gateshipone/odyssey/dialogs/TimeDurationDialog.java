@@ -22,18 +22,19 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 public class TimeDurationDialog extends DialogFragment {
 
@@ -55,7 +56,7 @@ public class TimeDurationDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented

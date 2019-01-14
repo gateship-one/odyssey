@@ -22,12 +22,9 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.widget.ArrayAdapter;
 
 import org.gateshipone.odyssey.R;
@@ -35,6 +32,10 @@ import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 public class ChooseStorageVolumeDialog extends DialogFragment {
 
@@ -49,7 +50,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
     private ArrayAdapter<String> mStorageVolumesAdapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented

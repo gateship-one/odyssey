@@ -26,13 +26,14 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class ArtistViewModel extends GenericViewModel<ArtistModel> {
 
@@ -49,7 +50,7 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
             protected List<ArtistModel> doInBackground(Void... voids) {
                 final Application application = getApplication();
 
-                SharedPreferences sharedPref = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(application);
+                SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(application);
                 boolean showAlbumArtistsOnly = sharedPref.getBoolean(application.getString(R.string.pref_album_artists_only_key), application.getResources().getBoolean(R.bool.pref_album_artists_only_default));
 
                 return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, application);

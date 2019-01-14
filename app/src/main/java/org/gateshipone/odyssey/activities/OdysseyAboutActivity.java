@@ -49,7 +49,8 @@ public class OdysseyAboutActivity extends GenericActivity {
             startActivity(myIntent);
         });
 
-        findViewById(R.id.odyssey_thirdparty_licenses).setOnClickListener(view -> LicensesDialog.newInstance().show(getFragmentManager(), "LicensesDialog"));
+        findViewById(R.id.odyssey_thirdparty_licenses)
+                .setOnClickListener(view -> LicensesDialog.newInstance().show(getSupportFragmentManager(), "LicensesDialog"));
 
         findViewById(R.id.logo_musicbrainz).setOnClickListener(view -> {
             Intent urlIntent = new Intent(Intent.ACTION_VIEW);

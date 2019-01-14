@@ -23,14 +23,15 @@
 package org.gateshipone.odyssey.viewmodels;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
 
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public abstract class GenericViewModel<T extends GenericModel> extends AndroidViewModel {
 

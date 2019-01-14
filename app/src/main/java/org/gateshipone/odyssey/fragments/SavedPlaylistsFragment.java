@@ -22,12 +22,9 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -47,6 +44,9 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
 
@@ -101,7 +101,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -130,11 +130,11 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
     protected void onDataReady(List<PlaylistModel> model) {
@@ -170,7 +170,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_saved_playlists_fragment, menu);
@@ -183,7 +183,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {

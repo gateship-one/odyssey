@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.views;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +37,8 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
+
+import androidx.annotation.Nullable;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener {
 

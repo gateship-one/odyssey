@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +36,8 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+
+import androidx.core.graphics.drawable.DrawableCompat;
 
 /**
  * Class that can be used for all list type items (albumtracks, playlist tracks, playlists, directories, etc)

@@ -23,15 +23,16 @@
 package org.gateshipone.odyssey.views;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Subclass of the standard recyclerview that adds a convenience method for a item clicklistener
@@ -106,7 +107,7 @@ public class OdysseyRecyclerView extends RecyclerView {
         }
 
         @Override
-        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent motionEvent) {
             final View childView = view.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
             if (childView != null && mGestureDetector.onTouchEvent(motionEvent)) {
                 childView.playSoundEffect(SoundEffectConstants.CLICK);
@@ -117,7 +118,7 @@ public class OdysseyRecyclerView extends RecyclerView {
         }
 
         @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
         }
 

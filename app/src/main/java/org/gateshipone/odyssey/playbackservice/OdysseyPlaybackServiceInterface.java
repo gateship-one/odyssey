@@ -105,7 +105,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
-}
+    }
 
     @Override
     public void cancelSleepTimer() {

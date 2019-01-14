@@ -22,10 +22,8 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -42,6 +40,9 @@ import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
 
@@ -113,7 +114,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_bookmarks_fragment, menu);
@@ -126,7 +127,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {

@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,12 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.SearchView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +53,13 @@ import org.gateshipone.odyssey.viewmodels.FileViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
 
@@ -192,7 +192,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -228,11 +228,11 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
     protected void onDataReady(List<FileModel> model) {
@@ -286,7 +286,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
 
@@ -312,7 +312,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {
@@ -348,7 +348,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_files_fragment, menu);
 
@@ -385,7 +385,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_directory:
                 enqueueCurrentFolderAndSubFolders();

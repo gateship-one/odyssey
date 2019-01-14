@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2018 Team Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -20,15 +21,20 @@
   ~
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:title="@string/preference_launch_faq"
-        android:summary="@string/preference_launch_faq_text">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        android:summary="@string/preference_launch_faq_text"
+        android:title="@string/preference_launch_faq"
+        app:iconSpaceReserved="false">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="@string/url_faq"/>
+            android:data="@string/url_faq" />
     </Preference>
-    <Preference android:title="@string/preference_launch_about"
-        android:summary="@string/preference_launch_about_text">
+    <Preference
+        android:summary="@string/preference_launch_about_text"
+        android:title="@string/preference_launch_about"
+        app:iconSpaceReserved="false">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="org.gateshipone.odyssey.activities.OdysseyAboutActivity"

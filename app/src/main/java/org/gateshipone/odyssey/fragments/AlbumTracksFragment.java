@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -30,9 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +55,11 @@ import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
@@ -156,7 +157,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -251,7 +252,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_album_tracks_fragment, menu);
@@ -264,7 +265,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         OdysseyRecyclerView.RecyclerViewContextMenuInfo info =
                 (OdysseyRecyclerView.RecyclerViewContextMenuInfo) item.getMenuInfo();
 
@@ -298,7 +299,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_album_tracks_fragment, menu);
 
@@ -320,7 +321,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset_artwork:
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);

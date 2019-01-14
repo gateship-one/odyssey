@@ -22,15 +22,10 @@
 
 package org.gateshipone.odyssey.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
@@ -38,6 +33,12 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 
 public class ChooseBookmarkDialog extends DialogFragment {
 
@@ -52,7 +53,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
     private BookmarksAdapter mBookmarksAdapter;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented

@@ -29,10 +29,6 @@ import android.content.SharedPreferences;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +40,12 @@ import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -104,7 +106,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // add listener to clear the default directory
         Preference clearDefaultDirectory = findPreference(getString(R.string.pref_clear_default_directory_key));
         clearDefaultDirectory.setOnPreferenceClickListener(preference -> {
-            SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
             sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
             sharedPrefEditor.apply();
             return true;
@@ -116,7 +118,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -174,7 +176,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         // we have to set the background color at this point otherwise we loose the ripple effect
         view.setBackgroundColor(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_background));

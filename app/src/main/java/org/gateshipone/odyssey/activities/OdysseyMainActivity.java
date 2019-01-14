@@ -31,22 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -57,6 +41,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
@@ -93,6 +83,18 @@ import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
@@ -185,7 +187,7 @@ public class OdysseyMainActivity extends GenericActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // enable back navigation
-        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -674,7 +676,7 @@ public class OdysseyMainActivity extends GenericActivity
             if (layout != null) {
                 Snackbar sb = Snackbar.make(layout, R.string.snackbar_sleep_timer_confirmation_message, Snackbar.LENGTH_SHORT);
                 // style the snackbar text
-                TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                 sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                 sb.show();
             }
@@ -791,7 +793,7 @@ public class OdysseyMainActivity extends GenericActivity
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE));
                     // style the snackbar text
-                    TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
@@ -1029,7 +1031,7 @@ public class OdysseyMainActivity extends GenericActivity
                     final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
                     final Snackbar sb = Snackbar.make(layout, errorMsg, Snackbar.LENGTH_SHORT);
                     // style the snackbar text
-                    final TextView sbText = sb.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    final TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }

@@ -24,15 +24,16 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class TrackViewModel extends GenericViewModel<TrackModel> {
 

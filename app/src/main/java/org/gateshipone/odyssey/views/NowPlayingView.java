@@ -38,12 +38,6 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ViewDragHelper;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.TooltipCompat;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,6 +72,13 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.customview.widget.ViewDragHelper;
 
 public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
         ArtworkManager.onNewArtistImageListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -1466,7 +1467,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private void showHint() {
         mShowNPVHint = false;
 
-        SharedPreferences.Editor sharedPrefEditor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+        SharedPreferences.Editor sharedPrefEditor = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
         sharedPrefEditor.putBoolean(getContext().getString(R.string.pref_show_npv_hint), false);
         sharedPrefEditor.apply();
 

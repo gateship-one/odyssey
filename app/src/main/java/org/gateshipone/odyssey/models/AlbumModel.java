@@ -25,6 +25,8 @@ package org.gateshipone.odyssey.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 public class AlbumModel implements GenericModel, Parcelable {
 
     /**
@@ -171,6 +173,7 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * Return the AlbumModel as a String for debugging purposes.
      */
+    @NonNull
     @Override
     public String toString() {
         return "Album: " + getAlbumName() + " from: " + getArtistName();
@@ -178,10 +181,10 @@ public class AlbumModel implements GenericModel, Parcelable {
 
     @Override
     public boolean equals(Object album) {
-        if ( null == album) {
+        if (null == album) {
             return false;
         }
-        if ( album instanceof AlbumModel) {
+        if (album instanceof AlbumModel) {
             return mAlbumID == ((AlbumModel) album).mAlbumID && mAlbumName.equals(((AlbumModel) album).mAlbumName)
                     && mArtistName.equals(((AlbumModel) album).mArtistName);
         } else {

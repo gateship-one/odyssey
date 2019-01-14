@@ -24,10 +24,12 @@ package org.gateshipone.odyssey.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceFragmentCompat;
 
 
 public class InformationSettingsFragment extends PreferenceFragmentCompat {
@@ -49,7 +51,7 @@ public class InformationSettingsFragment extends PreferenceFragmentCompat {
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         try {
