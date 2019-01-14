@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
+import android.os.RemoteException;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -97,6 +98,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void hideMediaOnLockscreenChanged(boolean enabled) {
         mService.get().hideMediaOnLockscreen(enabled);
+    }
+
+    @Override
+    public void changeAutoBackwardsSeekAmount(int amount) {
+        mService.get().setAutoBackwardsSeekAmount(amount);
     }
 
     @Override
