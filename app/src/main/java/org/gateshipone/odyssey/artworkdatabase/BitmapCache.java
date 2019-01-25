@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -23,13 +23,15 @@
 package org.gateshipone.odyssey.artworkdatabase;
 
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.collection.LruCache;
 
 /**
  * Simple LRU-based caching for album & artist images. This could reduce CPU usage
@@ -68,7 +70,7 @@ public class BitmapCache {
     private BitmapCache() {
         mCache = new LruCache<String, Bitmap>(mCacheSize) {
             @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
+            protected int sizeOf(@NonNull String key, @NonNull Bitmap bitmap) {
                 // The cache size will be measured in kilobytes rather than
                 // number of items.
                 return bitmap.getByteCount() / 1024;

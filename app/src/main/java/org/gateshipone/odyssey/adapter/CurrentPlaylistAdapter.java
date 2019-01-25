@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.support.v4.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,6 +33,8 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
+
+import androidx.collection.LruCache;
 
 public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAdapter {
 

@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2018 Team Gateship-One
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2019 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~ The AUTHORS.md file contains a detailed contributors list:
@@ -20,8 +21,11 @@
   ~
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/preference_category_design">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/preference_category_design"
+        app:iconSpaceReserved="false">
         <ListPreference
             android:defaultValue="@string/pref_theme_default"
             android:dialogTitle="@string/preference_theme_title"
@@ -30,29 +34,36 @@
             android:key="@string/pref_theme_key"
             android:persistent="true"
             android:summary="@string/preference_theme_summary"
-            android:title="@string/preference_theme_title" />
+            android:title="@string/preference_theme_title"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_theme_dark_default"
             android:key="@string/pref_dark_theme_key"
             android:summary="@string/preference_dark_theme_message"
-            android:title="@string/preference_dark_theme_title" />
+            android:title="@string/preference_dark_theme_title"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_show_npv_artist_image_default"
             android:key="@string/pref_show_npv_artist_image_key"
             android:summary="@string/preference_show_artist_image_text"
-            android:title="@string/preference_show_artist_image_title" />
+            android:title="@string/preference_show_artist_image_title"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_npv_show_playlist_default"
             android:key="@string/pref_npv_show_playlist_key"
             android:summary="@string/preference_npv_show_playlist_text"
-            android:title="@string/preference_npv_show_playlist_title" />
+            android:title="@string/preference_npv_show_playlist_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_library">
+    <PreferenceCategory
+        android:title="@string/preference_category_library"
+        app:iconSpaceReserved="false">
         <CheckBoxPreference
             android:defaultValue="@bool/pref_album_artists_only_default"
             android:key="@string/pref_album_artists_only_key"
             android:summary="@string/preference_show_album_artists_only_summary"
-            android:title="@string/preference_show_album_artists_only_title" />
+            android:title="@string/preference_show_album_artists_only_title"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_artist_albums_sort_default"
             android:dialogTitle="@string/preference_album_sort_order_message"
@@ -61,7 +72,8 @@
             android:key="@string/pref_album_sort_order_key"
             android:persistent="true"
             android:summary="@string/preference_album_sort_order_summary"
-            android:title="@string/preference_album_sort_order_title" />
+            android:title="@string/preference_album_sort_order_title"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_view_default"
             android:dialogTitle="@string/preference_default_view_message"
@@ -70,7 +82,8 @@
             android:key="@string/pref_start_view_key"
             android:persistent="true"
             android:summary="@string/preference_default_view_summary"
-            android:title="@string/preference_default_view_title" />
+            android:title="@string/preference_default_view_title"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_library_view_default"
             android:dialogTitle="@string/preference_library_view_message"
@@ -79,7 +92,8 @@
             android:key="@string/pref_view_library_key"
             android:persistent="true"
             android:summary="@string/preference_library_view_summary"
-            android:title="@string/preference_library_view_title" />
+            android:title="@string/preference_library_view_title"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_library_click_action_default"
             android:dialogTitle="@string/preference_library_click_action_title"
@@ -88,28 +102,41 @@
             android:key="@string/pref_library_click_action_key"
             android:persistent="true"
             android:summary="@string/preference_library_click_action_message"
-            android:title="@string/preference_library_click_action_summary" />
+            android:title="@string/preference_library_click_action_summary"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="@string/pref_seek_backwards_key"
+            android:summary="@string/preference_resume_step_size_text"
+            android:title="@string/preference_resume_step_size_title"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_clear_default_directory_key"
             android:summary="@string/preference_clear_default_directory_summary"
-            android:title="@string/preference_clear_default_directory_title" />
+            android:title="@string/preference_clear_default_directory_title"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_artwork_settings_key"
-            android:title="@string/artwork_settings" />
+            android:title="@string/artwork_settings"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_other">
+    <PreferenceCategory
+        android:title="@string/preference_category_other"
+        app:iconSpaceReserved="false">
         <CheckBoxPreference
             android:defaultValue="@bool/pref_use_english_wikipedia_default"
             android:key="@string/pref_use_english_wikipedia_key"
             android:summary="@string/preference_use_english_wikipedia_text"
-            android:title="@string/preference_use_english_wikipedia_title" />
+            android:title="@string/preference_use_english_wikipedia_title"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/pref_open_equalizer_key"
-            android:title="@string/popup_menu_action_startequalizer" />
+            android:title="@string/popup_menu_action_startequalizer"
+            app:iconSpaceReserved="false" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_hide_media_on_lockscreen_default"
             android:key="@string/pref_hide_media_on_lockscreen_key"
             android:summary="@string/preference_hide_media_on_lockscreen_text"
-            android:title="@string/preference_hide_media_on_lockscreen_title" />
+            android:title="@string/preference_hide_media_on_lockscreen_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>

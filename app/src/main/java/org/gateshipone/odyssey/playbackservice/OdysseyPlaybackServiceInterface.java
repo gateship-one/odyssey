@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
+import android.os.RemoteException;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -100,12 +101,17 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void changeAutoBackwardsSeekAmount(int amount) {
+        mService.get().setAutoBackwardsSeekAmount(amount);
+    }
+
+    @Override
     public void startSleepTimer(long durationMS) {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_START_SLEEPTIMER, durationMS);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
-}
+    }
 
     @Override
     public void cancelSleepTimer() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -30,6 +30,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
@@ -38,9 +39,11 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -242,6 +245,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private boolean mActiveSleepTimer;
 
     /**
+     * Amount in milliseconds to automatically seek backwards on resume
+     */
+    private int mAutoBackwardsAmount;
+
+    /**
      * Called when the PlaybackService is bound by an activity.
      *
      * @param intent Intent used for binding.
@@ -353,6 +361,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mMetaDataLoader = new MetaDataLoader(this);
 
         mActiveSleepTimer = false;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mAutoBackwardsAmount = (sharedPreferences.getInt(this.getString(R.string.pref_seek_backwards_key), this.getResources().getInteger(R.integer.pref_seek_backwards_default)) * 1000);
     }
 
     /**
@@ -532,7 +544,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Check if mediaplayer needs preparing because we are resuming an state from the database or stopped state
         if (!mPlayer.isPrepared() && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
-            jumpToIndex(mCurrentPlayingIndex, mLastPosition);
+            jumpToIndex(mCurrentPlayingIndex, mLastPosition > mAutoBackwardsAmount ? mLastPosition - mAutoBackwardsAmount : 0);
             return;
         }
 
@@ -567,6 +579,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // Notify the helper class to start a media session
             mPlaybackServiceStatusHelper.startMediaSession();
+
+            // Seek back set auto backwards seek amount
+            if (mAutoBackwardsAmount > 0) {
+                int position = mPlayer.getPosition();
+                mPlayer.seekTo(position > mAutoBackwardsAmount ? position - mAutoBackwardsAmount : 0);
+            }
 
             // This will instruct the GaplessPlayer to actually start playing
             mPlayer.resume();
@@ -1788,6 +1806,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     public int getAudioSessionID() {
         return mPlayer.getAudioSessionID();
+    }
+
+    public void setAutoBackwardsSeekAmount(int amount) {
+        mAutoBackwardsAmount = amount * 1000;
     }
 
     /**

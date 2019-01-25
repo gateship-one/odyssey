@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,14 +22,11 @@
 
 package org.gateshipone.odyssey.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +49,10 @@ import org.gateshipone.odyssey.viewmodels.PlaylistTrackViewModel;
 import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
@@ -215,7 +216,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * Create the context menu.
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
@@ -233,7 +234,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (info == null) {
@@ -266,7 +267,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param menuInflater The inflater to instantiate the layout.
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
 
@@ -288,7 +289,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @return True if the hook was consumed here.
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_playlist_tracks:
                 enqueuePlaylist();

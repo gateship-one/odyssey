@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -31,6 +30,8 @@ import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> {
 

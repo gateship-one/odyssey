@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -24,10 +24,7 @@ package org.gateshipone.odyssey.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -35,6 +32,10 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
 

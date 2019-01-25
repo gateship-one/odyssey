@@ -1,6 +1,5 @@
 <!--
-
-  ~ Copyright (C) 2018 Team Gateship-One
+  ~ Copyright (C) 2019 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~ The AUTHORS.md file contains a detailed contributors list:
@@ -320,4 +319,9 @@
     <!-- Snackbar -->
     <string name="snackbar_sleep_timer_confirmation_message">Sleep timer set</string>
     <string name="snackbar_uri_not_supported_message">The selected path %1$s is not supported.</string>
+
+    <string name="preference_resume_step_size_title">Resume rewind step amount</string>
+    <string name="preference_resume_step_size_text">Number of seconds the playback is rewind after resume.</string>
+
+    <string name="preference_resume_step_size_dialog_title">Step size: %d seconds</string>
 </resources>

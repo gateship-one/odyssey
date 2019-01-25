@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
 import org.gateshipone.odyssey.R;
@@ -39,6 +38,8 @@ import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
+
+import androidx.core.app.NotificationCompat;
 
 /*
  * This class manages all the notifications from the main playback service.
@@ -138,7 +139,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.addAction(prevAction);
             mNotificationBuilder.addAction(playPauseAction);
             mNotificationBuilder.addAction(nextAction);
-            android.support.v4.media.app.NotificationCompat.MediaStyle notificationStyle = new android.support.v4.media.app.NotificationCompat.MediaStyle();
+            androidx.media.app.NotificationCompat.MediaStyle notificationStyle = new androidx.media.app.NotificationCompat.MediaStyle();
             notificationStyle.setShowActionsInCompactView(1, 2);
             notificationStyle.setMediaSession(mediaSessionToken);
             mNotificationBuilder.setStyle(notificationStyle);
@@ -223,11 +224,11 @@ public class OdysseyNotificationManager {
     }
 
     /*
-    * Set the visibility (PRIVATE, PUBLIC) of the notification to allow hiding sensitive content.
-    * Updates the notification immediately.
-    * @param enable True to set visibility to PRIVATE, false for PUBLIC
-    * 
-    */
+     * Set the visibility (PRIVATE, PUBLIC) of the notification to allow hiding sensitive content.
+     * Updates the notification immediately.
+     * @param enable True to set visibility to PRIVATE, false for PUBLIC
+     *
+     */
     public void hideMediaOnLockscreen(boolean enable) {
         mHideMediaOnLockscreen = enable;
         if (mNotification != null) {
@@ -251,7 +252,7 @@ public class OdysseyNotificationManager {
             channel.setVibrationPattern(null);
 
             // Allow lockscreen playback control
-            channel.setLockscreenVisibility(android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC);
+            channel.setLockscreenVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC);
 
             // Register the channel
             mNotificationManager.createNotificationChannel(channel);

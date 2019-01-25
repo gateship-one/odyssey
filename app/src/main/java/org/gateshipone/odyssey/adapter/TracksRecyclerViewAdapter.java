@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
@@ -32,6 +31,8 @@ import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackModel, GenericViewItemHolder> {
 

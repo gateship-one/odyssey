@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -39,14 +39,14 @@ android {
             }
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 28
         versionName "1.1.16"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -71,19 +71,14 @@ android {
     }
 }
 
-ext{
-    // define support library version
-    supportLibraryVersion = '27.1.1'
-    // define lifecycle library version
-    lifecycle_version = '1.1.1'
-}
-
 dependencies {
-    implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
-    implementation "com.android.support:support-v4:${supportLibraryVersion}"
-    implementation "com.android.support:design:${supportLibraryVersion}"
-    implementation "com.android.support:preference-v14:${supportLibraryVersion}"
-    implementation 'com.android.volley:volley:1.1.0'
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.preference:preference:1.1.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
+
+    implementation 'com.google.android.material:material:1.0.0'
+
+    implementation 'com.android.volley:volley:1.1.1'
 }

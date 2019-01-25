@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -27,9 +27,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +45,9 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> implements AdapterView.OnItemClickListener {
 
@@ -114,21 +114,21 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsAdapter) mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter)mAdapter);
+        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsAdapter) mAdapter);
     }
 
     /**
      * Called when the fragment is first attached to its context.
      */
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // This makes sure that the container activity has implemented
@@ -147,11 +147,11 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
+     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
      *
-     * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     @Override
     protected void onDataReady(List<AlbumModel> model) {

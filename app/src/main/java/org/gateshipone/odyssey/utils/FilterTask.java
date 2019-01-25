@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.utils;
 
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
 
 import org.gateshipone.odyssey.models.GenericModel;
 
@@ -31,6 +30,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import androidx.core.util.Pair;
 
 public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, Pair<List<T>, String>> {
 

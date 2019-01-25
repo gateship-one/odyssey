@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -49,7 +49,8 @@ public class OdysseyAboutActivity extends GenericActivity {
             startActivity(myIntent);
         });
 
-        findViewById(R.id.odyssey_thirdparty_licenses).setOnClickListener(view -> LicensesDialog.newInstance().show(getFragmentManager(), "LicensesDialog"));
+        findViewById(R.id.odyssey_thirdparty_licenses)
+                .setOnClickListener(view -> LicensesDialog.newInstance().show(getSupportFragmentManager(), "LicensesDialog"));
 
         findViewById(R.id.logo_musicbrainz).setOnClickListener(view -> {
             Intent urlIntent = new Intent(Intent.ACTION_VIEW);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2018 Team Gateship-One
+  ~ Copyright (C) 2019 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~ The AUTHORS.md file contains a detailed contributors list:
@@ -208,4 +208,7 @@
     <string name="dialog_sleep_timer_duration_minutes">Minuten</string>
     <string name="dialog_sleep_timer_duration_seconds">Sekunden</string>
     <string name="snackbar_uri_not_supported_message">Der ausgewählte Pfad %1$s wird nicht unterstützt.</string>
+    <string name="preference_resume_step_size_dialog_title">Schrittweite: %d Sekunden</string>
+    <string name="preference_resume_step_size_text">Anzahl an Sekunden die die Wiedergabe beim Fortsetzen zurückgespult wird.</string>
+    <string name="preference_resume_step_size_title">Zurückspulen Schrittweite</string>
 </resources>

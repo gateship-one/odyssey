@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -24,6 +24,8 @@ package org.gateshipone.odyssey.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 public class TrackModel implements GenericModel, Parcelable {
 
@@ -297,6 +299,7 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeInt(mDateAdded);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Track: " + getTrackNumber() + ':' + getTrackName() + '-' + getTrackAlbumName();

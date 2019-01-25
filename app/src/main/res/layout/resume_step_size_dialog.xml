@@ -21,23 +21,25 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/material_standard_horizontal_spacing"
     android:orientation="vertical">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/my_music_tab_layout"
-        style="@style/Widget.MaterialComponents.TabLayout.Colored"
+    <TextView
+        android:id="@+id/dialog_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:tabIndicatorColor="?attr/colorAccent" />
+        android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
+        tools:text="@string/preference_resume_step_size_dialog_title"
+        android:textSize="@dimen/material_font_style_size_subheading" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/my_music_viewpager"
+    <SeekBar
+        android:id="@+id/volume_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
+        android:max="60" />
 
 </LinearLayout>

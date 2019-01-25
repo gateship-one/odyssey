@@ -107,6 +107,8 @@ interface IOdysseyPlaybackService {
 
     void hideMediaOnLockscreenChanged(boolean enabled);
 
+    void changeAutoBackwardsSeekAmount(int amount);
+
     void startSleepTimer(long durationMS);
     void cancelSleepTimer();
     boolean hasActiveSleepTimer();

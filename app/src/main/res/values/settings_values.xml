@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2018 Team Gateship-One
+  ~ Copyright (C) 2019 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~ The AUTHORS.md file contains a detailed contributors list:
@@ -95,6 +95,9 @@
     <string name="pref_artwork_settings_key" translatable="false">pref_artwork_settings</string>
     <string name="pref_open_equalizer_key" translatable="false">pref_open_equalizer</string>
     <string name="pref_view_library_key" translatable="false">pref_view_library_key</string>
+
+    <string name="pref_seek_backwards_key" translatable="false">pref_backward_seek</string>
+    <integer name="pref_seek_backwards_default" translatable="false">0</integer>
 
     <string name="pref_show_npv_hint" translatable="false">pref_show_npv_hint</string>
 

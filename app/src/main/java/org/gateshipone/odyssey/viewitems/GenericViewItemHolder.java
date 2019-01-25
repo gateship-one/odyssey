@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,11 +22,11 @@
 
 package org.gateshipone.odyssey.viewitems;
 
-import android.support.v7.widget.RecyclerView;
-
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class GenericViewItemHolder extends RecyclerView.ViewHolder {
 

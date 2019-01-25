@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,12 +22,12 @@
 
 package org.gateshipone.odyssey.adapter;
 
-import android.support.v7.widget.RecyclerView;
-
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements ScrollSpeedAdapter {
 

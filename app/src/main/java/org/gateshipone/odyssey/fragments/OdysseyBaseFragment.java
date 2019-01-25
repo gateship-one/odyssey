@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -25,14 +25,16 @@ package org.gateshipone.odyssey.fragments;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment {
 
@@ -66,7 +68,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
     abstract GenericViewModel<T> getViewModel();
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         if (null == mComponentCallback) {
@@ -124,11 +126,11 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
     }
 
     /**
-     * Called when the observed {@link android.arch.lifecycle.LiveData} is changed.
-     *
+     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
+     * <p>
      * This method will update the related adapter and the {@link SwipeRefreshLayout} if present.
      *
-     * @param model The data observed by the {@link android.arch.lifecycle.LiveData}.
+     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
      */
     protected void onDataReady(List<T> model) {
         if (mSwipeRefreshLayout != null) {

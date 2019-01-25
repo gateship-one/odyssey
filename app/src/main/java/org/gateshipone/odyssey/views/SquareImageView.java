@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -29,7 +29,7 @@ import android.util.AttributeSet;
  * Square ImageView that matches the parents width.
  * This view is used for the albumcover in the toolbar in portrait mode.
  */
-public class SquareImageView extends android.support.v7.widget.AppCompatImageView {
+public class SquareImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     public SquareImageView(Context context) {
         super(context);

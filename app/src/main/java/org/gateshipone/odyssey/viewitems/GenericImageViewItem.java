@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Team Gateship-One
+ * Copyright (C) 2019 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -24,8 +24,6 @@ package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.animation.AnimationUtils;
@@ -37,6 +35,9 @@ import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 public abstract class GenericImageViewItem extends RelativeLayout implements CoverLoadable {
     private static final String TAG = GenericImageViewItem.class.getSimpleName();
