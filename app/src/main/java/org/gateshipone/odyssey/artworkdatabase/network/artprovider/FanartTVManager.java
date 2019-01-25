@@ -51,12 +51,12 @@ public class FanartTVManager implements ArtistImageProvider {
     /**
      * API-URL for MusicBrainz database. Used to resolve artist names to MBIDs
      */
-    private static final String MUSICBRAINZ_API_URL = "http://musicbrainz.org/ws/2";
+    private static final String MUSICBRAINZ_API_URL = "https://musicbrainz.org/ws/2";
 
     /**
      * API-URL for fanart.tv itself.
      */
-    private static final String FANART_TV_API_URL = "http://webservice.fanart.tv/v3/music";
+    private static final String FANART_TV_API_URL = "https://webservice.fanart.tv/v3/music";
 
     /**
      * {@link RequestQueue} used to handle the requests of this class.

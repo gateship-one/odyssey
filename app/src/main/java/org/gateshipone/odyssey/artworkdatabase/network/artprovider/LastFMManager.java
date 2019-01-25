@@ -50,7 +50,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
     /**
      * Last.fm API url used for requests
      */
-    private static final String LAST_FM_API_URL = "http://ws.audioscrobbler.com/2.0/?method=";
+    private static final String LAST_FM_API_URL = "https://ws.audioscrobbler.com/2.0/?method=";
 
     /**
      * API-Key for used for last.fm
@@ -216,7 +216,7 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
      * @param errorListener Error listener
      */
     private void getAlbumImage(String url, AlbumModel album, Response.Listener<AlbumImageResponse> listener, Response.ErrorListener errorListener) {
-        Log.v(LastFMManager.class.getSimpleName(), url);
+        Log.v(LastFMManager.class.getSimpleName(), "Get album byte image:"  + url);
 
         Request<AlbumImageResponse> byteResponse = new AlbumImageByteRequest(url, album, listener, errorListener);
 

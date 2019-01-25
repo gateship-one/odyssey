@@ -51,8 +51,8 @@ import org.json.JSONObject;
 public class MusicBrainzManager implements AlbumImageProvider {
     private static final String TAG = MusicBrainzManager.class.getSimpleName();
 
-    private static final String MUSICBRAINZ_API_URL = "http://musicbrainz.org/ws/2";
-    private static final String COVERART_ARCHIVE_API_URL = "http://coverartarchive.org";
+    private static final String MUSICBRAINZ_API_URL = "https://musicbrainz.org/ws/2";
+    private static final String COVERART_ARCHIVE_API_URL = "https://coverartarchive.org";
 
     private RequestQueue mRequestQueue;
 
