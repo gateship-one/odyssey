@@ -83,6 +83,7 @@
     <string name="dialog_sleep_timer_action_start">Start</string>
     <string name="dialog_sleep_timer_duration_minutes">Minutes</string>
     <string name="dialog_sleep_timer_duration_seconds">Seconds</string>
+    <string name="dialog_sleep_timer_stop_after_current">Stop playback after currently playing song</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>

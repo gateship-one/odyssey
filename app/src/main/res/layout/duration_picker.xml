@@ -19,8 +19,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -69,5 +73,10 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:text="@string/dialog_sleep_timer_duration_seconds" />
-
 </RelativeLayout>
+    <CheckBox
+        android:id="@+id/duration_stop_after_current_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_sleep_timer_stop_after_current"/>
+</LinearLayout>

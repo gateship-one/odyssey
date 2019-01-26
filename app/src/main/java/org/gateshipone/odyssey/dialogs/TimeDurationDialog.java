@@ -27,6 +27,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.NumberPicker;
 
 import org.gateshipone.odyssey.R;
@@ -45,6 +47,8 @@ public class TimeDurationDialog extends DialogFragment {
     private NumberPicker mMinutesPicker;
 
     private NumberPicker mSecondsPicker;
+
+    private CheckBox mStopAfterCurrentCheckBox;
 
     public static TimeDurationDialog newInstance(long presetDurationMS) {
         final Bundle args = new Bundle();
@@ -81,6 +85,8 @@ public class TimeDurationDialog extends DialogFragment {
 
         mSecondsPicker = durationView.findViewById(R.id.duration_seconds_picker);
 
+        mStopAfterCurrentCheckBox = durationView.findViewById(R.id.duration_stop_after_current_checkbox);
+
         final Bundle arguments = getArguments();
         setupPicker(arguments.getLong(ARG_PRESET_DURATION, 0));
 
@@ -90,8 +96,9 @@ public class TimeDurationDialog extends DialogFragment {
 
         builder.setPositiveButton(R.string.dialog_sleep_timer_action_start, (dialog, which) -> {
             final long durationMS = getDuration();
+            final boolean stopAfterCurrent = getStopAfterCurrent();
 
-            mOnStartSleepTimerCallback.onStartSleepTimer(durationMS);
+            mOnStartSleepTimerCallback.onStartSleepTimer(durationMS, stopAfterCurrent);
         });
         builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> getDialog().cancel());
 
@@ -103,6 +110,10 @@ public class TimeDurationDialog extends DialogFragment {
         final int seconds = mSecondsPicker.getValue();
 
         return minutes * 60L * 1000L + seconds * 1000L;
+    }
+
+    private boolean getStopAfterCurrent() {
+        return mStopAfterCurrentCheckBox.isChecked();
     }
 
     private void setupPicker(final long durationMS) {

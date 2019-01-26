@@ -23,5 +23,5 @@
 package org.gateshipone.odyssey.listener;
 
 public interface OnStartSleepTimerListener {
-    void onStartSleepTimer(long durationMS);
+    void onStartSleepTimer(long durationMS, boolean stopAfterCurrent);
 }

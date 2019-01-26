@@ -249,6 +249,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
+    private boolean mStopAfterCurrent;
+
     /**
      * Called when the PlaybackService is bound by an activity.
      *
@@ -482,13 +484,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * @param durationMS the duration in milliseconds
      */
-    public void startSleepTimer(final long durationMS) {
+    public void startSleepTimer(final long durationMS, final boolean stopAfterCurrent) {
         mActiveSleepTimer = true;
 
         final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
         final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, sleepPI);
+        mStopAfterCurrent = stopAfterCurrent;
     }
 
     /**
@@ -1812,6 +1815,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mAutoBackwardsAmount = amount * 1000;
     }
 
+    public void stopAfterCurrentTrack() {
+        try {
+            mPlayer.setNextTrack(null);
+        } catch (GaplessPlayer.PlaybackException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Listener class for playback begin of the GaplessPlayer. Handles the
      * different scenarios: If no random playback is active, check if new track
@@ -2025,11 +2036,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
                         break;
                     case ACTION_SLEEPSTOP:
-                        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
-                            // Notify simple last.fm scrobbler about playback stop
-                            mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_COMPLETE);
+                        if (mStopAfterCurrent) {
+                            stopAfterCurrentTrack();
+                        } else {
+                            stop();
                         }
-                        stopService();
                         break;
                 }
             }

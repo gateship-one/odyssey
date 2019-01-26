@@ -662,14 +662,14 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onStartSleepTimer(final long durationMS) {
+    public void onStartSleepTimer(final long durationMS, final boolean stopAfterCurrent) {
         try {
             // save used duration to initialize the duration picker next time with this value
             SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             sharedPrefEditor.putLong(getString(R.string.pref_last_used_sleep_timer_key), durationMS);
             sharedPrefEditor.apply();
 
-            getPlaybackService().startSleepTimer(durationMS);
+            getPlaybackService().startSleepTimer(durationMS,stopAfterCurrent);
 
             // show a snackbar to inform the user that the sleep timer is now set
             View layout = findViewById(R.id.drawer_layout);

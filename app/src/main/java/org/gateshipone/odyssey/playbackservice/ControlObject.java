@@ -93,6 +93,12 @@ public class ControlObject {
         mLongParam = param;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, long param, boolean boolParam) {
+        mAction = action;
+        mLongParam = param;
+        mBoolparam = boolParam;
+    }
+
     public ControlObject(PLAYBACK_ACTION action, long longParam, String stringParam) {
         mAction = action;
         mLongParam = longParam;
