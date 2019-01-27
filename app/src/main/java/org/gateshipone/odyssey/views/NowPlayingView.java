@@ -427,8 +427,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             case R.id.view_nowplaying_action_start_sleep_timer: {
                 final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
                 final long durationMS = sharedPref.getLong(getContext().getString(R.string.pref_last_used_sleep_timer_key), 0);
+                final boolean stopAfterCurrent = sharedPref.getBoolean(getContext().getString(R.string.pref_last_used_sleep_timer_stop_after_current_key), false);
 
-                final TimeDurationDialog dialog = TimeDurationDialog.newInstance(durationMS);
+                final TimeDurationDialog dialog = TimeDurationDialog.newInstance(durationMS, stopAfterCurrent);
                 dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "TimeDurationDialog");
                 return true;
             }

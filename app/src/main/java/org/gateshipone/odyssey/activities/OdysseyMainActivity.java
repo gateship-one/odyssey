@@ -667,6 +667,7 @@ public class OdysseyMainActivity extends GenericActivity
             // save used duration to initialize the duration picker next time with this value
             SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             sharedPrefEditor.putLong(getString(R.string.pref_last_used_sleep_timer_key), durationMS);
+            sharedPrefEditor.putBoolean(getString(R.string.pref_last_used_sleep_timer_stop_after_current_key), stopAfterCurrent);
             sharedPrefEditor.apply();
 
             getPlaybackService().startSleepTimer(durationMS,stopAfterCurrent);

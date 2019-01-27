@@ -42,6 +42,8 @@ public class TimeDurationDialog extends DialogFragment {
 
     private final static String ARG_PRESET_DURATION = "objecttype";
 
+    private final static String ARG_PRESET_STOP_AFTER_CURRENT = "stopaftercurrent";
+
     private OnStartSleepTimerListener mOnStartSleepTimerCallback;
 
     private NumberPicker mMinutesPicker;
@@ -50,9 +52,10 @@ public class TimeDurationDialog extends DialogFragment {
 
     private CheckBox mStopAfterCurrentCheckBox;
 
-    public static TimeDurationDialog newInstance(long presetDurationMS) {
+    public static TimeDurationDialog newInstance(long presetDurationMS, boolean stopAfterCurrent) {
         final Bundle args = new Bundle();
         args.putLong(ARG_PRESET_DURATION, presetDurationMS);
+        args.putBoolean(ARG_PRESET_STOP_AFTER_CURRENT, stopAfterCurrent);
 
         final TimeDurationDialog fragment = new TimeDurationDialog();
         fragment.setArguments(args);
@@ -89,6 +92,7 @@ public class TimeDurationDialog extends DialogFragment {
 
         final Bundle arguments = getArguments();
         setupPicker(arguments.getLong(ARG_PRESET_DURATION, 0));
+        mStopAfterCurrentCheckBox.setChecked(arguments.getBoolean(ARG_PRESET_STOP_AFTER_CURRENT, false));
 
         builder.setView(durationView);
 

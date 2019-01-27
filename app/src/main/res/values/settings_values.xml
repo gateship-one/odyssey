@@ -102,6 +102,7 @@
     <string name="pref_show_npv_hint" translatable="false">pref_show_npv_hint</string>
 
     <string name="pref_last_used_sleep_timer_key" translatable="false">pref_last_used_sleep_timer_key</string>
+    <string name="pref_last_used_sleep_timer_stop_after_current_key" translatable="false">pref_last_used_sleep_timer_stop_after_current_key</string>
 
     <string-array name="preference_style_values" translatable="false">
         <item>@string/pref_indigo_key</item>
