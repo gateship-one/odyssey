@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.models.ArtistsTrackBuckets;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
@@ -249,6 +250,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
+    private boolean mArtistSmartRandomActive = true;
+
+    private ArtistsTrackBuckets mArtistTrackBuckets;
+
     /**
      * Set if the user started a sleep
      */
@@ -307,6 +312,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // read a possible saved playlist from the database
         mCurrentList = mDatabaseManager.readPlaylist();
+
+        // Create empty bucket list
+        mArtistTrackBuckets = new ArtistsTrackBuckets();
+        updateArtistTrackBuckets();
 
         // read a possible saved state from database
         OdysseyServiceState state = mDatabaseManager.getState();
@@ -779,6 +788,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void clearPlaylist() {
         // Clear the list
         mCurrentList.clear();
+
+        if (mArtistSmartRandomActive) {
+            mArtistTrackBuckets.clear();
+        }
+
         // reset random and repeat state
         mRandom = RANDOMSTATE.RANDOM_OFF;
         mRepeat = REPEATSTATE.REPEAT_OFF;
@@ -936,6 +950,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Inform the helper that the state has changed
         mPlaybackServiceStatusHelper.updateStatus();
+
+        // Update artists track buckets
+        updateArtistTrackBuckets();
     }
 
     /**
@@ -1091,6 +1108,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
+
+        // Update artists track buckets
+        updateArtistTrackBuckets();
     }
 
     /**
@@ -1116,6 +1136,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
+
+        // Update artists track buckets
+        updateArtistTrackBuckets();
     }
 
     /**
@@ -1158,6 +1181,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
+
+        // Update artists track buckets
+        updateArtistTrackBuckets();
     }
 
     /**
@@ -1256,6 +1282,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+
+        // Update artists track buckets
+        updateArtistTrackBuckets();
     }
 
     /**
@@ -1732,6 +1761,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
+    private void updateArtistTrackBuckets() {
+        // Redo smart random list
+        if (mArtistSmartRandomActive) {
+            mArtistTrackBuckets.fillFromList(mCurrentList);
+        }
+    }
+
     /**
      * Returns the working state of the service
      *
@@ -1779,14 +1815,18 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private void randomizeNextTrack() {
         // Set next index to random one
         if (mCurrentList.size() > 0) {
-            mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
-
-            // if next index equal to current index create a new random
-            // index but just trying RANDOM_RETRIES times
-            int counter = 0;
-            while (mNextPlayingIndex == mCurrentPlayingIndex && counter < RANDOM_RETRIES) {
+            if (!mArtistSmartRandomActive) {
                 mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
-                counter++;
+
+                // if next index equal to current index create a new random
+                // index but just trying RANDOM_RETRIES times
+                int counter = 0;
+                while (mNextPlayingIndex == mCurrentPlayingIndex && counter < RANDOM_RETRIES) {
+                    mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
+                    counter++;
+                }
+            } else {
+                mNextPlayingIndex = mArtistTrackBuckets.getRandomTrackNumber();
             }
         }
     }
