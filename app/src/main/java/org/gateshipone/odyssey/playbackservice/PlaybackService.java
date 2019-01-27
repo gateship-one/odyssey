@@ -249,7 +249,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
+    /**
+     * Set if the user started a sleep
+     */
     private boolean mStopAfterCurrent;
+
+    /**
+     * Set if stopAfterCurrent fired
+     */
+    private boolean mStopAfterCurrentActive;
 
     /**
      * Called when the PlaybackService is bound by an activity.
@@ -1816,11 +1824,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public void stopAfterCurrentTrack() {
-        try {
-            mPlayer.setNextTrack(null);
-        } catch (GaplessPlayer.PlaybackException e) {
-            e.printStackTrace();
-        }
+        mStopAfterCurrentActive = true;
     }
 
     /**
@@ -1835,6 +1839,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         public void onTrackStarted(String URI) {
             // Move the index to the next one
             mCurrentPlayingIndex = mNextPlayingIndex;
+
+            // Wait until a new track starts to stop the track, so everything is set for
+            // later possible playback resume.
+            if(mStopAfterCurrentActive) {
+                mStopAfterCurrentActive = false;
+                stopService();
+            }
 
             if (mCurrentPlayingIndex >= 0 && mCurrentPlayingIndex < mCurrentList.size()) {
                 // Broadcast simple.last.fm.scrobble broadcast about the started track
@@ -2039,7 +2050,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         if (mStopAfterCurrent) {
                             stopAfterCurrentTrack();
                         } else {
-                            stop();
+                            stopService();
                         }
                         break;
                 }
