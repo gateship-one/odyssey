@@ -384,6 +384,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mAutoBackwardsAmount = (sharedPreferences.getInt(this.getString(R.string.pref_seek_backwards_key), this.getResources().getInteger(R.integer.pref_seek_backwards_default)) * 1000);
+
+        setSmartRandom(sharedPreferences.getBoolean(getString(R.string.pref_smart_random_key), getResources().getBoolean(R.bool.pref_smart_random_default)));
     }
 
     /**
@@ -1383,6 +1385,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // update the status
         mPlaybackServiceStatusHelper.updateStatus();
         if (mRandom == RANDOMSTATE.RANDOM_ON) {
+            updateArtistTrackBuckets();
             randomizeNextTrack();
         } else {
             // Set nextTrack to next in list
@@ -1763,8 +1766,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private void updateArtistTrackBuckets() {
         // Redo smart random list
-        if (mArtistSmartRandomActive) {
+        if (mArtistSmartRandomActive && mRandom == RANDOMSTATE.RANDOM_ON) {
             mArtistTrackBuckets.fillFromList(mCurrentList);
+        } else {
+            mArtistTrackBuckets.clear();
         }
     }
 
@@ -1857,6 +1862,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
             }
         }
+    }
+
+    public void setSmartRandom(boolean enabled) {
+        Log.v(TAG,"Set smartrandom: " + enabled);
+        mArtistSmartRandomActive = enabled;
+        updateArtistTrackBuckets();
     }
 
     public int getAudioSessionID() {

@@ -109,6 +109,8 @@ interface IOdysseyPlaybackService {
 
     void changeAutoBackwardsSeekAmount(int amount);
 
+    void setSmartRandom(boolean enabled);
+
     void startSleepTimer(long durationMS, boolean stopAfterCurrent);
     void cancelSleepTimer();
     boolean hasActiveSleepTimer();

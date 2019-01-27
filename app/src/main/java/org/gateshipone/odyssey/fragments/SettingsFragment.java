@@ -38,6 +38,7 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.dialogs.SeekBackwardsStepSizeDialog;
@@ -59,6 +60,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      * Callback to setup toolbar and fab
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
+
+    /**
+     * Connection to the PBS to notify it about artwork hide changes
+     */
+    private PlaybackServiceConnection mServiceConnection = null;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -120,6 +126,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             return true;
         });
 
+        // Get the playbackservice, when the connection is successfully established the timer gets restarted
+        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -161,6 +169,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
+
+        mServiceConnection.openConnection();
     }
 
     /**
@@ -172,6 +182,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+
+        mServiceConnection.closeConnection();
     }
 
     /**
@@ -204,12 +216,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             intent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.SETTINGS.ordinal());
             getActivity().finish();
             startActivity(intent);
-        }
-
-        if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
+        }else if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
             try {
                 boolean hideMediaOnLockscreen = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default));
                 ((GenericActivity) getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
+            } catch (RemoteException e) {
+            }
+        } else if (key.equals(getString(R.string.pref_smart_random_key))) {
+            try {
+                mServiceConnection.getPBS().setSmartRandom(sharedPreferences.getBoolean(key,getResources().getBoolean(R.bool.pref_smart_random_default)));
             } catch (RemoteException e) {
             }
         }

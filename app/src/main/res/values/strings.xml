@@ -325,4 +325,7 @@
     <string name="preference_resume_step_size_text">Number of seconds the playback is rewind after resume.</string>
 
     <string name="preference_resume_step_size_dialog_title">Step size: %d seconds</string>
+
+    <string name="preference_smart_random_title">Enable smarter random</string>
+    <string name="preference_smart_random_text">Enables a smarter random method for random track selection. With this option enabled, each artist is uniformly distributed selected for random playback. This is useful for playlists with a lot of tracks of one artist and few tracks of other artists.</string>
 </resources>

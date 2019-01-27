@@ -106,6 +106,15 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
+    public void setSmartRandom(boolean enabled) throws RemoteException {
+        // Create repeat control object
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SET_SMARTRANDOM, enabled);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+    @Override
     public void startSleepTimer(long durationMS, boolean stopAfterCurrent) {
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_START_SLEEPTIMER, durationMS, stopAfterCurrent);
         Message msg = mService.get().getHandler().obtainMessage();

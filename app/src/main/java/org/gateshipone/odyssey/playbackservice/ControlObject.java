@@ -45,7 +45,8 @@ public class ControlObject {
         ODYSSEY_ENQUEUEALBUM, ODYSSEY_PLAYALBUM,
         ODYSSEY_ENQUEUERECENTALBUMS, ODYSSEY_PLAYRECENTALBUMS,
         ODYSSEY_ENQUEUEARTIST, ODYSSEY_PLAYARTIST,
-        ODYSSEY_START_SLEEPTIMER, ODYSSEY_CANCEL_SLEEPTIMER
+        ODYSSEY_START_SLEEPTIMER, ODYSSEY_CANCEL_SLEEPTIMER,
+        ODYSSEY_SET_SMARTRANDOM
     }
 
     private PLAYBACK_ACTION mAction;
@@ -115,6 +116,11 @@ public class ControlObject {
         mAction = action;
         mLongParam = longParam;
         mIntparam = intParam;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, boolean boolParam) {
+        mAction = action;
+        mBoolparam = boolParam;
     }
 
     public PLAYBACK_ACTION getAction() {
