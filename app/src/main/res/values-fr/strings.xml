@@ -295,4 +295,9 @@
     <!-- Snackbar -->
     <string name="snackbar_sleep_timer_confirmation_message">Arrêt programmé réglé</string>
     <string name="snackbar_uri_not_supported_message">Le chemin sélectionné %1$s n\'est pas pris en charge</string>
+
+    <string name="preference_resume_step_size_title">Rembobiner à la reprise</string>
+    <string name="preference_resume_step_size_text">Durée en secondes à rembobiner lors de la reprise de la lecture</string>
+
+    <string name="preference_resume_step_size_dialog_title">Rembobiner de : %d secondes</string>
 </resources>
