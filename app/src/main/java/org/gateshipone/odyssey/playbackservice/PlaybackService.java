@@ -1842,7 +1842,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // Wait until a new track starts to stop the track, so everything is set for
             // later possible playback resume.
-            if(mStopAfterCurrentActive) {
+            if (mStopAfterCurrentActive) {
                 mStopAfterCurrentActive = false;
                 stopService();
             }

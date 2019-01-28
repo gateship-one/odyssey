@@ -670,7 +670,7 @@ public class OdysseyMainActivity extends GenericActivity
             sharedPrefEditor.putBoolean(getString(R.string.pref_last_used_sleep_timer_stop_after_current_key), stopAfterCurrent);
             sharedPrefEditor.apply();
 
-            getPlaybackService().startSleepTimer(durationMS,stopAfterCurrent);
+            getPlaybackService().startSleepTimer(durationMS, stopAfterCurrent);
 
             // show a snackbar to inform the user that the sleep timer is now set
             View layout = findViewById(R.id.drawer_layout);

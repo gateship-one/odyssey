@@ -153,7 +153,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playRecentAlbums();
                     break;
                 case ODYSSEY_START_SLEEPTIMER:
-                    mService.get().startSleepTimer(msgObj.getLongParam(),msgObj.getBoolParam());
+                    mService.get().startSleepTimer(msgObj.getLongParam(), msgObj.getBoolParam());
                     break;
                 case ODYSSEY_CANCEL_SLEEPTIMER:
                     mService.get().cancelSleepTimer();
