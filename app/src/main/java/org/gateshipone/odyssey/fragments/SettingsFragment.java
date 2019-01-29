@@ -61,11 +61,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
 
-    /**
-     * Connection to the PBS to notify it about artwork hide changes
-     */
-    private PlaybackServiceConnection mServiceConnection = null;
-
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
     }
@@ -125,9 +120,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             dialog.show(getFragmentManager(), "Volume steps");
             return true;
         });
-
-        // Get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -169,8 +161,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // set up play button
             mToolbarAndFABCallback.setupFAB(null);
         }
-
-        mServiceConnection.openConnection();
     }
 
     /**
@@ -182,8 +172,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
-        mServiceConnection.closeConnection();
     }
 
     /**
@@ -224,7 +212,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         } else if (key.equals(getString(R.string.pref_smart_random_key))) {
             try {
-                mServiceConnection.getPBS().setSmartRandom(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_random_default)));
+                ((GenericActivity) getActivity()).getPlaybackService().setSmartRandom(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_random_default)));
             } catch (RemoteException e) {
             }
         }

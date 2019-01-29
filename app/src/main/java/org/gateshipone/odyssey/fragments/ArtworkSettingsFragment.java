@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
@@ -51,11 +52,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
      * Callback to setup toolbar and fab
      */
     private ToolbarAndFABCallback mToolbarAndFABCallback;
-
-    /**
-     * Connection to the PBS to notify it about artwork hide changes
-     */
-    private PlaybackServiceConnection mServiceConnection = null;
 
     public static ArtworkSettingsFragment newInstance() {
         return new ArtworkSettingsFragment();
@@ -105,10 +101,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
             return true;
         });
-
-
-        // get the playbackservice, when the connection is successfully established the timer gets restarted
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
     }
 
     /**
@@ -137,8 +129,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        mServiceConnection.openConnection();
-
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
             mToolbarAndFABCallback.setupToolbar(getString(R.string.fragment_title_settings), false, false, false);
@@ -156,8 +146,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
     public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
-        mServiceConnection.closeConnection();
     }
 
     /**
@@ -205,7 +193,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         } else if (key.equals(getString(R.string.pref_hide_artwork_key))) {
             boolean hideArtwork = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_artwork_default));
             try {
-                mServiceConnection.getPBS().hideArtworkChanged(hideArtwork);
+                ((GenericActivity) getActivity()).getPlaybackService().hideArtworkChanged(hideArtwork);
             } catch (RemoteException e) {
 
             }
