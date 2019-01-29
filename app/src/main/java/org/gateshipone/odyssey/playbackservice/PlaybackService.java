@@ -1863,7 +1863,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     public void setSmartRandom(boolean enabled) {
-        Log.v(TAG,"Set smartrandom: " + enabled);
+        Log.v(TAG, "Set smartrandom: " + enabled);
         mArtistSmartRandomActive = enabled;
         updateArtistTrackBuckets();
     }

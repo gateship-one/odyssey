@@ -58,19 +58,20 @@ public class ArtistsTrackBuckets {
 
     /**
      * Creates a list of artists and their tracks with position in the original playlist
+     *
      * @param tracks List of tracks
      */
-    public synchronized void fillFromList(List <TrackModel> tracks) {
+    public synchronized void fillFromList(List<TrackModel> tracks) {
         // Clear all entries
         mData.clear();
-        if(tracks == null || tracks.isEmpty()) {
+        if (tracks == null || tracks.isEmpty()) {
             // Abort for empty data structures
             return;
         }
 
         // Iterate over the list and add all tracks to their artist lists
         int trackNo = 0;
-        for (TrackModel track: tracks) {
+        for (TrackModel track : tracks) {
             String artistName = track.getTrackArtistName();
             List<Pair<Integer, TrackModel>> list = mData.get(artistName);
             if (list == null) {

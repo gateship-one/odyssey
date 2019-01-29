@@ -216,7 +216,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             intent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.SETTINGS.ordinal());
             getActivity().finish();
             startActivity(intent);
-        }else if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
+        } else if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
             try {
                 boolean hideMediaOnLockscreen = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default));
                 ((GenericActivity) getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
@@ -224,7 +224,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         } else if (key.equals(getString(R.string.pref_smart_random_key))) {
             try {
-                mServiceConnection.getPBS().setSmartRandom(sharedPreferences.getBoolean(key,getResources().getBoolean(R.bool.pref_smart_random_default)));
+                mServiceConnection.getPBS().setSmartRandom(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_random_default)));
             } catch (RemoteException e) {
             }
         }
