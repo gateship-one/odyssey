@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.models;
 
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -31,58 +30,90 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
-public class ArtistsTrackBuckets extends LinkedHashMap<String, List<Pair<Integer, TrackModel>>> {
+/**
+ * This class keeps a HashMap of all artists that are part of a track list (e.g. playlist)
+ * and their belonging tracks with the original list position as a pair. This can be used to
+ * randomize the playback of the playback equally distributed over all artists of the original
+ * track list.
+ */
+public class ArtistsTrackBuckets {
     private static final String TAG = ArtistsTrackBuckets.class.getSimpleName();
 
+    /**
+     * Underlying data structure for artist-track buckets
+     */
+    private LinkedHashMap<String, List<Pair<Integer, TrackModel>>> mData;
+
+    /**
+     * Random generator used for selecting a random song
+     */
     private final Random mRandomGenerator = new Random();
-    public void fillFromList(List <TrackModel> tracks) {
+
+    /**
+     * Creates an empty data structure
+     */
+    public ArtistsTrackBuckets() {
+        mData = new LinkedHashMap<>();
+    }
+
+    /**
+     * Creates a list of artists and their tracks with position in the original playlist
+     * @param tracks List of tracks
+     */
+    public synchronized void fillFromList(List <TrackModel> tracks) {
         // Clear all entries
-        clear();
+        mData.clear();
+        if(tracks == null || tracks.isEmpty()) {
+            // Abort for empty data structures
+            return;
+        }
 
         // Iterate over the list and add all tracks to their artist lists
         int trackNo = 0;
         for (TrackModel track: tracks) {
             String artistName = track.getTrackArtistName();
-            List<Pair<Integer, TrackModel>> list = get(artistName);
+            List<Pair<Integer, TrackModel>> list = mData.get(artistName);
             if (list == null) {
                 // If artist is not already in HashMap add a new list for it
                 list = new ArrayList<>();
-                put(artistName, list);
+                mData.put(artistName, list);
             }
             // Add pair of position in original playlist and track itself to artists bucket list
             list.add(new Pair<>(trackNo, track));
 
+            // Increase the track number (index) of the original playlist
             trackNo++;
         }
-
-        Log.v(TAG,"Artists found: " + size());
     }
 
-    public int getRandomTrackNumber() {
-        int returnValue = 0;
-
+    /**
+     * Generates a randomized track number within the original track list, that was used for the call
+     * of fillFromList. The random track number should be equally distributed over all artists.
+     *
+     * @return A random number of a track of the original track list
+     */
+    public synchronized int getRandomTrackNumber() {
         // First level random, get artist
-        int randomArtistNumber = mRandomGenerator.nextInt(size());
+        int randomArtistNumber = mRandomGenerator.nextInt(mData.size());
 
         // Get artists bucket list to artist number
         List<Pair<Integer, TrackModel>> artistsTracks;
 
-
-        // Check if there is a better way to get artist tracks from number (array access?)
+        // Get the artist at the position of randomArtistNumber. Iterate until the position is reached
         int compareArtistNumber = 0;
-        Iterator<List<Pair<Integer, TrackModel>>> listIterator = values().iterator();
+        Iterator<List<Pair<Integer, TrackModel>>> listIterator = mData.values().iterator();
         while (listIterator.hasNext() && (compareArtistNumber++ != randomArtistNumber)) {
             listIterator.next();
         }
+        // Get the list of tracks belonging to the selected artist
         artistsTracks = listIterator.next();
 
-
+        // Check if an artist was found
         if (artistsTracks == null) {
             return 0;
         }
 
         // Get random track number
-        returnValue = artistsTracks.get(mRandomGenerator.nextInt(artistsTracks.size())).first;
-        return returnValue;
+        return artistsTracks.get(mRandomGenerator.nextInt(artistsTracks.size())).first;
     }
 }

@@ -791,9 +791,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Clear the list
         mCurrentList.clear();
 
-        if (mArtistSmartRandomActive) {
-            mArtistTrackBuckets.clear();
-        }
+        updateArtistTrackBuckets();
 
         // reset random and repeat state
         mRandom = RANDOMSTATE.RANDOM_OFF;
@@ -1769,7 +1767,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (mArtistSmartRandomActive && mRandom == RANDOMSTATE.RANDOM_ON) {
             mArtistTrackBuckets.fillFromList(mCurrentList);
         } else {
-            mArtistTrackBuckets.clear();
+            mArtistTrackBuckets.fillFromList(null);
         }
     }
 
