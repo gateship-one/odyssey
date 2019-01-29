@@ -1276,7 +1276,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlayer.stop();
         }
 
-
         // Save the state of the PBS at once
         OdysseyServiceState serviceState = new OdysseyServiceState();
 
@@ -1285,6 +1284,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
         mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
+
+        if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
+            // Notify simple last.fm scrobbler about playback stop
+            mPlaybackServiceStatusHelper.notifyLastFM(mCurrentList.get(mCurrentPlayingIndex), PlaybackServiceStatusHelper.SLS_STATES.SLS_COMPLETE);
+        }
 
         // Final status update
         mPlaybackServiceStatusHelper.updateStatus();
