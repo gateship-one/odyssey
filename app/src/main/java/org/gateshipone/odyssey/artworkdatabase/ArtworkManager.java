@@ -594,10 +594,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
             if ((options.outHeight > MAXIMUM_IMAGE_RESOLUTION || options.outWidth > MAXIMUM_IMAGE_RESOLUTION)) {
+                // Calculate minimal scaling factor
+                float factor = Math.min((float)MAXIMUM_IMAGE_RESOLUTION / (float)options.outHeight, (float)MAXIMUM_IMAGE_RESOLUTION / (float)options.outWidth);
                 options.inJustDecodeBounds = false;
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                Bitmap.createScaledBitmap(bm, (int)(options.outWidth * factor), (int)(options.outHeight * factor), true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+
                 if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
                     mDBManager.insertArtistImage(mContext, response.artist, byteStream.toByteArray());
                 }
@@ -662,10 +665,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
             if ((options.outHeight > MAXIMUM_IMAGE_RESOLUTION || options.outWidth > MAXIMUM_IMAGE_RESOLUTION)) {
+                // Calculate minimal scaling factor
+                float factor = Math.min((float)MAXIMUM_IMAGE_RESOLUTION / (float)options.outHeight, (float)MAXIMUM_IMAGE_RESOLUTION / (float)options.outWidth);
                 options.inJustDecodeBounds = false;
                 Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                Bitmap.createScaledBitmap(bm, MAXIMUM_IMAGE_RESOLUTION, MAXIMUM_IMAGE_RESOLUTION, true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+                Bitmap.createScaledBitmap(bm, (int)(options.outWidth * factor), (int)(options.outHeight * factor), true).compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
+
                 if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
                     mDBManager.insertAlbumImage(mContext, response.album, byteStream.toByteArray());
                 }
