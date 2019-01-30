@@ -2046,6 +2046,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (updatedNeeded) {
             // notify the UI if an update has occurred
             mPlaybackServiceStatusHelper.updateStatus();
+
+            // Update smart random data if necessary
+            updateArtistTrackBuckets();
         }
     }
 
