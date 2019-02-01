@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -45,16 +46,13 @@ public class ArtistsTrackBuckets {
     private LinkedHashMap<String, List<Pair<Integer, TrackModel>>> mData;
 
     /**
-     * Random generator used for selecting a random song
-     */
-    private final Random mRandomGenerator = new Random();
-
-    /**
      * Creates an empty data structure
      */
     public ArtistsTrackBuckets() {
         mData = new LinkedHashMap<>();
     }
+
+    private BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
 
     /**
      * Creates a list of artists and their tracks with position in the original playlist
@@ -85,6 +83,7 @@ public class ArtistsTrackBuckets {
             // Increase the track number (index) of the original playlist
             trackNo++;
         }
+        Log.v(TAG,"Recreated buckets with: " + mData.size() + " artists");
     }
 
     /**
@@ -95,7 +94,7 @@ public class ArtistsTrackBuckets {
      */
     public synchronized int getRandomTrackNumber() {
         // First level random, get artist
-        int randomArtistNumber = mRandomGenerator.nextInt(mData.size());
+        int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
 
         // Get artists bucket list to artist number
         List<Pair<Integer, TrackModel>> artistsTracks;
@@ -114,7 +113,75 @@ public class ArtistsTrackBuckets {
             return 0;
         }
 
+        int randomTrackNo = mRandomGenerator.getLimitedRandomNumber(artistsTracks.size());
+
+        Pair<Integer,TrackModel> pair = artistsTracks.get(randomTrackNo);
+
+        Log.v(TAG,"Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first );
         // Get random track number
-        return artistsTracks.get(mRandomGenerator.nextInt(artistsTracks.size())).first;
+        return pair.first;
+    }
+
+    private class BetterPseudoRandomGenerator {
+        private static final int POOL_SIZE = 100;
+        private Random mJavaGenerator;
+
+        private int[] mRandomPool = new int[POOL_SIZE];
+
+        private int mInternalSeed;
+
+        public BetterPseudoRandomGenerator() {
+            mJavaGenerator = new Random();
+
+            // Initialize internal seed
+            mInternalSeed = mJavaGenerator.nextInt();
+
+            randomizePool();
+
+            // Do a quick check
+            //testDistribution(20,10000);
+        }
+
+        private int getInternalRandomNumber() {
+            /*
+             * Marsaglia, "Xorshift RNGs"
+             */
+            int newSeed = mInternalSeed;
+
+            newSeed ^= newSeed << 13;
+            newSeed ^= newSeed >> 17;
+            newSeed ^= newSeed << 5;
+
+            mInternalSeed = newSeed;
+            return Math.abs(newSeed);
+        }
+
+        int getLimitedRandomNumber(int limit) {
+            int position = mJavaGenerator.nextInt(POOL_SIZE);
+            int returnValue = mRandomPool[position] % limit;
+
+            mRandomPool[position] = getInternalRandomNumber();
+
+            return returnValue;
+        }
+
+        private void randomizePool() {
+            for (int i = 0; i < POOL_SIZE; i++) {
+                mRandomPool[i] = getInternalRandomNumber();
+            }
+        }
+
+        private void testDistribution(int numberLimit, int runs) {
+            int numberCount[] = new int[numberLimit];
+
+            for (int i = 0; i < runs; i++) {
+                numberCount[getLimitedRandomNumber(numberLimit)]++;
+            }
+
+            // Print distribution
+            for (int i = 0; i < numberLimit; i++) {
+                Log.v(TAG,"Number: " + i + " = " + numberCount[i]);
+            }
+        }
     }
 }
