@@ -20,19 +20,27 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase.network.artprovider;
-
-
-import android.content.Context;
+package org.gateshipone.odyssey.artwork.network.requests;
 
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumFetchError;
-import org.gateshipone.odyssey.artworkdatabase.network.responses.AlbumImageResponse;
-import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.BuildConfig;
+import org.json.JSONObject;
 
-public interface AlbumImageProvider {
+import java.util.HashMap;
+import java.util.Map;
 
-    void fetchAlbumImage(final AlbumModel album, final Context context, final Response.Listener<AlbumImageResponse> listener, final AlbumFetchError errorListener);
-    void cancelAll();
+public class OdysseyJsonObjectRequest extends JsonObjectRequest {
+
+    public OdysseyJsonObjectRequest(String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        super(Method.GET, url, jsonRequest, listener, errorListener);
+    }
+
+    @Override
+    public Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-agent", "Application Odyssey/" + BuildConfig.VERSION_NAME + " (https://github.com/gateship-one/odyssey)");
+        return headers;
+    }
 }

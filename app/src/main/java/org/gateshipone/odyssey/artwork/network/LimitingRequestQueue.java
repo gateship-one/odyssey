@@ -20,8 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase.network;
-
+package org.gateshipone.odyssey.artwork.network;
 
 import android.content.Context;
 import android.util.Log;
@@ -38,7 +37,6 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
-
 
 public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestFinishedListener {
     private static final String TAG = LimitingRequestQueue.class.getSimpleName();
@@ -89,7 +87,7 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
             if (null == mLimiterTimer) {
                 // Timer currently not running
                 mLimiterTimer = new Timer();
-                mLimiterTimer.schedule(new LimiterTask(), 0, REQUEST_RATE);
+                mLimiterTimer.schedule(new LimitingRequestQueue.LimiterTask(), 0, REQUEST_RATE);
             }
         }
         return request;
@@ -137,3 +135,4 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
     }
 
 }
+

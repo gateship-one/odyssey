@@ -36,7 +36,7 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.AlbumsAdapter;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;

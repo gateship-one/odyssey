@@ -31,7 +31,7 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;

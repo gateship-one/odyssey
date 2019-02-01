@@ -31,7 +31,7 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
@@ -62,7 +62,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
 
         mUseList = useList;
         if (mUseList) {
-            mListItemHeight = (int)context.getResources().getDimension(R.dimen.material_list_item_height);
+            mListItemHeight = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
         }
 
         mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
@@ -94,7 +94,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
                 listItem = new ListViewItem(mContext, label, this);
             }
 
-            if ( !mHideArtwork) {
+            if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
                 listItem.prepareArtworkFetching(mArtworkManager, artist);
 
@@ -108,7 +108,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
         } else {
             GridViewItem gridItem;
             ViewGroup.LayoutParams layoutParams;
-            int width = ((GridView)mListView).getColumnWidth();
+            int width = ((GridView) mListView).getColumnWidth();
 
             // Check if a view can be recycled
             if (convertView != null) {
@@ -127,7 +127,7 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
             // Make sure to reset the layoutParams in case of change (rotation for example)
             gridItem.setLayoutParams(layoutParams);
 
-            if ( !mHideArtwork) {
+            if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
                 gridItem.prepareArtworkFetching(mArtworkManager, artist);
 

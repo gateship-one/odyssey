@@ -40,12 +40,11 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-public class BulkDownloadService extends Service implements ArtworkManager.BulkLoadingProgressCallback {
+public class BulkDownloadService extends Service {
     private static final String TAG = BulkDownloadService.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 84;
@@ -133,15 +132,15 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
                 return START_NOT_STICKY;
             }
 
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Odyssey_BulkDownloader");
+//            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "odyssey:wakelock:bulkdownloader");
+//
+//            // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
+//            mWakelock.acquire();
 
-            // FIXME do some timeout checking. e.g. 5 minutes no new image then cancel the process
-            mWakelock.acquire();
-
-            ArtworkManager artworkManager = ArtworkManager.getInstance(getApplicationContext());
-            artworkManager.initialize(artistProvider, albumProvider, mWifiOnly);
-            artworkManager.bulkLoadImages(this, getApplicationContext());
+//            ArtworkManager artworkManager = ArtworkManager.getInstance(getApplicationContext());
+//            artworkManager.initialize(artistProvider, albumProvider, mWifiOnly);
+//            artworkManager.bulkLoadImages(this, getApplicationContext());
         }
         return START_STICKY;
     }
@@ -182,45 +181,45 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
 
     }
 
-    @Override
-    public void startAlbumLoading(int albumCount) {
-        Log.v(TAG, "Albumloading started with: " + albumCount + " albums");
-        mSumImageDownloads += albumCount;
-        mRemainingAlbums = albumCount;
-        runAsForeground();
-    }
-
-    @Override
-    public void startArtistLoading(int artistCount) {
-        Log.v(TAG, "Artistloading started with: " + artistCount + " artists");
-        mSumImageDownloads += artistCount;
-        mRemainingArtists = artistCount;
-        runAsForeground();
-    }
-
-    @Override
-    public void albumsRemaining(int remainingAlbums) {
-        Log.v(TAG, "AlbumsRemaining: " + remainingAlbums + " artists");
-        mRemainingAlbums = remainingAlbums;
-        updateNotification();
-    }
-
-    @Override
-    public void artistsRemaining(int remainingArtists) {
-        Log.v(TAG, "ArtistsRemaining: " + remainingArtists + " artists");
-        mRemainingArtists = remainingArtists;
-        updateNotification();
-    }
-
-    @Override
-    public void finishedLoading() {
-        mNotificationManager.cancel(NOTIFICATION_ID);
-        stopForeground(true);
-        stopSelf();
-        if (mWakelock.isHeld()) {
-            mWakelock.release();
-        }
-    }
+//    @Override
+//    public void startAlbumLoading(int albumCount) {
+//        Log.v(TAG, "Albumloading started with: " + albumCount + " albums");
+//        mSumImageDownloads += albumCount;
+//        mRemainingAlbums = albumCount;
+//        runAsForeground();
+//    }
+//
+//    @Override
+//    public void startArtistLoading(int artistCount) {
+//        Log.v(TAG, "Artistloading started with: " + artistCount + " artists");
+//        mSumImageDownloads += artistCount;
+//        mRemainingArtists = artistCount;
+//        runAsForeground();
+//    }
+//
+//    @Override
+//    public void albumsRemaining(int remainingAlbums) {
+//        Log.v(TAG, "AlbumsRemaining: " + remainingAlbums + " artists");
+//        mRemainingAlbums = remainingAlbums;
+//        updateNotification();
+//    }
+//
+//    @Override
+//    public void artistsRemaining(int remainingArtists) {
+//        Log.v(TAG, "ArtistsRemaining: " + remainingArtists + " artists");
+//        mRemainingArtists = remainingArtists;
+//        updateNotification();
+//    }
+//
+//    @Override
+//    public void finishedLoading() {
+//        mNotificationManager.cancel(NOTIFICATION_ID);
+//        stopForeground(true);
+//        stopSelf();
+//        if (mWakelock.isHeld()) {
+//            mWakelock.release();
+//        }
+//    }
 
     private void updateNotification() {
         if ((mSumImageDownloads - (mRemainingArtists + mRemainingAlbums)) % 10 == 0) {
@@ -274,7 +273,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             Log.e(TAG, "Broadcast requested");
             if (intent.getAction().equals(ACTION_CANCEL_BULKDOWNLOAD)) {
                 Log.e(TAG, "Cancel requested");
-                ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
+//                ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 stopForeground(true);
                 stopSelf();
@@ -289,7 +288,7 @@ public class BulkDownloadService extends Service implements ArtworkManager.BulkL
             if (!isDownloadAllowed(context)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
-                LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(request -> true);
+//                LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(request -> true);
             }
 
         }

@@ -44,7 +44,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistsTrackBuckets;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;

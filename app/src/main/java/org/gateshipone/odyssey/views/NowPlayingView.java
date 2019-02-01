@@ -53,7 +53,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;

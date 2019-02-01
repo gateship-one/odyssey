@@ -33,12 +33,11 @@ import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkDatabaseManager;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
+import org.gateshipone.odyssey.artwork.storage.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
 import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import androidx.annotation.NonNull;

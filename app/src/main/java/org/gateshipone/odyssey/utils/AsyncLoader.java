@@ -28,8 +28,8 @@ import android.os.AsyncTask;
 import android.util.Pair;
 
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
-import org.gateshipone.odyssey.artworkdatabase.ImageNotFoundException;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
+import org.gateshipone.odyssey.artwork.storage.ImageNotFoundException;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
@@ -76,12 +76,12 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getArtistImage(mContext, artist, mCover.imageDimension.first, mCover.imageDimension.second, false);
+                image = mCover.artworkManager.getImage(artist, mCover.imageDimension.first, mCover.imageDimension.second, false, mContext);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!artist.getFetching()) {
                     // If not set it as ongoing and request the image fetch.
-                    mCover.artworkManager.fetchArtistImage(artist, mContext);
+                    mCover.artworkManager.fetchImage(artist, mContext);
                     artist.setFetching(true);
                 }
             }
@@ -91,12 +91,12 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception.
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getAlbumImage(mContext, album, mCover.imageDimension.first, mCover.imageDimension.second, false);
+                image = mCover.artworkManager.getImage(album, mCover.imageDimension.first, mCover.imageDimension.second, false, mContext);
             } catch (ImageNotFoundException e) {
                 // Check if fetching for this item is already ongoing
                 if (!album.getFetching()) {
                     // If not set it as ongoing and request the image fetch.
-                    mCover.artworkManager.fetchAlbumImage(album, mContext);
+                    mCover.artworkManager.fetchImage(album, mContext);
                     album.setFetching(true);
                 }
             }
@@ -106,15 +106,14 @@ public class AsyncLoader extends AsyncTask<AsyncLoader.CoverViewHolder, Void, Bi
             try {
                 // Check if image is available. If it is not yet fetched it will throw an exception.
                 // If it was already searched for and not found, this will be null.
-                image = mCover.artworkManager.getAlbumImage(mContext, track, mCover.imageDimension.first, mCover.imageDimension.second, false);
+                image = mCover.artworkManager.getImage(track, mCover.imageDimension.first, mCover.imageDimension.second, false, mContext);
             } catch (ImageNotFoundException e) {
                 // If not set it as ongoing and request the image fetch.
-                mCover.artworkManager.fetchAlbumImage(track, mContext);
+                mCover.artworkManager.fetchImage(track, mContext);
             }
         }
         return image;
     }
-
 
 
     @Override

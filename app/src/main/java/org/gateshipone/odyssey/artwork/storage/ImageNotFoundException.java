@@ -20,12 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase.network.responses;
+package org.gateshipone.odyssey.artwork.storage;
 
-import org.gateshipone.odyssey.models.ArtistModel;
-
-public class ArtistImageResponse {
-    public ArtistModel artist;
-    public String url;
-    public byte[] image;
+public class ImageNotFoundException extends Exception{
 }

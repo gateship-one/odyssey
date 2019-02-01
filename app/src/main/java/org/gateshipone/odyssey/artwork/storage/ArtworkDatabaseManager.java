@@ -20,7 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase;
+package org.gateshipone.odyssey.artwork.storage;
 
 import android.content.ContentValues;
 import android.content.Context;

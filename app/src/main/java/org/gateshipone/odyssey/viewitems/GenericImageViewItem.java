@@ -32,7 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
 
@@ -70,7 +70,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
         mHolder = new AsyncLoader.CoverViewHolder();
         mHolder.coverLoadable = this;
         mHolder.mAdapter = adapter;
-        mHolder.imageDimension = new Pair<>(0,0);
+        mHolder.imageDimension = new Pair<>(0, 0);
 
 
         mCoverDone = false;

@@ -20,18 +20,10 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase.network.responses;
+package org.gateshipone.odyssey.artwork.network;
 
-
-import android.content.Context;
-
-import com.android.volley.VolleyError;
-
-import org.gateshipone.odyssey.models.ArtistModel;
-import org.json.JSONException;
-
-public interface ArtistFetchError {
-    void fetchJSONException(ArtistModel artist, Context context, JSONException exception);
-
-    void fetchVolleyError(ArtistModel artist, Context context, VolleyError error);
+public class ImageResponse {
+    public ArtworkRequestModel model;
+    public String url;
+    public byte[] image;
 }

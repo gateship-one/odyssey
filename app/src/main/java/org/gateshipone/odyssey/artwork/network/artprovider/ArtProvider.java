@@ -20,19 +20,24 @@
  *
  */
 
-package org.gateshipone.odyssey.artworkdatabase.network.artprovider;
-
+package org.gateshipone.odyssey.artwork.network.artprovider;
 
 import android.content.Context;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
-import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistFetchError;
-import org.gateshipone.odyssey.artworkdatabase.network.responses.ArtistImageResponse;
-import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
+import org.gateshipone.odyssey.artwork.network.ImageResponse;
+import org.json.JSONException;
 
-public interface ArtistImageProvider {
+public abstract class ArtProvider {
 
-    void fetchArtistImage(final ArtistModel artist, final Context context, final Response.Listener<ArtistImageResponse> listener, final ArtistFetchError errorListener);
-    void cancelAll();
+    public interface ArtFetchError {
+        void fetchJSONException(final ArtworkRequestModel model, final Context context, final JSONException exception);
+
+        void fetchVolleyError(final ArtworkRequestModel model, final Context context, final VolleyError error);
+    }
+
+    public abstract void fetchImage(final ArtworkRequestModel model, final Context context, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener);
 }

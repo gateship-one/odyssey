@@ -41,7 +41,7 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
-import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
+import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -325,7 +325,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         switch (item.getItemId()) {
             case R.id.action_reset_artwork:
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-                ArtworkManager.getInstance(getContext()).resetAlbumImage(mAlbum, getContext());
+                ArtworkManager.getInstance(getContext()).resetImage(mAlbum, getContext());
                 return true;
             case R.id.action_add_album:
                 enqueueAlbum();
