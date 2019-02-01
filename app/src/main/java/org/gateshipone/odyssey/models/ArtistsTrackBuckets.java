@@ -126,7 +126,8 @@ public class ArtistsTrackBuckets {
         private static final int POOL_SIZE = 100;
         private Random mJavaGenerator;
 
-        private int[] mRandomPool = new int[POOL_SIZE];
+        private static final int RAND_MAX = Integer.MAX_VALUE;
+
 
         private int mInternalSeed;
 
@@ -136,10 +137,9 @@ public class ArtistsTrackBuckets {
             // Initialize internal seed
             mInternalSeed = mJavaGenerator.nextInt();
 
-            randomizePool();
 
             // Do a quick check
-            //testDistribution(20,10000);
+            //testDistribution(20,20);
         }
 
         private int getInternalRandomNumber() {
@@ -157,19 +157,12 @@ public class ArtistsTrackBuckets {
         }
 
         int getLimitedRandomNumber(int limit) {
-            int position = mJavaGenerator.nextInt(POOL_SIZE);
-            int returnValue = mRandomPool[position] % limit;
-
-            mRandomPool[position] = getInternalRandomNumber();
-
-            return returnValue;
+            int r, d = RAND_MAX / limit;
+            limit *= d;
+            do { r = getInternalRandomNumber(); } while (r >= limit);
+            return r / d;
         }
 
-        private void randomizePool() {
-            for (int i = 0; i < POOL_SIZE; i++) {
-                mRandomPool[i] = getInternalRandomNumber();
-            }
-        }
 
         private void testDistribution(int numberLimit, int runs) {
             int numberCount[] = new int[numberLimit];
@@ -178,10 +171,26 @@ public class ArtistsTrackBuckets {
                 numberCount[getLimitedRandomNumber(numberLimit)]++;
             }
 
-            // Print distribution
+            // Print distribution and calculate mean
+            int arithmeticMean = 0;
             for (int i = 0; i < numberLimit; i++) {
                 Log.v(TAG,"Number: " + i + " = " + numberCount[i]);
+                arithmeticMean += numberCount[i];
             }
+
+            arithmeticMean /= numberLimit;
+            Log.v(TAG,"Mean value: " + arithmeticMean);
+
+            int variance = 0;
+            for (int i = 0; i < numberLimit; i++) {
+                variance += Math.pow((numberCount[i]-arithmeticMean),2);
+            }
+            Log.v(TAG,"Variance: " + variance);
+            double sd = Math.sqrt(variance);
+            Log.v(TAG,"Standard deviation: " + sd);
+            double rsd = sd/arithmeticMean;
+            Log.v(TAG, "Relative standard deviation: " + rsd + " %");
+
         }
     }
 }
