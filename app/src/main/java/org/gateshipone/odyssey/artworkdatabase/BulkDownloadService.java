@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -40,6 +39,7 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.utils.NetworkUtils;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -48,19 +48,25 @@ public class BulkDownloadService extends Service {
     private static final String TAG = BulkDownloadService.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 84;
+
     private static final String NOTIFICATION_CHANNEL_ID = "BulkDownloader";
 
     public static final String ACTION_CANCEL_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.cancel";
+
     public static final String ACTION_START_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.start";
 
     public static final String BUNDLE_KEY_ARTIST_PROVIDER = "org.gateshipone.odyssey.artist_provider";
+
     public static final String BUNDLE_KEY_ALBUM_PROVIDER = "org.gateshipone.odyssey.album_provider";
+
     public static final String BUNDLE_KEY_WIFI_ONLY = "org.gateshipone.odyssey.wifi_only";
 
     private NotificationManager mNotificationManager;
+
     private NotificationCompat.Builder mBuilder;
 
     private int mRemainingArtists;
+
     private int mRemainingAlbums;
 
     private int mSumImageDownloads;
@@ -128,7 +134,7 @@ public class BulkDownloadService extends Service {
                 return START_NOT_STICKY;
             }
 
-            if (!isDownloadAllowed(this)) {
+            if (!NetworkUtils.isDownloadAllowed(this, mWifiOnly)) {
                 return START_NOT_STICKY;
             }
 
@@ -231,26 +237,6 @@ public class BulkDownloadService extends Service {
     }
 
     /**
-     * Checks the current network state if an artwork download is allowed.
-     *
-     * @param context The current context to resolve the networkinfo
-     * @return true if a download is allowed else false
-     */
-    private boolean isDownloadAllowed(final Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
-        if (networkInfo == null) {
-            return false;
-        } else {
-            boolean isWifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
-
-            return !(mWifiOnly && !isWifi);
-        }
-    }
-
-    /**
      * Opens a notification channel and disables the LED and vibration
      */
     private void openChannel() {
@@ -285,7 +271,7 @@ public class BulkDownloadService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!isDownloadAllowed(context)) {
+            if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
 //                LimitingRequestQueue.getInstance(BulkDownloadService.this).cancelAll(request -> true);

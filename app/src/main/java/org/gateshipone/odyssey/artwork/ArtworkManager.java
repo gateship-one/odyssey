@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -52,6 +51,7 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.NetworkUtils;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -313,7 +313,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * @param artistModel Artist to fetch an image for.
      */
     public void fetchImage(final ArtistModel artistModel, final Context context) {
-        if (!isDownloadAllowed(context)) {
+        if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }
 
@@ -336,7 +336,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * @param albumModel Album to fetch an image for.
      */
     public void fetchImage(final AlbumModel albumModel, final Context context) {
-        if (!isDownloadAllowed(context)) {
+        if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }
 
@@ -479,26 +479,6 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     }
 
     /**
-     * Checks the current network state if an artwork download is allowed.
-     *
-     * @param context The current context to resolve the networkinfo
-     * @return true if a download is allowed else false
-     */
-    private boolean isDownloadAllowed(final Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
-        if (networkInfo == null) {
-            return false;
-        } else {
-            boolean isWifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET;
-
-            return !(mWifiOnly && !isWifi);
-        }
-    }
-
-    /**
      * Used to broadcast information about new available artwork to {@link BroadcastReceiver} like
      * the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider} to reload its artwork.
      *
@@ -530,7 +510,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!isDownloadAllowed(context)) {
+            if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
                 // Cancel all downloads
                 Log.v(TAG, "Cancel all downloads because of connection change");
                 cancelAllRequests(context);
