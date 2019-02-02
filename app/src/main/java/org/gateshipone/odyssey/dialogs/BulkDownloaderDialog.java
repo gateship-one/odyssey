@@ -29,16 +29,16 @@ import android.os.Build;
 import android.os.Bundle;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artworkdatabase.BulkDownloadService;
+import org.gateshipone.odyssey.artwork.BulkDownloadService;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
-import static org.gateshipone.odyssey.artworkdatabase.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
 
 public class BulkDownloaderDialog extends DialogFragment {
 

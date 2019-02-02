@@ -168,7 +168,7 @@ public class LastFMProvider extends ArtProvider {
             }
             JSONObject baseObj = response.getJSONObject(baseObjKey);
             JSONArray images = baseObj.getJSONArray("image");
-            Log.v(TAG, "Found: " + images.length() + "images");
+            Log.v(TAG, "Found: " + images.length() + " images");
             for (int i = 0; i < images.length(); i++) {
                 JSONObject image = images.getJSONObject(i);
                 if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {

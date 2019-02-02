@@ -310,9 +310,14 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     /**
      * Starts an asynchronous fetch for the image of the given artist.
      *
-     * @param artistModel Artist to fetch an image for.
+     * @param artistModel        Artist to fetch an image for.
+     * @param context            The application context.
+     * @param imageSavedCallback Callback if an image was saved.
+     * @param errorCallback      Callback if an error occured.
      */
-    public void fetchImage(final ArtistModel artistModel, final Context context) {
+    public void fetchImage(final ArtistModel artistModel, final Context context,
+                           final InsertImageTask.ImageSavedCallback imageSavedCallback,
+                           final ArtProvider.ArtFetchError errorCallback) {
         if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }
@@ -321,21 +326,37 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
         if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
             LastFMProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, this).execute(response),
-                    this);
+                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+                    errorCallback);
         } else if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_fanarttv_key))) {
             FanartTVProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, this).execute(response),
-                    this);
+                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+                    errorCallback);
         }
     }
 
     /**
-     * Starts an asynchronous fetch for the image of the given album
+     * Starts an asynchronous fetch for the image of the given artist.
+     * This method will use internal callbacks.
      *
-     * @param albumModel Album to fetch an image for.
+     * @param artistModel Artist to fetch an image for.
+     * @param context     The application context.
      */
-    public void fetchImage(final AlbumModel albumModel, final Context context) {
+    public void fetchImage(final ArtistModel artistModel, final Context context) {
+        fetchImage(artistModel, context, this, this);
+    }
+
+    /**
+     * Starts an asynchronous fetch for the image of the given album.
+     *
+     * @param albumModel         Album to fetch an image for.
+     * @param context            The application context.
+     * @param imageSavedCallback Callback if an image was saved.
+     * @param errorCallback      Callback if an error occured.
+     */
+    public void fetchImage(final AlbumModel albumModel, final Context context,
+                           final InsertImageTask.ImageSavedCallback imageSavedCallback,
+                           final ArtProvider.ArtFetchError errorCallback) {
         if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }
@@ -344,13 +365,24 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
         if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
             MusicBrainzProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, this).execute(response),
-                    this);
+                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+                    errorCallback);
         } else if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
             LastFMProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, this).execute(response),
-                    this);
+                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+                    errorCallback);
         }
+    }
+
+    /**
+     * Starts an asynchronous fetch for the image of the given album.
+     * This method will use internal callbacks.
+     *
+     * @param albumModel Album to fetch an image for.
+     * @param context    The application context.
+     */
+    public void fetchImage(final AlbumModel albumModel, final Context context) {
+        fetchImage(albumModel, context, this, this);
     }
 
     /**
@@ -453,7 +485,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
     @Override
     public void fetchVolleyError(ArtworkRequestModel model, Context context, VolleyError error) {
-        Log.e(TAG, "VolleyError for album: " + model.getLoggingString());
+        Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
 
         if (error != null) {
             NetworkResponse networkResponse = error.networkResponse;
