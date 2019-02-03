@@ -29,6 +29,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.artworkdatabase.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artworkdatabase.network.requests.AlbumImageByteRequest;
@@ -200,12 +201,16 @@ public class LastFMManager implements ArtistImageProvider, AlbumImageProvider {
         String albumName = Uri.encode(album.getAlbumName());
         String artistName = Uri.encode(album.getArtistName());
 
-        String url = LAST_FM_API_URL + "album.getinfo&album=" + albumName + "&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
-        Log.v(TAG, url);
+        if (albumName.isEmpty() || artistName.isEmpty()) {
+            errorListener.onErrorResponse(new VolleyError("required arguments are empty"));
+        } else {
+            String url = LAST_FM_API_URL + "album.getinfo&album=" + albumName + "&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
+            Log.v(TAG, url);
 
-        OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
+            OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
 
-        mRequestQueue.add(jsonObjectRequest);
+            mRequestQueue.add(jsonObjectRequest);
+        }
     }
 
     /**
