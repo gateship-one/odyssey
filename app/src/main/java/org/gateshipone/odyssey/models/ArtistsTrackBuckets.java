@@ -54,6 +54,8 @@ public class ArtistsTrackBuckets {
 
     private BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
 
+    private List<TrackModel> mOriginalList;
+
     /**
      * Creates a list of artists and their tracks with position in the original playlist
      *
@@ -62,6 +64,7 @@ public class ArtistsTrackBuckets {
     public synchronized void fillFromList(List<TrackModel> tracks) {
         // Clear all entries
         mData.clear();
+        mOriginalList = tracks;
         if (tracks == null || tracks.isEmpty()) {
             // Abort for empty data structures
             return;
@@ -93,6 +96,11 @@ public class ArtistsTrackBuckets {
      * @return A random number of a track of the original track list
      */
     public synchronized int getRandomTrackNumber() {
+        if (mData.isEmpty()) {
+            // Refill list from original list
+            fillFromList(mOriginalList);
+        }
+
         // First level random, get artist
         int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
 
@@ -117,13 +125,23 @@ public class ArtistsTrackBuckets {
 
         Pair<Integer,TrackModel> pair = artistsTracks.get(randomTrackNo);
 
+        // Remove track to prevent double plays
+        artistsTracks.remove(randomTrackNo);
+        Log.v(TAG,"Tracks from artist left: " + artistsTracks.size());
+
+        // Check if tracks from this artist are left, otherwise remove the artist
+        if(artistsTracks.isEmpty()) {
+            // No tracks left from artist, remove from map
+            listIterator.remove();
+            Log.v(TAG,"Artists left: " + mData.size());
+        }
+
         Log.v(TAG,"Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first );
         // Get random track number
         return pair.first;
     }
 
     private class BetterPseudoRandomGenerator {
-        private static final int POOL_SIZE = 100;
         private Random mJavaGenerator;
 
         private static final int RAND_MAX = Integer.MAX_VALUE;
@@ -131,7 +149,7 @@ public class ArtistsTrackBuckets {
 
         private int mInternalSeed;
 
-        public BetterPseudoRandomGenerator() {
+        private BetterPseudoRandomGenerator() {
             mJavaGenerator = new Random();
 
             // Initialize internal seed
@@ -152,7 +170,7 @@ public class ArtistsTrackBuckets {
             newSeed ^= newSeed >> 17;
             newSeed ^= newSeed << 5;
 
-            mInternalSeed = newSeed;
+            mInternalSeed = mJavaGenerator.nextInt();
             return Math.abs(newSeed);
         }
 
