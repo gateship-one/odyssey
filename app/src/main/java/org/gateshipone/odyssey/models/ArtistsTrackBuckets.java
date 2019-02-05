@@ -152,6 +152,10 @@ public class ArtistsTrackBuckets {
     }
 
     private class BetterPseudoRandomGenerator {
+        /**
+         * Timeout in ns (1 second)
+         */
+        private final static long TIMEOUT_NS = 1 * 10000000000l;
         private Random mJavaGenerator;
 
         private static final int RAND_MAX = Integer.MAX_VALUE;
@@ -187,7 +191,15 @@ public class ArtistsTrackBuckets {
         int getLimitedRandomNumber(int limit) {
             int r, d = RAND_MAX / limit;
             limit *= d;
-            do { r = getInternalRandomNumber(); } while (r >= limit);
+            long startTime = System.nanoTime();
+            do {
+                r = getInternalRandomNumber();
+                if ((System.nanoTime() - startTime) > TIMEOUT_NS) {
+                    Log.w(TAG,"Random generation timed out");
+                    // Fallback to java generator
+                    return mJavaGenerator.nextInt(limit);
+                }
+            } while (r >= limit);
             return r / d;
         }
 
