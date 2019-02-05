@@ -25,6 +25,8 @@ package org.gateshipone.odyssey.models;
 import android.util.Log;
 import android.util.Pair;
 
+import org.gateshipone.odyssey.BuildConfig;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -39,6 +41,7 @@ import java.util.Random;
  */
 public class ArtistsTrackBuckets {
     private static final String TAG = ArtistsTrackBuckets.class.getSimpleName();
+    private static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
 
     /**
      * Underlying data structure for artist-track buckets
@@ -86,7 +89,9 @@ public class ArtistsTrackBuckets {
             // Increase the track number (index) of the original playlist
             trackNo++;
         }
-        Log.v(TAG,"Recreated buckets with: " + mData.size() + " artists");
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Recreated buckets with: " + mData.size() + " artists");
+        }
     }
 
     /**
@@ -127,16 +132,21 @@ public class ArtistsTrackBuckets {
 
         // Remove track to prevent double plays
         artistsTracks.remove(randomTrackNo);
-        Log.v(TAG,"Tracks from artist left: " + artistsTracks.size());
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Tracks from artist left: " + artistsTracks.size());
+        }
 
         // Check if tracks from this artist are left, otherwise remove the artist
         if(artistsTracks.isEmpty()) {
             // No tracks left from artist, remove from map
             listIterator.remove();
-            Log.v(TAG,"Artists left: " + mData.size());
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Artists left: " + mData.size());
+            }
         }
-
-        Log.v(TAG,"Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first );
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first);
+        }
         // Get random track number
         return pair.first;
     }
