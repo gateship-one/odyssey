@@ -22,7 +22,10 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.util.Log;
 import android.util.Pair;
+
+import org.gateshipone.odyssey.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,6 +41,7 @@ import java.util.Random;
  */
 public class ArtistsTrackBuckets {
     private static final String TAG = ArtistsTrackBuckets.class.getSimpleName();
+    private static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
 
     /**
      * Underlying data structure for artist-track buckets
@@ -45,16 +49,15 @@ public class ArtistsTrackBuckets {
     private LinkedHashMap<String, List<Pair<Integer, TrackModel>>> mData;
 
     /**
-     * Random generator used for selecting a random song
-     */
-    private final Random mRandomGenerator = new Random();
-
-    /**
      * Creates an empty data structure
      */
     public ArtistsTrackBuckets() {
         mData = new LinkedHashMap<>();
     }
+
+    private BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
+
+    private List<TrackModel> mOriginalList;
 
     /**
      * Creates a list of artists and their tracks with position in the original playlist
@@ -64,6 +67,7 @@ public class ArtistsTrackBuckets {
     public synchronized void fillFromList(List<TrackModel> tracks) {
         // Clear all entries
         mData.clear();
+        mOriginalList = tracks;
         if (tracks == null || tracks.isEmpty()) {
             // Abort for empty data structures
             return;
@@ -85,6 +89,9 @@ public class ArtistsTrackBuckets {
             // Increase the track number (index) of the original playlist
             trackNo++;
         }
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Recreated buckets with: " + mData.size() + " artists");
+        }
     }
 
     /**
@@ -94,8 +101,13 @@ public class ArtistsTrackBuckets {
      * @return A random number of a track of the original track list
      */
     public synchronized int getRandomTrackNumber() {
+        if (mData.isEmpty()) {
+            // Refill list from original list
+            fillFromList(mOriginalList);
+        }
+
         // First level random, get artist
-        int randomArtistNumber = mRandomGenerator.nextInt(mData.size());
+        int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
 
         // Get artists bucket list to artist number
         List<Pair<Integer, TrackModel>> artistsTracks;
@@ -114,7 +126,111 @@ public class ArtistsTrackBuckets {
             return 0;
         }
 
+        int randomTrackNo = mRandomGenerator.getLimitedRandomNumber(artistsTracks.size());
+
+        Pair<Integer,TrackModel> pair = artistsTracks.get(randomTrackNo);
+
+        // Remove track to prevent double plays
+        artistsTracks.remove(randomTrackNo);
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Tracks from artist left: " + artistsTracks.size());
+        }
+
+        // Check if tracks from this artist are left, otherwise remove the artist
+        if(artistsTracks.isEmpty()) {
+            // No tracks left from artist, remove from map
+            listIterator.remove();
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Artists left: " + mData.size());
+            }
+        }
+        if (DEBUG_ENABLED) {
+            Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first);
+        }
         // Get random track number
-        return artistsTracks.get(mRandomGenerator.nextInt(artistsTracks.size())).first;
+        return pair.first;
+    }
+
+    private class BetterPseudoRandomGenerator {
+        /**
+         * Timeout in ns (1 second)
+         */
+        private final static long TIMEOUT_NS = 1 * 10000000000l;
+        private Random mJavaGenerator;
+
+        private static final int RAND_MAX = Integer.MAX_VALUE;
+
+
+        private int mInternalSeed;
+
+        private BetterPseudoRandomGenerator() {
+            mJavaGenerator = new Random();
+
+            // Initialize internal seed
+            mInternalSeed = mJavaGenerator.nextInt();
+
+
+            // Do a quick check
+            //testDistribution(20,20);
+        }
+
+        private int getInternalRandomNumber() {
+            /*
+             * Marsaglia, "Xorshift RNGs"
+             */
+            int newSeed = mInternalSeed;
+
+            newSeed ^= newSeed << 13;
+            newSeed ^= newSeed >> 17;
+            newSeed ^= newSeed << 5;
+
+            mInternalSeed = mJavaGenerator.nextInt();
+            return Math.abs(newSeed);
+        }
+
+        int getLimitedRandomNumber(int limit) {
+            int r, d = RAND_MAX / limit;
+            limit *= d;
+            long startTime = System.nanoTime();
+            do {
+                r = getInternalRandomNumber();
+                if ((System.nanoTime() - startTime) > TIMEOUT_NS) {
+                    Log.w(TAG,"Random generation timed out");
+                    // Fallback to java generator
+                    return mJavaGenerator.nextInt(limit);
+                }
+            } while (r >= limit);
+            return r / d;
+        }
+
+
+        private void testDistribution(int numberLimit, int runs) {
+            int numberCount[] = new int[numberLimit];
+
+            for (int i = 0; i < runs; i++) {
+                numberCount[getLimitedRandomNumber(numberLimit)]++;
+            }
+
+            // Print distribution and calculate mean
+            int arithmeticMean = 0;
+            for (int i = 0; i < numberLimit; i++) {
+                Log.v(TAG,"Number: " + i + " = " + numberCount[i]);
+                arithmeticMean += numberCount[i];
+            }
+
+            arithmeticMean /= numberLimit;
+            Log.v(TAG,"Mean value: " + arithmeticMean);
+
+            int variance = 0;
+            for (int i = 0; i < numberLimit; i++) {
+                variance += Math.pow((numberCount[i]-arithmeticMean),2);
+            }
+            Log.v(TAG,"Variance: " + variance);
+            double sd = Math.sqrt(variance);
+            Log.v(TAG,"Standard deviation: " + sd);
+            double rsd = sd/arithmeticMean;
+            Log.v(TAG, "Relative standard deviation: " + rsd + " %");
+
+        }
     }
 }
