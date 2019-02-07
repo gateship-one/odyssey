@@ -307,11 +307,8 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
             // Check if image already there
             try {
-                if (album.getAlbumID() != -1) {
-                    mDatabaseManager.getAlbumImage(getApplicationContext(), album.getAlbumID());
-                } else {
-                    mDatabaseManager.getAlbumImage(getApplicationContext(), album.getAlbumName());
-                }
+                mDatabaseManager.getAlbumImage(getApplicationContext(), album);
+
                 // If this does not throw the exception it already has an image.
                 performNextRequest();
             } catch (ImageNotFoundException e) {
@@ -326,11 +323,8 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     private void createArtistRequest(ArtistModel artist) {
         // Check if image already there
         try {
-            if (artist.getArtistID() != -1) {
-                mDatabaseManager.getArtistImage(getApplicationContext(), artist.getArtistID());
-            } else {
-                mDatabaseManager.getArtistImage(getApplicationContext(), artist.getArtistName());
-            }
+            mDatabaseManager.getArtistImage(getApplicationContext(), artist);
+
             // If this does not throw the exception it already has an image.
             performNextRequest();
         } catch (ImageNotFoundException e) {

@@ -87,20 +87,35 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Tries to fetch an image for the album with the given id (android album id).
+     * Tries to fetch an image for the album, by id (android album id), by album name and artist name or only by album name.
      *
-     * @param id Android MediaColumns album_id.
+     * @param album The album to search for.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not found and it was not searched for before.
+     * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
-    public synchronized String getAlbumImage(final Context context, long id) throws ImageNotFoundException {
+    public synchronized String getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
-        final String selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
+        final long albumId = album.getAlbumID();
+        final String albumName = album.getAlbumName();
+        final String artistName = album.getArtistName();
 
+        String selection;
+        String selectionArguments[];
 
-        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_ID, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
-                selection, new String[]{String.valueOf(id)}, null, null, null);
+        if (albumId != -1) {
+            selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
+            selectionArguments = new String[]{String.valueOf(albumId)};
+        } else if (!artistName.isEmpty()) {
+            selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=? AND " + AlbumArtTable.COLUMN_ARTIST_NAME + "=?";
+            selectionArguments = new String[]{albumName, artistName};
+        } else {
+            selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
+            selectionArguments = new String[]{albumName};
+        }
+
+        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
+                selection, selectionArguments, null, null, null);
 
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
@@ -110,8 +125,6 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
                 database.close();
                 return null;
             }
-
-            // get the filename for the image
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
@@ -127,59 +140,36 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Tries to fetch an image for the artist with the given id (android artist id).
+     * Tries to fetch an image for the artist, by id (android artist id) or by the artist name.
      *
-     * @param id Android MediaColumns artist_id.
+     * @param artist The artist to search for.
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
-    public synchronized String getArtistImage(final Context context, long id) throws ImageNotFoundException {
+    public synchronized String getArtistImage(final Context context, ArtistModel artist) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
-        final String selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
+        final String artistName = artist.getArtistName();
 
-
-        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_ID, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
-                selection, new String[]{String.valueOf(id)}, null, null, null);
-
-        // Check if an image was found
-        if (requestCursor.moveToFirst()) {
-            // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if (requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
-                requestCursor.close();
-                database.close();
-                return null;
-            }
-
-            // get the filename for the image
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
-
-            requestCursor.close();
-            database.close();
-
-            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
+        long artistId = artist.getArtistID();
+        if (artistId == -1) {
+            // Try to get the artistID manually because it seems to be missing
+            artistId = MusicLibraryHelper.getArtistIDFromName(artistName, context);
         }
 
-        // If we reach this, no entry was found for the given request. Throw an exception
-        requestCursor.close();
-        database.close();
-        throw new ImageNotFoundException();
-    }
+        String selection;
+        String selectionArguments[];
 
-    /**
-     * Tries to fetch an image for the album with the given name. This is useful if artist_id is not set
-     *
-     * @param artistName The name of the artist to search for.
-     * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not found and it was not searched for before.
-     */
-    public synchronized String getArtistImage(final Context context, String artistName) throws ImageNotFoundException {
-        final SQLiteDatabase database = getReadableDatabase();
+        if (artistId != -1) {
+            selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
+            selectionArguments = new String[]{String.valueOf(artistId)};
+        } else {
+            selection = AlbumArtTable.COLUMN_ARTIST_NAME + "=?";
+            selectionArguments = new String[]{artistName};
+        }
 
-        final String selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
-
-        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_ARTIST_NAME, ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
-                selection, new String[]{artistName}, null, null, null);
+        final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_IMAGE_FILE_PATH, ArtistArtTable.COLUMN_IMAGE_NOT_FOUND},
+                selection, selectionArguments, null, null, null);
 
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
@@ -254,44 +244,6 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         database.replace(ArtistArtTable.TABLE_NAME, "", values);
 
         database.close();
-    }
-
-
-    /**
-     * Tries to fetch an image for the album with the given name. This can result in wrong results for e.g. "Greatest Hits"
-     *
-     * @param albumName The name of the album to search for.
-     * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
-     * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
-     */
-    public synchronized String getAlbumImage(final Context context, final String albumName) throws ImageNotFoundException {
-        final SQLiteDatabase database = getReadableDatabase();
-
-        final String selection = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
-
-        final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_ALBUM_NAME, AlbumArtTable.COLUMN_IMAGE_FILE_PATH, AlbumArtTable.COLUMN_IMAGE_NOT_FOUND},
-                selection, new String[]{albumName}, null, null, null);
-
-        // Check if an image was found
-        if (requestCursor.moveToFirst()) {
-            // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if (requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
-                requestCursor.close();
-                database.close();
-                return null;
-            }
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
-
-            requestCursor.close();
-            database.close();
-
-            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
-        }
-
-        // If we reach this, no entry was found for the given request. Throw an exception
-        requestCursor.close();
-        database.close();
-        throw new ImageNotFoundException();
     }
 
     /**
@@ -433,8 +385,23 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void removeAlbumImage(final Context context, final AlbumModel album) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        final String where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
-        final String whereArgs[] = {String.valueOf(album.getAlbumID())};
+        final long albumId = album.getAlbumID();
+        final String albumName = album.getAlbumName();
+        final String artistName = album.getArtistName();
+
+        String where;
+        String whereArgs[];
+
+        if (albumId != -1) {
+            where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
+            whereArgs = new String[]{String.valueOf(albumId)};
+        } else if (!artistName.isEmpty()) {
+            where = AlbumArtTable.COLUMN_ALBUM_NAME + "=? AND " + AlbumArtTable.COLUMN_ARTIST_NAME + "=?";
+            whereArgs = new String[]{albumName, artistName};
+        } else {
+            where = AlbumArtTable.COLUMN_ALBUM_NAME + "=?";
+            whereArgs = new String[]{albumName};
+        }
 
         final Cursor requestCursor = database.query(AlbumArtTable.TABLE_NAME, new String[]{AlbumArtTable.COLUMN_IMAGE_FILE_PATH},
                 where, whereArgs, null, null, null);

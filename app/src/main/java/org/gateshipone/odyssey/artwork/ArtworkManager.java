@@ -222,19 +222,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             }
         }
 
-        long artistID = artist.getArtistID();
-
-        String image;
-
-        /*
-         * If no artist id is set for the album (possible with data set of Odyssey) check
-         * the artist with name instead of id.
-         */
-        if (artistID == -1) {
-            image = mDBManager.getArtistImage(context, artist.getArtistName());
-        } else {
-            image = mDBManager.getArtistImage(context, artistID);
-        }
+        final String image = mDBManager.getArtistImage(context, artist);
 
         // Checks if the database has an image for the requested artist
         if (null != image) {
@@ -268,20 +256,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             return bm;
         }
 
-        // Get the id for the album, used to check in database
-        long albumID = album.getAlbumID();
-
-        String image;
-
-        if (albumID == -1) {
-            // Check if ID is available (should be the case). If not use the album name for
-            // lookup.
-            // FIXME use artistname also
-            image = mDBManager.getAlbumImage(context, album.getAlbumName());
-        } else {
-            // If id is available use it.
-            image = mDBManager.getAlbumImage(context, album.getAlbumID());
-        }
+        final String image = mDBManager.getAlbumImage(context, album);
 
         // Checks if the database has an image for the requested album
         if (null != image) {
