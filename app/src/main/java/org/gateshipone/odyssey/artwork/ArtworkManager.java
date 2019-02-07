@@ -290,9 +290,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * @param imageSavedCallback Callback if an image was saved.
      * @param errorCallback      Callback if an error occured.
      */
-    public void fetchImage(final ArtistModel artistModel, final Context context,
-                           final InsertImageTask.ImageSavedCallback imageSavedCallback,
-                           final ArtProvider.ArtFetchError errorCallback) {
+    void fetchImage(final ArtistModel artistModel, final Context context,
+                    final InsertImageTask.ImageSavedCallback imageSavedCallback,
+                    final ArtProvider.ArtFetchError errorCallback) {
         if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }
@@ -329,9 +329,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * @param imageSavedCallback Callback if an image was saved.
      * @param errorCallback      Callback if an error occured.
      */
-    public void fetchImage(final AlbumModel albumModel, final Context context,
-                           final InsertImageTask.ImageSavedCallback imageSavedCallback,
-                           final ArtProvider.ArtFetchError errorCallback) {
+    void fetchImage(final AlbumModel albumModel, final Context context,
+                    final InsertImageTask.ImageSavedCallback imageSavedCallback,
+                    final ArtProvider.ArtFetchError errorCallback) {
         if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }

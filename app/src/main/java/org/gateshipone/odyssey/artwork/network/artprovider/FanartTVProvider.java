@@ -111,7 +111,14 @@ public class FanartTVProvider extends ArtProvider {
     }
 
     /**
-     * FIXME ADD COMMENT
+     * Method to parse the artist info json response.
+     * The response will be used to get an image for the requested artist (via getArtistImageURL and getArtistImage).
+     *
+     * @param model         The model representing the artist for which an image was requested.
+     * @param context       The current application context.
+     * @param response      The artist info response as a {@link JSONObject}.
+     * @param listener      Callback if an image could be loaded successfully.
+     * @param errorListener Callback if an error occured.
      */
     private void parseMusicBrainzArtistsJSON(final ArtworkRequestModel model, final Context context, final JSONObject response,
                                              final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {

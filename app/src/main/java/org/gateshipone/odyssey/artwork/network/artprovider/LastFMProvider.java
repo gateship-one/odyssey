@@ -145,13 +145,14 @@ public class LastFMProvider extends ArtProvider {
     }
 
     /**
-     * FIXME ADD COMMENT
+     * Method to parse the album/artist info json response.
+     * The response will be used to get an image for the requested album/artist.
      *
-     * @param model
-     * @param context
-     * @param response
-     * @param listener
-     * @param errorListener
+     * @param model         The model representing the album/artist for which an image was requested.
+     * @param context       The current application context.
+     * @param response      The album/artist info response as a {@link JSONObject}.
+     * @param listener      Callback if an image could be loaded successfully.
+     * @param errorListener Callback if an error occured.
      */
     private void parseJSONResponse(final ArtworkRequestModel model, final Context context, final JSONObject response,
                                    final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
