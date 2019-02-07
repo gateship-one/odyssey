@@ -1,3 +1,11 @@
+### Version: 1.1.17 Tag: release-29 (2019-02-07) ###
+* updated french translation
+* optional experimental smart random feature
+* migrate to AndroidX
+* fix possible image scaling error
+* add automatic backwards seek on resume
+* add sleep timer option to stop after current track
+
 ### Version: 1.1.16 Tag: release-28 (2018-11-10) ###
 * optional sleep timer ([Issue #149](https://github.com/gateship-one/odyssey/issues/149))
 * fix possible deadlock in the search function

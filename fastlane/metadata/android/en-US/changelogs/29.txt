@@ -1,0 +1,6 @@
+* updated french translation
+* optional experimental smart random feature
+* migrate to AndroidX
+* fix possible image scaling error
+* add automatic backwards seek on resume
+* add sleep timer option to stop after current track
