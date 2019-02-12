@@ -1549,6 +1549,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPlayingIndex = -1;
         mNextPlayingIndex = -1;
 
+        updateArtistTrackBuckets();
+
         // call resume and start playback
         resume();
 

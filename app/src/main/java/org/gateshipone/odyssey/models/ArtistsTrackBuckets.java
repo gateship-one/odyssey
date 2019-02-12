@@ -189,6 +189,9 @@ public class ArtistsTrackBuckets {
         }
 
         int getLimitedRandomNumber(int limit) {
+            if (limit == 0) {
+                return 0;
+            }
             int r, d = RAND_MAX / limit;
             limit *= d;
             long startTime = System.nanoTime();
