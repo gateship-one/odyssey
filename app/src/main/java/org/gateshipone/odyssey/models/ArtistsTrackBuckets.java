@@ -160,8 +160,15 @@ public class ArtistsTrackBuckets {
 
         private static final int RAND_MAX = Integer.MAX_VALUE;
 
+        /**
+         * Value after how many random numbers a reseed is done
+         */
+        private static final int RESEED_COUNT = 20;
+
+        private int mNumbersGiven = 0;
 
         private int mInternalSeed;
+
 
         private BetterPseudoRandomGenerator() {
             mJavaGenerator = new Random();
@@ -184,7 +191,16 @@ public class ArtistsTrackBuckets {
             newSeed ^= newSeed >> 17;
             newSeed ^= newSeed << 5;
 
-            mInternalSeed = mJavaGenerator.nextInt();
+            mNumbersGiven++;
+            if (mNumbersGiven == RESEED_COUNT) {
+                if(DEBUG_ENABLED) {
+                    Log.v(TAG,"Reseeded PRNG");
+                }
+                mInternalSeed = mJavaGenerator.nextInt();
+                mNumbersGiven = 0;
+            } else {
+                mInternalSeed = newSeed;
+            }
             return Math.abs(newSeed);
         }
 
