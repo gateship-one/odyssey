@@ -28,6 +28,7 @@ import android.util.Pair;
 import org.gateshipone.odyssey.BuildConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,13 +47,13 @@ public class ArtistsTrackBuckets {
     /**
      * Underlying data structure for artist-track buckets
      */
-    private LinkedHashMap<String, List<Pair<Integer, TrackModel>>> mData;
+    private ArrayList<List<Pair<Integer, TrackModel>>> mData;
 
     /**
      * Creates an empty data structure
      */
     public ArtistsTrackBuckets() {
-        mData = new LinkedHashMap<>();
+        mData = new ArrayList<>();
     }
 
     private BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
@@ -67,6 +68,9 @@ public class ArtistsTrackBuckets {
     public synchronized void fillFromList(List<TrackModel> tracks) {
         // Clear all entries
         mData.clear();
+
+        LinkedHashMap<String, List<Pair<Integer, TrackModel>>> hashMap = new LinkedHashMap<>();
+
         mOriginalList = tracks;
         if (tracks == null || tracks.isEmpty()) {
             // Abort for empty data structures
@@ -77,11 +81,11 @@ public class ArtistsTrackBuckets {
         int trackNo = 0;
         for (TrackModel track : tracks) {
             String artistName = track.getTrackArtistName();
-            List<Pair<Integer, TrackModel>> list = mData.get(artistName);
+            List<Pair<Integer, TrackModel>> list = hashMap.get(artistName);
             if (list == null) {
                 // If artist is not already in HashMap add a new list for it
                 list = new ArrayList<>();
-                mData.put(artistName, list);
+                hashMap.put(artistName, list);
             }
             // Add pair of position in original playlist and track itself to artists bucket list
             list.add(new Pair<>(trackNo, track));
@@ -90,8 +94,11 @@ public class ArtistsTrackBuckets {
             trackNo++;
         }
         if (DEBUG_ENABLED) {
-            Log.v(TAG, "Recreated buckets with: " + mData.size() + " artists");
+            Log.v(TAG, "Recreated buckets with: " + hashMap.size() + " artists");
         }
+
+        mData.addAll(hashMap.values());
+        Collections.shuffle(mData);
     }
 
     /**
@@ -112,14 +119,9 @@ public class ArtistsTrackBuckets {
         // Get artists bucket list to artist number
         List<Pair<Integer, TrackModel>> artistsTracks;
 
-        // Get the artist at the position of randomArtistNumber. Iterate until the position is reached
-        int compareArtistNumber = 0;
-        Iterator<List<Pair<Integer, TrackModel>>> listIterator = mData.values().iterator();
-        while (listIterator.hasNext() && (compareArtistNumber++ != randomArtistNumber)) {
-            listIterator.next();
-        }
+
         // Get the list of tracks belonging to the selected artist
-        artistsTracks = listIterator.next();
+        artistsTracks = mData.get(randomArtistNumber);
 
         // Check if an artist was found
         if (artistsTracks == null) {
@@ -139,7 +141,7 @@ public class ArtistsTrackBuckets {
         // Check if tracks from this artist are left, otherwise remove the artist
         if(artistsTracks.isEmpty()) {
             // No tracks left from artist, remove from map
-            listIterator.remove();
+            mData.remove(randomArtistNumber);
             if (DEBUG_ENABLED) {
                 Log.v(TAG, "Artists left: " + mData.size());
             }
