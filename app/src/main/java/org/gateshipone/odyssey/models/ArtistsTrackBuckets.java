@@ -47,7 +47,7 @@ public class ArtistsTrackBuckets {
     /**
      * Underlying data structure for artist-track buckets
      */
-    private ArrayList<List<Pair<Integer, TrackModel>>> mData;
+    private ArrayList<List<Integer>> mData;
 
     /**
      * Creates an empty data structure
@@ -69,7 +69,7 @@ public class ArtistsTrackBuckets {
         // Clear all entries
         mData.clear();
 
-        LinkedHashMap<String, List<Pair<Integer, TrackModel>>> hashMap = new LinkedHashMap<>();
+        LinkedHashMap<String, List<Integer>> hashMap = new LinkedHashMap<>();
 
         mOriginalList = tracks;
         if (tracks == null || tracks.isEmpty()) {
@@ -81,14 +81,14 @@ public class ArtistsTrackBuckets {
         int trackNo = 0;
         for (TrackModel track : tracks) {
             String artistName = track.getTrackArtistName();
-            List<Pair<Integer, TrackModel>> list = hashMap.get(artistName);
+            List<Integer> list = hashMap.get(artistName);
             if (list == null) {
                 // If artist is not already in HashMap add a new list for it
                 list = new ArrayList<>();
                 hashMap.put(artistName, list);
             }
             // Add pair of position in original playlist and track itself to artists bucket list
-            list.add(new Pair<>(trackNo, track));
+            list.add(new Integer(trackNo));
 
             // Increase the track number (index) of the original playlist
             trackNo++;
@@ -117,7 +117,7 @@ public class ArtistsTrackBuckets {
         int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
 
         // Get artists bucket list to artist number
-        List<Pair<Integer, TrackModel>> artistsTracks;
+        List<Integer> artistsTracks;
 
 
         // Get the list of tracks belonging to the selected artist
@@ -130,7 +130,7 @@ public class ArtistsTrackBuckets {
 
         int randomTrackNo = mRandomGenerator.getLimitedRandomNumber(artistsTracks.size());
 
-        Pair<Integer,TrackModel> pair = artistsTracks.get(randomTrackNo);
+        Integer songNumber = artistsTracks.get(randomTrackNo);
 
         // Remove track to prevent double plays
         artistsTracks.remove(randomTrackNo);
@@ -147,10 +147,10 @@ public class ArtistsTrackBuckets {
             }
         }
         if (DEBUG_ENABLED) {
-            Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + pair.first);
+            Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + songNumber);
         }
         // Get random track number
-        return pair.first;
+        return songNumber;
     }
 
     private class BetterPseudoRandomGenerator {
