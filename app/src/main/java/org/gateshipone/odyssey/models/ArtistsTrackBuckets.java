@@ -88,7 +88,7 @@ public class ArtistsTrackBuckets {
                 hashMap.put(artistName, list);
             }
             // Add pair of position in original playlist and track itself to artists bucket list
-            list.add(new Integer(trackNo));
+            list.add(trackNo);
 
             // Increase the track number (index) of the original playlist
             trackNo++;
