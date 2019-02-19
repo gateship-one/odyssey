@@ -150,12 +150,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String artistName = artist.getArtistName();
-
-        long artistId = artist.getArtistID();
-        if (artistId == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistId = MusicLibraryHelper.getArtistIDFromName(artistName, context);
-        }
+        final long artistId = artist.getArtistID();
 
         String selection;
         String selectionArguments[];
