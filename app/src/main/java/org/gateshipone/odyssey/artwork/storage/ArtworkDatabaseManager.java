@@ -164,7 +164,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
             selectionArguments = new String[]{String.valueOf(artistId)};
         } else {
-            selection = AlbumArtTable.COLUMN_ARTIST_NAME + "=?";
+            selection = ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
             selectionArguments = new String[]{artistName};
         }
 
