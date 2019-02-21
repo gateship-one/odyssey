@@ -107,6 +107,9 @@
     <string name="pref_smart_random_key_int" translatable="false">pref_smart_random_key_int</string>
     <integer name="pref_smart_random_default" translatable="false">50</integer>
 
+    <string name="pref_artwork_use_local_images_key" translatable="false">pref_artwork_use_local_images</string>
+    <bool name="pref_artwork_use_local_images_default">false</bool>
+
     <string-array name="preference_style_values" translatable="false">
         <item>@string/pref_indigo_key</item>
         <item>@string/pref_orange_key</item>
@@ -148,7 +151,6 @@
         <item>@string/pref_library_view_grid_key</item>
         <item>@string/pref_library_view_list_key</item>
     </string-array>
-
 
     <string name="pref_library_click_action_key" translatable="false">pref_library_click_action_key</string>
     <string name="pref_library_click_action_add_key" translatable="false">library_click_action_add</string>

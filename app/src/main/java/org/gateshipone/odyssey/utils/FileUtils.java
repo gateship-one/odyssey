@@ -223,6 +223,24 @@ public class FileUtils {
     }
 
     /**
+     * FIXME ADD COMMENT
+     *
+     * @param directory
+     * @param allowedArtworkFilenames
+     * @return
+     */
+    public static File getArtworkFileInPath(final String directory, final List<String> allowedArtworkFilenames) {
+        for (String filename : allowedArtworkFilenames) {
+            final File file = new File(directory + "/" + filename);
+            if (file.exists()) {
+                return file;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Method to extract a path from a given uri with optional arguments.
      *
      * @param context       The application context.

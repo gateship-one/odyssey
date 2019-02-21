@@ -270,6 +270,9 @@
     <string name="preference_hide_media_on_lockscreen_title">Private notification</string>
     <string name="preference_hide_media_on_lockscreen_text">Hide media information on the lockscreen (depends on your system lock screen privacy settings)</string>
 
+    <string name="preference_artwork_use_local_images_title">Use local album images</string>
+    <string name="preference_artwork_use_local_images_text">Ignore album artworks found in the Android Media Database and use local images instead. If no local image is found the selected album artwork provider will be used.</string>
+
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>
     <string name="preference_category_artwork_other_actions">Other actions</string>

@@ -77,6 +77,8 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     public static final String BUNDLE_KEY_WIFI_ONLY = "org.gateshipone.odyssey.wifi_only";
 
+    public static final String BUNDLE_KEY_USE_LOCAL_IMAGES = "org.gateshipone.odyssey.use_local_images";
+
     private NotificationManager mNotificationManager;
 
     private NotificationCompat.Builder mBuilder;
@@ -90,6 +92,8 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     private ConnectionStateReceiver mConnectionStateChangeReceiver;
 
     private boolean mWifiOnly;
+
+    private boolean mUseLocalImages;
 
     final private LinkedList<ArtworkRequestModel> mArtworkRequestQueue = new LinkedList<>();
 
@@ -144,6 +148,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
                 artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, getString(R.string.pref_artwork_provider_artist_default));
                 albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, getString(R.string.pref_artwork_provider_album_default));
                 mWifiOnly = intent.getBooleanExtra(BUNDLE_KEY_WIFI_ONLY, true);
+                mUseLocalImages = intent.getBooleanExtra(BUNDLE_KEY_USE_LOCAL_IMAGES, false);
             }
 
             if (artistProvider.equals(getString(R.string.pref_artwork_provider_none_key)) && albumProvider.equals(getString(R.string.pref_artwork_provider_none_key))) {
@@ -161,7 +166,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             mWakelock.acquire();
 
             mArtworkManager = ArtworkManager.getInstance(getApplicationContext());
-            mArtworkManager.initialize(artistProvider, albumProvider, mWifiOnly);
+            mArtworkManager.initialize(artistProvider, albumProvider, mWifiOnly, mUseLocalImages);
 
             mDatabaseManager = ArtworkDatabaseManager.getInstance(getApplicationContext());
 
@@ -303,7 +308,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     }
 
     private void createAlbumRequest(final AlbumModel album) {
-        if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
+        if (mUseLocalImages || album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
             // Check if image already there
             try {
                 mDatabaseManager.getAlbumImage(getApplicationContext(), album);

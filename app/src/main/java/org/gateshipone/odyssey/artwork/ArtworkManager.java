@@ -52,9 +52,14 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.NetworkUtils;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.json.JSONException;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTask.ImageSavedCallback {
 
@@ -90,6 +95,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     private static final String INTENT_EXTRA_KEY_ARTIST_NAME = "org.gateshipone.odyssey.extra.artist_name";
 
     /**
+     * The list of supported artwork filenames. This will be used to check if a local cover exists.
+     */
+    private static final List<String> ALLOWED_ARTWORK_FILENAMES = new ArrayList<>(Arrays.asList("cover.jpg", "cover.jpeg", "cover.png", "folder.jpg", "folder.jpeg", "folder.png", "artwork.jpg", "artwork.jpeg", "artwork.png"));
+
+    /**
      * Private static singleton instance that can be used by other classes via the
      * getInstance method.
      */
@@ -109,6 +119,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * Settings value if artwork download is only allowed via wifi/wired connection.
      */
     private boolean mWifiOnly;
+
+    // FIXME ADD COMMENT
+    private boolean mUseLocalImages;
 
     /**
      * Manager for the SQLite database handling
@@ -141,6 +154,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         mArtistProvider = sharedPref.getString(context.getString(R.string.pref_artist_provider_key), context.getString(R.string.pref_artwork_provider_artist_default));
         mAlbumProvider = sharedPref.getString(context.getString(R.string.pref_album_provider_key), context.getString(R.string.pref_artwork_provider_album_default));
         mWifiOnly = sharedPref.getBoolean(context.getString(R.string.pref_download_wifi_only_key), context.getResources().getBoolean(R.bool.pref_download_wifi_default));
+        mUseLocalImages = sharedPref.getBoolean(context.getString(R.string.pref_artwork_use_local_images_key), context.getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -162,10 +176,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         mArtistProvider = artistProvider;
     }
 
-    public void initialize(String artistProvider, String albumProvider, boolean wifiOnly) {
+    public void initialize(String artistProvider, String albumProvider, boolean wifiOnly, boolean useLocalImages) {
         mArtistProvider = artistProvider;
         mAlbumProvider = albumProvider;
         mWifiOnly = wifiOnly;
+        mUseLocalImages = useLocalImages;
     }
 
     /**
@@ -249,7 +264,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
         // Check local artwork database
         String albumURL = album.getAlbumArtURL();
-        if (albumURL != null && !albumURL.isEmpty()) {
+        if (!mUseLocalImages && albumURL != null && !albumURL.isEmpty()) {
             // Local album art found (android database)
             Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
             BitmapCache.getInstance().putAlbumBitmap(album, bm);
@@ -328,6 +343,31 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     void fetchImage(final AlbumModel albumModel, final Context context,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
+        if (mUseLocalImages) {
+            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumKey(), context);
+
+            for (final String location : storageLocations) {
+                final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(context, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
+
+                if (!artworkFiles.isEmpty()) {
+                    // use the first valid cover file
+                    final File coverFile = artworkFiles.get(0);
+
+                    final ArtworkRequestModel requestModel = new ArtworkRequestModel(albumModel);
+
+                    ImageResponse response = new ImageResponse();
+                    response.model = requestModel;
+                    response.image = null;
+                    response.url = null;
+                    response.localArtworkPath = coverFile.getAbsolutePath();
+
+                    new InsertImageTask(context, imageSavedCallback).execute(response);
+
+                    return;
+                }
+            }
+        }
+
         if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
             return;
         }

@@ -38,6 +38,7 @@ import androidx.fragment.app.DialogFragment;
 
 import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
 import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_USE_LOCAL_IMAGES;
 import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
 
 public class BulkDownloaderDialog extends DialogFragment {
@@ -100,6 +101,8 @@ public class BulkDownloaderDialog extends DialogFragment {
                             getString(R.string.pref_artwork_provider_album_default)));
                     serviceIntent.putExtra(BUNDLE_KEY_WIFI_ONLY, sharedPref.getBoolean(getString(R.string.pref_download_wifi_only_key),
                             getResources().getBoolean(R.bool.pref_download_wifi_default)));
+                    serviceIntent.putExtra(BUNDLE_KEY_USE_LOCAL_IMAGES, sharedPref.getBoolean(getString(R.string.pref_artwork_use_local_images_key),
+                            getResources().getBoolean(R.bool.pref_artwork_use_local_images_default)));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         getActivity().startForegroundService(serviceIntent);
                     } else {

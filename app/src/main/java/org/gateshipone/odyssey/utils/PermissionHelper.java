@@ -31,7 +31,10 @@ import android.net.Uri;
 
 import org.gateshipone.odyssey.models.FileModel;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;
@@ -126,7 +129,7 @@ public class PermissionHelper {
     }
 
     /**
-     * Permission safe call to get all files in a given directory.
+     * Permission safe call to get all music files in a given directory.
      *
      * @param context   The application context for the permission check.
      * @param directory The {@link FileModel} representing the parent directory.
@@ -140,5 +143,29 @@ public class PermissionHelper {
         }
 
         return files;
+    }
+
+    /**
+     * FIXME ADD COMMENT
+     *
+     * @param context
+     * @param directoryPath
+     * @param filter
+     * @return
+     */
+    public static List<File> getFilesForDirectory(final Context context, final String directoryPath, final FilenameFilter filter) {
+        List<File> artworkFiles = new ArrayList<>();
+
+        final File directory = new File(directoryPath);
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File[] files = directory.listFiles(filter);
+
+            if (files != null) {
+                artworkFiles = Arrays.asList(files);
+            }
+        }
+
+        return artworkFiles;
     }
 }
