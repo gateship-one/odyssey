@@ -70,7 +70,7 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
         ImageResponse response = params[0];
 
         if (response.image == null) {
-            insertImage(response.model, null);
+            insertImage(response.model, null, response.localArtworkPath);
             return response.model;
         }
 
@@ -88,11 +88,11 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
                     .compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
 
             if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
-                insertImage(response.model, byteStream.toByteArray());
+                insertImage(response.model, byteStream.toByteArray(), null);
             }
         } else {
             if (response.image.length <= MAXIMUM_IMAGE_SIZE) {
-                insertImage(response.model, response.image);
+                insertImage(response.model, response.image, null);
             }
         }
 
@@ -104,12 +104,12 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
         mImageSavedCallback.onImageSaved(artworkRequestModel, mApplicationContext);
     }
 
-    private void insertImage(final ArtworkRequestModel model, final byte[] image) {
+    private void insertImage(final ArtworkRequestModel model, final byte[] image, final String localArtworkPath) {
         final ArtworkDatabaseManager artworkDatabase = ArtworkDatabaseManager.getInstance(mApplicationContext);
 
         switch (model.getType()) {
             case ALBUM:
-                artworkDatabase.insertAlbumImage(mApplicationContext, (AlbumModel) model.getGenericModel(), image);
+                artworkDatabase.insertAlbumImage(mApplicationContext, (AlbumModel) model.getGenericModel(), image, localArtworkPath);
                 break;
             case ARTIST:
                 artworkDatabase.insertArtistImage(mApplicationContext, (ArtistModel) model.getGenericModel(), image);

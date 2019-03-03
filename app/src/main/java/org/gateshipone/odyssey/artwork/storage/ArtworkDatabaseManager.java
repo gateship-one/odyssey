@@ -254,11 +254,13 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * Saves the given album byte[] image.
      *
-     * @param album Album for the associated image byte[].
-     * @param image byte[] containing the raw image that was downloaded. This can be null in which case
-     *              the database entry will have the not_found flag set.
+     * @param album                Album for the associated image byte[].
+     * @param image                byte[] containing the raw image that was downloaded. This can be null in which case
+     *                             the database entry will have the not_found flag set if artworkFullImagePath is null as well.
+     * @param artworkFullImagePath Optional path to an album image if local image support is active otherwise null. If this parameter is null
+     *                             the not_found flag is set if image is null as well.
      */
-    public synchronized void insertAlbumImage(final Context context, final AlbumModel album, final byte[] image) {
+    public synchronized void insertAlbumImage(final Context context, final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String albumID = String.valueOf(album.getAlbumID());
@@ -288,39 +290,11 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBID);
         values.put(AlbumArtTable.COLUMN_ALBUM_NAME, albumName);
         values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumArtistName);
-        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
-        values.put(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH, 0);
+        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename == null ? artworkFullImagePath : artworkFilename);
+        values.put(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH, artworkFullImagePath == null ? 0 : 1);
 
         // If null was given as byte[] set the not_found flag for this entry.
-        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, image == null ? 1 : 0);
-
-        database.replace(AlbumArtTable.TABLE_NAME, "", values);
-
-        database.close();
-    }
-
-    /**
-     * FIXME ADD COMMENT
-     *
-     * @param album
-     * @param artworkFilename
-     */
-    public synchronized void insertAlbumImage(final AlbumModel album, final String artworkFilename) {
-        final SQLiteDatabase database = getWritableDatabase();
-
-        final String albumID = String.valueOf(album.getAlbumID());
-        final String albumMBID = album.getMBID();
-        final String albumName = album.getAlbumName();
-        final String albumArtistName = album.getArtistName();
-
-        final ContentValues values = new ContentValues();
-        values.put(AlbumArtTable.COLUMN_ALBUM_ID, albumID);
-        values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBID);
-        values.put(AlbumArtTable.COLUMN_ALBUM_NAME, albumName);
-        values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumArtistName);
-        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
-        values.put(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH, 1);
-        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, 0);
+        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, (image == null && artworkFullImagePath == null) ? 1 : 0);
 
         database.replace(AlbumArtTable.TABLE_NAME, "", values);
 
