@@ -126,16 +126,17 @@ public class MusicBrainzProvider extends ArtProvider {
     private void parseMusicBrainzReleaseJSON(final ArtworkRequestModel model, final int releaseIndex, final JSONObject response, final Context context,
                                              final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         if (releaseIndex >= MUSICBRAINZ_LIMIT_RESULT_COUNT) {
+            errorListener.fetchVolleyError(model, context, null);
             return;
         }
 
         try {
             final JSONArray releases = response.getJSONArray("releases");
             if (releases.length() > releaseIndex) {
-                String mbid = releases.getJSONObject(releaseIndex).getString("id");
+                final String mbid = releases.getJSONObject(releaseIndex).getString("id");
                 model.setMBID(mbid);
 
-                String url = COVERART_ARCHIVE_API_URL + "/" + "release/" + mbid + "/front-500";
+                final String url = COVERART_ARCHIVE_API_URL + "/" + "release/" + mbid + "/front-500";
 
                 getAlbumImage(url, model, listener, error -> {
                     Log.v(TAG, "No image found for: " + model.getAlbumName() + " with release index: " + releaseIndex);
