@@ -34,7 +34,6 @@ import org.gateshipone.odyssey.artwork.network.ImageResponse;
 import org.gateshipone.odyssey.artwork.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artwork.network.requests.OdysseyByteRequest;
 import org.gateshipone.odyssey.artwork.network.requests.OdysseyJsonObjectRequest;
-import org.gateshipone.odyssey.utils.FormatHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,8 +96,8 @@ public class MusicBrainzProvider extends ArtProvider {
      * @param errorListener Error listener
      */
     private void getAlbumMBID(final ArtworkRequestModel model, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
-        final String albumName = FormatHelper.escapeSpecialCharsLucene(model.getEncodedAlbumName());
-        final String artistName = FormatHelper.escapeSpecialCharsLucene(model.getEncodedArtistName());
+        final String albumName = model.getLuceneEscapedEncodedAlbumName();
+        final String artistName = model.getLuceneEscapedEncodedArtistName();
 
         String url;
         if (!artistName.isEmpty()) {

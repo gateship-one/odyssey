@@ -27,6 +27,7 @@ import android.net.Uri;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.GenericModel;
+import org.gateshipone.odyssey.utils.FormatHelper;
 
 public class ArtworkRequestModel {
 
@@ -110,6 +111,20 @@ public class ArtworkRequestModel {
         return encodedAlbumName;
     }
 
+    public String getLuceneEscapedEncodedAlbumName() {
+        String escapedAlbumName = null;
+
+        switch (mType) {
+            case ALBUM:
+                escapedAlbumName = FormatHelper.escapeSpecialCharsLucene(((AlbumModel) mModel).getAlbumName());
+                break;
+            case ARTIST:
+                break;
+        }
+
+        return Uri.encode(escapedAlbumName);
+    }
+
     public String getEncodedArtistName() {
         String encodedArtistName = null;
 
@@ -123,6 +138,21 @@ public class ArtworkRequestModel {
         }
 
         return encodedArtistName;
+    }
+
+    public String getLuceneEscapedEncodedArtistName() {
+        String escapedArtistName = null;
+
+        switch (mType) {
+            case ALBUM:
+                escapedArtistName = FormatHelper.escapeSpecialCharsLucene(((AlbumModel) mModel).getArtistName());
+                break;
+            case ARTIST:
+                escapedArtistName = FormatHelper.escapeSpecialCharsLucene(((ArtistModel) mModel).getArtistName());
+                break;
+        }
+
+        return Uri.encode(escapedArtistName);
     }
 
     public GenericModel getGenericModel() {

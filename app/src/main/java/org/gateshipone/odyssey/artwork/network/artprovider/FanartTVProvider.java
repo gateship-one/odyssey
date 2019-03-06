@@ -34,7 +34,6 @@ import org.gateshipone.odyssey.artwork.network.ImageResponse;
 import org.gateshipone.odyssey.artwork.network.LimitingRequestQueue;
 import org.gateshipone.odyssey.artwork.network.requests.OdysseyByteRequest;
 import org.gateshipone.odyssey.artwork.network.requests.OdysseyJsonObjectRequest;
-import org.gateshipone.odyssey.utils.FormatHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +102,7 @@ public class FanartTVProvider extends ArtProvider {
                 // not used for this provider
                 break;
             case ARTIST:
-                getArtists(model.getEncodedArtistName(),
+                getArtists(model.getLuceneEscapedEncodedArtistName(),
                         response -> parseMusicBrainzArtistsJSON(model, context, response, listener, errorListener),
                         error -> errorListener.fetchVolleyError(model, context, error));
                 break;
@@ -160,9 +159,7 @@ public class FanartTVProvider extends ArtProvider {
 
         Log.v(FanartTVProvider.class.getSimpleName(), artistName);
 
-        String queryArtistname = FormatHelper.escapeSpecialCharsLucene(artistName);
-
-        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + queryArtistname + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
+        String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(url, null, listener, errorListener);
 
