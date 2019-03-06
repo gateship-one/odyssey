@@ -297,7 +297,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             return;
         }
 
-        ArtworkRequestModel requestModel = new ArtworkRequestModel(artistModel);
+        final ArtworkRequestModel requestModel = new ArtworkRequestModel(artistModel);
 
         if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
             LastFMProvider.getInstance(context).fetchImage(requestModel, context,
@@ -428,7 +428,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
     @Override
     public void onImageSaved(final ArtworkRequestModel artworkRequestModel, final Context applicationContext) {
-        broadcastNewAlbumImageInfo(artworkRequestModel, applicationContext);
+        broadcastNewArtwokInfo(artworkRequestModel, applicationContext);
 
         switch (artworkRequestModel.getType()) {
             case ALBUM:
@@ -492,7 +492,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * @param model   The model that an image was inserted for.
      * @param context Context used for broadcasting
      */
-    private void broadcastNewAlbumImageInfo(ArtworkRequestModel model, Context context) {
+    private void broadcastNewArtwokInfo(ArtworkRequestModel model, Context context) {
         Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
 
         switch (model.getType()) {
@@ -508,7 +508,6 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                 newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST_NAME, artistModel.getArtistName());
                 break;
         }
-
 
         context.sendBroadcast(newImageIntent);
     }
