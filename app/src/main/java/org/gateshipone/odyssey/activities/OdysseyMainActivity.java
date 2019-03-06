@@ -550,7 +550,7 @@ public class OdysseyMainActivity extends GenericActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         // clear backstack
-        fragmentManager.popBackStackImmediate("", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         Fragment fragment = null;
 
