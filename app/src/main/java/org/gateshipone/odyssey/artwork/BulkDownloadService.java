@@ -263,15 +263,15 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             }
         }
 
-        mSumArtworkRequests = mArtworkRequestQueue.size();
-
-        mBuilder.setContentTitle(getString(R.string.downloader_notification_remaining_images));
-
         startBulkDownload();
     }
 
     private void startBulkDownload() {
         Log.v(TAG, "Bulkloading started with: " + mArtworkRequestQueue.size());
+
+        mSumArtworkRequests = mArtworkRequestQueue.size();
+
+        mBuilder.setContentTitle(getString(R.string.downloader_notification_remaining_images));
 
         if (mArtworkRequestQueue.isEmpty()) {
             finishedLoading();
