@@ -173,7 +173,6 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         return START_STICKY;
     }
 
-
     @Override
     public void onImageSaved(final ArtworkRequestModel artworkRequestModel, final Context applicationContext) {
         mArtworkManager.onImageSaved(artworkRequestModel, applicationContext);
@@ -256,9 +255,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             }
         }
 
-        List<ArtistModel> artists = MusicLibraryHelper.getAllArtists(false, getApplicationContext());
-
         if (fetchArtists) {
+            List<ArtistModel> artists = MusicLibraryHelper.getAllArtists(false, getApplicationContext());
+
             for (ArtistModel artist : artists) {
                 mArtworkRequestQueue.add(new ArtworkRequestModel(artist));
             }
@@ -303,7 +302,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         }
     }
 
-    private void createAlbumRequest(AlbumModel album) {
+    private void createAlbumRequest(final AlbumModel album) {
         if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
             // Check if image already there
             try {
@@ -320,7 +319,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         }
     }
 
-    private void createArtistRequest(ArtistModel artist) {
+    private void createArtistRequest(final ArtistModel artist) {
         // Check if image already there
         try {
             mDatabaseManager.getArtistImage(getApplicationContext(), artist);
@@ -368,6 +367,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             channel.enableVibration(false);
             channel.enableLights(false);
             channel.setVibrationPattern(null);
+
+            // Allow lockscreen control
+            channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
             // Register the channel
             mNotificationManager.createNotificationChannel(channel);
