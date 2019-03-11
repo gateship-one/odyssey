@@ -806,11 +806,11 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * FIXME ADD COMMENT
+     * This method returns the storage location for each track that is connected to the provided album key.
      *
-     * @param albumKey
-     * @param context
-     * @return
+     * @param albumKey The album key that will be used to get all tracks for this key.
+     * @param context  The application context to access the content resolver.
+     * @return A {@link Set} of all storage locations for each track for the given album key.
      */
     public static Set<String> getTrackStorageLocationsForAlbum(final String albumKey, final Context context) {
         final Set<String> trackStorageLocations = new HashSet<>();

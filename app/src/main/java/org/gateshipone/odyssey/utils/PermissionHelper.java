@@ -146,15 +146,15 @@ public class PermissionHelper {
     }
 
     /**
-     * FIXME ADD COMMENT
+     * Permission safe call to get all files for a given directory path.
      *
-     * @param context
-     * @param directoryPath
-     * @param filter
-     * @return
+     * @param context       The application context for the permission check.
+     * @param directoryPath The path to the directory.
+     * @param filter        A {@link FilenameFilter} to filter only specific files.
+     * @return A {@link List} of {@link File} in the directory that match the given {@link FilenameFilter}.
      */
     public static List<File> getFilesForDirectory(final Context context, final String directoryPath, final FilenameFilter filter) {
-        List<File> artworkFiles = new ArrayList<>();
+        List<File> filteredFiles = new ArrayList<>();
 
         final File directory = new File(directoryPath);
 
@@ -162,10 +162,10 @@ public class PermissionHelper {
             File[] files = directory.listFiles(filter);
 
             if (files != null) {
-                artworkFiles = Arrays.asList(files);
+                filteredFiles = Arrays.asList(files);
             }
         }
 
-        return artworkFiles;
+        return filteredFiles;
     }
 }

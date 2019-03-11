@@ -120,7 +120,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     private boolean mWifiOnly;
 
-    // FIXME ADD COMMENT
+    /**
+     * Flag if local covers should be used instead of the android media database.
+     */
     private boolean mUseLocalImages;
 
     /**
