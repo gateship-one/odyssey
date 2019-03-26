@@ -23,13 +23,11 @@
 package org.gateshipone.odyssey.models;
 
 import android.util.Log;
-import android.util.Pair;
 
 import org.gateshipone.odyssey.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
@@ -40,8 +38,8 @@ import java.util.Random;
  * randomize the playback of the playback equally distributed over all artists of the original
  * track list.
  */
-public class ArtistsTrackBuckets {
-    private static final String TAG = ArtistsTrackBuckets.class.getSimpleName();
+public class TrackRandomGenerator {
+    private static final String TAG = TrackRandomGenerator.class.getSimpleName();
     private static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
 
     /**
@@ -52,7 +50,7 @@ public class ArtistsTrackBuckets {
     /**
      * Creates an empty data structure
      */
-    public ArtistsTrackBuckets() {
+    public TrackRandomGenerator() {
         mData = new ArrayList<>();
     }
 

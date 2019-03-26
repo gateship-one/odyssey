@@ -45,7 +45,7 @@ import android.widget.Toast;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
-import org.gateshipone.odyssey.models.ArtistsTrackBuckets;
+import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
@@ -250,7 +250,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
-    private ArtistsTrackBuckets mArtistTrackBuckets;
+    private TrackRandomGenerator mArtistTrackBuckets;
 
     /**
      * Set if the user started a sleep
@@ -312,7 +312,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mCurrentList = mDatabaseManager.readPlaylist();
 
         // Create empty bucket list
-        mArtistTrackBuckets = new ArtistsTrackBuckets();
+        mArtistTrackBuckets = new TrackRandomGenerator();
         updateArtistTrackBuckets();
 
         // read a possible saved state from database
