@@ -104,8 +104,8 @@
     <string name="pref_last_used_sleep_timer_key" translatable="false">pref_last_used_sleep_timer_key</string>
     <string name="pref_last_used_sleep_timer_stop_after_current_key" translatable="false">pref_last_used_sleep_timer_stop_after_current_key</string>
 
-    <string name="pref_smart_random_key" translatable="false">pref_smart_random_key</string>
-    <bool name="pref_smart_random_default" translatable="false">false</bool>
+    <string name="pref_smart_random_key_int" translatable="false">pref_smart_random_key_int</string>
+    <integer name="pref_smart_random_default" translatable="false">50</integer>
 
     <string-array name="preference_style_values" translatable="false">
         <item>@string/pref_indigo_key</item>

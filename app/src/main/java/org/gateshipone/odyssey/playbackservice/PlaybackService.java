@@ -250,8 +250,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
-    private boolean mArtistSmartRandomActive = true;
-
     private ArtistsTrackBuckets mArtistTrackBuckets;
 
     /**
@@ -385,7 +383,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mAutoBackwardsAmount = (sharedPreferences.getInt(this.getString(R.string.pref_seek_backwards_key), this.getResources().getInteger(R.integer.pref_seek_backwards_default)) * 1000);
 
-        setSmartRandom(sharedPreferences.getBoolean(getString(R.string.pref_smart_random_key), getResources().getBoolean(R.bool.pref_smart_random_default)));
+        setSmartRandom(sharedPreferences.getInt(getString(R.string.pref_smart_random_key_int), getResources().getInteger(R.integer.pref_smart_random_default)));
     }
 
     /**
@@ -1766,7 +1764,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
     private void updateArtistTrackBuckets() {
         // Redo smart random list
-        if (mArtistSmartRandomActive && mRandom == RANDOMSTATE.RANDOM_ON) {
+        if (mRandom == RANDOMSTATE.RANDOM_ON) {
             mArtistTrackBuckets.fillFromList(mCurrentList);
         } else {
             mArtistTrackBuckets.fillFromList(null);
@@ -1820,19 +1818,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private void randomizeNextTrack() {
         // Set next index to random one
         if (mCurrentList.size() > 0) {
-            if (!mArtistSmartRandomActive) {
-                mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
-
-                // if next index equal to current index create a new random
-                // index but just trying RANDOM_RETRIES times
-                int counter = 0;
-                while (mNextPlayingIndex == mCurrentPlayingIndex && counter < RANDOM_RETRIES) {
-                    mNextPlayingIndex = mRandomGenerator.nextInt(mCurrentList.size());
-                    counter++;
-                }
-            } else {
-                mNextPlayingIndex = mArtistTrackBuckets.getRandomTrackNumber();
-            }
+            mNextPlayingIndex = mArtistTrackBuckets.getRandomTrackNumber();
         }
     }
 
@@ -1864,9 +1850,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    public void setSmartRandom(boolean enabled) {
+    public void setSmartRandom(int enabled) {
         Log.v(TAG, "Set smartrandom: " + enabled);
-        mArtistSmartRandomActive = enabled;
+        mArtistTrackBuckets.setEnabled(enabled);
         updateArtistTrackBuckets();
     }
 

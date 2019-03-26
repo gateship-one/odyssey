@@ -60,6 +60,8 @@ public class ArtistsTrackBuckets {
 
     private List<TrackModel> mOriginalList;
 
+    private int mEnabledValue;
+
     /**
      * Creates a list of artists and their tracks with position in the original playlist
      *
@@ -69,9 +71,13 @@ public class ArtistsTrackBuckets {
         // Clear all entries
         mData.clear();
 
+        mOriginalList = tracks;
+
+        if (mEnabledValue == 0) {
+            return;
+        }
         LinkedHashMap<String, List<Integer>> hashMap = new LinkedHashMap<>();
 
-        mOriginalList = tracks;
         if (tracks == null || tracks.isEmpty()) {
             // Abort for empty data structures
             return;
@@ -108,49 +114,69 @@ public class ArtistsTrackBuckets {
      * @return A random number of a track of the original track list
      */
     public synchronized int getRandomTrackNumber() {
-        if (mData.isEmpty()) {
-            // Refill list from original list
-            fillFromList(mOriginalList);
-        }
+        // Randomize if a more balanced (per artist) approach or a traditional approach should be used
+        boolean smartRandom = mRandomGenerator.getLimitedRandomNumber(100) < mEnabledValue;
 
-        // First level random, get artist
-        int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
-
-        // Get artists bucket list to artist number
-        List<Integer> artistsTracks;
-
-
-        // Get the list of tracks belonging to the selected artist
-        artistsTracks = mData.get(randomArtistNumber);
-
-        // Check if an artist was found
-        if (artistsTracks == null) {
-            return 0;
-        }
-
-        int randomTrackNo = mRandomGenerator.getLimitedRandomNumber(artistsTracks.size());
-
-        Integer songNumber = artistsTracks.get(randomTrackNo);
-
-        // Remove track to prevent double plays
-        artistsTracks.remove(randomTrackNo);
-        if (DEBUG_ENABLED) {
-            Log.v(TAG, "Tracks from artist left: " + artistsTracks.size());
-        }
-
-        // Check if tracks from this artist are left, otherwise remove the artist
-        if(artistsTracks.isEmpty()) {
-            // No tracks left from artist, remove from map
-            mData.remove(randomArtistNumber);
-            if (DEBUG_ENABLED) {
-                Log.v(TAG, "Artists left: " + mData.size());
+        if (smartRandom) {
+            Log.v(TAG,"Use smart random");
+            if (mData.isEmpty()) {
+                // Refill list from original list
+                fillFromList(mOriginalList);
             }
+
+            // First level random, get artist
+            int randomArtistNumber = mRandomGenerator.getLimitedRandomNumber(mData.size());
+
+            // Get artists bucket list to artist number
+            List<Integer> artistsTracks;
+
+
+            // Get the list of tracks belonging to the selected artist
+            artistsTracks = mData.get(randomArtistNumber);
+
+            // Check if an artist was found
+            if (artistsTracks == null) {
+                return 0;
+            }
+
+            int randomTrackNo = mRandomGenerator.getLimitedRandomNumber(artistsTracks.size());
+
+            Integer songNumber = artistsTracks.get(randomTrackNo);
+
+            // Remove track to prevent double plays
+            artistsTracks.remove(randomTrackNo);
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Tracks from artist left: " + artistsTracks.size());
+            }
+
+            // Check if tracks from this artist are left, otherwise remove the artist
+            if (artistsTracks.isEmpty()) {
+                // No tracks left from artist, remove from map
+                mData.remove(randomArtistNumber);
+                if (DEBUG_ENABLED) {
+                    Log.v(TAG, "Artists left: " + mData.size());
+                }
+            }
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + songNumber);
+            }
+            // Get random track number
+            return songNumber;
+        } else {
+            Log.v(TAG,"Use traditional random");
+            return mRandomGenerator.getLimitedRandomNumber(mOriginalList.size());
         }
-        if (DEBUG_ENABLED) {
-            Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + songNumber);
+    }
+
+    public void setEnabled(int factor) {
+        if (mEnabledValue == 0 && factor != 0) {
+            // Redo track buckets
+            fillFromList(mOriginalList);
+        } else if (mEnabledValue != 0 && factor == 0) {
+            // Remove track buckets
+            fillFromList(null);
         }
-        // Get random track number
-        return songNumber;
+        mEnabledValue = factor;
     }
 
     private class BetterPseudoRandomGenerator {

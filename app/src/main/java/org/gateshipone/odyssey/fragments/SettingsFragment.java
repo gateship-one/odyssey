@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
+import org.gateshipone.odyssey.dialogs.DumbnessDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -118,6 +119,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         backwardsSeek.setOnPreferenceClickListener(preference -> {
             SeekBackwardsStepSizeDialog dialog = new SeekBackwardsStepSizeDialog();
             dialog.show(getFragmentManager(), "Volume steps");
+            return true;
+        });
+
+        Preference dumbnessPreference = findPreference(getString(R.string.pref_smart_random_key_int));
+        dumbnessPreference.setOnPreferenceClickListener(preference -> {
+            DumbnessDialog dialog = new DumbnessDialog();
+            dialog.show(getFragmentManager(), "Dumbness dialog");
             return true;
         });
     }
@@ -210,9 +218,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 ((GenericActivity) getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
             } catch (RemoteException e) {
             }
-        } else if (key.equals(getString(R.string.pref_smart_random_key))) {
+        } else if (key.equals(getString(R.string.pref_smart_random_key_int))) {
             try {
-                ((GenericActivity) getActivity()).getPlaybackService().setSmartRandom(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_random_default)));
+                ((GenericActivity) getActivity()).getPlaybackService().setSmartRandom(sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_random_default)));
             } catch (RemoteException e) {
             }
         }

@@ -159,7 +159,7 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().cancelSleepTimer();
                     break;
                 case ODYSSEY_SET_SMARTRANDOM:
-                    mService.get().setSmartRandom(msgObj.getBoolParam());
+                    mService.get().setSmartRandom(msgObj.getIntParam());
                     break;
             }
 

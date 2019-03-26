@@ -106,7 +106,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void setSmartRandom(boolean enabled) throws RemoteException {
+    public void setSmartRandom(int enabled) throws RemoteException {
         // Create repeat control object
         ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SET_SMARTRANDOM, enabled);
         Message msg = mService.get().getHandler().obtainMessage();
