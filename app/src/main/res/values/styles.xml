@@ -346,4 +346,8 @@
         <item name="android:windowBackground">?attr/odyssey_color_background</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
     </style>
+
+    <style name="AppThemeLight.NumberPicker" parent="AppThemeLight">
+        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+    </style>
 </resources>
