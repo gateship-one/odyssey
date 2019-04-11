@@ -28,12 +28,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
@@ -45,8 +43,6 @@ import androidx.fragment.app.DialogFragment;
 
 
 public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
-
-    private SeekBar mSeekBar;
 
     private TextView mDialogLabel;
 
@@ -63,15 +59,15 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View seekView = inflater.inflate(R.layout.resume_step_size_dialog, null);
 
-        mSeekBar = seekView.findViewById(R.id.volume_seekbar);
+        SeekBar seekBar = seekView.findViewById(R.id.volume_seekbar);
         mDialogLabel = seekView.findViewById(R.id.dialog_text);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         mStepSize = sharedPreferences.getInt(getString(R.string.pref_seek_backwards_key), getResources().getInteger(R.integer.pref_seek_backwards_default));
 
-        mSeekBar.setProgress(mStepSize);
-        mSeekBar.setOnSeekBarChangeListener(this);
+        seekBar.setProgress(mStepSize);
+        seekBar.setOnSeekBarChangeListener(this);
 
         updateLabels();
 

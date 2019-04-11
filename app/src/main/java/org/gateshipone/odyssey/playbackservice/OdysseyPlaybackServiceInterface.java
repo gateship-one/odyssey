@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
-import android.os.RemoteException;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -33,7 +32,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     // Holds the actual playback service for handling reasons
     private final WeakReference<PlaybackService> mService;
 
-    public OdysseyPlaybackServiceInterface(PlaybackService service) {
+    OdysseyPlaybackServiceInterface(PlaybackService service) {
         mService = new WeakReference<>(service);
     }
 
@@ -106,9 +105,9 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void setSmartRandom(int enabled) throws RemoteException {
+    public void setSmartRandom(int intelligenceFactor) {
         // Create repeat control object
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SET_SMARTRANDOM, enabled);
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_SET_SMARTRANDOM, intelligenceFactor);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

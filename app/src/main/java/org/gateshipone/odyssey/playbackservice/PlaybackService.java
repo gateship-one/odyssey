@@ -45,9 +45,9 @@ import android.widget.Toast;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
-import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -61,7 +61,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Random;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 
@@ -144,12 +143,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private final static int SERVICE_CANCEL_TIME = 5 * 60 * 1000;
 
     /**
-     * Defines how often the random generator should retry to get a random number if it always
-     * hits the currently running track
-     */
-    private final static int RANDOM_RETRIES = 20;
-
-    /**
      * Handler that executes action requested by a message
      */
     private PlaybackServiceHandler mHandler;
@@ -196,11 +189,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Saves the time (in milliseconds) of the last playback.
      */
     private int mLastPosition = 0;
-
-    /**
-     * Random generator used to find a random position when random playback is active.
-     */
-    private Random mRandomGenerator;
 
     /**
      * Saves if random playback is active
@@ -250,7 +238,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private int mAutoBackwardsAmount;
 
-    private TrackRandomGenerator mArtistTrackBuckets;
+    private TrackRandomGenerator mTrackRandomGenerator;
 
     /**
      * Set if the user started a sleep
@@ -312,8 +300,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mCurrentList = mDatabaseManager.readPlaylist();
 
         // Create empty bucket list
-        mArtistTrackBuckets = new TrackRandomGenerator();
-        updateArtistTrackBuckets();
+        mTrackRandomGenerator = new TrackRandomGenerator();
+        updateTrackRandomGenerator();
 
         // read a possible saved state from database
         OdysseyServiceState state = mDatabaseManager.getState();
@@ -368,9 +356,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Initialize the transition wake lock (see above for the reason)
         mSongTransitionWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-
-        // set up random generator used for random playback
-        mRandomGenerator = new Random();
 
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);
@@ -789,7 +774,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Clear the list
         mCurrentList.clear();
 
-        updateArtistTrackBuckets();
+        updateTrackRandomGenerator();
 
         // reset random and repeat state
         mRandom = RANDOMSTATE.RANDOM_OFF;
@@ -949,8 +934,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Inform the helper that the state has changed
         mPlaybackServiceStatusHelper.updateStatus();
 
-        // Update artists track buckets
-        updateArtistTrackBuckets();
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -1107,8 +1092,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
 
-        // Update artists track buckets
-        updateArtistTrackBuckets();
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -1135,8 +1120,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
 
-        // Update artists track buckets
-        updateArtistTrackBuckets();
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -1180,8 +1165,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
 
-        // Update artists track buckets
-        updateArtistTrackBuckets();
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -1281,8 +1266,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
 
-        // Update artists track buckets
-        updateArtistTrackBuckets();
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -1381,7 +1366,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // update the status
         mPlaybackServiceStatusHelper.updateStatus();
         if (mRandom == RANDOMSTATE.RANDOM_ON) {
-            updateArtistTrackBuckets();
+            updateTrackRandomGenerator();
             randomizeNextTrack();
         } else {
             // Set nextTrack to next in list
@@ -1547,7 +1532,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPlayingIndex = -1;
         mNextPlayingIndex = -1;
 
-        updateArtistTrackBuckets();
+        updateTrackRandomGenerator();
 
         // call resume and start playback
         resume();
@@ -1762,12 +1747,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    private void updateArtistTrackBuckets() {
+    private void updateTrackRandomGenerator() {
         // Redo smart random list
         if (mRandom == RANDOMSTATE.RANDOM_ON) {
-            mArtistTrackBuckets.fillFromList(mCurrentList);
+            mTrackRandomGenerator.fillFromList(mCurrentList);
         } else {
-            mArtistTrackBuckets.fillFromList(null);
+            mTrackRandomGenerator.fillFromList(null);
         }
     }
 
@@ -1818,7 +1803,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     private void randomizeNextTrack() {
         // Set next index to random one
         if (mCurrentList.size() > 0) {
-            mNextPlayingIndex = mArtistTrackBuckets.getRandomTrackNumber();
+            mNextPlayingIndex = mTrackRandomGenerator.getRandomTrackNumber();
         }
     }
 
@@ -1850,10 +1835,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
     }
 
-    public void setSmartRandom(int enabled) {
-        Log.v(TAG, "Set smartrandom: " + enabled);
-        mArtistTrackBuckets.setEnabled(enabled);
-        updateArtistTrackBuckets();
+    public void setSmartRandom(int intelligenceFactor) {
+        mTrackRandomGenerator.setEnabled(intelligenceFactor);
+        updateTrackRandomGenerator();
     }
 
     public int getAudioSessionID() {
@@ -2035,8 +2019,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // notify the UI if an update has occurred
             mPlaybackServiceStatusHelper.updateStatus();
 
-            // Update smart random data if necessary
-            updateArtistTrackBuckets();
+            // update trackRandomGenerator
+            updateTrackRandomGenerator();
         }
     }
 

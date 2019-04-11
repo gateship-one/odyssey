@@ -36,13 +36,12 @@ import android.view.ViewGroup;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
-import org.gateshipone.odyssey.dialogs.DumbnessDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.dialogs.RandomIntelligenceDialog;
+import org.gateshipone.odyssey.dialogs.SeekBackwardsStepSizeDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.dialogs.SeekBackwardsStepSizeDialog;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -122,10 +121,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             return true;
         });
 
-        Preference dumbnessPreference = findPreference(getString(R.string.pref_smart_random_key_int));
-        dumbnessPreference.setOnPreferenceClickListener(preference -> {
-            DumbnessDialog dialog = new DumbnessDialog();
-            dialog.show(getFragmentManager(), "Dumbness dialog");
+        Preference randomIntelligencePreference = findPreference(getString(R.string.pref_smart_random_key_int));
+        randomIntelligencePreference.setOnPreferenceClickListener(preference -> {
+            RandomIntelligenceDialog dialog = new RandomIntelligenceDialog();
+            dialog.show(getFragmentManager(), "Random Intelligence dialog");
             return true;
         });
     }

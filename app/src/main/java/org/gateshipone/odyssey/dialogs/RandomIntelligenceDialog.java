@@ -41,14 +41,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-
-public class DumbnessDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
-
-    private SeekBar mSeekBar;
+public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private TextView mDialogLabel;
 
-    private int mDumbness;
+    private int mIntelligenceFactor;
 
     private PlaybackServiceConnection mPBSConnection;
 
@@ -61,15 +58,15 @@ public class DumbnessDialog extends DialogFragment implements SeekBar.OnSeekBarC
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View seekView = inflater.inflate(R.layout.dumbness_select_dialog, null);
 
-        mSeekBar = seekView.findViewById(R.id.volume_seekbar);
+        SeekBar seekBar = seekView.findViewById(R.id.volume_seekbar);
         mDialogLabel = seekView.findViewById(R.id.dialog_text);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        mDumbness = sharedPreferences.getInt(getString(R.string.pref_smart_random_key_int), getResources().getInteger(R.integer.pref_smart_random_default));
+        mIntelligenceFactor = sharedPreferences.getInt(getString(R.string.pref_smart_random_key_int), getResources().getInteger(R.integer.pref_smart_random_default));
 
-        mSeekBar.setProgress(mDumbness);
-        mSeekBar.setOnSeekBarChangeListener(this);
+        seekBar.setProgress(mIntelligenceFactor);
+        seekBar.setOnSeekBarChangeListener(this);
 
         updateLabels();
 
@@ -77,11 +74,11 @@ public class DumbnessDialog extends DialogFragment implements SeekBar.OnSeekBarC
 
         builder.setPositiveButton(R.string.error_dialog_ok_action, ((dialog, which) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(getString(R.string.pref_smart_random_key_int), mDumbness);
+            editor.putInt(getString(R.string.pref_smart_random_key_int), mIntelligenceFactor);
             editor.apply();
 
             try {
-                mPBSConnection.getPBS().setSmartRandom(mDumbness);
+                mPBSConnection.getPBS().setSmartRandom(mIntelligenceFactor);
             } catch (RemoteException ignored) {
             }
 
@@ -97,7 +94,7 @@ public class DumbnessDialog extends DialogFragment implements SeekBar.OnSeekBarC
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mDumbness = progress;
+        mIntelligenceFactor = progress;
         updateLabels();
     }
 
@@ -112,6 +109,6 @@ public class DumbnessDialog extends DialogFragment implements SeekBar.OnSeekBarC
     }
 
     private void updateLabels() {
-        mDialogLabel.setText(getString(R.string.preference_dumbness_dialog_title, mDumbness));
+        mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
     }
 }

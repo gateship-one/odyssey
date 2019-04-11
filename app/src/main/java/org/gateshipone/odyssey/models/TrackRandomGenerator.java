@@ -58,7 +58,7 @@ public class TrackRandomGenerator {
 
     private List<TrackModel> mOriginalList;
 
-    private int mEnabledValue;
+    private int mIntelligenceFactor;
 
     /**
      * Creates a list of artists and their tracks with position in the original playlist
@@ -71,7 +71,7 @@ public class TrackRandomGenerator {
 
         mOriginalList = tracks;
 
-        if (mEnabledValue == 0) {
+        if (mIntelligenceFactor == 0) {
             return;
         }
         LinkedHashMap<String, List<Integer>> hashMap = new LinkedHashMap<>();
@@ -113,10 +113,12 @@ public class TrackRandomGenerator {
      */
     public synchronized int getRandomTrackNumber() {
         // Randomize if a more balanced (per artist) approach or a traditional approach should be used
-        boolean smartRandom = mRandomGenerator.getLimitedRandomNumber(100) < mEnabledValue;
+        boolean smartRandom = mRandomGenerator.getLimitedRandomNumber(100) < mIntelligenceFactor;
 
         if (smartRandom) {
-            Log.v(TAG,"Use smart random");
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Use smart random");
+            }
             if (mData.isEmpty()) {
                 // Refill list from original list
                 fillFromList(mOriginalList);
@@ -161,27 +163,29 @@ public class TrackRandomGenerator {
             // Get random track number
             return songNumber;
         } else {
-            Log.v(TAG,"Use traditional random");
+            if (DEBUG_ENABLED) {
+                Log.v(TAG, "Use traditional random");
+            }
             return mRandomGenerator.getLimitedRandomNumber(mOriginalList.size());
         }
     }
 
     public void setEnabled(int factor) {
-        if (mEnabledValue == 0 && factor != 0) {
+        if (mIntelligenceFactor == 0 && factor != 0) {
             // Redo track buckets
             fillFromList(mOriginalList);
-        } else if (mEnabledValue != 0 && factor == 0) {
+        } else if (mIntelligenceFactor != 0 && factor == 0) {
             // Remove track buckets
             fillFromList(null);
         }
-        mEnabledValue = factor;
+        mIntelligenceFactor = factor;
     }
 
     private class BetterPseudoRandomGenerator {
         /**
          * Timeout in ns (1 second)
          */
-        private final static long TIMEOUT_NS = 1 * 10000000000l;
+        private final static long TIMEOUT_NS = 10000000000L;
         private Random mJavaGenerator;
 
         private static final int RAND_MAX = Integer.MAX_VALUE;
@@ -219,8 +223,8 @@ public class TrackRandomGenerator {
 
             mNumbersGiven++;
             if (mNumbersGiven == RESEED_COUNT) {
-                if(DEBUG_ENABLED) {
-                    Log.v(TAG,"Reseeded PRNG");
+                if (DEBUG_ENABLED) {
+                    Log.v(TAG, "Reseeded PRNG");
                 }
                 mInternalSeed = mJavaGenerator.nextInt();
                 mNumbersGiven = 0;
@@ -240,7 +244,9 @@ public class TrackRandomGenerator {
             do {
                 r = getInternalRandomNumber();
                 if ((System.nanoTime() - startTime) > TIMEOUT_NS) {
-                    Log.w(TAG,"Random generation timed out");
+                    if (DEBUG_ENABLED) {
+                        Log.w(TAG, "Random generation timed out");
+                    }
                     // Fallback to java generator
                     return mJavaGenerator.nextInt(limit);
                 }
@@ -259,21 +265,21 @@ public class TrackRandomGenerator {
             // Print distribution and calculate mean
             int arithmeticMean = 0;
             for (int i = 0; i < numberLimit; i++) {
-                Log.v(TAG,"Number: " + i + " = " + numberCount[i]);
+                Log.v(TAG, "Number: " + i + " = " + numberCount[i]);
                 arithmeticMean += numberCount[i];
             }
 
             arithmeticMean /= numberLimit;
-            Log.v(TAG,"Mean value: " + arithmeticMean);
+            Log.v(TAG, "Mean value: " + arithmeticMean);
 
             int variance = 0;
             for (int i = 0; i < numberLimit; i++) {
-                variance += Math.pow((numberCount[i]-arithmeticMean),2);
+                variance += Math.pow((numberCount[i] - arithmeticMean), 2);
             }
-            Log.v(TAG,"Variance: " + variance);
+            Log.v(TAG, "Variance: " + variance);
             double sd = Math.sqrt(variance);
-            Log.v(TAG,"Standard deviation: " + sd);
-            double rsd = sd/arithmeticMean;
+            Log.v(TAG, "Standard deviation: " + sd);
+            double rsd = sd / arithmeticMean;
             Log.v(TAG, "Relative standard deviation: " + rsd + " %");
 
         }
