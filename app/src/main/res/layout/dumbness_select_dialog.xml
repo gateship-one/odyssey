@@ -34,6 +34,14 @@
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
         tools:text="@string/preference_random_intelligence_dialog_title"
         android:textSize="@dimen/material_font_style_size_subheading" />
+    <TextView
+        android:id="@+id/dialog_explanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
+        android:minLines="2"
+        tools:text="@string/preference_random_intelligence_dumb"
+        android:textSize="@dimen/material_font_style_size_body_1" />
     <SeekBar
         android:id="@+id/volume_seekbar"
         android:layout_width="match_parent"

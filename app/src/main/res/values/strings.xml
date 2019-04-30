@@ -327,7 +327,12 @@
 
     <string name="preference_resume_step_size_dialog_title">Step size: %d seconds</string>
     <string name="preference_random_intelligence_dialog_title">Random intelligence: %d %%</string>
+    <string name="preference_random_intelligence_dumber">Random selects tracks completely random with no regard to the artists</string>
+    <string name="preference_random_intelligence_dumb">Random mostly selects tracks completely random with almost no regard to the artists</string>
+    <string name="preference_random_intelligence_balanced">Random selects tracks balanced between artists- and track-based selection</string>
+    <string name="preference_random_intelligence_intelligent">Random mostly selects tracks based on the artist</string>
+    <string name="preference_random_intelligence_more_intelligent">Random completely selects tracks based on the artist</string>
 
     <string name="preference_smart_random_title">Enable smarter random</string>
-    <string name="preference_smart_random_text">Enables a smarter random method for random track selection. With this option enabled, each artist is uniformly distributed selected for random playback. This is useful for playlists with a lot of tracks of one artist and few tracks of other artists.</string>
+    <string name="preference_smart_random_text">Select a random selection preference. This option allows random playback to be more uniformly distributed (for artists). This is useful for playlists with a lot of tracks of one artist and few tracks of other artists.</string>
 </resources>

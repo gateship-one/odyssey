@@ -44,6 +44,7 @@ import androidx.fragment.app.DialogFragment;
 public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private TextView mDialogLabel;
+    private TextView mExplanationLabel;
 
     private int mIntelligenceFactor;
 
@@ -60,6 +61,7 @@ public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.
 
         SeekBar seekBar = seekView.findViewById(R.id.volume_seekbar);
         mDialogLabel = seekView.findViewById(R.id.dialog_text);
+        mExplanationLabel = seekView.findViewById(R.id.dialog_explanation);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -109,6 +111,21 @@ public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.
     }
 
     private void updateLabels() {
-        mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+        if (mIntelligenceFactor == 100) {
+            mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+            mExplanationLabel.setText(getString(R.string.preference_random_intelligence_more_intelligent));
+        } else if (mIntelligenceFactor > 60) {
+            mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+            mExplanationLabel.setText(getString(R.string.preference_random_intelligence_intelligent));
+        } else if (mIntelligenceFactor > 40) {
+            mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+            mExplanationLabel.setText(getString(R.string.preference_random_intelligence_balanced));
+        } else if (mIntelligenceFactor > 0) {
+            mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+            mExplanationLabel.setText(getString(R.string.preference_random_intelligence_dumb));
+        } else {
+            mDialogLabel.setText(getString(R.string.preference_random_intelligence_dialog_title, mIntelligenceFactor));
+            mExplanationLabel.setText(getString(R.string.preference_random_intelligence_dumber));
+        }
     }
 }

@@ -213,6 +213,12 @@
     <string name="preference_resume_step_size_title">Automatisches Zurückspulen</string>
     <string name="dialog_sleep_timer_stop_after_current">Wiedergabe erst nach dem aktuellem Lied beenden</string>
     <string name="preference_smart_random_title">Intelligente Zufallswiedergabe</string>
-    <string name="preference_smart_random_text">Diese Option aktiviert eine intelligentere Auswahl von zufälligen Liedern. Durch die Option werden die Interpreten der Wiedergabeliste gleichverteilt häufig für eine zufällige Wiedergabe ausgewählt. Dies ist nützlich für Wiedergabelisten, die viele Lieder einzelner Interpreten und wenige Lieder anderer Interpreten enthalten.</string>
+    <string name="preference_smart_random_text">Zufallspreferenz auswählen. Diese Option erlaubt die Zufallswiedergabe zu steuern, in dem eine Preferenz zwischen Interpreten- oder Liedauswahl getroffen wird. Dies kann für Wiedergabelisten mit vielen Liedern eines Interpreten und ein paar Liedern anderer Interpreten hilfreich sein, sodass eine ausgeglichenere Auswahl getroffen wird.</string>
     <string name="downloader_notification_initialize">Initialisiere Download</string>
+    <string name="preference_random_intelligence_balanced">Zufall wählt Lieder ausgeglichen auf Basis des Interpreten und der Lieder aus</string>
+    <string name="preference_random_intelligence_dialog_title">Zufallsintelligenz: %d %%</string>
+    <string name="preference_random_intelligence_dumb">Zufall wählt überwiegend Lieder komplett zufällig aus, ohne den Interpreten zu beachten</string>
+    <string name="preference_random_intelligence_dumber">Zufall wählt vollständig zufällig die Lieder aus, es findet keine Betrachtung der Interpreten statt</string>
+    <string name="preference_random_intelligence_intelligent">Zufall wählt lieder überwiegend auf Basis der Interpreten aus</string>
+    <string name="preference_random_intelligence_more_intelligent">Zufall wählt Lieder vollständig auf Basis der Interpreten aus</string>
 </resources>
