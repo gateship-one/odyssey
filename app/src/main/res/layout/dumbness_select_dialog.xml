@@ -34,12 +34,10 @@
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
         tools:text="@string/preference_random_intelligence_dialog_title"
         android:textSize="@dimen/material_font_style_size_subheading" />
-
     <SeekBar
         android:id="@+id/volume_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
         android:max="100" />
-
 </LinearLayout>
