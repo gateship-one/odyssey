@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.app.AlarmManager;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -111,7 +112,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Tag used for debugging
      */
-    private static final String TAG = "OdysseyPlaybackService";
+    private static final String TAG = "Odyssey:PBS";
 
     private static final String HANDLER_THREAD_NAME = "OdysseyPBSHandler";
 
