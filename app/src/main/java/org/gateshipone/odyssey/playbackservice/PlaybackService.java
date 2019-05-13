@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -558,7 +557,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (mCurrentPlayingIndex < 0 && mCurrentList.size() > 0) {
             // Songs exist, so start playback of playlist begin
             jumpToIndex(0);
-        } else if (mCurrentPlayingIndex < 0 && mCurrentList.size() == 0) {
+        } else if (mCurrentPlayingIndex < 0) {
             // If no songs are enqueued to the playlist just do nothing here. FIXME is this update necessary? (no change in state)
             // mPlaybackServiceStatusHelper.updateStatus();
         } else if (mCurrentPlayingIndex < mCurrentList.size()) {
@@ -930,7 +929,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
          * If currently playing and playing is the last one in old playlist set
          * enqueued one to next one for gapless mediaplayback
          */
-        if (mCurrentPlayingIndex == (oldSize - 1) && (mCurrentPlayingIndex >= 0)) {
+        if (mCurrentPlayingIndex == oldSize - 1) {
             // Next song for MP has to be set for gapless mediaplayback
             mNextPlayingIndex = mCurrentPlayingIndex + 1;
             setNextTrackForMP();
@@ -1237,7 +1236,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
 
             setNextTrackForMP();
-        } else if (index >= 0 && index < mCurrentList.size()) {
+        } else if (index < mCurrentList.size()) {
             // check if section is before current song
             boolean beforeCurrentTrack = endIndex <= mCurrentPlayingIndex;
 
