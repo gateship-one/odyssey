@@ -648,6 +648,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Shuffles the current playlist
      */
     public void shufflePlaylist() {
+        final PLAYSTATE state = getPlaybackState();
+
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // get the current TrackModel and remove it from playlist
             TrackModel currentItem = mCurrentList.get(mCurrentPlayingIndex);
@@ -663,14 +665,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlaybackServiceStatusHelper.updateStatus();
 
             // set next track for the GaplessPlayer which has now changed
-            try {
-                if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
-                    mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
-                } else {
-                    mPlayer.setNextTrack(null);
+            if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
+                try {
+                    if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
+                        mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                    } else {
+                        mPlayer.setNextTrack(null);
+                    }
+                } catch (GaplessPlayer.PlaybackException e) {
+                    handlePlaybackException(e);
                 }
-            } catch (GaplessPlayer.PlaybackException e) {
-                handlePlaybackException(e);
             }
         } else if (mCurrentList.size() > 0 && mCurrentPlayingIndex < 0) {
             // service stopped just shuffle playlist
