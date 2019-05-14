@@ -110,12 +110,14 @@ public class PlaybackServiceStatusHelper {
      */
     public void startMediaSession() {
         mMediaSession.setActive(true);
+
+        mNotificationManager.startDummyNotification(mMediaSession.getSessionToken());
     }
 
     /**
      * Stops the android mediasession.
      */
-    public void stopMediaSession() {
+    private void stopMediaSession() {
         // Make sure to remove the old metadata.
         mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_STOPPED, 0, 0.0f).build());
         // Clear last track so that covers load again when resuming.
@@ -156,7 +158,7 @@ public class PlaybackServiceStatusHelper {
                 if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
                     mLastTrack = currentTrack;
 
-                    if ( !mHideArtwork ) {
+                    if (!mHideArtwork) {
                         startCoverImageTask();
                     }
                 }
@@ -313,7 +315,7 @@ public class PlaybackServiceStatusHelper {
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
-        mCoverLoader.getImage(mLastTrack,-1,-1);
+        mCoverLoader.getImage(mLastTrack, -1, -1);
     }
 
     /**
@@ -389,6 +391,7 @@ public class PlaybackServiceStatusHelper {
 
     /**
      * Hides all visible artwork (notification, lockscreen background, widget)
+     *
      * @param enable True to hide artwork, false to show artwork.
      */
     public void hideArtwork(boolean enable) {
@@ -410,24 +413,26 @@ public class PlaybackServiceStatusHelper {
     }
 
     /**
-    * Hides all visible artwork on the lockscreen (notification, lockscreen background).
-    * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
-    */
+     * Hides all visible artwork on the lockscreen (notification, lockscreen background).
+     *
+     * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
+     */
     public void hideMediaOnLockscreen(boolean enable) {
-      mHideMediaOnLockscreen = enable;
-      mNotificationManager.hideMediaOnLockscreen(enable);
+        mHideMediaOnLockscreen = enable;
+        mNotificationManager.hideMediaOnLockscreen(enable);
 
-      mLastTrack = null;
-      updateStatus();
+        mLastTrack = null;
+        updateStatus();
     }
 
     /**
      * Checks if the albumKey for the new artwork is for the currently playing track and
      * then reloads the artwork to show it in the notification, ... .
+     *
      * @param albumKey Key to identify and compare the artwork with the current track
      */
     public void newAlbumArtworkReady(String albumKey) {
-        if ( albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork ) {
+        if (albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork) {
             // Start cover loader
             startCoverImageTask();
         }

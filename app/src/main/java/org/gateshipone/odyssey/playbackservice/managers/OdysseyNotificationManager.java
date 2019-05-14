@@ -44,7 +44,7 @@ import androidx.core.app.NotificationCompat;
 /*
  * This class manages all the notifications from the main playback service.
  */
-public class OdysseyNotificationManager {
+class OdysseyNotificationManager {
     // Context needed for various Notification building
     private final Context mContext;
 
@@ -80,9 +80,91 @@ public class OdysseyNotificationManager {
 
     private boolean mHideArtwork;
 
-    public OdysseyNotificationManager(Context context) {
+    OdysseyNotificationManager(Context context) {
         mContext = context;
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    synchronized void startDummyNotification(final MediaSessionCompat.Token mediaSessionToken) {
+        openChannel();
+        mNotificationBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
+
+        // Open application intent
+        Intent mainIntent = new Intent(mContext, OdysseySplashActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING.ordinal());
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mNotificationBuilder.setContentIntent(contentPendingIntent);
+
+        // Set pendingintents
+        // Previous song action
+        Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
+        PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action prevAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_previous_48dp, "Previous", prevPendingIntent).build();
+
+        // Pause/Play action
+        Intent pauseIntent = new Intent(PlaybackService.ACTION_PAUSE);
+        PendingIntent playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int playPauseIcon = R.drawable.ic_pause_48dp;
+
+        NotificationCompat.Action playPauseAction = new NotificationCompat.Action.Builder(playPauseIcon, "PlayPause", playPauseIntent).build();
+
+        // Next song action
+        Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action nextAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_next_48dp, "Next", nextPendingIntent).build();
+
+        // Quit action
+        Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);
+        PendingIntent quitPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mNotificationBuilder.setDeleteIntent(quitPendingIntent);
+
+        mNotificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        mNotificationBuilder.setSmallIcon(R.drawable.odyssey_notification);
+        mNotificationBuilder.addAction(prevAction);
+        mNotificationBuilder.addAction(playPauseAction);
+        mNotificationBuilder.addAction(nextAction);
+        androidx.media.app.NotificationCompat.MediaStyle notificationStyle = new androidx.media.app.NotificationCompat.MediaStyle();
+        notificationStyle.setShowActionsInCompactView(1, 2);
+        notificationStyle.setMediaSession(mediaSessionToken);
+        mNotificationBuilder.setStyle(notificationStyle);
+        mNotificationBuilder.setContentTitle(mContext.getResources().getString(R.string.notification_sensitive_content_replacement));
+
+        // Remove unnecessary time info
+        mNotificationBuilder.setShowWhen(false);
+
+        //Build the public notification
+        Notification notificationPublic = mNotificationBuilder.build();
+
+        if (mLastTrack != null) {
+            mNotificationBuilder.setContentTitle(mLastTrack.getTrackDisplayedName());
+            mNotificationBuilder.setContentText(mLastTrack.getTrackArtistName());
+        } else {
+            mNotificationBuilder.setContentTitle("");
+            mNotificationBuilder.setContentText("");
+        }
+
+        // Only set image if an saved one is available
+        if (mLastBitmap != null && !mHideArtwork) {
+            mNotificationBuilder.setLargeIcon(mLastBitmap);
+        }
+
+        // Build the private notification
+        if (mHideMediaOnLockscreen) {
+            mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
+        }
+
+        mNotification = mNotificationBuilder.build();
+        mNotification.publicVersion = notificationPublic;
+
+        // Check if run from service and check if playing or pause.
+        // Pause notification should be dismissible.
+        if (mContext instanceof Service) {
+            ((Service) mContext).startForeground(NOTIFICATION_ID, mNotification);
+        }
+
+        // Send the notification away
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 
     /*
@@ -90,7 +172,7 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    public synchronized void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
+    synchronized void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
         mLastState = state;
         mLastToken = mediaSessionToken;
         if (track != null) {
@@ -186,11 +268,10 @@ public class OdysseyNotificationManager {
             // Send the notification away
             mNotificationManager.notify(NOTIFICATION_ID, mNotification);
         }
-
     }
 
     /* Removes the Foreground notification */
-    public void clearNotification() {
+    void clearNotification() {
         if (mNotification != null) {
             if (mContext instanceof Service) {
                 ((Service) mContext).stopForeground(true);
@@ -209,7 +290,7 @@ public class OdysseyNotificationManager {
      * notification controls. Sets it and notifies the system that the
      * notification has changed
      */
-    public synchronized void setNotificationImage(Bitmap bm) {
+    synchronized void setNotificationImage(Bitmap bm) {
         // Check if notification exists and set picture
         mLastBitmap = bm;
 
@@ -219,7 +300,7 @@ public class OdysseyNotificationManager {
         }
     }
 
-    public void hideArtwork(boolean enable) {
+    void hideArtwork(boolean enable) {
         mHideArtwork = enable;
     }
 
@@ -229,7 +310,7 @@ public class OdysseyNotificationManager {
      * @param enable True to set visibility to PRIVATE, false for PUBLIC
      *
      */
-    public void hideMediaOnLockscreen(boolean enable) {
+    void hideMediaOnLockscreen(boolean enable) {
         mHideMediaOnLockscreen = enable;
         if (mNotification != null) {
             mNotification.visibility = mHideMediaOnLockscreen ? Notification.VISIBILITY_PRIVATE : Notification.VISIBILITY_PUBLIC;

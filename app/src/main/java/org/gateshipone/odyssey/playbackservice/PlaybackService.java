@@ -562,6 +562,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // mPlaybackServiceStatusHelper.updateStatus();
         } else if (mCurrentPlayingIndex < mCurrentList.size()) {
 
+            // Request audio focus before doing anything
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Abort command if we don't acquired the audio focus
+                return;
+            }
+
             /*
              * Make sure service is "started" so android doesn't handle it as a
              * "bound service"
@@ -572,14 +580,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 startForegroundService(serviceStartIntent);
             } else {
                 startService(serviceStartIntent);
-            }
-
-            // Request audio focus before doing anything
-            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Abort command if we don't acquired the audio focus
-                return;
             }
 
             // Notify the helper class to start a media session
@@ -629,7 +629,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // clear the playlist before adding all tracks
         clearPlaylist();
-
 
         // Get a list of all available tracks from the MusicLibraryHelper
         List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(filterString, getApplicationContext());
@@ -817,7 +816,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Set mCurrentPlayingIndex to new song after checking the bounds
         if (index < mCurrentList.size() && index >= 0) {
-            mCurrentPlayingIndex = index;
+            // Request audio focus before doing anything
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Abort command if audio focus was not granted
+                return;
+            }
 
             /*
              * Make sure service is "started" so android doesn't handle it as a
@@ -831,19 +836,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 startService(serviceStartIntent);
             }
 
-            // Get the item that is requested to be played.
-            TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
-
-            // Request audio focus before doing anything
-            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Abort command if audio focus was not granted
-                return;
-            }
-
             // Notify the PlaybackServiceStatusHelper that a new media session is started
             mPlaybackServiceStatusHelper.startMediaSession();
+
+            mCurrentPlayingIndex = index;
+
+            // Get the item that is requested to be played.
+            TrackModel item = mCurrentList.get(mCurrentPlayingIndex);
 
             // Try to start playback of the track url.
             try {
