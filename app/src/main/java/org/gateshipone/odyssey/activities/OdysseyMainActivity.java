@@ -303,7 +303,7 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
         // save drag status of the nowplayingview
@@ -367,7 +367,7 @@ public class OdysseyMainActivity extends GenericActivity
 
                     String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
 
-                    onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
+                    onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath), false);
                 } else {
                     // back stack not empty so handle back press normally
                     super.onBackPressed();
@@ -389,48 +389,48 @@ public class OdysseyMainActivity extends GenericActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof FilesFragment) {
-                    // handle click events for the files fragment manually
+        if (item.getItemId() == android.R.id.home) {
+            if (fragmentManager.findFragmentById(R.id.fragment_container) instanceof FilesFragment) {
+                // handle click events for the files fragment manually
 
-                    FilesFragment fragment = (FilesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+                final FilesFragment fragment = (FilesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
 
-                    if (fragment.isRootDirectory()) {
-                        // current directory is a root directory so enable navigation drawer
-
-                        mDrawerToggle.setDrawerIndicatorEnabled(true);
-
-                        if (mDrawerToggle.onOptionsItemSelected(item)) {
-                            return true;
-                        }
-                    } else {
-                        if (fragmentManager.getBackStackEntryCount() == 0) {
-                            // if backstack is empty but root directory not reached create an new fragment with the parent directory
-                            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
-
-                            String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
-
-                            onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath));
-                        } else {
-                            // back stack not empty so just use the standard back press mechanism
-                            onBackPressed();
-                        }
-                    }
-
-                } else if (fragmentManager.getBackStackEntryCount() > 0) {
-                    onBackPressed();
-                } else {
-                    // back stack empty so enable navigation drawer
+                if (fragment.isRootDirectory()) {
+                    // current directory is a root directory so enable navigation drawer
 
                     mDrawerToggle.setDrawerIndicatorEnabled(true);
 
                     if (mDrawerToggle.onOptionsItemSelected(item)) {
                         return true;
                     }
+                } else {
+                    if (fragmentManager.getBackStackEntryCount() == 0) {
+                        // if backstack is empty but root directory not reached create an new fragment with the parent directory
+                        final List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+
+                        final String parentDirectoryPath = fragment.getCurrentDirectory().getParent();
+
+                        // don't add this this directory to the backstack
+                        onDirectorySelected(parentDirectoryPath, storageVolumesList.contains(parentDirectoryPath), false);
+                    } else {
+                        // back stack not empty so just use the standard back press mechanism
+                        onBackPressed();
+                    }
                 }
+
+            } else if (fragmentManager.getBackStackEntryCount() > 0) {
+                onBackPressed();
+            } else {
+                // back stack empty so enable navigation drawer
+
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+                if (mDrawerToggle.onOptionsItemSelected(item)) {
+                    return true;
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -636,13 +636,17 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onDirectorySelected(String dirPath, boolean isRootDirectory) {
+    public void onDirectorySelected(final String dirPath, final boolean isRootDirectory) {
+        onDirectorySelected(dirPath, isRootDirectory, true);
+    }
+
+    private void onDirectorySelected(final String dirPath, final boolean isRootDirectory, final boolean addToBackStack) {
         // Create fragment and give it an argument for the selected directory
-        FilesFragment newFragment = FilesFragment.newInstance(dirPath, isRootDirectory);
+        final FilesFragment newFragment = FilesFragment.newInstance(dirPath, isRootDirectory);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         if (!isRootDirectory) {
             // no root directory so set a enter / exit transition
@@ -652,7 +656,7 @@ public class OdysseyMainActivity extends GenericActivity
         }
 
         transaction.replace(R.id.fragment_container, newFragment);
-        if (!isRootDirectory) {
+        if (!isRootDirectory && addToBackStack) {
             // add fragment only to the backstack if it's not a root directory
             transaction.addToBackStack("FilesFragment");
         }
@@ -810,23 +814,20 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay!
-                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                // permission was granted, yay!
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-                    if (fragment instanceof MyMusicFragment) {
-                        ((MyMusicFragment) fragment).refresh();
-                    } else if (fragment instanceof OdysseyFragment) {
-                        ((OdysseyFragment) fragment).refreshContent();
-                    }
+                if (fragment instanceof MyMusicFragment) {
+                    ((MyMusicFragment) fragment).refresh();
+                } else if (fragment instanceof OdysseyFragment) {
+                    ((OdysseyFragment) fragment).refreshContent();
                 }
-                break;
             }
         }
     }

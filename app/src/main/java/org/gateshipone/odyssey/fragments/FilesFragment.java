@@ -94,7 +94,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * Constant for state saving
      */
-    public final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
+    private final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
 
     /**
      * Action to execute when the user selects an item in the list
