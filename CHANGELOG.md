@@ -1,3 +1,10 @@
+### Version: 1.1.18 Tag: release-XX (XXXX-XX-XX) ###
+* replace random with smart random feature
+* improve artwork retrival
+* fix several backnavigation issues
+* add support for local album images ([Issue #99](https://github.com/gateship-one/odyssey/issues/99))
+* fix several AndroidX issues
+
 ### Version: 1.1.17 Tag: release-29 (2019-02-07) ###
 * updated french translation
 * optional experimental smart random feature
