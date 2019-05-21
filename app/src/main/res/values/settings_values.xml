@@ -22,7 +22,7 @@
 
 <resources>
     <string name="pref_album_provider_key" translatable="false">pref_album_provider</string>
-    <string name="pref_artist_provider_key" translatable="false">pref_artist_provider</string>
+    <string name="pref_artist_provider_key" translatable="false">pref_artist_provider_2</string>
 
     <string name="pref_download_wifi_only_key" translatable="false">pref_download_wifi_only</string>
     <bool name="pref_download_wifi_default">true</bool>
@@ -84,7 +84,7 @@
     <string name="pref_artwork_provider_fanarttv_key" translatable="false">fanart_tv</string>
     <string name="pref_artwork_provider_none_key" translatable="false">off</string>
     <string name="pref_artwork_provider_album_default" translatable="false">@string/pref_artwork_provider_lastfm_key</string>
-    <string name="pref_artwork_provider_artist_default" translatable="false">@string/pref_artwork_provider_lastfm_key</string>
+    <string name="pref_artwork_provider_artist_default" translatable="false">@string/pref_artwork_provider_fanarttv_key</string>
 
     <string name="pref_theme_key" translatable="false">pref_theme</string>
     <string name="pref_dark_theme_key" translatable="false">pref_dark_theme</string>
@@ -141,7 +141,6 @@
 
     <string-array name="preference_artwork_artist_provider_values" translatable="false">
         <item>@string/pref_artwork_provider_none_key</item>
-        <item>@string/pref_artwork_provider_lastfm_key</item>
         <item>@string/pref_artwork_provider_fanarttv_key</item>
     </string-array>
 

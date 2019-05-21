@@ -95,9 +95,7 @@ public class LastFMProvider extends ArtProvider {
                         error -> errorListener.fetchVolleyError(model, context, error));
                 break;
             case ARTIST:
-                getArtistImageURL(model.getEncodedArtistName(),
-                        response -> parseJSONResponse(model, context, response, listener, errorListener),
-                        error -> errorListener.fetchVolleyError(model, context, error));
+                // not used any more for this provider (api changed no valid artist images any more, only stars)
                 break;
         }
     }
@@ -127,47 +125,19 @@ public class LastFMProvider extends ArtProvider {
     }
 
     /**
-     * Fetches the image URL for the raw image blob.
+     * Method to parse the album info json response.
+     * The response will be used to get an image for the requested album.
      *
-     * @param artistName    Artist name to look for an image
-     * @param listener      Callback listener to handle the response
-     * @param errorListener Callback to handle a fetch error
-     */
-    private void getArtistImageURL(String artistName, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-
-
-        String url = LAST_FM_API_URL + "artist.getinfo&artist=" + artistName + "&api_key=" + API_KEY + LAST_FM_FORMAT_JSON;
-        Log.v(TAG, url);
-
-        OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(url, null, listener, errorListener);
-
-        mRequestQueue.add(jsonObjectRequest);
-    }
-
-    /**
-     * Method to parse the album/artist info json response.
-     * The response will be used to get an image for the requested album/artist.
-     *
-     * @param model         The model representing the album/artist for which an image was requested.
+     * @param model         The model representing the album for which an image was requested.
      * @param context       The current application context.
-     * @param response      The album/artist info response as a {@link JSONObject}.
+     * @param response      The album info response as a {@link JSONObject}.
      * @param listener      Callback if an image could be loaded successfully.
      * @param errorListener Callback if an error occured.
      */
     private void parseJSONResponse(final ArtworkRequestModel model, final Context context, final JSONObject response,
                                    final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         try {
-            String baseObjKey = "";
-
-            switch (model.getType()) {
-                case ALBUM:
-                    baseObjKey = "album";
-                    break;
-                case ARTIST:
-                    baseObjKey = "artist";
-                    break;
-            }
-            JSONObject baseObj = response.getJSONObject(baseObjKey);
+            JSONObject baseObj = response.getJSONObject("album");
             JSONArray images = baseObj.getJSONArray("image");
             Log.v(TAG, "Found: " + images.length() + " images");
             for (int i = 0; i < images.length(); i++) {
