@@ -1,4 +1,4 @@
-### Version: 1.1.18 Tag: release-XX (XXXX-XX-XX) ###
+### Version: 1.1.18 Tag: release-30 (2019-06-05) ###
 * replace random with smart random feature
 * improve artwork retrival
 * remove Last.fm as artist image provider

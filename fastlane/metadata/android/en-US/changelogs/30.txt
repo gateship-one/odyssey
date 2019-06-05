@@ -1,0 +1,6 @@
+* replace random with smart random feature
+* improve artwork retrival
+* remove Last.fm as artist image provider
+* fix several backnavigation issues
+* add support for local album images
+* fix several AndroidX issues
