@@ -71,11 +71,7 @@ public class M3UParser extends PlaylistParser {
             }
 
             if (line == null || line.startsWith("#")) {
-                try {
-                    line = bufReader.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // ignore those lines
                 continue;
             }
 

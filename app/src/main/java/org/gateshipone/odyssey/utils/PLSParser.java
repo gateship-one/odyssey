@@ -71,11 +71,7 @@ public class PLSParser extends PlaylistParser {
             }
 
             if (line == null || !line.startsWith("File")) {
-                try {
-                    line = bufReader.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // ignore those lines
                 continue;
             }
 
