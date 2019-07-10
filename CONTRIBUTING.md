@@ -2,14 +2,7 @@
 
 ## How should I post an issue?
 
-Issues should only always contain the following information:
-
-* Android version
-* Device Manufacturer and model
-* Version of Odyssey
-* What did you do to get to the issue
-
-Logcat snippets are always welcomed.
+Please use our issue templates to propose a bug or feature request.
 
 ## Can I use services that provide a reward (e.g. cryptocurrencies) for opensource contributions to open my issue?
 
