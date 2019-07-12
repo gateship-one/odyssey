@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -32,6 +31,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -57,17 +57,28 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
         mLoadRecent = loadRecent;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<AlbumModel>>() {
+        new AlbumLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<AlbumModel> doInBackground(Void... voids) {
-                final Application application = getApplication();
+    private static class AlbumLoaderTask extends AsyncTask<Void, Void, List<AlbumModel>> {
 
-                if (mArtistID == -1) {
-                    if (mLoadRecent) {
+        private final WeakReference<AlbumViewModel> mViewModel;
+
+        AlbumLoaderTask(final AlbumViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<AlbumModel> doInBackground(Void... voids) {
+            final AlbumViewModel model = mViewModel.get();
+
+            if (model != null) {
+                final Application application = model.getApplication();
+
+                if (model.mArtistID == -1) {
+                    if (model.mLoadRecent) {
                         // load recent albums
                         return MusicLibraryHelper.getRecentAlbums(application);
                     } else {
@@ -81,16 +92,21 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
                     String orderKey = sharedPref.getString(application.getString(R.string.pref_album_sort_order_key), application.getString(R.string.pref_artist_albums_sort_default));
 
-                    return MusicLibraryHelper.getAllAlbumsForArtist(mArtistID, orderKey, application);
+                    return MusicLibraryHelper.getAllAlbumsForArtist(model.mArtistID, orderKey, application);
                 }
             }
 
-            @Override
-            protected void onPostExecute(List<AlbumModel> result) {
-                setData(result);
-            }
+            return null;
+        }
 
-        }.execute();
+        @Override
+        protected void onPostExecute(List<AlbumModel> result) {
+            final AlbumViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
+            }
+        }
     }
 
     public static class AlbumViewModelFactory extends ViewModelProvider.NewInstanceFactory {

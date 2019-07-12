@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.AsyncTask;
 
@@ -30,6 +29,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +50,29 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
         mAddHeader = addHeader;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<PlaylistModel>>() {
+        new PlaylistLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<PlaylistModel> doInBackground(Void... voids) {
-                final Application application = getApplication();
+    private static class PlaylistLoaderTask extends AsyncTask<Void, Void, List<PlaylistModel>> {
+
+        private final WeakReference<PlaylistViewModel> mViewModel;
+
+        PlaylistLoaderTask(final PlaylistViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<PlaylistModel> doInBackground(Void... voids) {
+            final PlaylistViewModel model = mViewModel.get();
+
+            if (model != null) {
+                final Application application = model.getApplication();
 
                 List<PlaylistModel> playlists = new ArrayList<>();
 
-                if (mAddHeader) {
+                if (model.mAddHeader) {
                     // add a dummy playlist for the choose playlist dialog
                     // this playlist represents the action to create a new playlist in the dialog
                     playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), -1));
@@ -72,11 +83,17 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                 return playlists;
             }
 
-            @Override
-            protected void onPostExecute(List<PlaylistModel> result) {
-                setData(result);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<PlaylistModel> result) {
+            final PlaylistViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
             }
-        }.execute();
+        }
     }
 
     public static class PlaylistViewModelFactory extends ViewModelProvider.NewInstanceFactory {

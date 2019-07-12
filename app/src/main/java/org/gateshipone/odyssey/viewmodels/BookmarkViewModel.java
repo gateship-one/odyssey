@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.AsyncTask;
 
@@ -30,6 +29,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +50,29 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
         mAddHeader = addHeader;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<BookmarkModel>>() {
+        new BookmarkLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<BookmarkModel> doInBackground(Void... voids) {
-                final Application application = getApplication();
+    private static class BookmarkLoaderTask extends AsyncTask<Void, Void, List<BookmarkModel>> {
 
-                List<BookmarkModel> bookmarks = new ArrayList<>();
+        private final WeakReference<BookmarkViewModel> mViewModel;
 
-                if (mAddHeader) {
+        BookmarkLoaderTask(final BookmarkViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<BookmarkModel> doInBackground(Void... voids) {
+            final BookmarkViewModel model = mViewModel.get();
+
+            if (model != null) {
+                final Application application = model.getApplication();
+
+                final List<BookmarkModel> bookmarks = new ArrayList<>();
+
+                if (model.mAddHeader) {
                     // add a dummy bookmark for the choose bookmark dialog
                     // this bookmark represents the action to create a new bookmark in the dialog
                     bookmarks.add(new BookmarkModel(-1, application.getString(R.string.create_new_bookmark), -1));
@@ -71,12 +82,17 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
                 return bookmarks;
             }
 
-            @Override
-            protected void onPostExecute(List<BookmarkModel> result) {
-                setData(result);
-            }
+            return null;
+        }
 
-        }.execute();
+        @Override
+        protected void onPostExecute(List<BookmarkModel> result) {
+            final BookmarkViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
+            }
+        }
     }
 
     public static class BookmarkViewModelFactory extends ViewModelProvider.NewInstanceFactory {

@@ -22,13 +22,13 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -48,21 +48,38 @@ public class FileViewModel extends GenericViewModel<FileModel> {
         mCurrentDirectory = directory;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<FileModel>>() {
+        new FileLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<FileModel> doInBackground(Void... voids) {
-                return PermissionHelper.getFilesForDirectory(getApplication(), mCurrentDirectory);
+    private static class FileLoaderTask extends AsyncTask<Void, Void, List<FileModel>> {
+
+        private final WeakReference<FileViewModel> mViewModel;
+
+        FileLoaderTask(final FileViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<FileModel> doInBackground(Void... voids) {
+            final FileViewModel model = mViewModel.get();
+
+            if (model != null) {
+                return PermissionHelper.getFilesForDirectory(model.getApplication(), model.mCurrentDirectory);
             }
 
-            @Override
-            protected void onPostExecute(List<FileModel> result) {
-                setData(result);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<FileModel> result) {
+            final FileViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
             }
-        }.execute();
+        }
     }
 
     public static class FileViewModelFactory extends ViewModelProvider.NewInstanceFactory {

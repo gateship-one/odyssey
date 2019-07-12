@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.AsyncTask;
 
@@ -31,6 +30,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.PlaylistParser;
 import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -50,25 +50,42 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
         mPath = playlistPath;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<TrackModel>>() {
+        new PlaylistLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<TrackModel> doInBackground(Void... voids) {
-                PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(mPath));
+    private static class PlaylistLoaderTask extends AsyncTask<Void, Void, List<TrackModel>> {
+
+        private final WeakReference<PlaylistTrackViewModel> mViewModel;
+
+        PlaylistLoaderTask(final PlaylistTrackViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<TrackModel> doInBackground(Void... voids) {
+            final PlaylistTrackViewModel model = mViewModel.get();
+
+            if (model != null) {
+                PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(model.mPath));
                 if (parser == null) {
                     return null;
                 }
-                return parser.parseList(getApplication());
+                return parser.parseList(model.getApplication());
             }
 
-            @Override
-            protected void onPostExecute(List<TrackModel> result) {
-                setData(result);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<TrackModel> result) {
+            final PlaylistTrackViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
             }
-        }.execute();
+        }
     }
 
     public static class PlaylistTrackViewModelFactory extends ViewModelProvider.NewInstanceFactory {

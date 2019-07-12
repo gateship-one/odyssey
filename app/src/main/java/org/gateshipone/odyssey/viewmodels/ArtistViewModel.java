@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -31,6 +30,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -41,14 +41,25 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
         super(application);
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<ArtistModel>>() {
+        new ArtistLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<ArtistModel> doInBackground(Void... voids) {
-                final Application application = getApplication();
+    private static class ArtistLoaderTask extends AsyncTask<Void, Void, List<ArtistModel>> {
+
+        private final WeakReference<ArtistViewModel> mViewModel;
+
+        ArtistLoaderTask(final ArtistViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<ArtistModel> doInBackground(Void... voids) {
+            final ArtistViewModel model = mViewModel.get();
+
+            if (model != null) {
+                final Application application = model.getApplication();
 
                 SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(application);
                 boolean showAlbumArtistsOnly = sharedPref.getBoolean(application.getString(R.string.pref_album_artists_only_key), application.getResources().getBoolean(R.bool.pref_album_artists_only_default));
@@ -56,10 +67,17 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
                 return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, application);
             }
 
-            @Override
-            protected void onPostExecute(List<ArtistModel> result) {
-                setData(result);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<ArtistModel> result) {
+            final ArtistViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
             }
-        }.execute();
+        }
     }
+
 }

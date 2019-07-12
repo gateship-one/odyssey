@@ -22,13 +22,13 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -54,35 +54,53 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
         mPlaylistID = playlistID;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     void loadData() {
-        new AsyncTask<Void, Void, List<TrackModel>>() {
+        new TrackLoaderTask(this).execute();
+    }
 
-            @Override
-            protected List<TrackModel> doInBackground(Void... voids) {
-                final Application application = getApplication();
+    private static class TrackLoaderTask extends AsyncTask<Void, Void, List<TrackModel>> {
 
-                if (mPlaylistID != -1) {
+        private final WeakReference<TrackViewModel> mViewModel;
+
+        TrackLoaderTask(final TrackViewModel viewModel) {
+            mViewModel = new WeakReference<>(viewModel);
+        }
+
+        @Override
+        protected List<TrackModel> doInBackground(Void... voids) {
+            final TrackViewModel model = mViewModel.get();
+
+            if (model != null) {
+                final Application application = model.getApplication();
+
+                if (model.mPlaylistID != -1) {
                     // load playlist tracks
-                    return MusicLibraryHelper.getTracksForPlaylist(mPlaylistID, application);
+                    return MusicLibraryHelper.getTracksForPlaylist(model.mPlaylistID, application);
                 } else {
-                    if (mAlbumKey.isEmpty()) {
+                    if (model.mAlbumKey.isEmpty()) {
                         // load all tracks
                         return MusicLibraryHelper.getAllTracks(null, application);
                     } else {
                         // load album tracks
-                        return MusicLibraryHelper.getTracksForAlbum(mAlbumKey, application);
+                        return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, application);
                     }
                 }
             }
 
-            @Override
-            protected void onPostExecute(List<TrackModel> result) {
-                setData(result);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<TrackModel> result) {
+            final TrackViewModel model = mViewModel.get();
+
+            if (model != null) {
+                model.setData(result);
             }
-        }.execute();
+        }
     }
+
 
     public static class TrackViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
