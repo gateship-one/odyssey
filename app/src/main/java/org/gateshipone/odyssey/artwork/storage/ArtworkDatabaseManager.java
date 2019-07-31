@@ -374,10 +374,10 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
-            requestCursor.close();
-
             FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
+
+        requestCursor.close();
 
         database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
 
@@ -420,12 +420,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
             final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
 
-            requestCursor.close();
-
             if (!hasFullImagePath) {
                 FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
             }
         }
+
+        requestCursor.close();
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
 
