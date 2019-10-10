@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 import org.gateshipone.odyssey.R;
@@ -48,20 +49,56 @@ public class MusicLibraryHelper {
     private static final String TAG = "MusicLibraryHelper";
 
     /**
-     * Selection arrays for the different tables in the mediastore.
+     * Selection arrays for the different tables in the MediaStore.
      */
-    private static final String[] projectionAlbums = {MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_KEY, MediaStore.Audio.Albums.NUMBER_OF_SONGS, MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART,
-            MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.FIRST_YEAR, MediaStore.Audio.Albums.LAST_YEAR};
+    private static final String[] projectionAlbums = {
+            MediaStore.Audio.Albums.ALBUM,
+            MediaStore.Audio.Albums.ALBUM_KEY,
+            MediaStore.Audio.Albums.NUMBER_OF_SONGS,
+            MediaStore.Audio.Albums.ALBUM_ART,
+            MediaStore.Audio.Albums.ARTIST,
+            MediaStore.Audio.Albums.FIRST_YEAR,
+            MediaStore.Audio.Albums.LAST_YEAR,
+            BaseColumns._ID,
+    };
 
-    private static final String[] projectionArtists = {MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.NUMBER_OF_TRACKS, MediaStore.Audio.Artists._ID, MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
+    private static final String[] projectionArtists = {
+            MediaStore.Audio.Artists.ARTIST,
+            MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
+            MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+            BaseColumns._ID,
+    };
 
-    private static final String[] projectionTracks = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.TRACK, MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATE_ADDED};
+    private static final String[] projectionTracks = {
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.DISPLAY_NAME,
+            MediaStore.Audio.Media.TRACK,
+            MediaStore.Audio.Media.ALBUM_KEY,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.AudioColumns.DURATION,
+            BaseColumns._ID,
+    };
 
-    private static final String[] projectionPlaylistTracks = {MediaStore.Audio.Playlists.Members.TITLE, MediaStore.Audio.Playlists.Members.DISPLAY_NAME, MediaStore.Audio.Playlists.Members.TRACK, MediaStore.Audio.Playlists.Members.ALBUM_KEY,
-            MediaStore.Audio.Playlists.Members.DURATION, MediaStore.Audio.Playlists.Members.ALBUM, MediaStore.Audio.Playlists.Members.ARTIST, MediaStore.Audio.Playlists.Members.DATA, MediaStore.Audio.Playlists.Members._ID, MediaStore.Audio.Playlists.Members.AUDIO_ID};
+    private static final String[] projectionPlaylistTracks = {
+            MediaStore.Audio.Playlists.Members.TITLE,
+            MediaStore.Audio.Playlists.Members.DISPLAY_NAME,
+            MediaStore.Audio.Playlists.Members.TRACK,
+            MediaStore.Audio.Playlists.Members.ALBUM_KEY,
+            MediaStore.Audio.Playlists.Members.ALBUM,
+            MediaStore.Audio.Playlists.Members.ARTIST,
+            MediaStore.Audio.Playlists.Members.DATA,
+            MediaStore.Audio.Playlists.Members._ID,
+            MediaStore.Audio.Playlists.Members.AUDIO_ID,
+            MediaStore.Audio.AudioColumns.DURATION,
+    };
 
-    private static final String[] projectionPlaylists = {MediaStore.Audio.Playlists.NAME, MediaStore.Audio.Playlists._ID};
+    private static final String[] projectionPlaylists = {
+            MediaStore.Audio.Playlists.NAME,
+            BaseColumns._ID
+    };
 
 
     /**
@@ -70,7 +107,7 @@ public class MusicLibraryHelper {
     private static final int recentDateLimit = (4 * 7 * 24 * 3600);
 
     /**
-     * Threshold how many items should be inserted in the mediastore at once.
+     * Threshold how many items should be inserted in the MediaStore at once.
      * The threshold is needed to not exceed the size of the binder IPC transaction buffer.
      */
     private static final int chunkSize = 1000;
@@ -90,10 +127,9 @@ public class MusicLibraryHelper {
      * @return artistId if found or -1 if not found.
      */
     public static long getArtistIDFromName(final String artistName, final Context context) {
-        // get artist id
         long artistID = -1;
 
-        final String whereVal[] = {artistName};
+        final String[] whereVal = {artistName};
 
         final String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
 
@@ -104,7 +140,7 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
 
-                artistID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Artists._ID));
+                artistID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
             }
 
             cursor.close();
@@ -116,12 +152,12 @@ public class MusicLibraryHelper {
     /**
      * Return an album model created by the given album key.
      *
-     * @param albumKey The key to identify the album in the mediastore.
+     * @param albumKey The key to identify the album in the MediaStore.
      * @param context  The application context to access the content resolver.
      * @return The created {@link AlbumModel}
      */
     public static AlbumModel createAlbumModelFromKey(final String albumKey, final Context context) {
-        final String whereVal[] = {albumKey};
+        final String[] whereVal = {albumKey};
 
         final String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
 
@@ -134,7 +170,7 @@ public class MusicLibraryHelper {
                 final String albumTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
                 final String albumArt = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                 final String artistTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
-                final long albumID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+                final long albumID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                 albumModel = new AlbumModel(albumTitle, albumArt, artistTitle, albumKey, albumID);
             }
@@ -148,12 +184,12 @@ public class MusicLibraryHelper {
     /**
      * Retrieves the album ID for the given album key
      *
-     * @param albumKey The key to identify the album in the mediastore
+     * @param albumKey The key to identify the album in the MediaStore
      * @param context  The application context to access the content resolver.
-     * @return albumID if found or -1 if not found.
+     * @return albumID if found or derived id based on the albumKey hash code
      */
     public static long getAlbumIDFromKey(final String albumKey, final Context context) {
-        final String whereVal[] = {albumKey};
+        final String[] whereVal = {albumKey};
 
         final String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
 
@@ -164,13 +200,13 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
 
-                albumID = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+                albumID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
             }
 
             cursor.close();
         }
 
-        // no album id found -> album not in mediastore; generate fake id
+        // no album id found -> album not in MediaStore; generate fake id
         if (albumID == -1) {
             albumID = albumKey.hashCode() + ALBUMID_HASH_OFFSET;
         }
@@ -182,13 +218,13 @@ public class MusicLibraryHelper {
      * Return a list of all tracks of an album.
      *
      * @param context  The application context to access the content resolver.
-     * @param albumKey The key to identify the album in the mediastore
+     * @param albumKey The key to identify the album in the MediaStore
      * @return The list of {@link TrackModel} of all tracks for the given album.
      */
     public static List<TrackModel> getTracksForAlbum(final String albumKey, final Context context) {
         final List<TrackModel> albumTracks = new ArrayList<>();
 
-        final String whereVal[] = {albumKey};
+        final String[] whereVal = {albumKey};
 
         final String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
 
@@ -206,7 +242,7 @@ public class MusicLibraryHelper {
                     final String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                     final String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     final String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    final long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                    final long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                     // add current track
                     albumTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
@@ -224,7 +260,7 @@ public class MusicLibraryHelper {
      * Return a list of all tracks of an artist
      *
      * @param context  The application context to access the content resolver.
-     * @param artistId The id to identify the artist in the mediastore
+     * @param artistId The id to identify the artist in the MediaStore
      * @param orderKey String to specify the order of the tracks
      * @return The list of {@link TrackModel} of all tracks for the given artist in the specified order.
      */
@@ -261,7 +297,7 @@ public class MusicLibraryHelper {
     /**
      * Return a list of all tracks of a playlist
      *
-     * @param playlistId The id to identify the playlist in the mediastore
+     * @param playlistId The id to identify the playlist in the MediaStore
      * @param context    The application context to access the content resolver.
      * @return The list of {@link TrackModel} of all tracks for the specified playlist.
      */
@@ -299,7 +335,7 @@ public class MusicLibraryHelper {
      * Returns a list of albums added in the last 4 weeks.
      *
      * @param context The application context to access the content resolver.
-     * @return The list of {@link AlbumModel} of all albums found in the mediastore that were added in the last 4 weeks.
+     * @return The list of {@link AlbumModel} of all albums found in the MediaStore that were added in the last 4 weeks.
      */
     public static List<AlbumModel> getRecentAlbums(final Context context) {
         final List<AlbumModel> recentAlbums = new ArrayList<>();
@@ -308,7 +344,7 @@ public class MusicLibraryHelper {
         // filter non music and tracks older than 4 weeks
         final long fourWeeksAgo = (System.currentTimeMillis() / 1000) - recentDateLimit;
 
-        final String whereVal[] = {"1", String.valueOf(fourWeeksAgo)};
+        final String[] whereVal = {"1", String.valueOf(fourWeeksAgo)};
 
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?" + ") GROUP BY (" + MediaStore.Audio.Media.ALBUM_KEY;
 
@@ -324,7 +360,7 @@ public class MusicLibraryHelper {
                 final int albumTitleColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
                 final int imagePathColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
                 final int artistTitleColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-                final int albumIDColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+                final int albumIDColumnIndex = albumsCursor.getColumnIndex(BaseColumns._ID);
 
                 final int recentTracksAlbumKeyColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
                 final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
@@ -368,76 +404,25 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Generates a {@link Map} of recent added dates per AlbumKey to unify the dates per album
-     *
-     * @param context The application context to access the content resolver.
-     * @return HashMap of dates per AlbumKey
-     */
-    private static Map<String, Integer> getRecentAlbumDates(final Context context) {
-        final HashMap<String, Integer> recentDates = new HashMap<>();
-
-        // get recent tracks
-        // filter non music and tracks older than 4 weeks
-        final long fourWeeksAgo = (System.currentTimeMillis() / 1000) - recentDateLimit;
-
-        final String whereVal[] = {"1", String.valueOf(fourWeeksAgo)};
-
-        final String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?" + ") GROUP BY (" + MediaStore.Audio.Media.ALBUM_KEY;
-
-        final Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DATE_ADDED}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
-
-        // get all albums
-        final Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
-
-        if (recentTracksCursor != null && albumsCursor != null) {
-            if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
-
-                final int albumKeyColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
-
-                final int recentTracksAlbumKeyColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
-                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
-
-                do {
-                    if (albumsCursor.getString(albumKeyColumnIndex).equals(recentTracksCursor.getString(recentTracksAlbumKeyColumnIndex))) {
-                        final String albumKey = albumsCursor.getString(albumKeyColumnIndex);
-
-                        final int dateInMillis = recentTracksCursor.getInt(recentTracksDateAddedColumnIndex);
-
-                        // add the album
-                        recentDates.put(albumKey, dateInMillis);
-
-                        if (!recentTracksCursor.moveToNext()) {
-                            break;
-                        }
-                    }
-
-                } while (albumsCursor.moveToNext());
-            }
-        }
-
-        return recentDates;
-    }
-
-    /**
      * Return a list of all tracks add in the last 4 weeks.
      *
      * @param context The application context to access the content resolver.
-     * @return The list of {@link TrackModel} of all tracks found in the mediastore that were added in the last 4 weeks.
+     * @return The list of {@link TrackModel} of all tracks found in the MediaStore that were added in the last 4 weeks.
      */
     public static List<TrackModel> getRecentTracks(final Context context) {
         final List<TrackModel> recentTracks = new ArrayList<>();
 
-        // Get a Map of all album dates to unify the date of all album tracks to one date for distinct sort order
-        final Map<String, Integer> dateMap = getRecentAlbumDates(context);
+        // Map to unify the date of all album tracks for distinct sort order
+        final Map<String, Integer> albumDateMap = new HashMap<>();
 
         // filter non music and tracks older than 4 weeks
         final long fourWeeksAgo = (System.currentTimeMillis() / 1000) - recentDateLimit;
 
-        final String whereVal[] = {"1", String.valueOf(fourWeeksAgo)};
+        final String[] whereVal = {"1", String.valueOf(fourWeeksAgo)};
 
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?";
 
-        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, null);
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -450,9 +435,14 @@ public class MusicLibraryHelper {
                     final String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     final String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                    final long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-                    final int dateAdded = dateMap.containsKey(albumKey) ? dateMap.get(albumKey) : -1;
+                    final long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
+                    int dateAdded = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
+                    if (albumDateMap.containsKey(albumKey)) {
+                        dateAdded = albumDateMap.get(albumKey);
+                    } else {
+                        albumDateMap.put(albumKey, dateAdded);
+                    }
 
                     // add the track
                     recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id, dateAdded));
@@ -478,17 +468,17 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Return a list of all tracks in the mediastore.
+     * Return a list of all tracks in the MediaStore.
      *
      * @param filterString A filter that is used to exclude tracks that didn't contain this String.
      * @param context      The application context to access the content resolver.
-     * @return The list of {@link TrackModel} of all tracks found in the mediastore that matches the filter criteria.
+     * @return The list of {@link TrackModel} of all tracks found in the MediaStore that matches the filter criteria.
      */
     public static List<TrackModel> getAllTracks(final String filterString, final Context context) {
         final List<TrackModel> allTracks = new ArrayList<>();
 
         // filter non music
-        final String whereVal[] = {"1"};
+        final String[] whereVal = {"1"};
 
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=?";
 
@@ -505,7 +495,7 @@ public class MusicLibraryHelper {
                     final String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                     final String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                    final long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                    final long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                     // add the track
                     if (null == filterString || filterString.isEmpty() || trackName.toLowerCase().contains(filterString)) {
@@ -522,9 +512,9 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Save a playlist in the mediastore.
+     * Save a playlist in the MediaStore.
      * A previous playlist with the same name will be deleted.
-     * Only tracks that exists in the mediastore will be saved in the playlist.
+     * Only tracks that exists in the MediaStore will be saved in the playlist.
      *
      * @param playlistName The name for the playlist
      * @param tracks       The tracklist for the playlist
@@ -555,7 +545,7 @@ public class MusicLibraryHelper {
                     final long id = item.getTrackId();
 
                     if (id != -1) {
-                        // only tracks that exists in the mediastore should be saved in the playlist
+                        // only tracks that exists in the MediaStore should be saved in the playlist
 
                         final ContentValues insert = new ContentValues();
                         insert.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, id);
@@ -579,10 +569,10 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Return a list of all albums in the mediastore.
+     * Return a list of all albums in the MediaStore.
      *
      * @param context The application context to access the content resolver.
-     * @return The list of {@link AlbumModel} of all albums found in the mediastore.
+     * @return The list of {@link AlbumModel} of all albums found in the MediaStore.
      */
     public static List<AlbumModel> getAllAlbums(final Context context) {
         final ArrayList<AlbumModel> albums = new ArrayList<>();
@@ -596,7 +586,7 @@ public class MusicLibraryHelper {
                 final int albumTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
                 final int imagePathColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
                 final int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-                final int albumIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+                final int albumIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
 
                 do {
                     final String albumKey = cursor.getString(albumKeyColumnIndex);
@@ -619,7 +609,7 @@ public class MusicLibraryHelper {
     /**
      * Return a list of all albums of an artist
      *
-     * @param artistId The id to identify the artist in the mediastore
+     * @param artistId The id to identify the artist in the MediaStore
      * @param orderKey String to specify the order of the albums
      * @param context  The application context to access the content resolver.
      * @return The list of {@link AlbumModel} of all albums of the artists in the specified order.
@@ -646,7 +636,7 @@ public class MusicLibraryHelper {
                 final int albumTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
                 final int imagePathColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
                 final int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-                final int albumIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+                final int albumIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
 
                 do {
                     final String albumKey = cursor.getString(albumKeyColumnIndex);
@@ -666,11 +656,11 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Return a list of all artists in the mediastore.
+     * Return a list of all artists in the MediaStore.
      *
      * @param showAlbumArtistsOnly flag if only albumartists should be loaded
      * @param context              The application context to access the content resolver.
-     * @return The list of {@link ArtistModel} of all artists found in the mediastore that matches the filter criteria.
+     * @return The list of {@link ArtistModel} of all artists found in the MediaStore that matches the filter criteria.
      */
     public static List<ArtistModel> getAllArtists(final boolean showAlbumArtistsOnly, final Context context) {
         final ArrayList<ArtistModel> artists = new ArrayList<>();
@@ -686,7 +676,7 @@ public class MusicLibraryHelper {
 
                 if (cursor.moveToFirst()) {
                     final int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
-                    final int artistIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists._ID);
+                    final int artistIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
 
                     do {
                         final String artist = cursor.getString(artistTitleColumnIndex);
@@ -729,10 +719,10 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Return a list of all playlists in the mediastore.
+     * Return a list of all playlists in the MediaStore.
      *
      * @param context The application context to access the content resolver.
-     * @return The list of {@link PlaylistModel} of all playlists found in the mediastore.
+     * @return The list of {@link PlaylistModel} of all playlists found in the MediaStore.
      */
     public static List<PlaylistModel> getAllPlaylists(final Context context) {
         final ArrayList<PlaylistModel> playlists = new ArrayList<>();
@@ -743,7 +733,7 @@ public class MusicLibraryHelper {
 
             if (cursor.moveToFirst()) {
                 final int playlistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME);
-                final int playlistIDColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Playlists._ID);
+                final int playlistIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
 
                 do {
                     final String playlistTitle = cursor.getString(playlistTitleColumnIndex);
@@ -761,14 +751,14 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Removes a playlist from the mediastore.
+     * Removes a playlist from the MediaStore.
      *
      * @param playlistId The id of the playlist that should be removed.
      * @param context    The application context to access the content resolver.
      * @return The result of the operation. True if the playlist was removed else false.
      */
     public static boolean removePlaylist(final long playlistId, final Context context) {
-        final String where = MediaStore.Audio.Playlists._ID + "=?";
+        final String where = BaseColumns._ID + "=?";
         final String[] whereVal = {"" + playlistId};
 
         final int removedRows = PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
@@ -777,7 +767,7 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Removes a track from a playlist from the mediastore.
+     * Removes a track from a playlist from the MediaStore.
      *
      * @param playlistId    The id of the playlist that contains the track.
      * @param trackPosition The position of the track that should be removed inside the playlist.
@@ -815,7 +805,7 @@ public class MusicLibraryHelper {
     public static Set<String> getTrackStorageLocationsForAlbum(final String albumKey, final Context context) {
         final Set<String> trackStorageLocations = new HashSet<>();
 
-        final String whereVal[] = {albumKey};
+        final String[] whereVal = {albumKey};
 
         final String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
 
@@ -851,7 +841,7 @@ public class MusicLibraryHelper {
      *
      * @param uri     The {@link Uri} of the track.
      * @param context The application context to access the content resolver.
-     * @return The created {@link TrackModel} or null if the track couldn't be found in the mediastore.
+     * @return The created {@link TrackModel} or null if the track couldn't be found in the MediaStore.
      */
     static TrackModel getTrackForUri(final Uri uri, final Context context) {
         final String uriPath = uri.getPath();
@@ -864,18 +854,18 @@ public class MusicLibraryHelper {
 
         TrackModel track = null;
 
-        String whereVal[] = {uri.getPath()};
+        String[] whereVal = {uri.getPath()};
 
         String where = MediaStore.Audio.Media.DATA + "=?";
 
         if (uriScheme != null && uriScheme.equals("content")) {
             // special handling for content urls
-            final String parts[] = uriLastPathSegment != null ? uriLastPathSegment.split(":") : null;
+            final String[] parts = uriLastPathSegment != null ? uriLastPathSegment.split(":") : null;
 
             if (parts != null && parts.length > 1) {
                 if (parts[0].equals("audio")) {
                     whereVal = new String[]{parts[1]};
-                    where = MediaStore.Audio.Media._ID + "=?";
+                    where = BaseColumns._ID + "=?";
                 } else {
                     whereVal = new String[]{"%" + parts[1]};
                     where = MediaStore.Audio.Media.DATA + " LIKE ?";
@@ -895,7 +885,7 @@ public class MusicLibraryHelper {
                 String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                 String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-                long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                 track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
             }
@@ -907,7 +897,7 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Create a list of {@link FileModel} that represents all music files found in the mediastore for the given path.
+     * Create a list of {@link FileModel} that represents all music files found in the MediaStore for the given path.
      *
      * @param basePath The path that should be used for the request.
      * @param context  The application context to access the content resolver.
@@ -916,7 +906,7 @@ public class MusicLibraryHelper {
     static List<FileModel> getMediaFilesForPath(final String basePath, final Context context) {
         final List<FileModel> files = new ArrayList<>();
 
-        final String whereVal[] = {basePath + "%"};
+        final String[] whereVal = {basePath + "%"};
 
         final String where = MediaStore.Audio.Media.DATA + " LIKE ?";
 
