@@ -39,11 +39,11 @@ android {
             }
         }
     }
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 31
         versionName "1.1.19"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
