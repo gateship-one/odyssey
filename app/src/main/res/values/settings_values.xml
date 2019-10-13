@@ -165,4 +165,17 @@
         <item>@string/pref_library_click_action_play_next_key</item>
         <item>@string/pref_library_click_action_clear_and_play</item>
     </string-array>
+
+    <string name="pref_library_provider_key" translatable="false">pref_library_provider_key</string>
+    <string-array name="preference_library_provider_values" translatable="false">
+        <item>@string/pref_library_provider_android_key</item>
+        <item>@string/pref_library_provider_dummy_key</item>
+        <item>@string/pref_library_provider_internal_key</item>
+    </string-array>
+
+    <string name="pref_library_provider_android_key" translatable="false">library_provider_android</string>
+    <string name="pref_library_provider_dummy_key" translatable="false">library_provider_dummy</string>
+    <string name="pref_library_provider_internal_key" translatable="false">library_provider_internal</string>
+    <string name="pref_library_provider_default" translatable="false">@string/pref_library_provider_android_key</string>
+
 </resources>
