@@ -50,15 +50,15 @@ public interface MusicDatabase {
 
     List<AlbumModel> getAllAlbums(final Context context);
 
-    List<AlbumModel> getAllAlbumsForArtist(final ArtistModel, final String orderKey, final Context context);
+    List<AlbumModel> getAllAlbumsForArtist(final ArtistModel artist, final String orderKey, final Context context);
 
     List<ArtistModel> getAllArtists(final boolean showAlbumArtistsOnly, final Context context);
 
     List<PlaylistModel> getAllPlaylists(final Context context);
 
-    boolean removePlaylist(final PlaylistModel, final Context context);
+    boolean removePlaylist(final PlaylistModel playlist, final Context context);
 
-    boolean removeTrackFromPlaylist(final PlaylistModel, final int trackPosition, final Context context);
+    boolean removeTrackFromPlaylist(final PlaylistModel playlist, final int trackPosition, final Context context);
 
     TrackModel getTrackForUri(final Uri uri, final Context context);
 
