@@ -170,7 +170,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist)).get(AlbumViewModel.class);
     }
 
     @Override
@@ -297,11 +297,10 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     protected void enqueueAlbum(int position) {
         // identify current album
         AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
-        String albumKey = clickedAlbum.getAlbumKey();
 
         // enqueue album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(clickedAlbum);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -317,11 +316,10 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     protected void playAlbum(int position) {
         // identify current album
         AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
-        String albumKey = clickedAlbum.getAlbumKey();
 
         // play album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(clickedAlbum, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -425,7 +423,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -443,7 +441,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         // play artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -33,10 +33,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
@@ -138,10 +138,9 @@ public class AlbumsFragment extends GenericAlbumsFragment {
 
         AlbumModel clickedAlbum = mAdapter.getItem(position);
 
-        String artistTitle = clickedAlbum.getArtistName();
-        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
+        ArtistModel tmpArtist = MusicDatabaseFactory.getDatabase(getContext()).getArtistForAlbum(clickedAlbum, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+        mArtistSelectedCallback.onArtistSelected(tmpArtist, null);
     }
 }

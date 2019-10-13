@@ -259,7 +259,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
         } else if (selectedFile.isPlaylist()) {
-            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getNameWithoutExtension(), selectedFile.getPath());
+            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile);
         } else {
             switch (mClickAction) {
                 case ACTION_ADD_SONG:

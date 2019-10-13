@@ -48,9 +48,9 @@ import org.gateshipone.odyssey.artwork.network.InsertImageTask;
 import org.gateshipone.odyssey.artwork.network.artprovider.ArtProvider;
 import org.gateshipone.odyssey.artwork.storage.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artwork.storage.ImageNotFoundException;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.NetworkUtils;
 import org.json.JSONException;
 
@@ -264,7 +264,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         mArtworkRequestQueue.clear();
 
         if (fetchAlbums) {
-            List<AlbumModel> albums = MusicLibraryHelper.getAllAlbums(getApplicationContext());
+            List<AlbumModel> albums = MusicDatabaseFactory.getDatabase(getApplicationContext()).getAllAlbums(getApplicationContext());
 
             for (AlbumModel album : albums) {
                 mArtworkRequestQueue.add(new ArtworkRequestModel(album));
@@ -272,7 +272,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         }
 
         if (fetchArtists) {
-            List<ArtistModel> artists = MusicLibraryHelper.getAllArtists(false, getApplicationContext());
+            List<ArtistModel> artists = MusicDatabaseFactory.getDatabase(getApplicationContext()).getAllArtists(false, getApplicationContext());
 
             for (ArtistModel artist : artists) {
                 mArtworkRequestQueue.add(new ArtworkRequestModel(artist));

@@ -50,6 +50,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
+import org.gateshipone.odyssey.database.MusicDatabase;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.dialogs.SaveDialog;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
 import org.gateshipone.odyssey.fragments.ArtistAlbumsFragment;
@@ -74,9 +76,10 @@ import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.FileUtils;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.views.CurrentPlaylistView;
@@ -456,17 +459,15 @@ public class OdysseyMainActivity extends GenericActivity
 
             CurrentPlaylistView currentPlaylistView = findViewById(R.id.now_playing_playlist);
 
-            // check if track has a valid album key
-            String albumKey = currentPlaylistView.getAlbumKey(info.position);
-            AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+            // check if track has a valid album
+            AlbumModel tmpAlbum = MusicDatabaseFactory.getDatabase(getApplicationContext()).getAlbumForTrack(currentPlaylistView.getTrack(info.position), getApplicationContext());
 
             menu.findItem(R.id.view_current_playlist_action_showalbum).setVisible(tmpAlbum != null);
 
-            // check if track has a valid artist id
-            String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-            long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+            // check if track has a valid artist
+            ArtistModel tmpArtist = MusicDatabaseFactory.getDatabase(getApplicationContext()).getArtistForTrack(currentPlaylistView.getTrack(info.position), getApplicationContext());
 
-            menu.findItem(R.id.view_current_playlist_action_showartist).setVisible(artistID != -1);
+            menu.findItem(R.id.view_current_playlist_action_showartist).setVisible(tmpArtist != null);
 
             // check the view type
             if (currentPlaylistView.getItemViewType(info.position) == CurrentPlaylistAdapter.VIEW_TYPES.TYPE_SECTION_TRACK_ITEM) {
@@ -497,8 +498,7 @@ public class OdysseyMainActivity extends GenericActivity
                         currentPlaylistView.removeSection(info.position);
                         return true;
                     case R.id.view_current_playlist_action_showalbum: {
-                        String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                        AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+                        AlbumModel tmpAlbum = MusicDatabaseFactory.getDatabase(getApplicationContext()).getAlbumForTrack(currentPlaylistView.getTrack(info.position), getApplicationContext());
 
                         View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
                         coordinatorLayout.setVisibility(View.VISIBLE);
@@ -512,8 +512,7 @@ public class OdysseyMainActivity extends GenericActivity
                         return true;
                     }
                     case R.id.view_current_playlist_action_showartist: {
-                        String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-                        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+                        ArtistModel tmpArtist = MusicDatabaseFactory.getDatabase(getApplicationContext()).getArtistForTrack(currentPlaylistView.getTrack(info.position), getApplicationContext());
 
                         View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
                         coordinatorLayout.setVisibility(View.VISIBLE);
@@ -522,7 +521,7 @@ public class OdysseyMainActivity extends GenericActivity
                         if (nowPlayingView != null) {
                             nowPlayingView.minimize();
                         }
-                        onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+                        onArtistSelected(tmpArtist, null);
                         return true;
                     }
                     default:
@@ -735,9 +734,9 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onPlaylistSelected(String playlistTitle, long playlistID) {
+    public void onPlaylistSelected(PlaylistModel playlist) {
         // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlistTitle, playlistID);
+        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlist);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -758,9 +757,10 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onPlaylistFileSelected(String name, String path) {
+    public void onPlaylistFileSelected(FileModel file) {
+        PlaylistModel playlist = MusicDatabaseFactory.getDatabase(getApplicationContext()).getPlaylistFromFile(file);
         // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(name, path);
+        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlist);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

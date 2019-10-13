@@ -45,14 +45,17 @@ import android.widget.Toast;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MetaDataLoader;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PlaylistParser;
 import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
@@ -632,7 +635,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
 
         // Get a list of all available tracks from the MusicLibraryHelper
-        List<TrackModel> allTracks = MusicLibraryHelper.getAllTracks(filterString, getApplicationContext());
+        List<TrackModel> allTracks = MusicDatabaseFactory.getDatabase(getApplicationContext()).getAllTracks(filterString, getApplicationContext());
 
         mCurrentList.addAll(allTracks);
 
@@ -945,14 +948,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Enqueue all tracks of an album identified by the albumKey.
      *
-     * @param albumKey The key of the album
+     * @param album The Album
      */
-    public void enqueueAlbum(String albumKey) {
+    public void enqueueAlbum(AlbumModel album) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current albumkey from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
+        List<TrackModel> tracks = MusicDatabaseFactory.getDatabase(getApplicationContext()).getTracksForAlbum(album, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -965,13 +968,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play all tracks of an album identified by the albumkey.
      * A previous playlist will be cleared.
      *
-     * @param albumKey The key of the album
+     * @param album The Album
      * @param position The position to start playback
      */
-    public void playAlbum(String albumKey, int position) {
+    public void playAlbum(AlbumModel album, int position) {
         clearPlaylist();
 
-        enqueueAlbum(albumKey);
+        enqueueAlbum(album);
 
         jumpToIndex(position);
     }
@@ -983,7 +986,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        List<TrackModel> tracks = MusicLibraryHelper.getRecentTracks(getApplicationContext());
+        List<TrackModel> tracks = MusicDatabaseFactory.getDatabase(getApplicationContext()).getRecentTracks(getApplicationContext());
 
         enqueueTracks(tracks);
 
@@ -1006,15 +1009,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Enqueue all tracks of an artist identified by the artistId.
      *
-     * @param artistId The id of the artist
+     * @param artist The artist model
      * @param orderKey String to specify the order of the tracks
      */
-    public void enqueueArtist(long artistId, String orderKey) {
+    public void enqueueArtist(ArtistModel artist, String orderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current artistId from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
+        List<TrackModel> tracks = MusicDatabaseFactory.getDatabase(getApplicationContext()).getTracksForArtist(artist, orderKey, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -1027,13 +1030,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play all tracks of an artist identified by the artistId.
      * A previous playlist will be cleared.
      *
-     * @param artistId The id of the artist
+     * @param artist The artist model
      * @param orderKey String to specify the order of the tracks
      */
-    public void playArtist(long artistId, String orderKey) {
+    public void playArtist(ArtistModel artist, String orderKey) {
         clearPlaylist();
 
-        enqueueArtist(artistId, orderKey);
+        enqueueArtist(artist, orderKey);
 
         jumpToIndex(0);
     }
@@ -1425,7 +1428,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        MusicLibraryHelper.savePlaylist(name, mCurrentList, getApplicationContext());
+        MusicDatabaseFactory.getDatabase(getApplicationContext()).savePlaylist(name, mCurrentList, getApplicationContext());
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
@@ -1434,14 +1437,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * enqueue a selected playlist from mediastore
      *
-     * @param playlistId the id of the selected playlist
+     * @param playlist The playlist model
      */
-    public void enqueuePlaylist(long playlistId) {
+    public void enqueuePlaylist(PlaylistModel playlist) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // get playlist from mediastore
-        List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
+        List<TrackModel> playlistTracks = MusicDatabaseFactory.getDatabase(getApplicationContext()).getTracksForPlaylist(playlist, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(playlistTracks);
@@ -1454,13 +1457,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play a selected playlist from mediastore.
      * A previous playlist will be cleared.
      *
-     * @param playlistId the id of the selected playlist
+     * @param playlist The playlist model
      * @param position   the position to start the playback
      */
-    public void playPlaylist(long playlistId, int position) {
+    public void playPlaylist(PlaylistModel playlist, int position) {
         clearPlaylist();
 
-        enqueuePlaylist(playlistId);
+        enqueuePlaylist(playlist);
 
         jumpToIndex(position);
     }

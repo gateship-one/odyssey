@@ -42,13 +42,13 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
@@ -150,7 +150,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumKey())).get(TrackViewModel.class);
+        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum)).get(TrackViewModel.class);
     }
 
     /**
@@ -350,12 +350,9 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         // identify current artist
 
         TrackModel clickedTrack = mRecyclerAdapter.getItem(position);
-        String artistTitle = clickedTrack.getTrackArtistName();
-
-        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+        mArtistSelectedCallback.onArtistSelected(MusicDatabaseFactory.getDatabase(getContext()).getArtistForTrack(clickedTrack,getContext()), null);
     }
 
     /**
@@ -399,7 +396,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         // Enqueue complete album
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -416,7 +413,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         // clear playlist and play current album
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), position);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum, position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

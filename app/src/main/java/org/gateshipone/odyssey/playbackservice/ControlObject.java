@@ -22,6 +22,9 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 /**
@@ -55,6 +58,10 @@ public class ControlObject {
     private String mStringparam;
     private String mSecondStringParam;
     private TrackModel mTrack;
+    private AlbumModel mAlbum;
+    private ArtistModel mArtist;
+    private PlaylistModel mPlaylist;
+
     private long mLongParam;
 
     public ControlObject(PLAYBACK_ACTION action) {
@@ -118,9 +125,54 @@ public class ControlObject {
         mIntparam = intParam;
     }
 
-    public ControlObject(PLAYBACK_ACTION action, boolean boolParam) {
+    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist) {
         mAction = action;
-        mBoolparam = boolParam;
+        mPlaylist = playlist;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist, int intParm) {
+        mAction = action;
+        mIntparam = intParm;
+        mPlaylist = playlist;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, TrackModel trackModel) {
+        mAction = action;
+        mTrack = trackModel;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, TrackModel track, int intParm) {
+        mAction = action;
+        mIntparam = intParm;
+        mTrack = track;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, ArtistModel artistModel) {
+        mAction = action;
+        mArtist = artistModel;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, ArtistModel artistModel, int intParm) {
+        mAction = action;
+        mIntparam = intParm;
+        mArtist = artistModel;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, ArtistModel artistModel, String stringParm) {
+        mAction = action;
+        mStringparam = stringParm;
+        mArtist = artistModel;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, AlbumModel album) {
+        mAction = action;
+        mAlbum = album;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, AlbumModel album, int intParm) {
+        mAction = action;
+        mIntparam = intParm;
+        mAlbum = album;
     }
 
     public PLAYBACK_ACTION getAction() {
@@ -150,4 +202,10 @@ public class ControlObject {
     public TrackModel getTrack() {
         return mTrack;
     }
+
+    public ArtistModel getArtist() { return mArtist; }
+
+    public AlbumModel getAlbum() { return mAlbum;}
+
+    public PlaylistModel getPlaylist() {return mPlaylist;}
 }

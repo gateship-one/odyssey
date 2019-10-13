@@ -32,6 +32,7 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MusicDatabase {
     List<TrackModel> getTracksForAlbum(final AlbumModel album, final Context context);
@@ -52,6 +53,8 @@ public interface MusicDatabase {
 
     List<AlbumModel> getAllAlbumsForArtist(final ArtistModel artist, final String orderKey, final Context context);
 
+    List<AlbumModel> getAllAlbumsForArtist(final AlbumModel album, final String orderKey, final Context context);
+
     List<ArtistModel> getAllArtists(final boolean showAlbumArtistsOnly, final Context context);
 
     List<PlaylistModel> getAllPlaylists(final Context context);
@@ -63,4 +66,13 @@ public interface MusicDatabase {
     TrackModel getTrackForUri(final Uri uri, final Context context);
 
     List<FileModel> getMediaFilesForPath(final String basePath, final Context context);
+
+    AlbumModel getAlbumForTrack(final TrackModel track, final Context context);
+    ArtistModel getArtistForTrack(final TrackModel track, final Context context);
+
+    ArtistModel getArtistForAlbum(final AlbumModel album, final Context context);
+
+    PlaylistModel getPlaylistFromFile(final FileModel file);
+
+    Set<String> getTrackStorageLocationsForAlbum(final AlbumModel album, final Context context);
 }

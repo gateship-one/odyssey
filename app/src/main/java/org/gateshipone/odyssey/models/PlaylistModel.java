@@ -22,8 +22,10 @@
 
 package org.gateshipone.odyssey.models;
 
-public class PlaylistModel implements GenericModel {
+import android.os.Parcel;
+import android.os.Parcelable;
 
+public class PlaylistModel implements GenericModel, Parcelable {
     /**
      * The name of the playlist
      */
@@ -33,6 +35,8 @@ public class PlaylistModel implements GenericModel {
      * Unique id to identify the playlist in the mediastore
      */
     private final long mPlaylistID;
+
+    private final String mPlaylistPath;
 
     /**
      * Constructs a PlaylistModel instance with the given parameters.
@@ -44,7 +48,49 @@ public class PlaylistModel implements GenericModel {
             mPlaylistName = "";
         }
         mPlaylistID = playlistID;
+        mPlaylistPath = "";
     }
+
+    public PlaylistModel(String playlistName, long playlistID, String path) {
+        if (playlistName != null) {
+            mPlaylistName = playlistName;
+        } else {
+            mPlaylistName = "";
+        }
+        mPlaylistID = playlistID;
+        mPlaylistPath = path;
+    }
+
+
+    protected PlaylistModel(Parcel in) {
+        mPlaylistName = in.readString();
+        mPlaylistID = in.readLong();
+        mPlaylistPath = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mPlaylistName);
+        dest.writeLong(mPlaylistID);
+        dest.writeString(mPlaylistPath);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PlaylistModel> CREATOR = new Creator<PlaylistModel>() {
+        @Override
+        public PlaylistModel createFromParcel(Parcel in) {
+            return new PlaylistModel(in);
+        }
+
+        @Override
+        public PlaylistModel[] newArray(int size) {
+            return new PlaylistModel[size];
+        }
+    };
 
     /**
      * Return the name of the playlist
@@ -60,6 +106,10 @@ public class PlaylistModel implements GenericModel {
         return mPlaylistID;
     }
 
+    public String getPlaylistPath() {
+        return mPlaylistPath;
+    }
+
     /**
      * Return the section title for the PlaylistModel
      * <p/>
@@ -69,4 +119,5 @@ public class PlaylistModel implements GenericModel {
     public String getSectionTitle() {
         return mPlaylistName;
     }
+
 }

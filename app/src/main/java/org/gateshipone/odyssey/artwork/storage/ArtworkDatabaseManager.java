@@ -31,7 +31,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.utils.FileUtils;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -212,8 +211,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         long artistID = artist.getArtistID();
         if (artistID == -1) {
+            // FIXME this should not be happening anymore and prevented elsewhere
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), context);
+            new Exception().printStackTrace();
         }
 
         final String artistIDString = String.valueOf(artistID);

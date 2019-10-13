@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.listener;
 
+import org.gateshipone.odyssey.models.PlaylistModel;
+
 public interface OnPlaylistSelectedListener {
-    void onPlaylistSelected(String playlistTitle, long playlistID);
+    void onPlaylistSelected(PlaylistModel playlist);
 }

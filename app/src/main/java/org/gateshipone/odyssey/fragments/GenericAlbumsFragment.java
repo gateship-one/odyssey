@@ -194,11 +194,10 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     protected void enqueueAlbum(int position) {
         // identify current album
         AlbumModel clickedAlbum = mAdapter.getItem(position);
-        String albumKey = clickedAlbum.getAlbumKey();
 
         // enqueue album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(clickedAlbum);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -214,11 +213,10 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     protected void playAlbum(int position) {
         // identify current album
         AlbumModel clickedAlbum = mAdapter.getItem(position);
-        String albumKey = clickedAlbum.getAlbumKey();
 
         // play album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(clickedAlbum, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

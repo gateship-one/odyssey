@@ -40,8 +40,10 @@ import android.widget.TextView;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksAdapter;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
+import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
@@ -59,40 +61,22 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     /**
      * Key values for arguments of the fragment
      */
-    private final static String ARG_PLAYLISTTITLE = "playlisttitle";
+    private final static String ARG_PLAYLIST = "playlist";
 
-    private final static String ARG_PLAYLISTID = "playlistid";
-
-    private final static String ARG_PLAYLISTPATH = "playlistpath";
 
     /**
      * The information of the displayed playlist
      */
-    private String mPlaylistTitle = "";
-
-    private long mPlaylistID = -1;
-
-    private String mPlaylistPath;
+    private PlaylistModel mPlaylist;
 
     /**
      * Action to execute when the user selects an item in the list
      */
     private PreferenceHelper.LIBRARY_TRACK_CLICK_ACTION mClickAction;
 
-    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, final long playlistID) {
+    public static PlaylistTracksFragment newInstance(@NonNull final PlaylistModel playlist) {
         final Bundle args = new Bundle();
-        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
-        args.putLong(ARG_PLAYLISTID, playlistID);
-
-        final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static PlaylistTracksFragment newInstance(@NonNull final String playlistTitle, @NonNull final String playlistPath) {
-        final Bundle args = new Bundle();
-        args.putString(ARG_PLAYLISTTITLE, playlistTitle);
-        args.putString(ARG_PLAYLISTPATH, playlistPath);
+        args.putParcelable(ARG_PLAYLIST, playlist);
 
         final PlaylistTracksFragment fragment = new PlaylistTracksFragment();
         fragment.setArguments(args);
@@ -140,9 +124,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
         Bundle args = getArguments();
 
-        mPlaylistTitle = args.getString(ARG_PLAYLISTTITLE);
-        mPlaylistID = args.getLong(ARG_PLAYLISTID);
-        mPlaylistPath = args.getString(ARG_PLAYLISTPATH);
+        mPlaylist = args.getParcelable(ARG_PLAYLIST);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
@@ -155,10 +137,10 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        if (mPlaylistPath == null) {
-            return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
+        if (mPlaylist != null) {
+            return null;//new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
         } else {
-            return new ViewModelProvider(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistPath)).get(PlaylistTrackViewModel.class);
+            return null; //new ViewModelProvider(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistPath)).get(PlaylistTrackViewModel.class);
         }
     }
 
@@ -170,7 +152,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     public void onResume() {
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            mToolbarAndFABCallback.setupToolbar(mPlaylistTitle, false, false, false);
+            mToolbarAndFABCallback.setupToolbar(mPlaylist.getPlaylistName(), false, false, false);
             // Enable FAB correctly for now, can be disabled later
             mToolbarAndFABCallback.setupFAB(v -> playPlaylist(0));
         }
@@ -221,7 +203,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
 
-        if (mPlaylistPath != null) {
+        if (mPlaylist.getPlaylistPath() != null) {
             // Hide remove track for playlist files as it is unsupported
             menu.findItem(R.id.fragment_playlist_tracks_action_remove).setVisible(false);
         }
@@ -305,11 +287,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void enqueuePlaylist() {
         try {
             // add the playlist
-            if (mPlaylistPath == null) {
-                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(mPlaylistID);
-            } else {
-                ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylistFile(mPlaylistPath);
-            }
+            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(mPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -326,11 +304,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void playPlaylist(int position) {
 
         try {
-            if (mPlaylistPath == null) {
-                ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(mPlaylistID, position);
-            } else {
-                ((GenericActivity) getActivity()).getPlaybackService().playPlaylistFile(mPlaylistPath, position);
-            }
+            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(mPlaylist, position);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -377,7 +351,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      * @param position the position of the selected track in the adapter
      */
     private void removeTrackFromPlaylist(int position) {
-        final boolean reloadData = MusicLibraryHelper.removeTrackFromPlaylist(mPlaylistID, position, getActivity().getApplicationContext());
+        final boolean reloadData = MusicDatabaseFactory.getDatabase(getContext()).removeTrackFromPlaylist(mPlaylist, position, getActivity().getApplicationContext());
 
         if (reloadData) {
             // reload data

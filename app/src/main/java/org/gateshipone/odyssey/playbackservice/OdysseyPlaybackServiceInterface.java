@@ -24,6 +24,9 @@ package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
 
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.lang.ref.WeakReference;
@@ -257,48 +260,33 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueuePlaylist(long playlistId) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlistId);
+    public void enqueuePlaylist(PlaylistModel playlist) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlist);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playPlaylist(long playlistId, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST, playlistId, position);
+    public void playPlaylist(PlaylistModel playlist, int position) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST, playlist, position);
+        Message msg = mService.get().getHandler().obtainMessage();
+        msg.obj = obj;
+        mService.get().getHandler().sendMessage(msg);
+    }
+
+
+    @Override
+    public void enqueueAlbum(AlbumModel album) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, album);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void enqueuePlaylistFile(String path) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLISTFILE, path);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void playPlaylistFile(String path, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLISTFILE, path, position);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void enqueueAlbum(String albumKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumKey);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void playAlbum(String albumKey, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALBUM, albumKey, position);
+    public void playAlbum(AlbumModel album, int position) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALBUM, album, position);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -321,16 +309,16 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueArtist(long artistId, String orderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId, orderKey);
+    public void enqueueArtist(ArtistModel artist, String orderKey) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artist, orderKey);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playArtist(long artistId, String orderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYARTIST, artistId, orderKey);
+    public void playArtist(ArtistModel artist, String orderKey) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYARTIST, artist, orderKey);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

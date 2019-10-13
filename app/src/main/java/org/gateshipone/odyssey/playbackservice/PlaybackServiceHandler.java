@@ -99,10 +99,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().savePlaylist(msgObj.getStringParam());
                     break;
                 case ODYSSEY_ENQUEUEPLAYLIST:
-                    mService.get().enqueuePlaylist(msgObj.getLongParam());
+                    mService.get().enqueuePlaylist(msgObj.getPlaylist());
                     break;
                 case ODYSSEY_PLAYPLAYLIST:
-                    mService.get().playPlaylist(msgObj.getLongParam(), msgObj.getIntParam());
+                    mService.get().playPlaylist(msgObj.getPlaylist(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEPLAYLISTFILE:
                     mService.get().enqueuePlaylistFile(msgObj.getStringParam());
@@ -135,16 +135,16 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
                     break;
                 case ODYSSEY_ENQUEUEALBUM:
-                    mService.get().enqueueAlbum(msgObj.getStringParam());
+                    mService.get().enqueueAlbum(msgObj.getAlbum());
                     break;
                 case ODYSSEY_PLAYALBUM:
-                    mService.get().playAlbum(msgObj.getStringParam(), msgObj.getIntParam());
+                    mService.get().playAlbum(msgObj.getAlbum(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEARTIST:
-                    mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam());
+                    mService.get().enqueueArtist(msgObj.getArtist(), msgObj.getStringParam());
                     break;
                 case ODYSSEY_PLAYARTIST:
-                    mService.get().playArtist(msgObj.getLongParam(), msgObj.getStringParam());
+                    mService.get().playArtist(msgObj.getArtist(), msgObj.getStringParam());
                     break;
                 case ODYSSEY_ENQUEUERECENTALBUMS:
                     mService.get().enqueueRecentAlbums();

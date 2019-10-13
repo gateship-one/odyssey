@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.artwork.BitmapCache;
 import org.gateshipone.odyssey.artwork.storage.ImageNotFoundException;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -104,7 +105,7 @@ public class CoverBitmapLoader {
         @Override
         public void run() {
             // At first get image independent of resolution (can be replaced later with higher resolution)
-            final AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(mTrack.getTrackAlbumKey(), mContext);
+            final AlbumModel album = MusicDatabaseFactory.getDatabase(mContext).getAlbumForTrack(mTrack, mContext);
             if (album == null) {
                 // No album found for track, abort
                 return;
@@ -176,8 +177,7 @@ public class CoverBitmapLoader {
         private final ArtistModel mArtist;
 
         private TrackArtistImageRunner(final TrackModel trackModel, final int width, final int height) {
-            long artistID = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mContext);
-            mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistID);
+            mArtist = MusicDatabaseFactory.getDatabase(mContext).getArtistForTrack(trackModel, mContext);
             mWidth = width;
             mHeight = height;
         }

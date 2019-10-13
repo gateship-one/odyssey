@@ -20,8 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.utils;
-
+package org.gateshipone.odyssey.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,6 +34,7 @@ import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MusicLibraryHelper {
-    private static final String TAG = "MusicLibraryHelper";
+public class AndroidMediaDatabase {
+    private static final String TAG = "AndroidMediaDatabase";
 
     /**
      * Selection arrays for the different tables in the MediaStore.
@@ -351,7 +351,7 @@ public class MusicLibraryHelper {
         final Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DATE_ADDED}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
 
         // get all albums
-        final Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
+        final Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
 
         if (recentTracksCursor != null && albumsCursor != null) {
             if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
@@ -622,7 +622,7 @@ public class MusicLibraryHelper {
     public static List<AlbumModel> getAllAlbums(final Context context) {
         final ArrayList<AlbumModel> albums = new ArrayList<>();
 
-        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM + " COLLATE NOCASE");
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -672,7 +672,7 @@ public class MusicLibraryHelper {
             orderBy = MediaStore.Audio.Albums.ALBUM;
         }
 
-        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId), MusicLibraryHelper.projectionAlbums, "", null, orderBy + " COLLATE NOCASE");
+        Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.Albums.getContentUri("external", artistId), AndroidMediaDatabase.projectionAlbums, "", null, orderBy + " COLLATE NOCASE");
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -714,7 +714,7 @@ public class MusicLibraryHelper {
             // load all artists
 
             // get all artists
-            final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionArtists, "", null,
+            final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionArtists, "", null,
                     MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
 
             if (cursor != null) {
@@ -772,7 +772,7 @@ public class MusicLibraryHelper {
     public static List<PlaylistModel> getAllPlaylists(final Context context) {
         final ArrayList<PlaylistModel> playlists = new ArrayList<>();
 
-        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionPlaylists, "", null, MediaStore.Audio.Playlists.NAME);
 
         if (cursor != null) {
 
@@ -822,7 +822,7 @@ public class MusicLibraryHelper {
     public static boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition, final Context context) {
         final Uri playlistContentUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 
-        final Cursor trackCursor = PermissionHelper.query(context, playlistContentUri, MusicLibraryHelper.projectionPlaylistTracks, "", null, "");
+        final Cursor trackCursor = PermissionHelper.query(context, playlistContentUri, AndroidMediaDatabase.projectionPlaylistTracks, "", null, "");
 
         int removedRows = -1;
 
@@ -919,7 +919,7 @@ public class MusicLibraryHelper {
         }
 
         // lookup the current file in the media db
-        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -955,7 +955,7 @@ public class MusicLibraryHelper {
 
         final String where = MediaStore.Audio.Media.DATA + " LIKE ?";
 
-        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MusicLibraryHelper.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionTracks, where, whereVal, MediaStore.Audio.Media.TRACK);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

@@ -28,8 +28,10 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.database.MusicDatabase;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.models.ArtistModel;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -43,17 +45,17 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
     /**
      * The artist id if albums of a specific artist should be loaded.
      */
-    private final long mArtistID;
+    private final ArtistModel mArtist;
 
     /**
      * Load only the recent albums.
      */
     private final boolean mLoadRecent;
 
-    private AlbumViewModel(@NonNull final Application application, final long artistId, final boolean loadRecent) {
+    private AlbumViewModel(@NonNull final Application application, final ArtistModel artist, final boolean loadRecent) {
         super(application);
 
-        mArtistID = artistId;
+        mArtist = artist;
         mLoadRecent = loadRecent;
     }
 
@@ -77,13 +79,13 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
             if (model != null) {
                 final Application application = model.getApplication();
 
-                if (model.mArtistID == -1) {
+                if (model.mArtist == null) {
                     if (model.mLoadRecent) {
                         // load recent albums
-                        return MusicLibraryHelper.getRecentAlbums(application);
+                        return MusicDatabaseFactory.getDatabase(application).getRecentAlbums(application);
                     } else {
                         // load all albums
-                        return MusicLibraryHelper.getAllAlbums(application);
+                        return MusicDatabaseFactory.getDatabase(application).getAllAlbums(application);
                     }
                 } else {
                     // load all albums from the given artist
@@ -92,7 +94,7 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
                     String orderKey = sharedPref.getString(application.getString(R.string.pref_album_sort_order_key), application.getString(R.string.pref_artist_albums_sort_default));
 
-                    return MusicLibraryHelper.getAllAlbumsForArtist(model.mArtistID, orderKey, application);
+                    return MusicDatabaseFactory.getDatabase(application).getAllAlbumsForArtist(model.mArtist, orderKey, application);
                 }
             }
 
@@ -113,28 +115,28 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
 
         private final Application mApplication;
 
-        private final long mArtistID;
+        private final ArtistModel mArtist;
 
         private final boolean mLoadRecent;
 
-        private AlbumViewModelFactory(final Application application, final long artistID, final boolean loadRecent) {
+        private AlbumViewModelFactory(final Application application, final ArtistModel artist, final boolean loadRecent) {
             mApplication = application;
-            mArtistID = artistID;
+            mArtist = artist;
             mLoadRecent = loadRecent;
         }
 
         public AlbumViewModelFactory(final Application application, final boolean loadRecent) {
-            this(application, -1, loadRecent);
+            this(application, null, loadRecent);
         }
 
-        public AlbumViewModelFactory(final Application application, final long artistID) {
-            this(application, artistID, false);
+        public AlbumViewModelFactory(final Application application, final ArtistModel artist) {
+            this(application, artist, false);
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new AlbumViewModel(mApplication, mArtistID, mLoadRecent);
+            return (T) new AlbumViewModel(mApplication, mArtist, mLoadRecent);
         }
     }
 }

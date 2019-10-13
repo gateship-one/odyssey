@@ -43,7 +43,6 @@ import org.gateshipone.odyssey.adapter.ArtistsAdapter;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.models.ArtistModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
@@ -194,7 +193,8 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // to query artists. AlbumArtists vs. Artists MediaStore table.
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
+            // FIXME should not happen
+            //artistID = MusicDatabaseFactory.getDatabase(getContext()).getArtistIDFromName(artist, getActivity());
         }
 
         Bitmap bitmap = null;
@@ -254,21 +254,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // identify current artist
         ArtistModel currentArtist = mAdapter.getItem(position);
 
-        String artist = currentArtist.getArtistName();
-        long artistID = currentArtist.getArtistID();
-
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
-        }
-
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(currentArtist, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -286,21 +278,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // identify current artist
         ArtistModel currentArtist = mAdapter.getItem(position);
 
-        String artist = currentArtist.getArtistName();
-        long artistID = currentArtist.getArtistID();
-
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
-        }
-
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(currentArtist, orderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

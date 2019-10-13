@@ -23,11 +23,12 @@
 package org.gateshipone.odyssey.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.PlaylistModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -52,15 +53,17 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
 
     @Override
     void loadData() {
-        new PlaylistLoaderTask(this).execute();
+        new PlaylistLoaderTask(this, getApplication()).execute();
     }
 
     private static class PlaylistLoaderTask extends AsyncTask<Void, Void, List<PlaylistModel>> {
 
         private final WeakReference<PlaylistViewModel> mViewModel;
+        private final Context mContext;
 
-        PlaylistLoaderTask(final PlaylistViewModel viewModel) {
+        PlaylistLoaderTask(final PlaylistViewModel viewModel, Context context) {
             mViewModel = new WeakReference<>(viewModel);
+            mContext = context;
         }
 
         @Override
@@ -78,7 +81,7 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                     playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), -1));
                 }
 
-                playlists.addAll(MusicLibraryHelper.getAllPlaylists(application));
+                playlists.addAll(MusicDatabaseFactory.getDatabase(mContext).getAllPlaylists(application));
 
                 return playlists;
             }

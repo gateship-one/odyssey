@@ -1,9 +1,5 @@
 /*
- * Copyright (C) 2020 Team Gateship-One
- * (Hendrik Borghorst & Frederik Luetkes)
- *
- * The AUTHORS.md file contains a detailed contributors list:
- * <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+ * Copyright (C) 2016  Hendrik Borghorst & Frederik Luetkes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +16,7 @@
  *
  */
 
-package org.gateshipone.odyssey.listener;
+// ITrackModel.aidl
+package org.gateshipone.odyssey.models;
 
-
-import org.gateshipone.odyssey.models.FileModel;
-
-public interface OnPlaylistFileSelectedListener {
-    void onPlaylistFileSelected(FileModel playlist);
-}
+parcelable PlaylistModel;

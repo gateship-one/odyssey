@@ -25,8 +25,10 @@ package org.gateshipone.odyssey.viewmodels;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -40,18 +42,18 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
     /**
      * The album key if tracks of a specific album should be loaded.
      */
-    private final String mAlbumKey;
+    private final AlbumModel mAlbum;
 
     /**
      * The playlist id if tracks of a specific playlist should be loaded.
      */
-    private final long mPlaylistID;
+    private final PlaylistModel mPlaylist;
 
-    private TrackViewModel(@NonNull final Application application, final String albumKey, final long playlistID) {
+    private TrackViewModel(@NonNull final Application application, final AlbumModel album, final PlaylistModel playlist) {
         super(application);
 
-        mAlbumKey = albumKey;
-        mPlaylistID = playlistID;
+        mAlbum = album;
+        mPlaylist = playlist;
     }
 
     @Override
@@ -74,16 +76,16 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
             if (model != null) {
                 final Application application = model.getApplication();
 
-                if (model.mPlaylistID != -1) {
+                if (model.mPlaylist != null) {
                     // load playlist tracks
-                    return MusicLibraryHelper.getTracksForPlaylist(model.mPlaylistID, application);
+                    return MusicDatabaseFactory.getDatabase(application).getTracksForPlaylist(model.mPlaylist, application);
                 } else {
-                    if (model.mAlbumKey.isEmpty()) {
+                    if (model.mAlbum == null) {
                         // load all tracks
-                        return MusicLibraryHelper.getAllTracks(null, application);
+                        return MusicDatabaseFactory.getDatabase(application).getAllTracks(null, application);
                     } else {
                         // load album tracks
-                        return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, application);
+                        return MusicDatabaseFactory.getDatabase(application).getTracksForAlbum(model.mAlbum, application);
                     }
                 }
             }
@@ -106,32 +108,31 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
 
         private final Application mApplication;
 
-        private final String mAlbumKey;
+        private final AlbumModel mAlbum;
+        private final PlaylistModel mPlaylist;
 
-        private final long mPlaylistID;
-
-        private TrackViewModelFactory(final Application application, final String albumKey, final long playlistID) {
+        private TrackViewModelFactory(final Application application, final AlbumModel album, final PlaylistModel playlist) {
             mApplication = application;
-            mAlbumKey = albumKey;
-            mPlaylistID = playlistID;
+            mAlbum = album;
+            mPlaylist = playlist;
         }
 
         public TrackViewModelFactory(final Application application) {
-            this(application, "", -1);
+            this(application, null, null);
         }
 
-        public TrackViewModelFactory(final Application application, final String albumKey) {
-            this(application, albumKey, -1);
+        public TrackViewModelFactory(final Application application, final AlbumModel album) {
+            this(application, album, null);
         }
 
-        public TrackViewModelFactory(final Application application, final long playlistID) {
-            this(application, "", playlistID);
+        public TrackViewModelFactory(final Application application, final PlaylistModel playlist) {
+            this(application, null, playlist);
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new TrackViewModel(mApplication, mAlbumKey, mPlaylistID);
+            return (T) new TrackViewModel(mApplication, mAlbum, mPlaylist);
         }
     }
 }

@@ -27,6 +27,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.io.FileInputStream;
@@ -89,7 +90,7 @@ public class MetaDataLoader {
         final Uri uri = FormatHelper.encodeURI(trackUrl);
 
         // lookup the current file in the media db
-        final TrackModel track = MusicLibraryHelper.getTrackForUri(uri, context);
+        final TrackModel track = MusicDatabaseFactory.getDatabase(context).getTrackForUri(uri, context);
 
         if (track != null) {
             return track;

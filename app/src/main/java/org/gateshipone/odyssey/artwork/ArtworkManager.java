@@ -46,11 +46,11 @@ import org.gateshipone.odyssey.artwork.network.artprovider.LastFMProvider;
 import org.gateshipone.odyssey.artwork.network.artprovider.MusicBrainzProvider;
 import org.gateshipone.odyssey.artwork.storage.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.artwork.storage.ImageNotFoundException;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.NetworkUtils;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.json.JSONException;
@@ -291,7 +291,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         }
 
         // get album information for the current track
-        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
+        AlbumModel album = MusicDatabaseFactory.getDatabase(context).getAlbumForTrack(track, context);
         if (album == null) {
             return null;
         }
@@ -346,7 +346,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
         if (mUseLocalImages) {
-            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumKey(), context);
+            final Set<String> storageLocations = MusicDatabaseFactory.getDatabase(context).getTrackStorageLocationsForAlbum(albumModel, context);
 
             for (final String location : storageLocations) {
                 final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(context, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
@@ -405,9 +405,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     public void fetchImage(final TrackModel trackModel, final Context context) {
         // Create a dummy album
-        AlbumModel album = new AlbumModel(trackModel.getTrackAlbumName(), null,
-                trackModel.getTrackArtistName(), trackModel.getTrackAlbumKey(),
-                MusicLibraryHelper.getAlbumIDFromKey(trackModel.getTrackAlbumKey(), context));
+        AlbumModel album = MusicDatabaseFactory.getDatabase(context).getAlbumForTrack(trackModel, context);
 
         fetchImage(album, context);
     }

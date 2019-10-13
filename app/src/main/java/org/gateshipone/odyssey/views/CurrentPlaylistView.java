@@ -203,26 +203,15 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      *
      * @param position The position of the track in the playlist.
      */
-    public String getAlbumKey(int position) {
+    public TrackModel getTrack(int position) {
         if(mCurrentPlaylistAdapter != null) {
             TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
-            return clickedTrack.getTrackAlbumKey();
+            return clickedTrack;
         }
-        return "";
+        return null;
     }
 
-    /**
-     * Return the selected artist title for the selected track.
-     *
-     * @param position The position of the track in the playlist.
-     */
-    public String getArtistTitle(int position) {
-        if(mCurrentPlaylistAdapter != null) {
-            TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
-            return clickedTrack.getTrackArtistName();
-        }
-        return "";
-    }
+
 
     public void hideArtwork(boolean enable) {
         mHideArtwork = enable;

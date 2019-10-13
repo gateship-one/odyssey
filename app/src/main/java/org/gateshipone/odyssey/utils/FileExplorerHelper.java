@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.utils;
 import android.content.Context;
 import android.net.Uri;
 
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -75,7 +76,7 @@ public class FileExplorerHelper {
         final Uri uri = FormatHelper.encodeURI(file.getURLString());
 
         // lookup the current file in the media db
-        final TrackModel track = MusicLibraryHelper.getTrackForUri(uri, context);
+        final TrackModel track = MusicDatabaseFactory.getDatabase(context).getTrackForUri(uri, context);
 
         if (null == track) {
             return getDummyTrackModelForFile(file);
@@ -130,7 +131,7 @@ public class FileExplorerHelper {
      * @return List of files that need to be scanned
      */
     public List<FileModel> getMissingDBFiles(Context context, FileModel basePath) {
-        List<FileModel> filesDB = MusicLibraryHelper.getMediaFilesForPath(basePath.getPath(), context);
+        List<FileModel> filesDB = MusicDatabaseFactory.getDatabase(context).getMediaFilesForPath(basePath.getPath(), context);
         List<FileModel> filesFS = new ArrayList<>();
 
         getFilesRecursive(context, basePath, filesFS);
