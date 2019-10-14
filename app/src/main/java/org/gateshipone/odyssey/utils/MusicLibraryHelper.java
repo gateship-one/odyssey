@@ -726,7 +726,7 @@ public class MusicLibraryHelper {
                         final int albumIDColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST_ID);
 
                         // workaround because no group command is allowed in ContentResolver query
-                        long lastArtistID = -1;
+                        Set<Long> artistIds = new HashSet<>();
 
                         do {
                             final String artist = cursor.getString(albumArtistTitleColumnIndex);
@@ -734,11 +734,10 @@ public class MusicLibraryHelper {
 
                             // add the artist
                             // workaround because no group command is allowed in ContentResolver query
-                            if (lastArtistID == -1 || lastArtistID != artistID) {
+                            if (!artistIds.contains(artistID)) {
                                 artists.add(new ArtistModel(artist, artistID));
-                                lastArtistID = artistID;
+                                artistIds.add(artistID);
                             }
-
                         } while (cursor.moveToNext());
                     }
 
