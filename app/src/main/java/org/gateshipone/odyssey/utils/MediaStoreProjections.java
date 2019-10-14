@@ -51,7 +51,7 @@ class MediaStoreProjections {
         String LAST_YEAR = PROJECTION[6];
         String ID = PROJECTION[7];
         @RequiresApi(api = Build.VERSION_CODES.Q)
-        String ARTIST_ID = PROJECTION[8];
+        String ARTIST_ID = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? PROJECTION[8] : "";
     }
 
     interface ProjectionArtists {
@@ -153,7 +153,7 @@ class MediaStoreProjections {
                     MediaStore.Audio.Albums.ARTIST,
                     MediaStore.Audio.Albums.FIRST_YEAR,
                     MediaStore.Audio.Albums.LAST_YEAR,
-                    BaseColumns._ID,
+                    BaseColumns._ID
             };
         }
     }
