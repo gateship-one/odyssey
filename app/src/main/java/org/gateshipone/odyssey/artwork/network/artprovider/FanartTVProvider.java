@@ -142,6 +142,8 @@ public class FanartTVProvider extends ArtProvider {
                         errorListener.fetchJSONException(model, context, e);
                     }
                 }, error -> errorListener.fetchVolleyError(model, context, error));
+            } else {
+                errorListener.fetchError(model, context);
             }
         } catch (JSONException e) {
             errorListener.fetchJSONException(model, context, e);

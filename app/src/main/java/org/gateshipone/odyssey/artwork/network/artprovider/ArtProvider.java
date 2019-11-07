@@ -37,6 +37,8 @@ public abstract class ArtProvider {
         void fetchJSONException(final ArtworkRequestModel model, final Context context, final JSONException exception);
 
         void fetchVolleyError(final ArtworkRequestModel model, final Context context, final VolleyError error);
+
+        void fetchError(final ArtworkRequestModel model, final Context context);
     }
 
     public abstract void fetchImage(final ArtworkRequestModel model, final Context context, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener);

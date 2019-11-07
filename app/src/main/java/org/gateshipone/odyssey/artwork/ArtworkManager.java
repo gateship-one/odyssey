@@ -515,6 +515,15 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         new InsertImageTask(context, this).execute(imageResponse);
     }
 
+    public void fetchError(ArtworkRequestModel model, Context context) {
+        Log.e(TAG, "Error fetching: " + model.getLoggingString());
+        ImageResponse imageResponse = new ImageResponse();
+        imageResponse.model = model;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertImageTask(context, this).execute(imageResponse);
+    }
+
     /**
      * This will cancel the last used album/artist image providers. To make this useful on connection change
      * it is important to cancel all requests when changing the provider in settings.

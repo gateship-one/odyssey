@@ -214,6 +214,16 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         new InsertImageTask(context, this).execute(imageResponse);
     }
 
+    public void fetchError(final ArtworkRequestModel model, final Context context) {
+        Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        ImageResponse imageResponse = new ImageResponse();
+        imageResponse.model = model;
+        imageResponse.image = null;
+        imageResponse.url = null;
+        new InsertImageTask(context, this).execute(imageResponse);
+    }
+
+
     private void runAsForeground() {
         if (mBroadcastReceiver == null) {
             mBroadcastReceiver = new ActionReceiver();
