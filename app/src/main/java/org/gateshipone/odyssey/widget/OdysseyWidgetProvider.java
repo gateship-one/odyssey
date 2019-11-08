@@ -83,17 +83,22 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
         // Type checks
         if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
-
             // Extract the payload from the intent
             NowPlayingInformation info = intent.getParcelableExtra(PlaybackServiceStatusHelper.INTENT_NOWPLAYINGNAME);
 
             // Check if a payload was sent
             if (null != info) {
-                // Refresh the widget with the new information
-                setWidgetContent(info, context);
+                PlaybackService.PLAYSTATE state = info.getPlayState();
+                if (state == PlaybackService.PLAYSTATE.STOPPED) {
+                    mLastInfo = null;
+                    mLastCover = null;
+                } else if (state == PlaybackService.PLAYSTATE.PLAYING || state == PlaybackService.PLAYSTATE.PAUSE) {
+                    // Refresh the widget with the new information
+                    setWidgetContent(info, context);
 
-                // Save the information for later usage (when the asynchronous bitmap loader finishes)
-                mLastInfo = info;
+                    // Save the information for later usage (when the asynchronous bitmap loader finishes)
+                    mLastInfo = info;
+                }
             }
         } else if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_HIDE_ARTWORK_CHANGED)) {
             mHideArtwork = intent.getBooleanExtra(PlaybackServiceStatusHelper.MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
@@ -120,14 +125,14 @@ OdysseyWidgetProvider extends AppWidgetProvider {
      * @param info
      */
     private void setWidgetContent(NowPlayingInformation info, Context context) {
-        if (info == null) {
-            // Abort
-            return;
-        }
         boolean nowPlaying = false;
         // Create a new RemoteViews object containing the default widget layout
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
-
+        if (info == null) { // Set a clear widget
+            // Send the widget to the launcher by transferring the remote view
+            AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views );
+            return;
+        }
         TrackModel item = info.getCurrentTrack();
         if (item != null) {
             views.setTextViewText(R.id.widget_big_trackName, item.getTrackDisplayedName());
