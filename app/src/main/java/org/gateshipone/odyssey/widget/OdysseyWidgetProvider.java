@@ -32,6 +32,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
@@ -42,13 +44,13 @@ import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 
-import java.util.Vector;
 
 public class
 OdysseyWidgetProvider extends AppWidgetProvider {
     private static final String TAG = OdysseyWidgetProvider.class.getSimpleName();
 
-    private static NowPlayingInformation mLastInfo;
+    @NonNull
+    private static NowPlayingInformation mLastInfo = new NowPlayingInformation();
     private static Bitmap mLastCover = null;
 
     private static boolean mHideArtwork;
@@ -57,8 +59,6 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     private final static int INTENT_PREVIOUS = 1;
     private final static int INTENT_PLAYPAUSE = 2;
     private final static int INTENT_NEXT = 3;
-
-    private static Vector<Integer> mIDs;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -81,6 +81,9 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
+        if (intent.getAction() == null) {
+            return;
+        }
         // Type checks
         if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
             // Extract the payload from the intent
@@ -89,9 +92,12 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             // Check if a payload was sent
             if (null != info) {
                 PlaybackService.PLAYSTATE state = info.getPlayState();
-                if (state == PlaybackService.PLAYSTATE.STOPPED) {
-                    mLastInfo = null;
+                if (state == PlaybackService.PLAYSTATE.STOPPED || state == PlaybackService.PLAYSTATE.RESUMED) {
+                    mLastInfo = new NowPlayingInformation();
                     mLastCover = null;
+
+                    setWidgetContent(mLastInfo, context);
+
                 } else if (state == PlaybackService.PLAYSTATE.PLAYING || state == PlaybackService.PLAYSTATE.PAUSE) {
                     // Refresh the widget with the new information
                     setWidgetContent(info, context);
@@ -104,13 +110,13 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             mHideArtwork = intent.getBooleanExtra(PlaybackServiceStatusHelper.MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
             NowPlayingInformation info = mLastInfo;
             // Forces an update
-            mLastInfo = null;
+            mLastInfo = new NowPlayingInformation();
             setWidgetContent(info, context);
             mLastInfo = info;
         } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
             // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
             String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-            if (!mHideArtwork && mLastInfo != null && mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(albumKey)) {
+            if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(albumKey)) {
                 CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
                 coverLoader.getImage(mLastInfo.getCurrentTrack(), -1, -1);
                 mLastCover = null;
@@ -124,38 +130,46 @@ OdysseyWidgetProvider extends AppWidgetProvider {
      *
      * @param info
      */
-    private void setWidgetContent(NowPlayingInformation info, Context context) {
+    private void setWidgetContent(@NonNull NowPlayingInformation info, Context context) {
         boolean nowPlaying = false;
         // Create a new RemoteViews object containing the default widget layout
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
-        if (info == null) { // Set a clear widget
-            // Send the widget to the launcher by transferring the remote view
-            AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views );
-            return;
-        }
+
         TrackModel item = info.getCurrentTrack();
-        if (item != null) {
-            views.setTextViewText(R.id.widget_big_trackName, item.getTrackDisplayedName());
-            views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
+        views.setTextViewText(R.id.widget_big_trackName, item.getTrackDisplayedName());
+        views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
 
-            if (!mHideArtwork) {
-                // Check if the tracks album changed
-                if (mLastInfo == null || info != mLastInfo && !mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
-                    // Album changed, it is necessary to start the image loader
-                    views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+        switch (info.getPlayState()) {
+            case PLAYING:
+            case PAUSE:
+            {
+                if (!mHideArtwork) {
+                    // Check if the tracks album changed
+                    if (!mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
+                        // Album changed, it is necessary to start the image loader
+                        views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                        Log.v(TAG,"New album");
 
+                        mLastCover = null;
+
+                        CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
+                        coverLoader.getImage(item, -1, -1);
+                    } else if (mLastInfo.equals(info) && mLastCover != null) {
+                        // Reuse the image from last calls because the album is the same
+                        views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
+                    }
+                } else {
+                    // Hide artwork requested
                     mLastCover = null;
-
-                    CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
-                    coverLoader.getImage(item, -1, -1);
-                } else if (mLastInfo != null && mLastInfo.equals(info) && mLastCover != null) {
-                    // Reuse the image from last calls because the album is the same
-                    views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
+                    views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
                 }
-            } else {
+            }
+                break;
+            case RESUMED:
+            case STOPPED:
                 mLastCover = null;
                 views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
-            }
+                break;
         }
 
         // Set the images of the play button dependent on the playback state.

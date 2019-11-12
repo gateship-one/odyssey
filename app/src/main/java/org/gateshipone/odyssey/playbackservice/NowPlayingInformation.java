@@ -25,6 +25,8 @@ package org.gateshipone.odyssey.playbackservice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.models.TrackModel;
 
 /**
@@ -43,6 +45,7 @@ public final class NowPlayingInformation implements Parcelable {
     private final PlaybackService.REPEATSTATE mRepeat;
     private final PlaybackService.RANDOMSTATE mRandom;
     private final int mPlaylistLength;
+    @NonNull
     private final TrackModel mCurrentTrack;
 
     public static Parcelable.Creator<NowPlayingInformation> CREATOR = new Parcelable.Creator<NowPlayingInformation>() {
@@ -79,7 +82,7 @@ public final class NowPlayingInformation implements Parcelable {
         mCurrentTrack = new TrackModel();
     }
 
-    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, PlaybackService.REPEATSTATE repeat, PlaybackService.RANDOMSTATE random, int playlistlength, TrackModel currentTrack) {
+    public NowPlayingInformation(PlaybackService.PLAYSTATE playing, int playingIndex, PlaybackService.REPEATSTATE repeat, PlaybackService.RANDOMSTATE random, int playlistlength, @NonNull TrackModel currentTrack) {
         mPlayState = playing;
         mPlayingIndex = playingIndex;
         mRepeat = repeat;
@@ -122,6 +125,7 @@ public final class NowPlayingInformation implements Parcelable {
         return mPlaylistLength;
     }
 
+    @NonNull
     public TrackModel getCurrentTrack() {
         return mCurrentTrack;
     }
