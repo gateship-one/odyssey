@@ -32,8 +32,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.RemoteViews;
 
-import androidx.annotation.NonNull;
-
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
@@ -43,6 +41,8 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
+
+import androidx.annotation.NonNull;
 
 
 public class
@@ -141,20 +141,18 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
         switch (info.getPlayState()) {
             case PLAYING:
-            case PAUSE:
-            {
+            case PAUSE: {
                 if (!mHideArtwork) {
                     // Check if the tracks album changed
                     if (!mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
                         // Album changed, it is necessary to start the image loader
                         views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
-                        Log.v(TAG,"New album");
 
                         mLastCover = null;
 
                         CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
                         coverLoader.getImage(item, -1, -1);
-                    } else if (mLastInfo.equals(info) && mLastCover != null) {
+                    } else if (mLastCover != null) {
                         // Reuse the image from last calls because the album is the same
                         views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
                     }
@@ -164,7 +162,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
                 }
             }
-                break;
+            break;
             case RESUMED:
             case STOPPED:
                 mLastCover = null;
@@ -229,11 +227,12 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
 
         // Send the widget to the launcher by transferring the remote view
-        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views );
+        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views);
     }
 
     private class CoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
         private Context mContext;
+
         CoverReceiver(Context context) {
             mContext = context;
         }
