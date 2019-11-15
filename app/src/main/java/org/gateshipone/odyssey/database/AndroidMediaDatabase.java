@@ -698,6 +698,10 @@ public class AndroidMediaDatabase implements MusicDatabase{
             return albums;
         }
         long artistId = ((AndroidArtistModel)artist).getArtistID();
+
+        if (artistId == -1) {
+            artistId = getArtistIDFromName(artist.getArtistName(), context);
+        }
         String orderBy;
 
         if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_name_key))) {
