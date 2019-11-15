@@ -61,7 +61,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     private final static int INTENT_NEXT = 3;
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public synchronized void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         setWidgetContent(mLastInfo, context);
@@ -78,7 +78,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
      * @param intent  Intent containing the NowPlayingInformation as a payload.
      */
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public synchronized void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
         if (intent.getAction() == null) {
@@ -130,7 +130,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
      *
      * @param info
      */
-    private void setWidgetContent(@NonNull NowPlayingInformation info, Context context) {
+    private synchronized void setWidgetContent(@NonNull NowPlayingInformation info, Context context) {
         boolean nowPlaying = false;
         // Create a new RemoteViews object containing the default widget layout
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
