@@ -33,22 +33,22 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * The name of the track
      */
-    protected String mTrackName;
+    protected String mTrackName = "";
 
     /**
      * The name of the artist of the track
      */
-    protected String mTrackArtistName;
+    protected String mTrackArtistName = "";
 
     /**
      * The name of the album of the track
      */
-    protected String mTrackAlbumName;
+    protected String mTrackAlbumName = "";
 
     /**
      * The url path to the related media file
      */
-    protected String mTrackURL;
+    protected String mTrackURL = "";
 
     /**
      * The duration of the track in ms
@@ -67,35 +67,40 @@ public class TrackModel implements GenericModel, Parcelable {
 
     protected boolean mNoMetaData;
 
-    public TrackModel(@NonNull String name, @NonNull String artistName, @NonNull String albumName, long duration, int trackNumber, @NonNull String url,int dateAdded) {
-        mTrackName = name;
-        mTrackArtistName = artistName;
-        mTrackAlbumName = albumName;
-        mTrackURL = url;
-
-        mTrackDuration = duration;
-        mTrackNumber = trackNumber;
-
-        mDateAdded = dateAdded;
-        mNoMetaData = false;
+    public void setTrackName(String mTrackName) {
+        this.mTrackName = mTrackName;
     }
 
-    /**
-     * Constructs a TrackModel instance with the given parameters.
-     */
-    public TrackModel(@NonNull String name, @NonNull String artistName, @NonNull String albumName, long duration, int trackNumber, @NonNull String url) {
-        this(name, artistName, albumName, duration, trackNumber, url, -1);
+    public void setTrackArtistName(String mTrackArtistName) {
+        this.mTrackArtistName = mTrackArtistName;
     }
 
-    /**
-     * Constructs a TrackModel with default values
-     */
+    public void setTrackAlbumName(String mTrackAlbumName) {
+        this.mTrackAlbumName = mTrackAlbumName;
+    }
+
+    public void setTrackURL(String mTrackURL) {
+        this.mTrackURL = mTrackURL;
+    }
+
+    public void setTrackNumber(int mTrackNumber) {
+        this.mTrackNumber = mTrackNumber;
+    }
+
+    public void setDateAdded(int mDateAdded) {
+        this.mDateAdded = mDateAdded;
+    }
+
+    public void setNoMetaData(boolean mNoMetaData) {
+        this.mNoMetaData = mNoMetaData;
+    }
+
     public TrackModel() {
-        this("", "", "", -1, -1, "");
+
     }
+
 
     public TrackModel(@NonNull String name, @NonNull String path) {
-        this(name, "", "", -1, -1, path);
         mNoMetaData = true;
     }
 

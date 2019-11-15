@@ -78,7 +78,7 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                 if (model.mAddHeader) {
                     // add a dummy playlist for the choose playlist dialog
                     // this playlist represents the action to create a new playlist in the dialog
-                    playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), -1));
+                    playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), ""));
                 }
 
                 playlists.addAll(MusicDatabaseFactory.getDatabase(mContext).getAllPlaylists(application));

@@ -161,7 +161,7 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
             if (position > 0) {
                 previousTrack = (TrackModel) getItem(position - 1);
                 if (previousTrack != null) {
-                    newAlbum = !previousTrack.getTrackAlbumKey().equals(track.getTrackAlbumKey());
+                    newAlbum = !previousTrack.sameAlbum(track);
                 }
             } else {
                 return VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal();

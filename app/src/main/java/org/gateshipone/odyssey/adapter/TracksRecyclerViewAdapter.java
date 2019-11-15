@@ -67,7 +67,9 @@ public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackM
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getTrackId();
+        // FIXME DB for what is this necessary
+//        return getItem(position).getTrackId();
+        return position;
     }
 
     @Override

@@ -99,14 +99,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized String getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
-        final long albumId = album.getAlbumID();
+        final String albumId = album.getArtworkID();
         final String albumName = album.getAlbumName();
         final String artistName = album.getArtistName();
 
         String selection;
         String[] selectionArguments;
 
-        if (albumId != -1) {
+        if (albumId != "") {
             selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
             selectionArguments = new String[]{String.valueOf(albumId)};
         } else if (!artistName.isEmpty()) {
@@ -159,12 +159,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String artistName = artist.getArtistName();
-        final long artistId = artist.getArtistID();
+        final String artistId = artist.getArtworkID();
 
         String selection;
         String[] selectionArguments;
 
-        if (artistId != -1) {
+        if (artistId != "") {
             selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
             selectionArguments = new String[]{String.valueOf(artistId)};
         } else {
@@ -209,8 +209,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void insertArtistImage(final Context context, final ArtistModel artist, final byte[] image) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        long artistID = artist.getArtistID();
-        if (artistID == -1) {
+        String artistID = artist.getArtworkID();
+        if (artistID == "") {
             // FIXME this should not be happening anymore and prevented elsewhere
             // Try to get the artistID manually because it seems to be missing
             new Exception().printStackTrace();
@@ -263,7 +263,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void insertAlbumImage(final Context context, final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        final String albumID = String.valueOf(album.getAlbumID());
+        final String albumID = album.getArtworkID();
         final String albumMBID = album.getMBID();
         final String albumName = album.getAlbumName();
         final String albumArtistName = album.getArtistName();
@@ -365,7 +365,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " + ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
-        final String[] whereArgs = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
+        final String whereArgs[] = {artist.getArtworkID(), artist.getArtistName()};
 
         final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_IMAGE_FILE_PATH},
                 where, whereArgs, null, null, null);
@@ -393,14 +393,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void removeAlbumImage(final Context context, final AlbumModel album) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        final long albumId = album.getAlbumID();
+        final String albumId = album.getArtworkID();
         final String albumName = album.getAlbumName();
         final String artistName = album.getArtistName();
 
         String where;
         String[] whereArgs;
 
-        if (albumId != -1) {
+        if (albumId != "") {
             where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
             whereArgs = new String[]{String.valueOf(albumId)};
         } else if (!artistName.isEmpty()) {

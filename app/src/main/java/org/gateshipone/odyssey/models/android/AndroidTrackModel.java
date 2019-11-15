@@ -41,19 +41,23 @@ public class AndroidTrackModel extends TrackModel {
     /**
      * The unique key of the album of the track
      */
-    private String mTrackAlbumKey;
+    private String mTrackAlbumKey = "";
 
     /**
      * The unique id of the track in the mediastore
      */
     private long mTrackId;
 
-    public AndroidTrackModel(@NonNull String name, @NonNull String artistName, @NonNull String albumName, long duration, int trackNumber, @NonNull String url, int dateAdded,
-                             @NonNull String trackKey, long trackId) {
-        super(name, artistName, albumName, duration, trackNumber, url, dateAdded);
+    public AndroidTrackModel() {
+        super();
+    }
 
-        mTrackAlbumKey = trackKey;
-        mTrackId = trackId;
+    public void setTrackAlbumKey(String mTrackAlbumKey) {
+        this.mTrackAlbumKey = mTrackAlbumKey;
+    }
+
+    public void setTrackId(long mTrackId) {
+        this.mTrackId = mTrackId;
     }
 
     @Override

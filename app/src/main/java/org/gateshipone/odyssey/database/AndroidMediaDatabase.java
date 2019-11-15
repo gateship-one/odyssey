@@ -37,6 +37,7 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 import org.gateshipone.odyssey.models.android.AndroidArtistModel;
 import org.gateshipone.odyssey.models.android.AndroidPlaylistModel;
+import org.gateshipone.odyssey.models.android.AndroidTrackModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import java.io.File;
@@ -251,7 +252,16 @@ public class AndroidMediaDatabase implements MusicDatabase{
                     final long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                     // add current track
-                    albumTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    AndroidTrackModel track = new AndroidTrackModel();
+                    track.setTrackName(trackName);
+                    track.setTrackAlbumName(albumName);
+                    track.setTrackArtistName(artistName);
+                    track.setTrackURL(url);
+                    track.setTrackNumber(number);
+                    track.setTrackDuration(duration);
+                    track.setTrackId(id);
+                    track.setTrackAlbumKey(albumKey);
+                    albumTracks.add(track);
 
                 } while (cursor.moveToNext());
             }
@@ -314,7 +324,16 @@ public class AndroidMediaDatabase implements MusicDatabase{
                     final long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
 
                     // add the track
-                    playlistTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    AndroidTrackModel track = new AndroidTrackModel();
+                    track.setTrackName(trackName);
+                    track.setTrackAlbumName(albumName);
+                    track.setTrackArtistName(artistName);
+                    track.setTrackURL(url);
+                    track.setTrackNumber(number);
+                    track.setTrackDuration(duration);
+                    track.setTrackAlbumKey(albumKey);
+                    track.setTrackId(id);
+                    playlistTracks.add(track);
 
                 } while (cursor.moveToNext());
             }
@@ -485,8 +504,16 @@ public class AndroidMediaDatabase implements MusicDatabase{
                     final int dateAdded = albumDateMap.containsKey(albumKey) ? albumDateMap.get(albumKey) : -1;
 
                     // add the track
-                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id, dateAdded));
-
+                    AndroidTrackModel track = new AndroidTrackModel();
+                    track.setTrackName(trackName);
+                    track.setTrackAlbumName(albumName);
+                    track.setTrackArtistName(artistName);
+                    track.setTrackURL(url);
+                    track.setTrackNumber(number);
+                    track.setTrackDuration(duration);
+                    track.setTrackAlbumKey(albumKey);
+                    track.setTrackId(id);
+                    recentTracks.add(track);
                 } while (cursor.moveToNext());
             }
 
@@ -495,7 +522,7 @@ public class AndroidMediaDatabase implements MusicDatabase{
 
         Collections.sort(recentTracks, (o1, o2) -> {
             // sort tracks by albumkey
-            if (o1.getTrackAlbumKey().equals(o2.getTrackAlbumKey())) {
+            if (((AndroidTrackModel)o1).getTrackAlbumKey().equals(((AndroidTrackModel)o2).getTrackAlbumKey())) {
                 // sort by tracknumber
                 return Integer.compare(o1.getTrackNumber(), o2.getTrackNumber());
             } else {
@@ -539,7 +566,17 @@ public class AndroidMediaDatabase implements MusicDatabase{
 
                     // add the track
                     if (null == filterString || filterString.isEmpty() || trackName.toLowerCase().contains(filterString)) {
-                        allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                        // add the track
+                        AndroidTrackModel track = new AndroidTrackModel();
+                        track.setTrackName(trackName);
+                        track.setTrackAlbumName(albumName);
+                        track.setTrackArtistName(artistName);
+                        track.setTrackURL(url);
+                        track.setTrackNumber(number);
+                        track.setTrackDuration(duration);
+                        track.setTrackAlbumKey(albumKey);
+                        track.setTrackId(id);
+                        allTracks.add(track);
                     }
 
                 } while (cursor.moveToNext());
@@ -579,7 +616,7 @@ public class AndroidMediaDatabase implements MusicDatabase{
 
             for (int i = 0; i < tracks.size(); i++) {
 
-                final TrackModel item = tracks.get(i);
+                final AndroidTrackModel item = (AndroidTrackModel)tracks.get(i);
 
                 if (item != null) {
                     final long id = item.getTrackId();
@@ -905,7 +942,7 @@ public class AndroidMediaDatabase implements MusicDatabase{
             return null;
         }
 
-        TrackModel track = null;
+        AndroidTrackModel track = null;
 
         String[] whereVal = {uri.getPath()};
 
@@ -940,7 +977,16 @@ public class AndroidMediaDatabase implements MusicDatabase{
                 String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
                 long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
-                track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
+                // add the track
+                track = new AndroidTrackModel();
+                track.setTrackName(title);
+                track.setTrackAlbumName(album);
+                track.setTrackArtistName(artist);
+                track.setTrackURL(url);
+                track.setTrackNumber(no);
+                track.setTrackDuration(duration);
+                track.setTrackAlbumKey(albumKey);
+                track.setTrackId(id);
             }
 
             cursor.close();

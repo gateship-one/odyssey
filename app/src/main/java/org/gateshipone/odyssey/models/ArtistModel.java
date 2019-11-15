@@ -137,4 +137,8 @@ public class ArtistModel implements GenericModel, Parcelable {
             return false;
         }
     }
+
+    public String getArtworkID() {
+        return mArtistName;
+    }
 }

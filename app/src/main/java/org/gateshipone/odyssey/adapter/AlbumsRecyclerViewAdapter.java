@@ -132,7 +132,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getAlbumID();
+        return position;
     }
 
     @Override

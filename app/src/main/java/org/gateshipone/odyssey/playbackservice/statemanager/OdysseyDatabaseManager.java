@@ -162,8 +162,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             values.put(StateTracksTable.COLUMN_TRACKARTIST, item.getTrackArtistName());
             values.put(StateTracksTable.COLUMN_TRACKALBUM, item.getTrackAlbumName());
             values.put(StateTracksTable.COLUMN_TRACKURL, item.getTrackURL());
-            values.put(StateTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
-            values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
+            // FIXME DB
+            //values.put(StateTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
+            //values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
             values.put(StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, stateTimeStamp);
 
             odysseyStateDB.insert(StateTracksTable.TABLE_NAME, null, values);
@@ -214,9 +215,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
                 final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
+                // FIXME DB move there
+                //TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
-                playList.add(item);
+                //playList.add(item);
 
             } while (cursor.moveToNext());
         }
@@ -258,9 +260,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                     final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
+                    // FIXME DB
+                    //TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
 
-                    playList.add(item);
+                    //playList.add(item);
 
                 } while (cursor.moveToNext());
             }

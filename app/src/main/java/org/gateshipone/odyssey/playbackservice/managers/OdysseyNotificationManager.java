@@ -155,7 +155,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder.setContentText(track.getTrackArtistName());
 
             // Cover but only if changed
-            if (mLastTrack == null || !track.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
+            if (mLastTrack == null || !track.sameAlbum(mLastTrack)) {
                 mLastTrack = track;
                 mLastBitmap = null;
             }

@@ -125,10 +125,10 @@ public class BitmapCache {
      */
     private String getAlbumHash(AlbumModel album) {
         String hashString = ALBUM_PREFIX;
-        final long albumID = album.getAlbumID();
+        final String albumID = album.getArtworkID();
 
         // Use albumID as key if available
-        if (albumID != -1) {
+        if (!albumID.isEmpty()) {
             hashString += String.valueOf(albumID);
             return hashString;
         }
@@ -185,10 +185,10 @@ public class BitmapCache {
     private String getArtistHash(ArtistModel artist) {
         String hashString = ARTIST_PREFIX;
 
-        final long artistID = artist.getArtistID();
+        final String artistID = artist.getArtworkID();
 
         // Use albumID as key if available
-        if (artistID != -1) {
+        if (artistID.isEmpty()) {
             hashString += String.valueOf(artistID);
             return hashString;
         }

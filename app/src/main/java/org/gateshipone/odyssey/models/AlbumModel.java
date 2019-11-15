@@ -213,4 +213,8 @@ public class  AlbumModel implements GenericModel, Parcelable {
         dest.writeString(mMBID);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
     }
+
+    public String getArtworkID() {
+        return mAlbumName;
+    }
 }
