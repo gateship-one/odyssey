@@ -27,12 +27,12 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class AlbumModel implements GenericModel, Parcelable {
+public class  AlbumModel implements GenericModel, Parcelable {
 
     /**
      * The name of the album
      */
-    private final String mAlbumName;
+    protected final String mAlbumName;
 
     /**
      * The url for the album cover
@@ -42,25 +42,18 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * The name of the artist for the current album
      */
-    private final String mArtistName;
-
-    /**
-     * Unique key to identify the album in the mediastore
-     */
-    private final String mAlbumKey;
+    protected final String mArtistName;
 
     /**
      * The date as an integer when this album was added to the device
      */
     private final int mDateAdded;
 
-    private long mAlbumID;
-
     private String mMBID;
 
     private boolean mImageFetching;
 
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID, int dateAdded) {
+    public AlbumModel(String name, String albumArtURL, String artistName, int dateAdded) {
         if (name != null) {
             mAlbumName = name;
         } else {
@@ -79,13 +72,6 @@ public class AlbumModel implements GenericModel, Parcelable {
             mArtistName = "";
         }
 
-        if (albumKey != null) {
-            mAlbumKey = albumKey;
-        } else {
-            mAlbumKey = "";
-        }
-
-        mAlbumID = albumID;
 
         mDateAdded = dateAdded;
     }
@@ -93,8 +79,8 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * Constructs a AlbumModel instance with the given parameters.
      */
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
-        this(name, albumArtURL, artistName, albumKey, albumID, -1);
+    public AlbumModel(String name, String albumArtURL, String artistName) {
+        this(name, albumArtURL, artistName, -1);
     }
 
     /**
@@ -106,9 +92,7 @@ public class AlbumModel implements GenericModel, Parcelable {
         mAlbumName = in.readString();
         mAlbumArtURL = in.readString();
         mArtistName = in.readString();
-        mAlbumKey = in.readString();
         mDateAdded = in.readInt();
-        mAlbumID = in.readLong();
         mMBID = in.readString();
         mImageFetching = in.readByte() != 0;
     }
@@ -151,23 +135,8 @@ public class AlbumModel implements GenericModel, Parcelable {
         return mArtistName;
     }
 
-    /**
-     * Return the unique album key
-     */
-    public String getAlbumKey() {
-        return mAlbumKey;
-    }
-
     public int getDateAdded() {
         return mDateAdded;
-    }
-
-    public long getAlbumID() {
-        return mAlbumID;
-    }
-
-    public void setAlbumID(long albumID) {
-        mAlbumID = albumID;
     }
 
     /**
@@ -185,7 +154,7 @@ public class AlbumModel implements GenericModel, Parcelable {
             return false;
         }
         if (album instanceof AlbumModel) {
-            return mAlbumID == ((AlbumModel) album).mAlbumID && mAlbumName.equals(((AlbumModel) album).mAlbumName)
+            return mAlbumName.equals(((AlbumModel) album).mAlbumName)
                     && mArtistName.equals(((AlbumModel) album).mArtistName);
         } else {
             return false;
@@ -240,9 +209,7 @@ public class AlbumModel implements GenericModel, Parcelable {
         dest.writeString(mAlbumName);
         dest.writeString(mAlbumArtURL);
         dest.writeString(mArtistName);
-        dest.writeString(mAlbumKey);
         dest.writeInt(mDateAdded);
-        dest.writeLong(mAlbumID);
         dest.writeString(mMBID);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
     }

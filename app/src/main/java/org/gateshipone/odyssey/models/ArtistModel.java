@@ -32,12 +32,7 @@ public class ArtistModel implements GenericModel, Parcelable {
     /**
      * The name of the artist
      */
-    private final String mArtistName;
-
-    /**
-     * Unique id to identify the artist in the mediastore
-     */
-    private final long mArtistID;
+    protected final String mArtistName;
 
     private String mMBID;
 
@@ -46,19 +41,21 @@ public class ArtistModel implements GenericModel, Parcelable {
     /**
      * Constructs a ArtistModel instance with the given parameters.
      */
-    public ArtistModel(String name, long artistID) {
+    public ArtistModel(String name) {
         if (name != null) {
             mArtistName = name;
         } else {
             mArtistName = "";
         }
 
-        mArtistID = artistID;
+    }
+
+    public ArtistModel(ArtistModel artist) {
+        mArtistName  = artist.mArtistName;
     }
 
     protected ArtistModel(Parcel in) {
         mArtistName = in.readString();
-        mArtistID = in.readLong();
         mMBID = in.readString();
         mImageFetching = in.readByte() != 0;
     }
@@ -66,7 +63,6 @@ public class ArtistModel implements GenericModel, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mArtistName);
-        dest.writeLong(mArtistID);
         dest.writeString(mMBID);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
     }
@@ -93,13 +89,6 @@ public class ArtistModel implements GenericModel, Parcelable {
      */
     public String getArtistName() {
         return mArtistName;
-    }
-
-    /**
-     * Return the unique artist id
-     */
-    public long getArtistID() {
-        return mArtistID;
     }
 
     /**
@@ -142,8 +131,8 @@ public class ArtistModel implements GenericModel, Parcelable {
         if (null == artist) {
             return false;
         }
-        if (artist instanceof ArtistModel) {
-            return mArtistID == ((ArtistModel) artist).mArtistID && mArtistName.equals(((ArtistModel) artist).mArtistName);
+        if ( artist instanceof ArtistModel) {
+            return mArtistName.equals(((ArtistModel) artist).mArtistName);
         } else {
             return false;
         }

@@ -84,15 +84,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     public static final String ACTION_NEW_ARTWORK_READY = "org.gateshipone.odyssey.action_new_artwork_ready";
 
-    public static final String INTENT_EXTRA_KEY_ALBUM_KEY = "org.gateshipone.odyssey.extra.album_key";
+    public static final String INTENT_EXTRA_KEY_ALBUM = "org.gateshipone.odyssey.extra.album";
 
-    private static final String INTENT_EXTRA_KEY_ALBUM_ID = "org.gateshipone.odyssey.extra.album_id";
-
-    private static final String INTENT_EXTRA_KEY_ALBUM_NAME = "org.gateshipone.odyssey.extra.album_name";
-
-    private static final String INTENT_EXTRA_KEY_ARTIST_ID = "org.gateshipone.odyssey.extra.artist_id";
-
-    private static final String INTENT_EXTRA_KEY_ARTIST_NAME = "org.gateshipone.odyssey.extra.artist_name";
+    private static final String INTENT_EXTRA_KEY_ARTIST = "org.gateshipone.odyssey.extra.artist";
 
     /**
      * The list of supported artwork filenames. This will be used to check if a local cover exists.
@@ -543,14 +537,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         switch (model.getType()) {
             case ALBUM:
                 AlbumModel albumModel = (AlbumModel) model.getGenericModel();
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_ID, albumModel.getAlbumID());
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_KEY, albumModel.getAlbumKey());
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_NAME, albumModel.getAlbumName());
+                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM, albumModel);
                 break;
             case ARTIST:
                 ArtistModel artistModel = (ArtistModel) model.getGenericModel();
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST_ID, artistModel.getArtistID());
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST_NAME, artistModel.getArtistName());
+                newImageIntent.putExtra(INTENT_EXTRA_KEY_ARTIST, artistModel);
                 break;
         }
 

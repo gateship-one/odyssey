@@ -31,47 +31,38 @@ public class PlaylistModel implements GenericModel, Parcelable {
      */
     private final String mPlaylistName;
 
-    /**
-     * Unique id to identify the playlist in the mediastore
-     */
-    private final long mPlaylistID;
-
     private final String mPlaylistPath;
 
     /**
      * Constructs a PlaylistModel instance with the given parameters.
      */
-    public PlaylistModel(String playlistName, long playlistID) {
+    public PlaylistModel(String playlistName) {
         if (playlistName != null) {
             mPlaylistName = playlistName;
         } else {
             mPlaylistName = "";
         }
-        mPlaylistID = playlistID;
         mPlaylistPath = "";
     }
 
-    public PlaylistModel(String playlistName, long playlistID, String path) {
+    public PlaylistModel(String playlistName, String path) {
         if (playlistName != null) {
             mPlaylistName = playlistName;
         } else {
             mPlaylistName = "";
         }
-        mPlaylistID = playlistID;
         mPlaylistPath = path;
     }
 
 
     protected PlaylistModel(Parcel in) {
         mPlaylistName = in.readString();
-        mPlaylistID = in.readLong();
         mPlaylistPath = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mPlaylistName);
-        dest.writeLong(mPlaylistID);
         dest.writeString(mPlaylistPath);
     }
 
@@ -99,12 +90,6 @@ public class PlaylistModel implements GenericModel, Parcelable {
         return mPlaylistName;
     }
 
-    /**
-     * Return the id of the playlist
-     */
-    public long getPlaylistID() {
-        return mPlaylistID;
-    }
 
     public String getPlaylistPath() {
         return mPlaylistPath;

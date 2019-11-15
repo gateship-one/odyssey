@@ -1190,11 +1190,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         int endIndex = index + 1;
 
-        String albumKey = mCurrentList.get(index).getTrackAlbumKey();
+        TrackModel cmpTrack = mCurrentList.get(index);
 
         // get endindex for section
         while (endIndex < mCurrentList.size()) {
-            if (albumKey.equals(mCurrentList.get(endIndex).getTrackAlbumKey())) {
+            if (cmpTrack.sameAlbum(mCurrentList.get(endIndex))) {
                 endIndex++;
             } else {
                 break;
@@ -1202,13 +1202,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         }
 
         if (mCurrentPlayingIndex >= index && mCurrentPlayingIndex < endIndex) {
-            // remove section and update endindex accordingly
+            // remove section and update end index accordingly
             ListIterator<TrackModel> iterator = mCurrentList.listIterator(index);
 
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (cmpTrack.sameAlbum(track)) {
                     iterator.remove();
                     endIndex--;
                 } else {
@@ -1231,7 +1231,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (cmpTrack.sameAlbum(track)) {
                     iterator.remove();
                 } else {
                     break;
@@ -1248,7 +1248,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (cmpTrack.sameAlbum(track)) {
                     iterator.remove();
                     if (beforeCurrentTrack) {
                         // if section is before current song update mCurrentPlayingIndex and mNextPlayingIndex
@@ -2078,8 +2078,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         break;
                     case ArtworkManager.ACTION_NEW_ARTWORK_READY:
                         // Check if artwork is for currently playing album
-                        String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-                        mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
+                        AlbumModel albumModel = intent.getParcelableExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM);
+                        mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumModel);
                         break;
                     case ACTION_SLEEPSTOP:
                         if (mStopAfterCurrent) {

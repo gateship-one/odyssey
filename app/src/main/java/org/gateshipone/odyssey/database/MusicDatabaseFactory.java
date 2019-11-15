@@ -48,6 +48,9 @@ public class MusicDatabaseFactory {
             }
         }
 
+        if (mDatabaseInstance == null) {
+            mDatabaseInstance = new AndroidMediaDatabase();
+        }
         return mDatabaseInstance;
     }
 }

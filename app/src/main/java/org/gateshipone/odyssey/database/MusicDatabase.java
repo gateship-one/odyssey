@@ -53,8 +53,6 @@ public interface MusicDatabase {
 
     List<AlbumModel> getAllAlbumsForArtist(final ArtistModel artist, final String orderKey, final Context context);
 
-    List<AlbumModel> getAllAlbumsForArtist(final AlbumModel album, final String orderKey, final Context context);
-
     List<ArtistModel> getAllArtists(final boolean showAlbumArtistsOnly, final Context context);
 
     List<PlaylistModel> getAllPlaylists(final Context context);

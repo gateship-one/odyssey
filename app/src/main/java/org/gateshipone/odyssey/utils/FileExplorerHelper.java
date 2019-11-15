@@ -28,6 +28,7 @@ import android.net.Uri;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class FileExplorerHelper {
      * @return A dummy {@link TrackModel} that only contains the file name and the uri.
      */
     public TrackModel getDummyTrackModelForFile(FileModel file) {
-        return new TrackModel(file.getName(), null, null, null, 0, -1, file.getURLString(), -1);
+        return new TrackModel(file.getName(), file.getPath());
     }
 
     /**

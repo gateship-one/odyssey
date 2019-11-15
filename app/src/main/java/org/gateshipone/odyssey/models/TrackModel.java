@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -32,97 +33,70 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * The name of the track
      */
-    private final String mTrackName;
+    protected String mTrackName;
 
     /**
      * The name of the artist of the track
      */
-    private final String mTrackArtistName;
+    protected String mTrackArtistName;
 
     /**
      * The name of the album of the track
      */
-    private final String mTrackAlbumName;
-
-    /**
-     * The unique key of the album of the track
-     */
-    private final String mTrackAlbumKey;
+    protected String mTrackAlbumName;
 
     /**
      * The url path to the related media file
      */
-    private final String mTrackURL;
+    protected String mTrackURL;
 
     /**
      * The duration of the track in ms
      */
-    private long mTrackDuration;
+    protected long mTrackDuration;
 
     /**
      * The number of the track (combined cd and tracknumber)
      */
-    private final int mTrackNumber;
-
-    /**
-     * The unique id of the track in the mediastore
-     */
-    private final long mTrackId;
+    protected int mTrackNumber;
 
     /**
      * The date as an integer when this track was added to the device
      */
-    private final int mDateAdded;
+    protected int mDateAdded;
 
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId, int dateAdded) {
-        if (name != null) {
-            mTrackName = name;
-        } else {
-            mTrackName = "";
-        }
+    protected boolean mNoMetaData;
 
-        if (artistName != null) {
-            mTrackArtistName = artistName;
-        } else {
-            mTrackArtistName = "";
-        }
+    public TrackModel(@NonNull String name, @NonNull String artistName, @NonNull String albumName, long duration, int trackNumber, @NonNull String url,int dateAdded) {
+        mTrackName = name;
+        mTrackArtistName = artistName;
+        mTrackAlbumName = albumName;
+        mTrackURL = url;
 
-        if (albumName != null) {
-            mTrackAlbumName = albumName;
-        } else {
-            mTrackAlbumName = "";
-        }
-
-        if (albumKey != null) {
-            mTrackAlbumKey = albumKey;
-        } else {
-            mTrackAlbumKey = "";
-        }
         mTrackDuration = duration;
         mTrackNumber = trackNumber;
-        if (url != null) {
-            mTrackURL = url;
-        } else {
-            mTrackURL = "";
-        }
-
-        mTrackId = trackId;
 
         mDateAdded = dateAdded;
+        mNoMetaData = false;
     }
 
     /**
      * Constructs a TrackModel instance with the given parameters.
      */
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
-        this(name, artistName, albumName, albumKey, duration, trackNumber, url, trackId, -1);
+    public TrackModel(@NonNull String name, @NonNull String artistName, @NonNull String albumName, long duration, int trackNumber, @NonNull String url) {
+        this(name, artistName, albumName, duration, trackNumber, url, -1);
     }
 
     /**
      * Constructs a TrackModel with default values
      */
     public TrackModel() {
-        this(null, null, null, null, 0, 0, null, -1, -1);
+        this("", "", "", -1, -1, "");
+    }
+
+    public TrackModel(@NonNull String name, @NonNull String path) {
+        this(name, "", "", -1, -1, path);
+        mNoMetaData = true;
     }
 
     /**
@@ -134,12 +108,11 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackName = in.readString();
         mTrackArtistName = in.readString();
         mTrackAlbumName = in.readString();
-        mTrackAlbumKey = in.readString();
         mTrackURL = in.readString();
         mTrackDuration = in.readLong();
         mTrackNumber = in.readInt();
-        mTrackId = in.readLong();
         mDateAdded = in.readInt();
+        mNoMetaData = in.readInt() == 1;
     }
 
     /**
@@ -192,13 +165,6 @@ public class TrackModel implements GenericModel, Parcelable {
     }
 
     /**
-     * Return the unique album key
-     */
-    public String getTrackAlbumKey() {
-        return mTrackAlbumKey;
-    }
-
-    /**
      * Return the duration of the track
      */
     public long getTrackDuration() {
@@ -228,12 +194,6 @@ public class TrackModel implements GenericModel, Parcelable {
         return mTrackURL;
     }
 
-    /**
-     * Return the unique id of the track
-     */
-    public long getTrackId() {
-        return mTrackId;
-    }
 
     /**
      * Return the section title for the TrackModel
@@ -247,27 +207,6 @@ public class TrackModel implements GenericModel, Parcelable {
 
     public int getDateAdded() {
         return mDateAdded;
-    }
-
-    /**
-     * Equals method for the TrackModel
-     * <p/>
-     * TrackModel instances are equal if they have the same id
-     */
-    @Override
-    public boolean equals(Object model) {
-        if (model == null) {
-            return false;
-        }
-        if (model == this) {
-            return true;
-        }
-        if (!(model instanceof TrackModel)) {
-            return false;
-        }
-        TrackModel track = (TrackModel) model;
-
-        return (this.mTrackId == track.mTrackId);
     }
 
     /**
@@ -291,17 +230,41 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeString(mTrackName);
         dest.writeString(mTrackArtistName);
         dest.writeString(mTrackAlbumName);
-        dest.writeString(mTrackAlbumKey);
         dest.writeString(mTrackURL);
         dest.writeLong(mTrackDuration);
         dest.writeInt(mTrackNumber);
-        dest.writeLong(mTrackId);
         dest.writeInt(mDateAdded);
+        dest.writeInt(mNoMetaData ? 1 : 0);
+    }
+
+
+    public boolean hasNoMetaData() {
+        return mNoMetaData;
+    }
+
+    public void metaDataSet() {
+        mNoMetaData = false;
     }
 
     @NonNull
     @Override
     public String toString() {
         return "Track: " + getTrackNumber() + ':' + getTrackName() + '-' + getTrackAlbumName();
+    }
+
+    public boolean sameAlbum(AlbumModel albumModel) {
+        return mTrackAlbumName.equals(albumModel.mAlbumName);
+    }
+
+    public boolean sameAlbum(TrackModel trackModel) {
+        return mTrackAlbumName.equals(trackModel.mTrackAlbumName);
+    }
+
+    public boolean hasAlbum() {
+        return !mTrackAlbumName.isEmpty();
+    }
+
+    public void fillMetadata(Context context) {
+        mNoMetaData = false;
     }
 }

@@ -503,7 +503,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        if (!mHideArtwork && mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
+        if (!mHideArtwork && mLastTrack.sameAlbum(album)) {
             mCoverLoader.getAlbumImage(album, mCoverImage.getWidth(), mCoverImage.getHeight());
         }
     }
@@ -1124,7 +1124,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
 
         // Check if the album title changed. If true, start the cover generator thread.
-        if (!currentTrack.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
+        if (!currentTrack.sameAlbum(mLastTrack)) {
             // Show placeholder until image is loaded
             showPlaceholderImage();
 
@@ -1506,7 +1506,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
         // build the uri for the current track
-        Uri trackUri = Uri.parse(uri.toString() + "/" + track.getTrackId());
+        // FIXME DB probably borken
+        Uri trackUri = Uri.parse(uri.toString() + "/" + track.getTrackName());
 
         // set up intent for sharing
         Intent shareIntent = new Intent();

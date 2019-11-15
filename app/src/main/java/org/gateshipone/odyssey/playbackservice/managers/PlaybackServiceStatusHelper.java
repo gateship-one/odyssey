@@ -32,6 +32,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -424,10 +425,10 @@ public class PlaybackServiceStatusHelper {
     /**
      * Checks if the albumKey for the new artwork is for the currently playing track and
      * then reloads the artwork to show it in the notification, ... .
-     * @param albumKey Key to identify and compare the artwork with the current track
+     * @param albumModel Album to identify and compare the artwork with the current track
      */
-    public void newAlbumArtworkReady(String albumKey) {
-        if ( albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork ) {
+    public void newAlbumArtworkReady(AlbumModel albumModel) {
+        if ( albumModel != null && mLastTrack != null && mLastTrack.sameAlbum(albumModel) && !mHideArtwork ) {
             // Start cover loader
             startCoverImageTask();
         }
