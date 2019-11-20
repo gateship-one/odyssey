@@ -312,6 +312,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
                 }
             } else {
                 finishedLoading();
+                return;
             }
         }
     }
