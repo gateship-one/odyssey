@@ -38,6 +38,10 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
@@ -56,9 +60,6 @@ import org.json.JSONException;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 public class BulkDownloadService extends Service implements InsertImageTask.ImageSavedCallback, ArtProvider.ArtFetchError {
     private static final String TAG = BulkDownloadService.class.getSimpleName();
@@ -297,53 +298,63 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     private void performNextRequest() {
         ArtworkRequestModel requestModel;
-        synchronized (mArtworkRequestQueue) {
-            updateNotification(mArtworkRequestQueue.size());
+        while (true) {
+            synchronized (mArtworkRequestQueue) {
+                updateNotification(mArtworkRequestQueue.size());
 
-            requestModel = mArtworkRequestQueue.pollFirst();
-        }
-
-        if (requestModel != null) {
-            switch (requestModel.getType()) {
-                case ALBUM:
-                    createAlbumRequest((AlbumModel) requestModel.getGenericModel());
-                    break;
-                case ARTIST:
-                    createArtistRequest((ArtistModel) requestModel.getGenericModel());
-                    break;
+                requestModel = mArtworkRequestQueue.pollFirst();
             }
-        } else {
-            finishedLoading();
+
+            if (requestModel != null) {
+                if (checkRequest(requestModel)) {
+                    createRequest(requestModel);
+                    return;
+                }
+            } else {
+                finishedLoading();
+            }
         }
     }
 
-    private void createAlbumRequest(final AlbumModel album) {
-        if (mUseLocalImages || album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
-            // Check if image already there
-            try {
-                mDatabaseManager.getAlbumImage(getApplicationContext(), album);
+    private boolean checkRequest(@NonNull final ArtworkRequestModel requestModel) {
+        switch (requestModel.getType()) {
+            case ALBUM: {
+                AlbumModel album = (AlbumModel) requestModel.getGenericModel();
+                if (mUseLocalImages || album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
+                    // Check if image already there
+                    try {
+                        mDatabaseManager.getAlbumImage(getApplicationContext(), album);
 
-                // If this does not throw the exception it already has an image.
-                performNextRequest();
-            } catch (ImageNotFoundException e) {
-                mArtworkManager.fetchImage(album, getApplicationContext(), this, this);
+                        // If this does not throw the exception it already has an image.
+                        return false;
+                    } catch (ImageNotFoundException e) {
+                        return true;
+                    }
+                }
             }
-        } else {
-            // artwork found in the mediastore continue
-            performNextRequest();
+            break;
+            case ARTIST: {
+                try {
+                    mDatabaseManager.getArtistImage(getApplicationContext(), (ArtistModel) requestModel.getGenericModel());
+                } catch (ImageNotFoundException e) {
+                    return true;
+                }
+            }
+            break;
         }
+        return false;
     }
 
-    private void createArtistRequest(final ArtistModel artist) {
-        // Check if image already there
-        try {
-            mDatabaseManager.getArtistImage(getApplicationContext(), artist);
-
-            // If this does not throw the exception it already has an image.
-            performNextRequest();
-        } catch (ImageNotFoundException e) {
-            mArtworkManager.fetchImage(artist, getApplicationContext(), this, this);
+    private void createRequest(final ArtworkRequestModel requestModel) {
+        switch (requestModel.getType()) {
+            case ALBUM:
+                mArtworkManager.fetchImage((AlbumModel) requestModel.getGenericModel(), getApplicationContext(), this, this);
+                break;
+            case ARTIST:
+                mArtworkManager.fetchImage((ArtistModel) requestModel.getGenericModel(), getApplicationContext(), this, this);
+                break;
         }
+
     }
 
     private void finishedLoading() {
