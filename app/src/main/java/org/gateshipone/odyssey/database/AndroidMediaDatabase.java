@@ -1066,8 +1066,28 @@ public class AndroidMediaDatabase implements MusicDatabase{
     }
 
     @Override
-    public ArtistModel getArtistForAlbum(AlbumModel album, Context context) {
-        return null;
+    public ArtistModel getArtistForAlbum(final AlbumModel album, Context context) {
+        long artistID = -1;
+
+        String artistName = album.getArtistName();
+        final String[] whereVal = {artistName};
+
+        final String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
+
+        final String orderBy = android.provider.MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE";
+
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, projectionArtists, where, whereVal, orderBy);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+
+                artistID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+            }
+
+            cursor.close();
+        }
+
+        return new AndroidArtistModel(artistName, artistID);
     }
 
     @Override
