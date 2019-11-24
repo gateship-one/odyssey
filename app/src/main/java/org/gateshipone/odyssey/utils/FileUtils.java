@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class FileUtils {
+    private static final String TAG = FileUtils.class.getSimpleName();
 
     /**
      * The directory name for all artwork images and subfolders
@@ -118,6 +120,7 @@ public class FileUtils {
      * @return Full absolute file path
      */
     public static String getFullArtworkFilePath(final Context context, final String fileName, final String dirName) {
+        Log.v(TAG,"Full artwork path: " + context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
         return context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName;
     }
 

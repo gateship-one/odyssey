@@ -48,6 +48,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.database.MusicDatabase;
@@ -124,7 +125,7 @@ public class OdysseyMainActivity extends GenericActivity
 
     private FileExplorerHelper mFileExplorerHelper = null;
 
-    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.gateshipone.odyssey.requestedview";
+    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = BuildConfig.APPLICATION_ID + ".requestedview";
 
     public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
 

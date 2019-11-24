@@ -31,6 +31,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -50,12 +51,12 @@ public class PlaybackServiceStatusHelper {
     /**
      * Broadcast message to filter to.
      */
-    public static final String MESSAGE_NEWTRACKINFORMATION = "org.gateshipone.odyssey.newtrackinfo";
-    public static final String MESSAGE_WORKING = "org.gateshipone.odyssey.working";
-    public static final String MESSAGE_IDLE = "org.gateshipone.odyssey.idle";
-    public static final String MESSAGE_HIDE_ARTWORK_CHANGED = "org.gateshipone.odyssey.hideartworkchanged";
+    public static final String MESSAGE_NEWTRACKINFORMATION = BuildConfig.APPLICATION_ID + ".newtrackinfo";
+    public static final String MESSAGE_WORKING = BuildConfig.APPLICATION_ID + ".working";
+    public static final String MESSAGE_IDLE = BuildConfig.APPLICATION_ID + ".idle";
+    public static final String MESSAGE_HIDE_ARTWORK_CHANGED = BuildConfig.APPLICATION_ID + ".hideartworkchanged";
 
-    public static final String MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE = "org.gateshipone.odyssey.hideartwork.changed.value";
+    public static final String MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE = BuildConfig.APPLICATION_ID + ".hideartwork.changed.value";
 
     private PlaybackService mPlaybackService;
 
@@ -289,7 +290,7 @@ public class PlaybackServiceStatusHelper {
         Intent bCast = new Intent("com.adam.aslfms.notify.playstatechanged");
         bCast.putExtra("state", slsState.ordinal());
         bCast.putExtra("app-name", "Odyssey");
-        bCast.putExtra("app-package", "org.gateshipone.odyssey");
+        bCast.putExtra("app-package", BuildConfig.APPLICATION_ID);
         bCast.putExtra("artist", currentTrack.getTrackArtistName());
         bCast.putExtra("album", currentTrack.getTrackAlbumName());
         bCast.putExtra("track", currentTrack.getTrackName());

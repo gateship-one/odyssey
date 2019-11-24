@@ -43,6 +43,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
@@ -52,6 +53,7 @@ import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.TrackRandomGenerator;
+import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -121,15 +123,15 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Constants for Intent actions
      */
-    public static final String ACTION_PLAY = "org.gateshipone.odyssey.play";
-    public static final String ACTION_PAUSE = "org.gateshipone.odyssey.pause";
-    public static final String ACTION_NEXT = "org.gateshipone.odyssey.next";
-    public static final String ACTION_PREVIOUS = "org.gateshipone.odyssey.previous";
-    public static final String ACTION_SEEKTO = "org.gateshipone.odyssey.seekto";
-    public static final String ACTION_STOP = "org.gateshipone.odyssey.stop";
-    public static final String ACTION_QUIT = "org.gateshipone.odyssey.quit";
-    public static final String ACTION_TOGGLEPAUSE = "org.gateshipone.odyssey.togglepause";
-    public static final String ACTION_SLEEPSTOP = "org.gateshipone.odyssey.sleepstop";
+    public static final String ACTION_PLAY = BuildConfig.APPLICATION_ID + ".play";
+    public static final String ACTION_PAUSE = BuildConfig.APPLICATION_ID + ".pause";
+    public static final String ACTION_NEXT = BuildConfig.APPLICATION_ID + ".next";
+    public static final String ACTION_PREVIOUS = BuildConfig.APPLICATION_ID + ".previous";
+    public static final String ACTION_SEEKTO = BuildConfig.APPLICATION_ID + ".seekto";
+    public static final String ACTION_STOP = BuildConfig.APPLICATION_ID + ".stop";
+    public static final String ACTION_QUIT = BuildConfig.APPLICATION_ID + ".quit";
+    public static final String ACTION_TOGGLEPAUSE = BuildConfig.APPLICATION_ID + ".togglepause";
+    public static final String ACTION_SLEEPSTOP = BuildConfig.APPLICATION_ID + ".sleepstop";
 
     private static final int INDEX_NO_TRACKS_AVAILABLE = -1;
 
@@ -951,6 +953,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param album The Album
      */
     public void enqueueAlbum(AlbumModel album) {
+        Log.v(TAG,"Enqueue album: " + album);
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 

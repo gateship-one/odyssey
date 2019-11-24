@@ -40,6 +40,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -56,10 +57,10 @@ import androidx.core.app.NotificationCompat;
 public class MediaScannerService extends Service {
     private static final String TAG = MediaScannerService.class.getSimpleName();
 
-    public static final String BUNDLE_KEY_DIRECTORY = "org.gateshipone.odyssey.mediascanner.directory";
+    public static final String BUNDLE_KEY_DIRECTORY = BuildConfig.APPLICATION_ID + ".mediascanner.directory";
 
-    public static final String ACTION_START_MEDIASCANNING = "org.gateshipone.odyssey.mediascanner.start";
-    public static final String ACTION_CANCEL_MEDIASCANNING = "org.gateshipone.odyssey.mediascanner.cancel";
+    public static final String ACTION_START_MEDIASCANNING = BuildConfig.APPLICATION_ID + ".mediascanner.start";
+    public static final String ACTION_CANCEL_MEDIASCANNING = BuildConfig.APPLICATION_ID + ".mediascanner.cancel";
 
     private static final int NOTIFICATION_ID = 126;
 

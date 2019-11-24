@@ -35,6 +35,7 @@ import android.util.Log;
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
@@ -82,11 +83,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     /**
      * Broadcast constants
      */
-    public static final String ACTION_NEW_ARTWORK_READY = "org.gateshipone.odyssey.action_new_artwork_ready";
+    public static final String ACTION_NEW_ARTWORK_READY = BuildConfig.APPLICATION_ID + ".action_new_artwork_ready";
 
-    public static final String INTENT_EXTRA_KEY_ALBUM = "org.gateshipone.odyssey.extra.album";
+    public static final String INTENT_EXTRA_KEY_ALBUM = BuildConfig.APPLICATION_ID + ".extra.album";
 
-    private static final String INTENT_EXTRA_KEY_ARTIST = "org.gateshipone.odyssey.extra.artist";
+    private static final String INTENT_EXTRA_KEY_ARTIST = BuildConfig.APPLICATION_ID + ".extra.artist";
 
     /**
      * The list of supported artwork filenames. This will be used to check if a local cover exists.

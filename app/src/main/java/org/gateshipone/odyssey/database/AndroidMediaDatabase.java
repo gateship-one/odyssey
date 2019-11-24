@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -226,10 +227,12 @@ public class AndroidMediaDatabase implements MusicDatabase{
      * @return The list of {@link TrackModel} of all tracks for the given album.
      */
     public List<TrackModel> getTracksForAlbum(final AlbumModel album, final Context context) {
+        Log.v(TAG,"Get tracks: " + album);
         final List<TrackModel> albumTracks = new ArrayList<>();
         if (!(album instanceof AndroidAlbumModel)) {
             return albumTracks;
         }
+        Log.v(TAG,"Get tracks for: " + album + " with key: " + ((AndroidAlbumModel) album).getAlbumKey());
         String albumKey = ((AndroidAlbumModel)album).getAlbumKey();
         final String[] whereVal = {albumKey};
 

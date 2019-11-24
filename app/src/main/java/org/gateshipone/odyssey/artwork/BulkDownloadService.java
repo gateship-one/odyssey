@@ -41,6 +41,7 @@ import android.util.Log;
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
@@ -68,17 +69,17 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     private static final String NOTIFICATION_CHANNEL_ID = "BulkDownloader";
 
-    public static final String ACTION_CANCEL_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.cancel";
+    public static final String ACTION_CANCEL_BULKDOWNLOAD = BuildConfig.APPLICATION_ID + ".bulkdownload.cancel";
 
-    public static final String ACTION_START_BULKDOWNLOAD = "org.gateshipone.odyssey.bulkdownload.start";
+    public static final String ACTION_START_BULKDOWNLOAD = BuildConfig.APPLICATION_ID + ".bulkdownload.start";
 
-    public static final String BUNDLE_KEY_ARTIST_PROVIDER = "org.gateshipone.odyssey.artist_provider";
+    public static final String BUNDLE_KEY_ARTIST_PROVIDER = BuildConfig.APPLICATION_ID + ".artist_provider";
 
-    public static final String BUNDLE_KEY_ALBUM_PROVIDER = "org.gateshipone.odyssey.album_provider";
+    public static final String BUNDLE_KEY_ALBUM_PROVIDER = BuildConfig.APPLICATION_ID + ".album_provider";
 
-    public static final String BUNDLE_KEY_WIFI_ONLY = "org.gateshipone.odyssey.wifi_only";
+    public static final String BUNDLE_KEY_WIFI_ONLY = BuildConfig.APPLICATION_ID + ".wifi_only";
 
-    public static final String BUNDLE_KEY_USE_LOCAL_IMAGES = "org.gateshipone.odyssey.use_local_images";
+    public static final String BUNDLE_KEY_USE_LOCAL_IMAGES = BuildConfig.APPLICATION_ID + ".use_local_images";
 
     private NotificationManager mNotificationManager;
 
