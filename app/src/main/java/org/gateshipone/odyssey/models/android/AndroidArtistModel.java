@@ -71,5 +71,15 @@ public class AndroidArtistModel extends ArtistModel {
             return false;
         }
     }
+    public static final Creator<AndroidArtistModel> CREATOR = new Creator<AndroidArtistModel>() {
+        @Override
+        public AndroidArtistModel createFromParcel(Parcel in) {
+            return new AndroidArtistModel(in);
+        }
 
+        @Override
+        public AndroidArtistModel[] newArray(int size) {
+            return new AndroidArtistModel[size];
+        }
+    };
 }

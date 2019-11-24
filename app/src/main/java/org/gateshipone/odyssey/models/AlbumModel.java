@@ -24,11 +24,14 @@ package org.gateshipone.odyssey.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class  AlbumModel implements GenericModel, Parcelable {
+import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 
+public abstract class AlbumModel implements GenericModel, Parcelable {
+    private static final String TAG = AlbumModel.class.getSimpleName();
     /**
      * The name of the album
      */
@@ -97,22 +100,6 @@ public class  AlbumModel implements GenericModel, Parcelable {
         mImageFetching = in.readByte() != 0;
     }
 
-    /**
-     * Provide CREATOR field that generates a AlbumModel instance from a Parcel.
-     * <p/>
-     * see {@link Parcelable}
-     */
-    public static final Creator<AlbumModel> CREATOR = new Creator<AlbumModel>() {
-        @Override
-        public AlbumModel createFromParcel(Parcel in) {
-            return new AlbumModel(in);
-        }
-
-        @Override
-        public AlbumModel[] newArray(int size) {
-            return new AlbumModel[size];
-        }
-    };
 
     /**
      * Return the name of the album
@@ -206,6 +193,7 @@ public class  AlbumModel implements GenericModel, Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getClass().getName());
         dest.writeString(mAlbumName);
         dest.writeString(mAlbumArtURL);
         dest.writeString(mArtistName);
@@ -217,4 +205,29 @@ public class  AlbumModel implements GenericModel, Parcelable {
     public String getArtworkID() {
         return mAlbumName;
     }
+
+
+    /**
+     * Provide CREATOR field that generates a AlbumModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    public static final Creator<AlbumModel> CREATOR = new Creator<AlbumModel>() {
+        @Override
+        public AlbumModel createFromParcel(Parcel in) {
+            String className = in.readString();
+            if (className == null || className.isEmpty()) {
+                return null;
+            }
+            if (className.equals(AndroidAlbumModel.class.getName())) {
+                return AndroidAlbumModel.CREATOR.createFromParcel(in);
+            }
+            return null;
+        }
+
+        @Override
+        public AlbumModel[] newArray(int size) {
+            return new AlbumModel[size];
+        }
+    };
 }

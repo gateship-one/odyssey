@@ -25,6 +25,8 @@ package org.gateshipone.odyssey.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.gateshipone.odyssey.models.android.AndroidPlaylistModel;
+
 public class PlaylistModel implements GenericModel, Parcelable {
     /**
      * The name of the playlist
@@ -62,6 +64,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getClass().getName());
         dest.writeString(mPlaylistName);
         dest.writeString(mPlaylistPath);
     }
@@ -74,6 +77,12 @@ public class PlaylistModel implements GenericModel, Parcelable {
     public static final Creator<PlaylistModel> CREATOR = new Creator<PlaylistModel>() {
         @Override
         public PlaylistModel createFromParcel(Parcel in) {
+            String className = in.readString();
+            if (className == null || className.isEmpty()) {
+                return null;
+            } else if (className.equals(AndroidPlaylistModel.class.getName())) {
+                return AndroidPlaylistModel.CREATOR.createFromParcel(in);
+            }
             return new PlaylistModel(in);
         }
 

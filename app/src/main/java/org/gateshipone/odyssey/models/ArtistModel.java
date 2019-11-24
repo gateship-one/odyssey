@@ -27,6 +27,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import org.gateshipone.odyssey.models.android.AndroidArtistModel;
+
 public class ArtistModel implements GenericModel, Parcelable {
 
     /**
@@ -62,6 +64,7 @@ public class ArtistModel implements GenericModel, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getClass().getName());
         dest.writeString(mArtistName);
         dest.writeString(mMBID);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
@@ -75,6 +78,12 @@ public class ArtistModel implements GenericModel, Parcelable {
     public static final Creator<ArtistModel> CREATOR = new Creator<ArtistModel>() {
         @Override
         public ArtistModel createFromParcel(Parcel in) {
+            String className = in.readString();
+            if (className == null || className.isEmpty()) {
+                return null;
+            } else if (className.equals(AndroidArtistModel.class.getName())) {
+                return AndroidArtistModel.CREATOR.createFromParcel(in);
+            }
             return new ArtistModel(in);
         }
 

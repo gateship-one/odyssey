@@ -61,4 +61,16 @@ public class AndroidPlaylistModel extends PlaylistModel {
     public long getPlaylistID() {
         return mPlaylistID;
     }
+
+    public static final Creator<AndroidPlaylistModel> CREATOR = new Creator<AndroidPlaylistModel>() {
+        @Override
+        public AndroidPlaylistModel createFromParcel(Parcel in) {
+            return new AndroidPlaylistModel(in);
+        }
+
+        @Override
+        public AndroidPlaylistModel[] newArray(int size) {
+            return new AndroidPlaylistModel[size];
+        }
+    };
 }

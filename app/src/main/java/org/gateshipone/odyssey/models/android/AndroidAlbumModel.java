@@ -24,10 +24,12 @@ package org.gateshipone.odyssey.models.android;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.gateshipone.odyssey.models.AlbumModel;
 
 public class AndroidAlbumModel extends AlbumModel {
+    private final static String TAG = AndroidAlbumModel.class.getSimpleName();
     /**
      * Unique key to identify the album in the mediastore
      */
@@ -82,6 +84,7 @@ public class AndroidAlbumModel extends AlbumModel {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        Log.v(TAG,"Writing AndroidAlbumModel to parcel");
         dest.writeString(mAlbumKey);
         dest.writeLong(mAlbumID);
     }
@@ -99,4 +102,20 @@ public class AndroidAlbumModel extends AlbumModel {
         }
     }
 
+    /**
+     * Provide CREATOR field that generates a AlbumModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    public static final Creator<AndroidAlbumModel> CREATOR = new Creator<AndroidAlbumModel>() {
+        @Override
+        public AndroidAlbumModel createFromParcel(Parcel in) {
+            return new AndroidAlbumModel(in);
+        }
+
+        @Override
+        public AndroidAlbumModel[] newArray(int size) {
+            return new AndroidAlbumModel[size];
+        }
+    };
 }

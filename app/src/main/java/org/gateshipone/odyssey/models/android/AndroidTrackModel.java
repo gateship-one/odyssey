@@ -218,4 +218,21 @@ public class AndroidTrackModel extends TrackModel {
         }
         mNoMetaData = false;
     }
+
+    /**
+     * Provide CREATOR field that generates a TrackModel instance from a Parcel.
+     * <p/>
+     * see {@link Parcelable}
+     */
+    public static final Creator<AndroidTrackModel> CREATOR = new Creator<AndroidTrackModel>() {
+        @Override
+        public AndroidTrackModel createFromParcel(Parcel in) {
+            return new AndroidTrackModel(in);
+        }
+
+        @Override
+        public AndroidTrackModel[] newArray(int size) {
+            return new AndroidTrackModel[size];
+        }
+    };
 }
