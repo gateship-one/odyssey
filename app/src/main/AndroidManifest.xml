@@ -122,13 +122,13 @@
             android:label="OdysseyPlaybackService"
             android:process=":serviceProcess">
             <intent-filter>
-                <action android:name="org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService" />
+                <action android:name="${applicationId}.playbackservice.IOdysseyPlaybackService" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
-                <action android:name="org.gateshipone.odyssey.newtrackinfo" />
-                <action android:name="org.gateshipone.odyssey.togglepause" />
-                <action android:name="org.gateshipone.odyssey.stop" />
-                <action android:name="org.gateshipone.odyssey.previous" />
-                <action android:name="org.gateshipone.odyssey.next" />
+                <action android:name="${applicationId}.newtrackinfo" />
+                <action android:name="${applicationId}.togglepause" />
+                <action android:name="${applicationId}.stop" />
+                <action android:name="${applicationId}.previous" />
+                <action android:name="${applicationId}.next" />
             </intent-filter>
         </service>
         <service
@@ -148,13 +148,13 @@
         <receiver android:name=".widget.OdysseyWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="org.gateshipone.odyssey.newtrackinfo" />
-                <action android:name="org.gateshipone.odyssey.hideartworkchanged" />
-                <action android:name="org.gateshipone.odyssey.togglepause" />
-                <action android:name="org.gateshipone.odyssey.stop" />
-                <action android:name="org.gateshipone.odyssey.previous" />
-                <action android:name="org.gateshipone.odyssey.next" />
-                <action android:name="org.gateshipone.odyssey.action_new_artwork_ready" />
+                <action android:name="${applicationId}.newtrackinfo" />
+                <action android:name="${applicationId}.hideartworkchanged" />
+                <action android:name="${applicationId}.togglepause" />
+                <action android:name="${applicationId}.stop" />
+                <action android:name="${applicationId}.previous" />
+                <action android:name="${applicationId}.next" />
+                <action android:name="${applicationId}.action_new_artwork_ready" />
             </intent-filter>
 
             <meta-data
