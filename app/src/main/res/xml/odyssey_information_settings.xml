@@ -38,6 +38,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="org.gateshipone.odyssey.activities.OdysseyAboutActivity"
-            android:targetPackage="org.gateshipone.odyssey" />
+            android:targetPackage="@string/applicationId" />
     </Preference>
 </PreferenceScreen>

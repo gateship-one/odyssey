@@ -22,6 +22,7 @@
 
 <resources>
     <string name="app_name" translatable="false">Odyssey</string>
+    <string name="applicationId" translatable="false">org.gateshipone.odyssey</string>
 
     <!-- permission request -->
     <string name="permission_request_snackbar_button" translatable="false">@android:string/ok</string>

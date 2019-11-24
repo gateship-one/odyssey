@@ -22,5 +22,6 @@
 
 <resources>
     <string name="app_name" translatable="false">Debug</string>
+    <string name="applicationId" translatable="false">org.gateshipone.odyssey.debug</string>
 
 </resources>
