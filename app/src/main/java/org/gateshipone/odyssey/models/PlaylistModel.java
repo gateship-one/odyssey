@@ -58,6 +58,8 @@ public class PlaylistModel implements GenericModel, Parcelable {
 
 
     protected PlaylistModel(Parcel in) {
+        // Class name
+        in.readString();
         mPlaylistName = in.readString();
         mPlaylistPath = in.readString();
     }
@@ -77,7 +79,10 @@ public class PlaylistModel implements GenericModel, Parcelable {
     public static final Creator<PlaylistModel> CREATOR = new Creator<PlaylistModel>() {
         @Override
         public PlaylistModel createFromParcel(Parcel in) {
+            int pos_before = in.dataPosition();
             String className = in.readString();
+            // Reset parcel
+            in.setDataPosition(pos_before);
             if (className == null || className.isEmpty()) {
                 return null;
             } else if (className.equals(AndroidPlaylistModel.class.getName())) {

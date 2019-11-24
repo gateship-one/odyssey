@@ -25,13 +25,14 @@ package org.gateshipone.odyssey.models;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import org.gateshipone.odyssey.models.android.AndroidTrackModel;
 
 public class TrackModel implements GenericModel, Parcelable {
-
+    private static final String TAG = TrackModel.class.getSimpleName();
     /**
      * The name of the track
      */
@@ -112,6 +113,8 @@ public class TrackModel implements GenericModel, Parcelable {
      * see {@link Parcelable}
      */
     protected TrackModel(Parcel in) {
+        // Class name
+        in.readString();
         mTrackName = in.readString();
         mTrackArtistName = in.readString();
         mTrackAlbumName = in.readString();
@@ -130,7 +133,10 @@ public class TrackModel implements GenericModel, Parcelable {
     public static final Creator<TrackModel> CREATOR = new Creator<TrackModel>() {
         @Override
         public TrackModel createFromParcel(Parcel in) {
+            int pos_before = in.dataPosition();
             String className = in.readString();
+            // Reset parcel
+            in.setDataPosition(pos_before);
             if (className == null || className.isEmpty()) {
                 return null;
             } else if (className.equals(AndroidTrackModel.class.getName())) {

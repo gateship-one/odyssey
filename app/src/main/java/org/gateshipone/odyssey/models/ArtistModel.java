@@ -57,6 +57,8 @@ public class ArtistModel implements GenericModel, Parcelable {
     }
 
     protected ArtistModel(Parcel in) {
+        // Class name
+        in.readString();
         mArtistName = in.readString();
         mMBID = in.readString();
         mImageFetching = in.readByte() != 0;
@@ -78,7 +80,10 @@ public class ArtistModel implements GenericModel, Parcelable {
     public static final Creator<ArtistModel> CREATOR = new Creator<ArtistModel>() {
         @Override
         public ArtistModel createFromParcel(Parcel in) {
+            int pos_before = in.dataPosition();
             String className = in.readString();
+            // Reset parcel
+            in.setDataPosition(pos_before);
             if (className == null || className.isEmpty()) {
                 return null;
             } else if (className.equals(AndroidArtistModel.class.getName())) {

@@ -92,6 +92,8 @@ public abstract class AlbumModel implements GenericModel, Parcelable {
      * see {@link Parcelable}
      */
     protected AlbumModel(Parcel in) {
+        // Class name
+        in.readString();
         mAlbumName = in.readString();
         mAlbumArtURL = in.readString();
         mArtistName = in.readString();
@@ -215,7 +217,10 @@ public abstract class AlbumModel implements GenericModel, Parcelable {
     public static final Creator<AlbumModel> CREATOR = new Creator<AlbumModel>() {
         @Override
         public AlbumModel createFromParcel(Parcel in) {
+            int pos_before = in.dataPosition();
             String className = in.readString();
+            // Reset parcel
+            in.setDataPosition(pos_before);
             if (className == null || className.isEmpty()) {
                 return null;
             }
