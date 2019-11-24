@@ -157,11 +157,16 @@ public class AndroidMediaDatabase implements MusicDatabase{
     /**
      * Return an album model created by the given album key.
      *
-     * @param albumKey The key to identify the album in the MediaStore.
+     * @param trackModel The track to create {@link AlbumModel} for
      * @param context  The application context to access the content resolver.
      * @return The created {@link AlbumModel}
      */
-    public AlbumModel createAlbumModelFromKey(final String albumKey, final Context context) {
+    @Override
+    public AlbumModel getAlbumForTrack(final TrackModel trackModel, final Context context) {
+        if (!(trackModel instanceof AndroidTrackModel)) {
+            return null;
+        }
+        String albumKey = ((AndroidTrackModel)trackModel).getTrackAlbumKey();
         final String[] whereVal = {albumKey};
 
         final String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
@@ -1031,11 +1036,6 @@ public class AndroidMediaDatabase implements MusicDatabase{
         }
 
         return files;
-    }
-
-    @Override
-    public AlbumModel getAlbumForTrack(TrackModel track, Context context) {
-        return null;
     }
 
     @Override
