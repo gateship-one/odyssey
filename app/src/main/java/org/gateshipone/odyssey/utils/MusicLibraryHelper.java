@@ -404,6 +404,57 @@ public class MusicLibraryHelper {
     }
 
     /**
+     * Generates a {@link Map} of recent added dates per AlbumKey to unify the dates per album
+     *
+     * @param context The application context to access the content resolver.
+     * @return HashMap of dates per AlbumKey
+     */
+    private static Map<String, Integer> getRecentAlbumDates(final Context context) {
+        final HashMap<String, Integer> recentDates = new HashMap<>();
+
+        // get recent tracks
+        // filter non music and tracks older than 4 weeks
+        final long fourWeeksAgo = (System.currentTimeMillis() / 1000) - recentDateLimit;
+
+        final String[] whereVal = {"1", String.valueOf(fourWeeksAgo)};
+
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=? AND " + MediaStore.Audio.Media.DATE_ADDED + ">?" + ") GROUP BY (" + MediaStore.Audio.Media.ALBUM_KEY;
+
+        final Cursor recentTracksCursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media.ALBUM_KEY, MediaStore.Audio.Media.DATE_ADDED}, where, whereVal, MediaStore.Audio.Media.ALBUM_KEY);
+
+        // get all albums
+        final Cursor albumsCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projectionAlbums, "", null, MediaStore.Audio.Albums.ALBUM_KEY);
+
+        if (recentTracksCursor != null && albumsCursor != null) {
+            if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
+
+                final int albumKeyColumnIndex = albumsCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY);
+
+                final int recentTracksAlbumKeyColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY);
+                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
+
+                do {
+                    if (albumsCursor.getString(albumKeyColumnIndex).equals(recentTracksCursor.getString(recentTracksAlbumKeyColumnIndex))) {
+                        final String albumKey = albumsCursor.getString(albumKeyColumnIndex);
+
+                        final int dateInMillis = recentTracksCursor.getInt(recentTracksDateAddedColumnIndex);
+
+                        // add the album
+                        recentDates.put(albumKey, dateInMillis);
+
+                        if (!recentTracksCursor.moveToNext()) {
+                            break;
+                        }
+                    }
+
+                } while (albumsCursor.moveToNext());
+            }
+        }
+
+        return recentDates;
+    }
+
+    /**
      * Return a list of all tracks add in the last 4 weeks.
      *
      * @param context The application context to access the content resolver.
@@ -413,7 +464,7 @@ public class MusicLibraryHelper {
         final List<TrackModel> recentTracks = new ArrayList<>();
 
         // Map to unify the date of all album tracks for distinct sort order
-        final Map<String, Integer> albumDateMap = new HashMap<>();
+        final Map<String, Integer> albumDateMap = getRecentAlbumDates(context);
 
         // filter non music and tracks older than 4 weeks
         final long fourWeeksAgo = (System.currentTimeMillis() / 1000) - recentDateLimit;
@@ -436,13 +487,7 @@ public class MusicLibraryHelper {
                     final String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
-
-                    int dateAdded = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
-                    if (albumDateMap.containsKey(albumKey)) {
-                        dateAdded = albumDateMap.get(albumKey);
-                    } else {
-                        albumDateMap.put(albumKey, dateAdded);
-                    }
+                    final int dateAdded = albumDateMap.containsKey(albumKey) ? albumDateMap.get(albumKey) : -1;
 
                     // add the track
                     recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id, dateAdded));
