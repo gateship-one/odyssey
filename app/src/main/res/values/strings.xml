@@ -317,6 +317,7 @@
     <string name="contributor_translator_italian">Italian Translation</string>
     <string name="contributor_translator_french">French Translation</string>
     <string name="contributor_translator_polish">Polish Translation</string>
+    <string name="contributor_translator_czech">Czech Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>
