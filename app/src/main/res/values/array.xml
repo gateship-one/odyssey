@@ -27,6 +27,7 @@
         <item>Alessandra Ghiazza</item>
         <item>Kévin Minions</item>
         <item>Daria Szatan</item>
+        <item>zeritti</item>
     </string-array>
 
     <string-array name="odyssey_contributors_type">
@@ -35,6 +36,7 @@
         <item>@string/contributor_translator_italian</item>
         <item>@string/contributor_translator_french</item>
         <item>@string/contributor_translator_polish</item>
+        <item>@string/contributor_translator_czech</item>
     </string-array>
 
     <string-array name="preference_artwork_artist_provider_entries">

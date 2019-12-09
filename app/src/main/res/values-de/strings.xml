@@ -223,4 +223,5 @@
     <string name="preference_random_intelligence_more_intelligent">Zufall wählt Lieder vollständig auf Basis der Interpreten aus</string>
     <string name="preference_artwork_use_local_images_title">Nutze lokale Albenbilder</string>
     <string name="preference_artwork_use_local_images_text">Ignoriere Albenbilder aus der Android Mediendatenbank und nutze stattdessen lokale Albenbilder. Wenn kein lokales Bild gefunden wird, wird der gewählte Albenbilderanbieter genutzt.</string>
+    <string name="contributor_translator_czech">Tschechische Übersetzung</string>
 </resources>

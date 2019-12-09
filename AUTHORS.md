@@ -7,6 +7,7 @@
  - mray (GitHub user) - Image tweaks
  - Daria Szatan - Polish Translation
  - Dennis Guse - Optional private notification
+ - zeritti - Czech Translation
 
  and more, see: [Contributors](https://github.com/gateship-one/odyssey/graphs/contributors)
 
