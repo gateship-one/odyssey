@@ -121,7 +121,7 @@ public class AndroidAlbumModel extends AlbumModel {
 
     @Override
     public String getArtworkID() {
-        return String.valueOf(mAlbumID);
+        return mAlbumID == -1 ? mAlbumName : String.valueOf(mAlbumID);
     }
 
 }
