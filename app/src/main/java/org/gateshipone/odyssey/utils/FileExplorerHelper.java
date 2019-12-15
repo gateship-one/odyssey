@@ -80,20 +80,10 @@ public class FileExplorerHelper {
         final TrackModel track = MusicDatabaseFactory.getDatabase(context).getTrackForUri(uri, context);
 
         if (null == track) {
-            return getDummyTrackModelForFile(file);
+            return MusicDatabaseFactory.getDatabase(context).getDummyTrackModel(file);
         }
 
         return track;
-    }
-
-    /**
-     * Create a dummy {@link TrackModel} for the given {@link FileModel}.
-     *
-     * @param file The given {@link FileModel}.
-     * @return A dummy {@link TrackModel} that only contains the file name and the uri.
-     */
-    public TrackModel getDummyTrackModelForFile(FileModel file) {
-        return new TrackModel(file.getName(), file.getPath());
     }
 
     /**
@@ -115,7 +105,7 @@ public class FileExplorerHelper {
                         tracks.addAll(parser.parseList(context));
                     }
                 } else {
-                    tracks.add(getDummyTrackModelForFile(file));
+                    tracks.add(MusicDatabaseFactory.getDatabase(context).getDummyTrackModel(file));
                 }
             }
         }
@@ -268,7 +258,7 @@ public class FileExplorerHelper {
                         tracks.addAll(parser.parseList(context));
                     }
                 } else {
-                    tracks.add(getDummyTrackModelForFile(folder));
+                    tracks.add(MusicDatabaseFactory.getDatabase(context).getDummyTrackModel(folder));
                 }
             }
         } else {

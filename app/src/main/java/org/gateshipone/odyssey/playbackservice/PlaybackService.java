@@ -1655,7 +1655,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             return playlistTracks.size();
         } else {
-            TrackModel track = FileExplorerHelper.getInstance().getDummyTrackModelForFile(currentFile);
+            TrackModel track = MusicDatabaseFactory.getDatabase(this).getDummyTrackModel(currentFile);
 
             enqueueTrack(track, asNext);
 

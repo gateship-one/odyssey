@@ -76,6 +76,14 @@ public interface MusicDatabase {
     Set<String> getTrackStorageLocationsForAlbum(final AlbumModel album, final Context context);
 
     /**
+     * Create a dummy {@link TrackModel} for the given {@link FileModel}.
+     *
+     * @param file The given {@link FileModel}.
+     * @return A dummy {@link TrackModel} that only contains the file name and the uri.
+     */
+    TrackModel getDummyTrackModel(FileModel file);
+
+    /**
      * Interface for database abstractions to save their tracks to a SQLite table.
      * @param tracks List of tracks to be saved
      * @param timestamp timestamp of the track list

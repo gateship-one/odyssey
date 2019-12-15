@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class AndroidMediaDatabase implements MusicDatabase{
-    private static final String TAG = "AndroidMediaDatabase";
+    private static final String TAG = AndroidMediaDatabase.class.getSimpleName();
 
     /**
      * Selection arrays for the different tables in the MediaStore.
@@ -1100,6 +1100,15 @@ public class AndroidMediaDatabase implements MusicDatabase{
     @Override
     public Set<String> getTrackStorageLocationsForAlbum(AlbumModel album, Context context) {
         return null;
+    }
+
+    @Override
+    public TrackModel getDummyTrackModel(FileModel file) {
+        AndroidTrackModel track = new AndroidTrackModel();
+        track.setTrackURL(file.getPath());
+        track.setTrackName(file.getName());
+        track.metaDataSet(false);
+        return track;
     }
 
     @Override

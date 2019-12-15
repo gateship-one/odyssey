@@ -105,6 +105,8 @@ public class TrackModel implements GenericModel, Parcelable {
 
     public TrackModel(@NonNull String name, @NonNull String path) {
         mNoMetaData = true;
+        mTrackURL = path;
+        mTrackName = name;
     }
 
     /**
@@ -262,8 +264,8 @@ public class TrackModel implements GenericModel, Parcelable {
         return mNoMetaData;
     }
 
-    public void metaDataSet() {
-        mNoMetaData = false;
+    public void metaDataSet(boolean set) {
+        mNoMetaData = !set;
     }
 
     @NonNull

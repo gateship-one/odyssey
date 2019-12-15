@@ -163,6 +163,7 @@ public class AndroidTrackModel extends TrackModel {
             mTrackURL = track.mTrackURL;
             mTrackId = track.mTrackId;
             mTrackAlbumKey = track.mTrackAlbumKey;
+            return;
         }
 
         try {
