@@ -54,6 +54,11 @@ public class AndroidArtistModel extends ArtistModel {
     }
 
     @Override
+    public String getArtworkID() {
+        return mArtistID == -1 ? mArtistName : String.valueOf(mArtistID);
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
 
