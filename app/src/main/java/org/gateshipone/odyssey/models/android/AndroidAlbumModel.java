@@ -118,4 +118,10 @@ public class AndroidAlbumModel extends AlbumModel {
             return new AndroidAlbumModel[size];
         }
     };
+
+    @Override
+    public String getArtworkID() {
+        return String.valueOf(mAlbumID);
+    }
+
 }
