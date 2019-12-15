@@ -27,7 +27,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -91,9 +90,7 @@ public class AndroidTrackModel extends TrackModel {
         super(in);
 
         mTrackAlbumKey = in.readString();
-        Log.v(TAG,"Read from parcel: " + mTrackAlbumKey);
         mTrackId = in.readLong();
-        Log.v(TAG,"Created from parcel: " + this);
     }
 
     /**
@@ -107,7 +104,6 @@ public class AndroidTrackModel extends TrackModel {
 
         dest.writeString(mTrackAlbumKey);
         dest.writeLong(mTrackId);
-        Log.v(TAG,"Wrote to parcel: " + this + " album key: " + mTrackAlbumKey);
     }
 
     /**
