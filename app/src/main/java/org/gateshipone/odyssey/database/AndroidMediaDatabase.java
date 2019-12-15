@@ -24,6 +24,7 @@ package org.gateshipone.odyssey.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
@@ -39,6 +40,7 @@ import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 import org.gateshipone.odyssey.models.android.AndroidArtistModel;
 import org.gateshipone.odyssey.models.android.AndroidPlaylistModel;
 import org.gateshipone.odyssey.models.android.AndroidTrackModel;
+import org.gateshipone.odyssey.playbackservice.statemanager.StateTable;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import java.io.File;
@@ -1099,4 +1101,80 @@ public class AndroidMediaDatabase implements MusicDatabase{
     public Set<String> getTrackStorageLocationsForAlbum(AlbumModel album, Context context) {
         return null;
     }
+
+    @Override
+    public void saveTrackList(List<TrackModel> tracks, long timestamp, SQLiteDatabase db) {
+        final ContentValues values = new ContentValues();
+
+        db.beginTransaction();
+        // save the playlist
+        for (TrackModel item : tracks) {
+            AndroidTrackModel androidTrack;
+            if (!(item instanceof AndroidTrackModel)) {
+                continue;
+            }
+            androidTrack = (AndroidTrackModel)item;
+            values.clear();
+
+            // set TrackModel parameters
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKTITLE, androidTrack.getTrackName());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKDURATION, androidTrack.getTrackDuration());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKNUMBER, androidTrack.getTrackNumber());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKARTIST, androidTrack.getTrackArtistName());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKALBUM, androidTrack.getTrackAlbumName());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKURL, androidTrack.getTrackURL());
+            // FIXME DB
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKALBUMKEY, androidTrack.getTrackAlbumKey());
+            values.put(AndroidDBStateTracksTable.COLUMN_TRACKID, androidTrack.getTrackId());
+            values.put(AndroidDBStateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, timestamp);
+            db.insert(AndroidDBStateTracksTable.TABLE_NAME, null, values);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    @Override
+    public List<TrackModel> loadTrackList(long timestamp, SQLiteDatabase db) {
+        final List<TrackModel> playList = new ArrayList<>();
+
+        final Cursor cursor = db.query(AndroidDBStateTracksTable.TABLE_NAME, AndroidDBStateTracksTable.projectionTrackModels, AndroidDBStateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)},
+                "", "", AndroidDBStateTracksTable.COLUMN_ID);
+
+        if (cursor.moveToFirst()) {
+            do {
+                final String trackName = cursor.getString(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKTITLE));
+                final long duration = cursor.getLong(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKDURATION));
+                final int number = cursor.getInt(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKNUMBER));
+                final String artistName = cursor.getString(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKARTIST));
+                final String albumName = cursor.getString(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKALBUM));
+                final String url = cursor.getString(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKURL));
+                final String albumKey = cursor.getString(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKALBUMKEY));
+                final long id = cursor.getLong(cursor.getColumnIndex(AndroidDBStateTracksTable.COLUMN_TRACKID));
+
+                AndroidTrackModel track = new AndroidTrackModel();
+
+                // add the track
+                track.setTrackName(trackName);
+                track.setTrackAlbumName(albumName);
+                track.setTrackArtistName(artistName);
+                track.setTrackURL(url);
+                track.setTrackNumber(number);
+                track.setTrackDuration(duration);
+                track.setTrackAlbumKey(albumKey);
+                track.setTrackId(id);
+
+                playList.add(track);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return playList;
+    }
+
+    @Override
+    public void deleteTrackList(long timestamp, SQLiteDatabase db) {
+        db.delete(AndroidDBStateTracksTable.TABLE_NAME, AndroidDBStateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
+    }
+
 }

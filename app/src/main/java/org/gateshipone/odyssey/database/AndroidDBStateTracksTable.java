@@ -20,16 +20,21 @@
  *
  */
 
-package org.gateshipone.odyssey.playbackservice.statemanager;
+package org.gateshipone.odyssey.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class StateTracksTable {
+public class AndroidDBStateTracksTable {
+    /**
+     * Array of returned columns from the StateTracks table
+     */
+    public static String[] projectionTrackModels = {AndroidDBStateTracksTable.COLUMN_TRACKNUMBER, AndroidDBStateTracksTable.COLUMN_TRACKTITLE, AndroidDBStateTracksTable.COLUMN_TRACKALBUM, AndroidDBStateTracksTable.COLUMN_TRACKALBUMKEY,
+            AndroidDBStateTracksTable.COLUMN_TRACKDURATION, AndroidDBStateTracksTable.COLUMN_TRACKARTIST, AndroidDBStateTracksTable.COLUMN_TRACKURL, AndroidDBStateTracksTable.COLUMN_TRACKID};
 
     /**
      * The name of the table.
      */
-    public static final String TABLE_NAME = "odyssey_state_tracks";
+    public static final String TABLE_NAME = "odyssey_androiddb_state_tracks";
 
     /**
      * Name of the column that holds a unique id for each track

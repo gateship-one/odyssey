@@ -29,6 +29,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.gateshipone.odyssey.database.AndroidDBStateTracksTable;
+import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.OdysseyServiceState;
@@ -52,12 +54,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
     private static OdysseyDatabaseManager mInstance;
 
-    /**
-     * Array of returned columns from the StateTracks table
-     */
-    private String[] projectionTrackModels = {StateTracksTable.COLUMN_TRACKNUMBER, StateTracksTable.COLUMN_TRACKTITLE, StateTracksTable.COLUMN_TRACKALBUM, StateTracksTable.COLUMN_TRACKALBUMKEY,
-            StateTracksTable.COLUMN_TRACKDURATION, StateTracksTable.COLUMN_TRACKARTIST, StateTracksTable.COLUMN_TRACKURL, StateTracksTable.COLUMN_TRACKID};
-
+    private Context mContext;
     /**
      * Array of returned columns from the State table
      */
@@ -65,6 +62,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
     private OdysseyDatabaseManager(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
     public static synchronized OdysseyDatabaseManager getInstance(Context context) {
@@ -81,7 +79,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(final SQLiteDatabase db) {
-        StateTracksTable.onCreate(db);
+        AndroidDBStateTracksTable.onCreate(db);
         StateTable.onCreate(db);
     }
 
@@ -124,7 +122,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                     final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                     // delete playlist
-                    odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                    MusicDatabaseFactory.getDatabase(mContext).deleteTrackList(timeStamp, odysseyStateDB);
 
                     // delete state
                     odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
@@ -141,33 +139,13 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                 // delete playlist
-                odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                MusicDatabaseFactory.getDatabase(mContext).deleteTrackList(timeStamp, odysseyStateDB);
 
                 // delete state
                 odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
             }
 
             stateCursor.close();
-        }
-
-        // save the playlist
-        for (TrackModel item : playList) {
-
-            values.clear();
-
-            // set TrackModel parameters
-            values.put(StateTracksTable.COLUMN_TRACKTITLE, item.getTrackName());
-            values.put(StateTracksTable.COLUMN_TRACKDURATION, item.getTrackDuration());
-            values.put(StateTracksTable.COLUMN_TRACKNUMBER, item.getTrackNumber());
-            values.put(StateTracksTable.COLUMN_TRACKARTIST, item.getTrackArtistName());
-            values.put(StateTracksTable.COLUMN_TRACKALBUM, item.getTrackAlbumName());
-            values.put(StateTracksTable.COLUMN_TRACKURL, item.getTrackURL());
-            // FIXME DB
-            //values.put(StateTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
-            //values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
-            values.put(StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, stateTimeStamp);
-
-            odysseyStateDB.insert(StateTracksTable.TABLE_NAME, null, values);
         }
 
         // save the current state
@@ -188,6 +166,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         odysseyStateDB.setTransactionSuccessful();
         odysseyStateDB.endTransaction();
 
+        // save the playlist
+        MusicDatabaseFactory.getDatabase(mContext).saveTrackList(playList, stateTimeStamp, odysseyStateDB);
+
         // close the connection
         odysseyStateDB.close();
     }
@@ -196,38 +177,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      * Return the playlist for the given timestamp
      */
     public List<TrackModel> readPlaylist(long timeStamp) {
-
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
-
-        final List<TrackModel> playList = new ArrayList<>();
-
-        final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME, projectionTrackModels, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
-                "", "", StateTracksTable.COLUMN_ID);
-
-        if (cursor.moveToFirst()) {
-            do {
-                final String trackName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKTITLE));
-                final long duration = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKDURATION));
-                final int number = cursor.getInt(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKNUMBER));
-                final String artistName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKARTIST));
-                final String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUM));
-                final String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKURL));
-                final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
-                final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
-
-                // FIXME DB move there
-                //TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
-
-                //playList.add(item);
-
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-
-        odysseyStateDB.close();
-
-        return playList;
+        final SQLiteDatabase db = getReadableDatabase();
+        List<TrackModel> playlist = MusicDatabaseFactory.getDatabase(mContext).loadTrackList(timeStamp, db);
+        db.close();
+        return playlist;
     }
 
     /**
@@ -237,7 +190,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final SQLiteDatabase odysseyStateDB = getReadableDatabase();
 
-        final List<TrackModel> playList = new ArrayList<>();
+        List<TrackModel> playList = null;
 
         // query the most recent timestamp
         final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP}, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
@@ -245,37 +198,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         if (stateCursor.moveToFirst()) {
             final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
-            // get the playlist tracks for the queried timestamp
-            final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME, projectionTrackModels, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
-                    "", "", StateTracksTable.COLUMN_ID);
-
-            if (cursor.moveToFirst()) {
-                do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKTITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKDURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKNUMBER));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKARTIST));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKURL));
-                    final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
-                    final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
-
-                    // FIXME DB
-                    //TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
-
-                    //playList.add(item);
-
-                } while (cursor.moveToNext());
-            }
-
-            cursor.close();
+           playList = MusicDatabaseFactory.getDatabase(mContext).loadTrackList(timeStamp, odysseyStateDB);
         }
 
         stateCursor.close();
 
         odysseyStateDB.close();
 
-        return playList;
+        return playList == null ? new ArrayList<>() : playList;
     }
 
     /**
@@ -377,7 +307,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         odysseyStateDB.beginTransaction();
 
         // delete playlist
-        odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
+        odysseyStateDB.delete(AndroidDBStateTracksTable.TABLE_NAME, AndroidDBStateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
 
         // delete state
         odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});

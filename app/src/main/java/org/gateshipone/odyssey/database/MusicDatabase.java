@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.database;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -73,4 +74,27 @@ public interface MusicDatabase {
     PlaylistModel getPlaylistFromFile(final FileModel file);
 
     Set<String> getTrackStorageLocationsForAlbum(final AlbumModel album, final Context context);
+
+    /**
+     * Interface for database abstractions to save their tracks to a SQLite table.
+     * @param tracks List of tracks to be saved
+     * @param timestamp timestamp of the track list
+     * @param db Opened! SQLite database object. Does not need to be closed afterwards by abstraction.
+     */
+    void saveTrackList(List<TrackModel> tracks, long timestamp, SQLiteDatabase db);
+
+    /**
+     * Interface for database abstractions to load their tracks from a SQLite table.
+     * @param timestamp of the track list to be loaded
+     * @param db Opened! SQLite database object. Does not need to be closed afterwards by abstraction.
+     * @return
+     */
+    List<TrackModel> loadTrackList(long timestamp, SQLiteDatabase db);
+
+    /**
+     * Removes a saved track list (from bookmarks or playlist)
+     * @param timestamp of the track list to be removed
+     * @param db Opened! SQLite database object. Does not need to be closed afterwards by abstraction.
+     */
+    void deleteTrackList(long timestamp, SQLiteDatabase db);
 }
