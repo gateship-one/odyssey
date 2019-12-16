@@ -789,7 +789,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
             final ArrayList<ArtistModel> albumArtists = new ArrayList<>();
             // load only artist which has an album entry
 
-            // get all album covers
+            // get all albums
             final Cursor albumArtistCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM},
                     MediaStore.Audio.Albums.ARTIST + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null, MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");
 
@@ -817,6 +817,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
 
                     if (artist.getArtistName().equals(albumArtist.getArtistName())) {
                         albumArtist.setArtistID(artist.getArtistID());
+                        artist = (AndroidArtistModel) artistsIt.next();
                         albumArtist = (AndroidArtistModel) albumArtistsIt.next();
                     } else {
                         artist = (AndroidArtistModel) artistsIt.next();
