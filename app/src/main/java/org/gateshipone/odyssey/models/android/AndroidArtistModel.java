@@ -32,7 +32,7 @@ public class AndroidArtistModel extends ArtistModel {
     /**
      * Unique id to identify the artist in the mediastore
      */
-    private final long mArtistID;
+    private long mArtistID;
 
     public AndroidArtistModel(String name, long artistID) {
         super(name);
@@ -51,6 +51,10 @@ public class AndroidArtistModel extends ArtistModel {
      */
     public long getArtistID() {
         return mArtistID;
+    }
+
+    public void setArtistID(long artistID) {
+        mArtistID = artistID;
     }
 
     @Override

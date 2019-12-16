@@ -48,11 +48,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AndroidMediaDatabase implements MusicDatabase{
+public class AndroidMediaDatabase implements MusicDatabase {
     private static final String TAG = AndroidMediaDatabase.class.getSimpleName();
 
     /**
@@ -760,54 +761,68 @@ public class AndroidMediaDatabase implements MusicDatabase{
     public List<ArtistModel> getAllArtists(final boolean showAlbumArtistsOnly, final Context context) {
         final ArrayList<ArtistModel> artists = new ArrayList<>();
 
-        if (!showAlbumArtistsOnly) {
-            // load all artists
+        // get all artists
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionArtists, "", null,
+                MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
 
-            // get all artists
-            final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, AndroidMediaDatabase.projectionArtists, "", null,
-                    MediaStore.Audio.Artists.ARTIST + " COLLATE NOCASE ASC");
+        if (cursor != null) {
 
-            if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                final int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
+                final int artistIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
 
-                if (cursor.moveToFirst()) {
-                    final int artistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
-                    final int artistIDColumnIndex = cursor.getColumnIndex(BaseColumns._ID);
+                do {
+                    final String artist = cursor.getString(artistTitleColumnIndex);
+                    final long artistID = cursor.getLong(artistIDColumnIndex);
 
-                    do {
-                        final String artist = cursor.getString(artistTitleColumnIndex);
-                        final long artistID = cursor.getLong(artistIDColumnIndex);
+                    // add the artist
+                    artists.add(new AndroidArtistModel(artist, artistID));
 
-                        // add the artist
-                        artists.add(new AndroidArtistModel(artist, artistID));
-
-                    } while (cursor.moveToNext());
-                }
-
-                cursor.close();
+                } while (cursor.moveToNext());
             }
-        } else {
+
+            cursor.close();
+        }
+
+        if (showAlbumArtistsOnly) {
+            final ArrayList<ArtistModel> albumArtists = new ArrayList<>();
             // load only artist which has an album entry
 
             // get all album covers
-            final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM},
+            final Cursor albumArtistCursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Albums.ARTIST, MediaStore.Audio.Albums.ALBUM},
                     MediaStore.Audio.Albums.ARTIST + "<>\"\" ) GROUP BY (" + MediaStore.Audio.Albums.ARTIST, null, MediaStore.Audio.Albums.ARTIST + " COLLATE NOCASE ASC");
 
-            if (cursor != null) {
+            if (albumArtistCursor != null) {
 
-                if (cursor.moveToFirst()) {
+                if (albumArtistCursor.moveToFirst()) {
 
-                    int albumArtistTitleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+                    int albumArtistTitleColumnIndex = albumArtistCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
 
                     do {
-                        String artist = cursor.getString(albumArtistTitleColumnIndex);
+                        String artist = albumArtistCursor.getString(albumArtistTitleColumnIndex);
 
                         // add the artist
-                        artists.add(new AndroidArtistModel(artist, -1));
+                        albumArtists.add(new AndroidArtistModel(artist, -1));
 
-                    } while (cursor.moveToNext());
+                    } while (albumArtistCursor.moveToNext());
                 }
+                albumArtistCursor.close();
 
-                cursor.close();
+                Iterator<ArtistModel> artistsIt = artists.iterator();
+                Iterator<ArtistModel> albumArtistsIt = albumArtists.iterator();
+                AndroidArtistModel artist = (AndroidArtistModel) artistsIt.next();
+                AndroidArtistModel albumArtist = (AndroidArtistModel) albumArtistsIt.next();
+                while (artistsIt.hasNext() && albumArtistsIt.hasNext()) {
+
+                    if (artist.getArtistName().equals(albumArtist.getArtistName())) {
+                        albumArtist.setArtistID(artist.getArtistID());
+                        albumArtist = (AndroidArtistModel) albumArtistsIt.next();
+                    } else {
+                        artist = (AndroidArtistModel) artistsIt.next();
+                    }
+                }
+                artists.clear();
+                return albumArtists;
             }
         }
         return artists;
