@@ -49,7 +49,7 @@ public class GridViewItem extends GenericImageViewItem {
      * Constructor that already sets the title of the gridview.
      *
      * @param context The current context.
-     * @param title The title of the item.
+     * @param title   The title of the item.
      * @param adapter The scroll speed adapter for cover loading.
      */
     public GridViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {

@@ -158,7 +158,7 @@ public class PlaybackServiceStatusHelper {
                 if (mLastTrack == null || !info.getCurrentTrack().sameAlbum(mLastTrack)) {
                     mLastTrack = currentTrack;
 
-                    if ( !mHideArtwork ) {
+                    if (!mHideArtwork) {
                         startCoverImageTask();
                     }
                 }
@@ -315,7 +315,7 @@ public class PlaybackServiceStatusHelper {
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
-        mCoverLoader.getImage(mLastTrack,-1,-1);
+        mCoverLoader.getImage(mLastTrack, -1, -1);
     }
 
     /**
@@ -391,6 +391,7 @@ public class PlaybackServiceStatusHelper {
 
     /**
      * Hides all visible artwork (notification, lockscreen background, widget)
+     *
      * @param enable True to hide artwork, false to show artwork.
      */
     public void hideArtwork(boolean enable) {
@@ -412,24 +413,26 @@ public class PlaybackServiceStatusHelper {
     }
 
     /**
-    * Hides all visible artwork on the lockscreen (notification, lockscreen background).
-    * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
-    */
+     * Hides all visible artwork on the lockscreen (notification, lockscreen background).
+     *
+     * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
+     */
     public void hideMediaOnLockscreen(boolean enable) {
-      mHideMediaOnLockscreen = enable;
-      mNotificationManager.hideMediaOnLockscreen(enable);
+        mHideMediaOnLockscreen = enable;
+        mNotificationManager.hideMediaOnLockscreen(enable);
 
-      mLastTrack = null;
-      updateStatus();
+        mLastTrack = null;
+        updateStatus();
     }
 
     /**
      * Checks if the albumKey for the new artwork is for the currently playing track and
      * then reloads the artwork to show it in the notification, ... .
+     *
      * @param albumModel Album to identify and compare the artwork with the current track
      */
     public void newAlbumArtworkReady(AlbumModel albumModel) {
-        if ( albumModel != null && mLastTrack != null && mLastTrack.sameAlbum(albumModel) && !mHideArtwork ) {
+        if (albumModel != null && mLastTrack != null && mLastTrack.sameAlbum(albumModel) && !mHideArtwork) {
             // Start cover loader
             startCoverImageTask();
         }

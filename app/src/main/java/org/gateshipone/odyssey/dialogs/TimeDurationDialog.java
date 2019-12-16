@@ -30,12 +30,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 
 public class TimeDurationDialog extends DialogFragment {
 

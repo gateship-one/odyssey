@@ -84,7 +84,7 @@ public class AndroidAlbumModel extends AlbumModel {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        Log.v(TAG,"Writing AndroidAlbumModel to parcel");
+        Log.v(TAG, "Writing AndroidAlbumModel to parcel");
         dest.writeString(mAlbumKey);
         dest.writeLong(mAlbumID);
     }

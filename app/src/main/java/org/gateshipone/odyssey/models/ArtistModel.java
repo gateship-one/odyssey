@@ -53,7 +53,7 @@ public class ArtistModel implements GenericModel, Parcelable {
     }
 
     public ArtistModel(ArtistModel artist) {
-        mArtistName  = artist.mArtistName;
+        mArtistName = artist.mArtistName;
     }
 
     protected ArtistModel(Parcel in) {
@@ -145,7 +145,7 @@ public class ArtistModel implements GenericModel, Parcelable {
         if (null == artist) {
             return false;
         }
-        if ( artist instanceof ArtistModel) {
+        if (artist instanceof ArtistModel) {
             return mArtistName.equals(((ArtistModel) artist).mArtistName);
         } else {
             return false;

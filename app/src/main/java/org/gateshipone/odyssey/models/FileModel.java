@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -29,8 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class FileModel implements GenericModel, Comparable<FileModel> {
 

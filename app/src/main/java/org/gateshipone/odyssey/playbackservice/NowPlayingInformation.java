@@ -25,9 +25,9 @@ package org.gateshipone.odyssey.playbackservice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.gateshipone.odyssey.models.TrackModel;
-
 import androidx.annotation.NonNull;
+
+import org.gateshipone.odyssey.models.TrackModel;
 
 /**
  * This class is the parcelable which got send from the PlaybackService to notify

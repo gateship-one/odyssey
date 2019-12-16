@@ -54,7 +54,7 @@ public class SavedPlaylistsAdapter extends GenericSectionAdapter<PlaylistModel> 
 
         ListViewItem listViewItem;
         // Check if a view can be recycled
-        if(convertView != null) {
+        if (convertView != null) {
             listViewItem = (ListViewItem) convertView;
             listViewItem.setPlaylist(playlist);
         } else {

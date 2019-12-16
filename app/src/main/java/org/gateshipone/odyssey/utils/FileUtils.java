@@ -120,7 +120,7 @@ public class FileUtils {
      * @return Full absolute file path
      */
     public static String getFullArtworkFilePath(final Context context, final String fileName, final String dirName) {
-        Log.v(TAG,"Full artwork path: " + context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
+        Log.v(TAG, "Full artwork path: " + context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName);
         return context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/" + fileName;
     }
 

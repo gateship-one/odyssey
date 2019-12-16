@@ -40,8 +40,8 @@ public class OdysseyAboutActivity extends GenericActivity {
 
         String versionName = " " + BuildConfig.VERSION_NAME;
 
-        ((TextView)findViewById(R.id.activity_about_version)).setText(versionName);
-        getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this,R.attr.odyssey_color_primary_dark));
+        ((TextView) findViewById(R.id.activity_about_version)).setText(versionName);
+        getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_primary_dark));
 
         findViewById(R.id.odyssey_contributors).setOnClickListener(view -> {
             Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);

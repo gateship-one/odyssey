@@ -33,13 +33,13 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 
 public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {

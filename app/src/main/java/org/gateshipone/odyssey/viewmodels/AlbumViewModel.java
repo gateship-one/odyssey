@@ -27,18 +27,17 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.database.MusicDatabase;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 public class AlbumViewModel extends GenericViewModel<AlbumModel> {
 

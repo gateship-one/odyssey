@@ -25,13 +25,13 @@ package org.gateshipone.odyssey.artwork;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.collection.LruCache;
+
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.collection.LruCache;
 
 /**
  * Simple LRU-based caching for album & artist images. This could reduce CPU usage

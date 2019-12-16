@@ -26,6 +26,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.ArtistModel;

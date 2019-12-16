@@ -38,6 +38,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
@@ -46,7 +51,6 @@ import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
-import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
@@ -352,7 +356,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         TrackModel clickedTrack = mRecyclerAdapter.getItem(position);
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(MusicDatabaseFactory.getDatabase(getContext()).getArtistForTrack(clickedTrack,getContext()), null);
+        mArtistSelectedCallback.onArtistSelected(MusicDatabaseFactory.getDatabase(getContext()).getArtistForTrack(clickedTrack, getContext()), null);
     }
 
     /**

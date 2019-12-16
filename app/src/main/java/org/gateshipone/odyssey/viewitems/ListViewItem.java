@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.models.BookmarkModel;
@@ -36,8 +38,6 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-
-import androidx.core.graphics.drawable.DrawableCompat;
 
 /**
  * Class that can be used for all list type items (albumtracks, playlist tracks, playlists, directories, etc)
@@ -214,7 +214,7 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a track model (without currently played track indicator).
      *
-     * @param track   The current track model.
+     * @param track The current track model.
      */
     public void setAlbumTrack(final TrackModel track, final boolean showDiscNumber) {
         // title (number + name)
@@ -356,7 +356,7 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * Extracts the information from a file model.
      *
-     * @param file    The current file model.
+     * @param file The current file model.
      */
     public void setFile(final FileModel file) {
         final Context context = getContext();

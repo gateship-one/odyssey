@@ -23,14 +23,9 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.Context;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.text.TextUtils;
 
-import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.TrackModel;
 
-import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

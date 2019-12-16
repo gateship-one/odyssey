@@ -33,13 +33,13 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class GenericActivity extends AppCompatActivity {
 
@@ -97,7 +97,7 @@ public abstract class GenericActivity extends AppCompatActivity {
         filter.addAction(PlaybackServiceStatusHelper.MESSAGE_WORKING);
         registerReceiver(mPBSOperationFinishedReceiver, filter);
 
-        if(mServiceConnection != null) {
+        if (mServiceConnection != null) {
             mServiceConnection.openConnection();
         }
     }
@@ -112,7 +112,7 @@ public abstract class GenericActivity extends AppCompatActivity {
         }
 
         // Close connection to unbind from service to allow it to be stopped by the system
-        if(mServiceConnection != null) {
+        if (mServiceConnection != null) {
             mServiceConnection.closeConnection();
         }
     }
@@ -126,6 +126,7 @@ public abstract class GenericActivity extends AppCompatActivity {
     }
 
     abstract void onServiceConnected();
+
     abstract void onServiceDisconnected();
 
     private class PBSOperationFinishedReceiver extends BroadcastReceiver {

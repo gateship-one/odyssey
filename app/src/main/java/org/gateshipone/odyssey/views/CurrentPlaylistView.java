@@ -31,14 +31,14 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.utils.ScrollSpeedListener;
-
-import androidx.annotation.Nullable;
 
 public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnItemClickListener {
 
@@ -77,7 +77,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * This will create a new Adapter.
      */
     public void registerPBServiceConnection(PlaybackServiceConnection playbackServiceConnection) {
-        if(playbackServiceConnection == null) {
+        if (playbackServiceConnection == null) {
             return;
         }
         mPlaybackServiceConnection = playbackServiceConnection;
@@ -108,7 +108,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
-            if(mPlaybackServiceConnection != null) {
+            if (mPlaybackServiceConnection != null) {
                 mPlaybackServiceConnection.getPBS().jumpTo(position);
             }
         } catch (RemoteException e) {
@@ -149,7 +149,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void removeTrack(int position) {
         try {
-            if(mPlaybackServiceConnection != null) {
+            if (mPlaybackServiceConnection != null) {
                 mPlaybackServiceConnection.getPBS().dequeueTrack(position);
             }
         } catch (RemoteException e) {
@@ -165,7 +165,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      */
     public void removeSection(int position) {
         try {
-            if(mPlaybackServiceConnection != null) {
+            if (mPlaybackServiceConnection != null) {
                 mPlaybackServiceConnection.getPBS().dequeueTracks(position);
             }
         } catch (RemoteException e) {
@@ -180,7 +180,7 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public void enqueueTrackAsNext(int position) {
-        if(mPlaybackServiceConnection == null || mCurrentPlaylistAdapter == null) {
+        if (mPlaybackServiceConnection == null || mCurrentPlaylistAdapter == null) {
             return;
         }
         // save track
@@ -204,13 +204,12 @@ public class CurrentPlaylistView extends LinearLayout implements AdapterView.OnI
      * @param position The position of the track in the playlist.
      */
     public TrackModel getTrack(int position) {
-        if(mCurrentPlaylistAdapter != null) {
+        if (mCurrentPlaylistAdapter != null) {
             TrackModel clickedTrack = (TrackModel) mCurrentPlaylistAdapter.getItem(position);
             return clickedTrack;
         }
         return null;
     }
-
 
 
     public void hideArtwork(boolean enable) {

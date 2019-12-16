@@ -31,13 +31,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.AsyncLoader;
-
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
 
 public abstract class GenericImageViewItem extends RelativeLayout implements CoverLoadable {
     private static final String TAG = GenericImageViewItem.class.getSimpleName();

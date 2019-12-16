@@ -21,6 +21,7 @@
  */
 
 package org.gateshipone.odyssey.database;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -40,7 +41,6 @@ import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 import org.gateshipone.odyssey.models.android.AndroidArtistModel;
 import org.gateshipone.odyssey.models.android.AndroidPlaylistModel;
 import org.gateshipone.odyssey.models.android.AndroidTrackModel;
-import org.gateshipone.odyssey.playbackservice.statemanager.StateTable;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import java.io.File;
@@ -161,7 +161,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
      * Return an album model created by the given album key.
      *
      * @param trackModel The track to create {@link AlbumModel} for
-     * @param context  The application context to access the content resolver.
+     * @param context    The application context to access the content resolver.
      * @return The created {@link AlbumModel}
      */
     @Override
@@ -169,7 +169,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
         if (!(trackModel instanceof AndroidTrackModel)) {
             return null;
         }
-        String albumKey = ((AndroidTrackModel)trackModel).getTrackAlbumKey();
+        String albumKey = ((AndroidTrackModel) trackModel).getTrackAlbumKey();
         final String[] whereVal = {albumKey};
 
         final String where = MediaStore.Audio.Albums.ALBUM_KEY + "=?";
@@ -230,18 +230,18 @@ public class AndroidMediaDatabase implements MusicDatabase {
     /**
      * Return a list of all tracks of an album.
      *
-     * @param context  The application context to access the content resolver.
-     * @param album Album model to get tracks for
+     * @param context The application context to access the content resolver.
+     * @param album   Album model to get tracks for
      * @return The list of {@link TrackModel} of all tracks for the given album.
      */
     public List<TrackModel> getTracksForAlbum(final AlbumModel album, final Context context) {
-        Log.v(TAG,"Get tracks: " + album);
+        Log.v(TAG, "Get tracks: " + album);
         final List<TrackModel> albumTracks = new ArrayList<>();
         if (!(album instanceof AndroidAlbumModel)) {
             return albumTracks;
         }
-        Log.v(TAG,"Get tracks for: " + album + " with key: " + ((AndroidAlbumModel) album).getAlbumKey());
-        String albumKey = ((AndroidAlbumModel)album).getAlbumKey();
+        Log.v(TAG, "Get tracks for: " + album + " with key: " + ((AndroidAlbumModel) album).getAlbumKey());
+        String albumKey = ((AndroidAlbumModel) album).getAlbumKey();
         final String[] whereVal = {albumKey};
 
         final String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
@@ -284,11 +284,12 @@ public class AndroidMediaDatabase implements MusicDatabase {
     }
 
     // FIXME move to generic database no android specific code here
+
     /**
      * Return a list of all tracks of an artist
      *
      * @param context  The application context to access the content resolver.
-     * @param artist The artist object to get all tracks for
+     * @param artist   The artist object to get all tracks for
      * @param orderKey String to specify the order of the tracks
      * @return The list of {@link TrackModel} of all tracks for the given artist in the specified order.
      */
@@ -309,7 +310,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
      * Return a list of all tracks of a playlist
      *
      * @param playlist The playlist object to get tracks for
-     * @param context    The application context to access the content resolver.
+     * @param context  The application context to access the content resolver.
      * @return The list of {@link TrackModel} of all tracks for the specified playlist.
      */
     public List<TrackModel> getTracksForPlaylist(final PlaylistModel playlist, final Context context) {
@@ -317,7 +318,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
         if (!(playlist instanceof AndroidPlaylistModel)) {
             return playlistTracks;
         }
-        final long playlistId = ((AndroidPlaylistModel)playlist).getPlaylistID();
+        final long playlistId = ((AndroidPlaylistModel) playlist).getPlaylistID();
 
         final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId), projectionPlaylistTracks, "", null, "");
 
@@ -419,7 +420,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
                 return 1;
             } else if (o1.getDateAdded() == o2.getDateAdded()) {
                 // if equal date sort by key
-                return ((AndroidAlbumModel)o1).getAlbumKey().compareTo(((AndroidAlbumModel)o2).getAlbumKey());
+                return ((AndroidAlbumModel) o1).getAlbumKey().compareTo(((AndroidAlbumModel) o2).getAlbumKey());
             } else {
                 return -1;
             }
@@ -533,7 +534,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
 
         Collections.sort(recentTracks, (o1, o2) -> {
             // sort tracks by albumkey
-            if (((AndroidTrackModel)o1).getTrackAlbumKey().equals(((AndroidTrackModel)o2).getTrackAlbumKey())) {
+            if (((AndroidTrackModel) o1).getTrackAlbumKey().equals(((AndroidTrackModel) o2).getTrackAlbumKey())) {
                 // sort by tracknumber
                 return Integer.compare(o1.getTrackNumber(), o2.getTrackNumber());
             } else {
@@ -627,7 +628,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
 
             for (int i = 0; i < tracks.size(); i++) {
 
-                final AndroidTrackModel item = (AndroidTrackModel)tracks.get(i);
+                final AndroidTrackModel item = (AndroidTrackModel) tracks.get(i);
 
                 if (item != null) {
                     final long id = item.getTrackId();
@@ -697,7 +698,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
     /**
      * Return a list of all albums of an artist
      *
-     * @param artist The artist to get albums for
+     * @param artist   The artist to get albums for
      * @param orderKey String to specify the order of the albums
      * @param context  The application context to access the content resolver.
      * @return The list of {@link AlbumModel} of all albums of the artists in the specified order.
@@ -708,7 +709,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
         if (!(artist instanceof AndroidArtistModel)) {
             return albums;
         }
-        long artistId = ((AndroidArtistModel)artist).getArtistID();
+        long artistId = ((AndroidArtistModel) artist).getArtistID();
 
         if (artistId == -1) {
             artistId = getArtistIDFromName(artist.getArtistName(), context);
@@ -864,7 +865,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
      * Removes a playlist from the MediaStore.
      *
      * @param playlist Playlist to remove
-     * @param context    The application context to access the content resolver.
+     * @param context  The application context to access the content resolver.
      * @return The result of the operation. True if the playlist was removed else false.
      */
     public boolean removePlaylist(final PlaylistModel playlist, final Context context) {
@@ -872,7 +873,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
         if (!(playlist instanceof AndroidPlaylistModel)) {
             return false;
         }
-        final long playlistId = ((AndroidPlaylistModel)playlist).getPlaylistID();
+        final long playlistId = ((AndroidPlaylistModel) playlist).getPlaylistID();
 
         final String[] whereVal = {"" + playlistId};
 
@@ -884,7 +885,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
     /**
      * Removes a track from a playlist from the MediaStore.
      *
-     * @param playlist Playlist to remove the track from
+     * @param playlist      Playlist to remove the track from
      * @param trackPosition The position of the track that should be removed inside the playlist.
      * @param context       The application context to access the content resolver.
      * @return The result of the operation. True if the track was removed else false.
@@ -893,7 +894,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
         if (!(playlist instanceof AndroidPlaylistModel)) {
             return false;
         }
-        final long playlistId = ((AndroidPlaylistModel)playlist).getPlaylistID();
+        final long playlistId = ((AndroidPlaylistModel) playlist).getPlaylistID();
         final Uri playlistContentUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
 
         final Cursor trackCursor = PermissionHelper.query(context, playlistContentUri, AndroidMediaDatabase.projectionPlaylistTracks, "", null, "");
@@ -1059,9 +1060,9 @@ public class AndroidMediaDatabase implements MusicDatabase {
     public ArtistModel getArtistForTrack(final TrackModel track, Context context) {
         long artistID = -1;
         if (!(track instanceof AndroidTrackModel)) {
-            return new AndroidArtistModel("",-1);
+            return new AndroidArtistModel("", -1);
         }
-        String artistName = ((AndroidTrackModel)track).getTrackArtistName();
+        String artistName = ((AndroidTrackModel) track).getTrackArtistName();
         final String[] whereVal = {artistName};
 
         final String where = android.provider.MediaStore.Audio.Artists.ARTIST + "=?";
@@ -1137,7 +1138,7 @@ public class AndroidMediaDatabase implements MusicDatabase {
             if (!(item instanceof AndroidTrackModel)) {
                 continue;
             }
-            androidTrack = (AndroidTrackModel)item;
+            androidTrack = (AndroidTrackModel) item;
             values.clear();
 
             // set TrackModel parameters

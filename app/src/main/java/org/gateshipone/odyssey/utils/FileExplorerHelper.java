@@ -25,18 +25,17 @@ package org.gateshipone.odyssey.utils;
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.core.content.ContextCompat;
+
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
-import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-
-import androidx.core.content.ContextCompat;
 
 public class FileExplorerHelper {
 

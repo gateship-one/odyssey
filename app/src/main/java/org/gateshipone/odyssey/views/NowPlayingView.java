@@ -52,6 +52,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.customview.widget.ViewDragHelper;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
@@ -72,13 +79,6 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.TooltipCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.ViewCompat;
-import androidx.customview.widget.ViewDragHelper;
 
 public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
         ArtworkManager.onNewArtistImageListener, SharedPreferences.OnSharedPreferenceChangeListener {

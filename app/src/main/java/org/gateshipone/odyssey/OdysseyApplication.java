@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey;
 
 import android.app.Application;
-import android.os.StrictMode;
 
 public class OdysseyApplication extends Application {
 

@@ -27,12 +27,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.EditText;
 
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.listener.OnSaveDialogListener;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 
 public class SaveDialog extends DialogFragment {
 

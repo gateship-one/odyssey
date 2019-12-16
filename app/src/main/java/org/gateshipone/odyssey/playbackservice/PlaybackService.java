@@ -53,7 +53,6 @@ import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.TrackRandomGenerator;
-import org.gateshipone.odyssey.models.android.AndroidAlbumModel;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -953,7 +952,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param album The Album
      */
     public void enqueueAlbum(AlbumModel album) {
-        Log.v(TAG,"Enqueue album: " + album);
+        Log.v(TAG, "Enqueue album: " + album);
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -971,7 +970,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play all tracks of an album identified by the albumkey.
      * A previous playlist will be cleared.
      *
-     * @param album The Album
+     * @param album    The Album
      * @param position The position to start playback
      */
     public void playAlbum(AlbumModel album, int position) {
@@ -1012,7 +1011,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Enqueue all tracks of an artist identified by the artistId.
      *
-     * @param artist The artist model
+     * @param artist   The artist model
      * @param orderKey String to specify the order of the tracks
      */
     public void enqueueArtist(ArtistModel artist, String orderKey) {
@@ -1033,7 +1032,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play all tracks of an artist identified by the artistId.
      * A previous playlist will be cleared.
      *
-     * @param artist The artist model
+     * @param artist   The artist model
      * @param orderKey String to specify the order of the tracks
      */
     public void playArtist(ArtistModel artist, String orderKey) {
@@ -1461,7 +1460,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * A previous playlist will be cleared.
      *
      * @param playlist The playlist model
-     * @param position   the position to start the playback
+     * @param position the position to start the playback
      */
     public void playPlaylist(PlaylistModel playlist, int position) {
         clearPlaylist();

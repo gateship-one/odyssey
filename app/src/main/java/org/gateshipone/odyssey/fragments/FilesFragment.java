@@ -39,6 +39,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.FilesAdapter;

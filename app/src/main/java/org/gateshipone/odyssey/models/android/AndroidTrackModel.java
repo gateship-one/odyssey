@@ -69,7 +69,7 @@ public class AndroidTrackModel extends TrackModel {
         if (!(albumModel instanceof AndroidAlbumModel)) {
             return false;
         }
-        return mTrackAlbumKey.equals(((AndroidAlbumModel)albumModel).getAlbumKey());
+        return mTrackAlbumKey.equals(((AndroidAlbumModel) albumModel).getAlbumKey());
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AndroidTrackModel extends TrackModel {
         if (!(trackModel instanceof AndroidTrackModel)) {
             return false;
         }
-        return mTrackAlbumKey.equals(((AndroidTrackModel)trackModel).getTrackAlbumKey());
+        return mTrackAlbumKey.equals(((AndroidTrackModel) trackModel).getTrackAlbumKey());
     }
 
 
@@ -152,7 +152,7 @@ public class AndroidTrackModel extends TrackModel {
         final Uri uri = FormatHelper.encodeURI(mTrackURL);
 
         // lookup the current file in the media db
-        final AndroidTrackModel track = (AndroidTrackModel)MusicDatabaseFactory.getDatabase(context).getTrackForUri(uri, context);
+        final AndroidTrackModel track = (AndroidTrackModel) MusicDatabaseFactory.getDatabase(context).getTrackForUri(uri, context);
 
         if (track != null) {
             mTrackAlbumName = track.mTrackAlbumName;

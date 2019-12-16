@@ -42,6 +42,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,7 +63,6 @@ import com.google.android.material.snackbar.Snackbar;
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
-import org.gateshipone.odyssey.database.MusicDatabase;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.dialogs.SaveDialog;
 import org.gateshipone.odyssey.fragments.AlbumTracksFragment;
@@ -87,18 +98,6 @@ import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,

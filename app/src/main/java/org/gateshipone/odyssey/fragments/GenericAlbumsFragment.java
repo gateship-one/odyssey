@@ -33,6 +33,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.AlbumsAdapter;
@@ -45,9 +48,6 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 
 public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> implements AdapterView.OnItemClickListener {
 

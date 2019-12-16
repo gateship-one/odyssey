@@ -25,15 +25,15 @@ package org.gateshipone.odyssey.viewmodels;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 public class FileViewModel extends GenericViewModel<FileModel> {
 

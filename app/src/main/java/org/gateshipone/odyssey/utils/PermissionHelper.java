@@ -29,6 +29,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
+import androidx.core.content.ContextCompat;
+
 import org.gateshipone.odyssey.models.FileModel;
 
 import java.io.File;
@@ -36,8 +38,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.core.content.ContextCompat;
 
 public class PermissionHelper {
 

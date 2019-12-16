@@ -198,7 +198,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         if (stateCursor.moveToFirst()) {
             final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
-           playList = MusicDatabaseFactory.getDatabase(mContext).loadTrackList(timeStamp, odysseyStateDB);
+            playList = MusicDatabaseFactory.getDatabase(mContext).loadTrackList(timeStamp, odysseyStateDB);
         }
 
         stateCursor.close();

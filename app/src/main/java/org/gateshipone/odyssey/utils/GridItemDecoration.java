@@ -69,7 +69,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private boolean isFirstInRow(final int position, final int spanCount) {
-       return  position % spanCount == 0;
+        return position % spanCount == 0;
     }
 
     private boolean isLastInRow(final int position, final int spanCount) {

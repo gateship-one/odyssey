@@ -26,12 +26,12 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.widget.AbsListView;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.adapter.GenericSectionAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBaseFragment<T> {
 

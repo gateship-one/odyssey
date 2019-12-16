@@ -26,15 +26,15 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.res.Configuration;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragment {
 

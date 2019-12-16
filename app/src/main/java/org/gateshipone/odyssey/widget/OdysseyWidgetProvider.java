@@ -32,6 +32,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
@@ -42,8 +44,6 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
-
-import androidx.annotation.NonNull;
 
 
 public class

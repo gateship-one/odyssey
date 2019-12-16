@@ -203,9 +203,15 @@ public class ControlObject {
         return mTrack;
     }
 
-    public ArtistModel getArtist() { return mArtist; }
+    public ArtistModel getArtist() {
+        return mArtist;
+    }
 
-    public AlbumModel getAlbum() { return mAlbum;}
+    public AlbumModel getAlbum() {
+        return mAlbum;
+    }
 
-    public PlaylistModel getPlaylist() {return mPlaylist;}
+    public PlaylistModel getPlaylist() {
+        return mPlaylist;
+    }
 }

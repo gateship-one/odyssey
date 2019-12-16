@@ -31,14 +31,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 
 public class AlbumArtistView extends ViewSwitcher {
@@ -125,6 +125,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
     /**
      * Sets the album image to the given bitmap
+     *
      * @param image {@link Bitmap} to show as an album cover
      */
     public void setAlbumImage(Bitmap image) {
@@ -137,6 +138,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
     /**
      * Sets the artist image to the given bitmap.
+     *
      * @param image {@link Bitmap} to show as an artist image
      */
     public void setArtistImage(Bitmap image) {

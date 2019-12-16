@@ -71,15 +71,16 @@ public class AndroidArtistModel extends ArtistModel {
 
     @Override
     public boolean equals(Object artist) {
-        if ( null == artist) {
+        if (null == artist) {
             return false;
         }
-        if ( artist instanceof AndroidArtistModel) {
+        if (artist instanceof AndroidArtistModel) {
             return mArtistID == ((AndroidArtistModel) artist).mArtistID && mArtistName.equals(((AndroidArtistModel) artist).mArtistName);
         } else {
             return false;
         }
     }
+
     public static final Creator<AndroidArtistModel> CREATOR = new Creator<AndroidArtistModel>() {
         @Override
         public AndroidArtistModel createFromParcel(Parcel in) {
