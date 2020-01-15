@@ -87,7 +87,7 @@ public class ArtworkRequestModel {
 
         switch (mType) {
             case ALBUM:
-                artistName = ((AlbumModel) mModel).getAlbumName();
+                artistName = ((AlbumModel) mModel).getArtistName();
                 break;
             case ARTIST:
                 artistName = ((ArtistModel) mModel).getArtistName();
