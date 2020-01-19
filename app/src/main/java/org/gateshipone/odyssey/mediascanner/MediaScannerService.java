@@ -179,9 +179,9 @@ public class MediaScannerService extends Service {
         }
     }
 
-    private void scanDirectory(final Context context, FileModel basePath) {
-        new ListCreationTask(context).execute(basePath);
-    }
+    private static void scanDirectory(final Context context, FileModel basePath) {
+		new ListCreationTask(context).execute(basePath);
+	}
 
     private void scanFileList(final Context context, List<FileModel> files) {
         mRemainingFiles = files;
