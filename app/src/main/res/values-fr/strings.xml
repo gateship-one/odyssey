@@ -249,6 +249,9 @@
     <string name="preference_hide_media_on_lockscreen_title">Notification privée</string>
     <string name="preference_hide_media_on_lockscreen_text">Masquer les informations du média sur l\'écran de déverrouillage\n(dépend des paramètres de confidentialité de votre écran de déverrouillage système)</string>
 
+    <string name="preference_artwork_use_local_images_title">Illustrations locales d\'album</string>
+    <string name="preference_artwork_use_local_images_text">Ignorer les illustrations d\'album de la base de données Android Media et utiliser les illustrations locales. Si aucune illustration locale n\'est trouvée, le fournisseur d\'illustrations d\'album sélectionné sera utilisé.</string>
+
     <string name="preference_category_artwork_settings">Paramètres des illustrations</string>
     <string name="preference_category_artwork_database_cleanup">Nettoyer la base de données</string>
     <string name="preference_category_artwork_other_actions">Autres actions</string>
@@ -267,6 +270,7 @@
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Téléchargement de masse en cours</string>
     <string name="downloader_notification_remaining_images">Images téléchargées :</string>
+    <string name="downloader_notification_initialize">Initialiser le téléchargement</string>
 
     <string name="bulk_download_notice_title">Téléchargement d\'image</string>
     <string name="bulk_download_notice_text">Avertissement : le téléchargement d\'une grande quantité d\'images peut provoquer une augmentation de charge des serveurs distant. Un serveur distant surchargé peut empêcher le téléchargement d\'images. Dans ce cas, le téléchargement sera annulé.\n\nVeuillez envisager de faire un don à ces services d\'illustration</string>
@@ -289,6 +293,7 @@
     <string name="contributor_translator_italian">Traduction italienne</string>
     <string name="contributor_translator_french">Traduction française</string>
     <string name="contributor_translator_polish">Traduction polonaise</string>
+    <string name="contributor_translator_czech">Traduction tchèque</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licences tierces</string>
@@ -301,4 +306,13 @@
     <string name="preference_resume_step_size_text">Durée en secondes à rembobiner lors de la reprise de la lecture</string>
 
     <string name="preference_resume_step_size_dialog_title">Rembobiner de : %d secondes</string>
+    <string name="preference_random_intelligence_dialog_title">Lecture aléatoire intelligente : %d %%</string>
+    <string name="preference_random_intelligence_dumber">Artiste non pris en compte</string>
+    <string name="preference_random_intelligence_dumb">Artiste pris partiellement en compte</string>
+    <string name="preference_random_intelligence_balanced">Artiste et piste pris en compte</string>
+    <string name="preference_random_intelligence_intelligent">Artiste pris principalement en compte</string>
+    <string name="preference_random_intelligence_more_intelligent">Artiste uniquement pris en compte</string>
+
+    <string name="preference_smart_random_title">Lecture aléatoire intelligente</string>
+    <string name="preference_smart_random_text">Réglage de la préférence du mode aléatoire. Cette option permet une lecture plus uniforme. Utile pour les listes de lecture contenant majoritairement les titres d\'un artiste, et contenant quelques titres d\'artistes différents.</string>
 </resources>
