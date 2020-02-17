@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
+import org.gateshipone.odyssey.utils.StringCompareUtils;
 import org.json.JSONException;
 
 public abstract class ArtProvider {
@@ -42,4 +43,12 @@ public abstract class ArtProvider {
     }
 
     public abstract void fetchImage(final ArtworkRequestModel model, final Context context, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener);
+
+    boolean compareAlbumResponse(final String expectedAlbum, final String expectedArtist, final String retrievedAlbum, final String retrievedArtist) {
+        return StringCompareUtils.compareStrings(expectedAlbum, retrievedAlbum) && StringCompareUtils.compareStrings(expectedArtist, retrievedArtist);
+    }
+
+    boolean compareArtistResponse(final String expectedArtist, final String retrievedArtist) {
+        return StringCompareUtils.compareStrings(expectedArtist, retrievedArtist);
+    }
 }

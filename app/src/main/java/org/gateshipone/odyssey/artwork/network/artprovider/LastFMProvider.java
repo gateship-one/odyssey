@@ -137,19 +137,35 @@ public class LastFMProvider extends ArtProvider {
     private void parseJSONResponse(final ArtworkRequestModel model, final Context context, final JSONObject response,
                                    final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         try {
-            JSONObject baseObj = response.getJSONObject("album");
-            JSONArray images = baseObj.getJSONArray("image");
-            Log.v(TAG, "Found: " + images.length() + " images");
-            for (int i = 0; i < images.length(); i++) {
-                JSONObject image = images.getJSONObject(i);
-                if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
-                    String url = image.getString("#text");
-                    if (!url.isEmpty()) {
-                        getByteImage(image.getString("#text"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
-                    } else {
-                        errorListener.fetchVolleyError(model, context, null);
+            final JSONObject baseObj = response.getJSONObject("album");
+
+            // verify response
+            final String album = baseObj.getString("name");
+            final String artist = baseObj.getString("artist");
+
+            final boolean isMatching = compareAlbumResponse(model.getAlbumName(), model.getArtistName(), album, artist);
+
+            if (isMatching) {
+                final JSONArray images = baseObj.getJSONArray("image");
+
+                Log.v(TAG, "Found: " + images.length() + " images");
+
+                for (int i = 0; i < images.length(); i++) {
+                    JSONObject image = images.getJSONObject(i);
+                    if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
+                        String url = image.getString("#text");
+                        if (!url.isEmpty()) {
+                            getByteImage(image.getString("#text"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
+                        } else {
+                            errorListener.fetchVolleyError(model, context, null);
+                        }
                     }
                 }
+            } else {
+                Log.v(TAG, "Response ( " + album + "-" + artist + " )" + " doesn't match requested model: " +
+                        "( " + model.getLoggingString() + " )");
+
+                errorListener.fetchVolleyError(model, context, null);
             }
         } catch (JSONException e) {
             errorListener.fetchJSONException(model, context, e);

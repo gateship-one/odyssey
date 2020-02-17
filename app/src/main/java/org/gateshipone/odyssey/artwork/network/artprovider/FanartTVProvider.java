@@ -65,7 +65,7 @@ public class FanartTVProvider extends ArtProvider {
     /**
      * Constant URL format to limit results
      */
-    private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + String.valueOf(MUSICBRAINZ_LIMIT_RESULT_COUNT);
+    private static final String MUSICBRAINZ_LIMIT_RESULT = "&limit=" + MUSICBRAINZ_LIMIT_RESULT_COUNT;
 
     /**
      * API-Key for used for fanart.tv.
@@ -127,21 +127,34 @@ public class FanartTVProvider extends ArtProvider {
 
             if (!artists.isNull(0)) {
                 JSONObject artistObj = artists.getJSONObject(0);
-                final String artistMBID = artistObj.getString("id");
 
-                getArtistImageURL(artistMBID, response1 -> {
-                    JSONArray thumbImages;
-                    try {
-                        thumbImages = response1.getJSONArray("artistthumb");
+                // verify response
+                final String artist = artistObj.getString("name");
 
-                        JSONObject firstThumbImage = thumbImages.getJSONObject(0);
-                        model.setMBID(artistMBID);
-                        getArtistImage(firstThumbImage.getString("url"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
+                final boolean isMatching = compareArtistResponse(model.getArtistName(), artist);
 
-                    } catch (JSONException e) {
-                        errorListener.fetchJSONException(model, context, e);
-                    }
-                }, error -> errorListener.fetchVolleyError(model, context, error));
+                if (isMatching) {
+                    final String artistMBID = artistObj.getString("id");
+
+                    getArtistImageURL(artistMBID, response1 -> {
+                        JSONArray thumbImages;
+                        try {
+                            thumbImages = response1.getJSONArray("artistthumb");
+
+                            JSONObject firstThumbImage = thumbImages.getJSONObject(0);
+                            model.setMBID(artistMBID);
+                            getArtistImage(firstThumbImage.getString("url"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
+
+                        } catch (JSONException e) {
+                            errorListener.fetchJSONException(model, context, e);
+                        }
+                    }, error -> errorListener.fetchVolleyError(model, context, error));
+                } else {
+                    Log.v(TAG, "Response ( " + artist + " )" + " doesn't match requested model: " +
+                            "( " + model.getLoggingString() + " )");
+
+                    errorListener.fetchVolleyError(model, context, null);
+                }
             } else {
                 errorListener.fetchError(model, context);
             }
@@ -162,6 +175,8 @@ public class FanartTVProvider extends ArtProvider {
         Log.v(FanartTVProvider.class.getSimpleName(), artistName);
 
         String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
+
+        Log.v(TAG, "Requesting release mbid for: " + url);
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(url, null, listener, errorListener);
 
