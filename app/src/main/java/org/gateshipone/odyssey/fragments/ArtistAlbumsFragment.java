@@ -60,7 +60,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewArtistImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = ArtistAlbumsFragment.class.getSimpleName();
@@ -163,14 +163,14 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
     }
 
     @Override

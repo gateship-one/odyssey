@@ -52,7 +52,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
@@ -148,7 +148,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
@@ -156,9 +156,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     @Override
     GenericViewModel<TrackModel> getViewModel() {
         if (mPlaylistPath == null) {
-            return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
+            return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mPlaylistID)).get(TrackViewModel.class);
         } else {
-            return ViewModelProviders.of(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistPath)).get(PlaylistTrackViewModel.class);
+            return new ViewModelProvider(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistPath)).get(PlaylistTrackViewModel.class);
         }
     }
 

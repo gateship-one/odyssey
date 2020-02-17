@@ -117,14 +117,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         Preference backwardsSeek = findPreference(getString(R.string.pref_seek_backwards_key));
         backwardsSeek.setOnPreferenceClickListener(preference -> {
             SeekBackwardsStepSizeDialog dialog = new SeekBackwardsStepSizeDialog();
-            dialog.show(getFragmentManager(), "Volume steps");
+            dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "Volume steps");
             return true;
         });
 
         Preference randomIntelligencePreference = findPreference(getString(R.string.pref_smart_random_key_int));
         randomIntelligencePreference.setOnPreferenceClickListener(preference -> {
             RandomIntelligenceDialog dialog = new RandomIntelligenceDialog();
-            dialog.show(getFragmentManager(), "Random Intelligence dialog");
+            dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "Random Intelligence dialog");
             return true;
         });
     }

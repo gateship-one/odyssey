@@ -49,7 +49,7 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class AllTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
@@ -103,14 +103,14 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return ViewModelProviders.of(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
+        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
     }
 
     /**

@@ -38,7 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ChoosePlaylistDialog extends DialogFragment {
 
@@ -97,7 +97,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
                 });
 
         // setup playlist ViewModel
-        final PlaylistViewModel model = ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true))
+        final PlaylistViewModel model = new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true))
                 .get(PlaylistViewModel.class);
         model.getData()
                 .observe(this, data -> mPlaylistsListViewAdapter.swapModel(data));

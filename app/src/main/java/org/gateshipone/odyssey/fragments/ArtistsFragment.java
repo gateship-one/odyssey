@@ -53,7 +53,7 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements AdapterView.OnItemClickListener {
     public static final String TAG = ArtistsFragment.class.getSimpleName();
@@ -118,14 +118,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         registerForContextMenu(mListView);
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<ArtistModel> getViewModel() {
-        return ViewModelProviders.of(this).get(ArtistViewModel.class);
+        return new ViewModelProvider(this).get(ArtistViewModel.class);
     }
 
     @Override

@@ -41,7 +41,7 @@ import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class AlbumsFragment extends GenericAlbumsFragment {
 
@@ -63,14 +63,14 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         final View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return ViewModelProviders.of(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), false)).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), false)).get(AlbumViewModel.class);
     }
 
     /**

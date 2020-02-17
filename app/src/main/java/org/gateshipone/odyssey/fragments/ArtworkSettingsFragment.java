@@ -41,6 +41,7 @@ import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -96,7 +97,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         Preference bulkLoad = findPreference(getString(R.string.pref_bulk_load_key));
         bulkLoad.setOnPreferenceClickListener(preference -> {
             BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
-            bulkDownloaderDialog.show(getFragmentManager(), "BulkDownloaderDialog");
+            bulkDownloaderDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "BulkDownloaderDialog");
 
             return true;
         });

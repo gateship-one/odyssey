@@ -58,7 +58,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 public class FilesFragment extends OdysseyFragment<FileModel> implements AdapterView.OnItemClickListener {
@@ -169,14 +169,14 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         }
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<FileModel> getViewModel() {
-        return ViewModelProviders.of(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+        return new ViewModelProvider(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
     }
 
 

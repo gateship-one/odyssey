@@ -38,7 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ChooseBookmarkDialog extends DialogFragment {
 
@@ -97,7 +97,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
                 });
 
         // setup bookmark ViewModel
-        final BookmarkViewModel model = ViewModelProviders.of(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true))
+        final BookmarkViewModel model = new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true))
                 .get(BookmarkViewModel.class);
         model.getData()
                 .observe(this, data -> mBookmarksAdapter.swapModel(data));

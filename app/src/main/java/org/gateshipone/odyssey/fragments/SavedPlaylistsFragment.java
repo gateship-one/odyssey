@@ -46,7 +46,7 @@ import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
 
@@ -87,14 +87,14 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         registerForContextMenu(mListView);
 
         // setup observer for the live data
-        getViewModel().getData().observe(this, this::onDataReady);
+        getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
         return rootView;
     }
 
     @Override
     GenericViewModel<PlaylistModel> getViewModel() {
-        return ViewModelProviders.of(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
+        return new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
     }
 
     /**

@@ -403,7 +403,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         private SparseArray<OdysseyFragment> mRegisteredFragments;
 
         public MyMusicPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             mRegisteredFragments = new SparseArray<>();
         }
 
