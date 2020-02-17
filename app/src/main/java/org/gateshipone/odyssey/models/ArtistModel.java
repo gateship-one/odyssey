@@ -56,12 +56,6 @@ public class ArtistModel implements GenericModel, Parcelable {
         mArtistID = artistID;
     }
 
-    public ArtistModel(ArtistModel artist) {
-        mArtistName  = artist.mArtistName;
-        mArtistID = artist.mArtistID;
-
-    }
-
     protected ArtistModel(Parcel in) {
         mArtistName = in.readString();
         mArtistID = in.readLong();
@@ -145,10 +139,10 @@ public class ArtistModel implements GenericModel, Parcelable {
 
     @Override
     public boolean equals(Object artist) {
-        if ( null == artist) {
+        if (null == artist) {
             return false;
         }
-        if ( artist instanceof ArtistModel) {
+        if (artist instanceof ArtistModel) {
             return mArtistID == ((ArtistModel) artist).mArtistID && mArtistName.equals(((ArtistModel) artist).mArtistName);
         } else {
             return false;

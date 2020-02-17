@@ -171,7 +171,7 @@ public class TrackModel implements GenericModel, Parcelable {
      */
     public String getTrackDisplayedName() {
         if (mTrackName.isEmpty()) {
-            return mTrackURL.substring(mTrackURL.lastIndexOf('/') + 1, mTrackURL.length());
+            return mTrackURL.substring(mTrackURL.lastIndexOf('/') + 1);
         }
 
         return mTrackName;

@@ -245,6 +245,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         switch (tab) {
             case 0:
             case 1:
+                // add logic here if necessary
                 return null;
             case 2:
                 return v -> {
@@ -385,10 +386,9 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_show_recent_albums:
-                mRecentAlbumsSelectedListener.onRecentAlbumsSelected();
-                return true;
+        if (item.getItemId() == R.id.action_show_recent_albums) {
+            mRecentAlbumsSelectedListener.onRecentAlbumsSelected();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

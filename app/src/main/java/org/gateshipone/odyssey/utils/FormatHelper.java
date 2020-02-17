@@ -102,17 +102,17 @@ public class FormatHelper {
     public static String formatTimeStampToString(final long timestamp) {
         Date date = new Date(timestamp);
         // Create a locale based formatted DateTime string
-        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM, Locale.getDefault()).format(date);
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault()).format(date);
     }
 
     /**
      * Helper method to create a {@link Uri} from the given uri String.
      * <p>
      * This method will check if the given uri needs to be encoded to support special characters
-     * like :, %, # etc. and will add a scheme if missing.
+     * like :, %, # etc. and will add a file scheme if scheme is missing.
      *
      * @param uri the path to the media file as String
-     * @return
+     * @return The encoded {@link Uri}.
      */
     public static Uri encodeURI(final String uri) {
         Uri encodedUri = Uri.parse(Uri.encode(uri, "/"));

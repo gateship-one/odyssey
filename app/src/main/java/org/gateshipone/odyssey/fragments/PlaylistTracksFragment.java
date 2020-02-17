@@ -290,10 +290,9 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_playlist_tracks:
-                enqueuePlaylist();
-                return true;
+        if (item.getItemId() == R.id.action_add_playlist_tracks) {
+            enqueuePlaylist();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -375,7 +375,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         if (finishedRequests % 10 == 0) {
             mBuilder.setProgress(mSumArtworkRequests, finishedRequests, false);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle()
-                    .bigText(getString(R.string.downloader_notification_remaining_images) + ' ' + String.valueOf(finishedRequests) + '/' + String.valueOf(mSumArtworkRequests)));
+                    .bigText(getString(R.string.downloader_notification_remaining_images) + ' ' + finishedRequests + '/' + mSumArtworkRequests));
             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
     }

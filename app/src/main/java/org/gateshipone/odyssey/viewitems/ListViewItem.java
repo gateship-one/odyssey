@@ -300,7 +300,7 @@ public class ListViewItem extends GenericImageViewItem {
 
         if (numberOfTracks > 0) {
             // set number of tracks only if this bookmark contains tracks
-            numberOfTracksString = Integer.toString(bookmark.getNumberOfTracks()) + " " + context.getString(R.string.fragment_bookmarks_tracks);
+            numberOfTracksString = bookmark.getNumberOfTracks() + " " + context.getString(R.string.fragment_bookmarks_tracks);
         }
 
         // get date string

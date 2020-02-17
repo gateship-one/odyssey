@@ -355,7 +355,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
         // Initialize the transition wake lock (see above for the reason)
-        mSongTransitionWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        mSongTransitionWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "odyssey:wakelock:pbs");
 
         // Initialize the mediacontrol manager for lockscreen pictures and remote control
         mPlaybackServiceStatusHelper = new PlaybackServiceStatusHelper(this);

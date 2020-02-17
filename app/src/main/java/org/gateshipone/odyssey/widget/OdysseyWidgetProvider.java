@@ -128,7 +128,8 @@ OdysseyWidgetProvider extends AppWidgetProvider {
      * Updates the widget by creating a new RemoteViews object and setting all the intents for the
      * buttons and the TextViews correctly.
      *
-     * @param info
+     * @param info    Object holding the information about the current played song.
+     * @param context The application context.
      */
     private synchronized void setWidgetContent(@NonNull NowPlayingInformation info, Context context) {
         boolean nowPlaying = false;

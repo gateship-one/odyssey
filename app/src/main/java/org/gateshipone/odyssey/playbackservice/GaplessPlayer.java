@@ -686,7 +686,7 @@ public class GaplessPlayer {
     }
 
     private void dumpAudioEffectsState() {
-        AudioEffect.Descriptor effects[] = AudioEffect.queryEffects();
+        AudioEffect.Descriptor[] effects = AudioEffect.queryEffects();
         Log.v(TAG, "Found audio effects: " + effects.length);
         for (AudioEffect.Descriptor effect : effects) {
             Log.v(TAG, "AudioEffect: " + effect.name + " connect mode: " + effect.connectMode + " implementor: " + effect.implementor);

@@ -124,7 +124,7 @@ public class MediaScannerService extends Service {
             Log.v(TAG, "start mediascanning");
 
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Odyssey_Mediascanning");
+            mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "odyssey:wakelock:mediascanner");
 
             mWakelock.acquire();
 

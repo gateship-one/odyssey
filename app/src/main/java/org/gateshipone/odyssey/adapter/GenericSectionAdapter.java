@@ -295,7 +295,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
      * In case of enabling it creates the sections.
      * In case of disabling it will clear the data.
      *
-     * @param enabled
+     * @param enabled Flag to indicate if sections should be enabled.
      */
     public void enableSections(boolean enabled) {
         mSectionsEnabled = enabled;

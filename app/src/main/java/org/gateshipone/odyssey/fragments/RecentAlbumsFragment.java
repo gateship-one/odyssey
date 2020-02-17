@@ -188,10 +188,9 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_playlist_tracks:
-                enqueueAllAlbums();
-                return true;
+        if (item.getItemId() == R.id.action_add_playlist_tracks) {
+            enqueueAllAlbums();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

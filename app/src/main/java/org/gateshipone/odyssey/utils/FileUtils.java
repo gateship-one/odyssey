@@ -75,7 +75,7 @@ public class FileUtils {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(input.toString().getBytes());
 
-        final byte bytes[] = md.digest();
+        final byte[] bytes = md.digest();
 
         final StringBuilder hexString = new StringBuilder();
         for (byte oneByte : bytes) {

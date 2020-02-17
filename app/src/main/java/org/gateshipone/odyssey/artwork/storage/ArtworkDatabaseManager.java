@@ -105,7 +105,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final String artistName = album.getArtistName();
 
         String selection;
-        String selectionArguments[];
+        String[] selectionArguments;
 
         if (albumId != -1) {
             selection = AlbumArtTable.COLUMN_ALBUM_ID + "=?";
@@ -163,7 +163,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final long artistId = artist.getArtistID();
 
         String selection;
-        String selectionArguments[];
+        String[] selectionArguments;
 
         if (artistId != -1) {
             selection = ArtistArtTable.COLUMN_ARTIST_ID + "=?";
@@ -334,7 +334,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String where = ArtistArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
-        final String whereArgs[] = {"1"};
+        final String[] whereArgs = {"1"};
 
         database.delete(ArtistArtTable.TABLE_NAME, where, whereArgs);
 
@@ -348,7 +348,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String where = AlbumArtTable.COLUMN_IMAGE_NOT_FOUND + "=?";
-        final String whereArgs[] = {"1"};
+        final String[] whereArgs = {"1"};
 
         database.delete(AlbumArtTable.TABLE_NAME, where, whereArgs);
 
@@ -365,7 +365,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " + ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
-        final String whereArgs[] = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
+        final String[] whereArgs = {String.valueOf(artist.getArtistID()), artist.getArtistName()};
 
         final Cursor requestCursor = database.query(ArtistArtTable.TABLE_NAME, new String[]{ArtistArtTable.COLUMN_IMAGE_FILE_PATH},
                 where, whereArgs, null, null, null);
@@ -398,7 +398,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         final String artistName = album.getArtistName();
 
         String where;
-        String whereArgs[];
+        String[] whereArgs;
 
         if (albumId != -1) {
             where = AlbumArtTable.COLUMN_ALBUM_ID + "=?";

@@ -167,7 +167,7 @@ public class OdysseyNotificationManager {
 
             // Build the private notification
             if (mHideMediaOnLockscreen) {
-                mNotificationBuilder.setVisibility(Notification.VISIBILITY_PRIVATE);
+                mNotificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             }
 
             mNotification = mNotificationBuilder.build();

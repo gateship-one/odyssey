@@ -256,7 +256,7 @@ public class TrackRandomGenerator {
 
 
         private void testDistribution(int numberLimit, int runs) {
-            int numberCount[] = new int[numberLimit];
+            int[] numberCount = new int[numberLimit];
 
             for (int i = 0; i < runs; i++) {
                 numberCount[getLimitedRandomNumber(numberLimit)]++;

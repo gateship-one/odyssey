@@ -336,7 +336,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final ArrayList<BookmarkModel> bookmarks = new ArrayList<>();
 
-        final String whereVal[] = {"0"};
+        final String[] whereVal = {"0"};
 
         final String where = StateTable.COLUMN_AUTOSAVE + "=?";
 
