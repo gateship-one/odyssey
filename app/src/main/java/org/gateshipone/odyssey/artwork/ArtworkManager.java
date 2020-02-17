@@ -35,6 +35,7 @@ import android.util.Log;
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
@@ -488,7 +489,10 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
     @Override
     public void fetchJSONException(ArtworkRequestModel model, Context context, JSONException exception) {
-        Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        }
+
         ImageResponse imageResponse = new ImageResponse();
         imageResponse.model = model;
         imageResponse.image = null;
@@ -498,7 +502,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
     @Override
     public void fetchVolleyError(ArtworkRequestModel model, Context context, VolleyError error) {
-        Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
+        }
 
         if (error != null) {
             NetworkResponse networkResponse = error.networkResponse;
@@ -516,7 +522,10 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     }
 
     public void fetchError(ArtworkRequestModel model, Context context) {
-        Log.e(TAG, "Error fetching: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "Error fetching: " + model.getLoggingString());
+        }
+
         ImageResponse imageResponse = new ImageResponse();
         imageResponse.model = model;
         imageResponse.image = null;
@@ -564,8 +573,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Cancel all downloads because of connection change");
+                }
+
                 // Cancel all downloads
-                Log.v(TAG, "Cancel all downloads because of connection change");
                 cancelAllRequests(context);
             }
         }

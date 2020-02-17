@@ -29,6 +29,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
 import android.util.Log;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.utils.FormatHelper;
 
 import java.io.FileInputStream;
@@ -139,7 +140,10 @@ public class GaplessPlayer {
         this.mTrackStartListeners = new ArrayList<>();
         mPlaybackService = service;
         mSecondPreparingLock = new Semaphore(1);
-        Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
+
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "MyPid: " + android.os.Process.myPid() + " MyTid: " + android.os.Process.myTid());
+        }
 
         mReleasePlayerTimer = new Timer();
     }
@@ -259,7 +263,10 @@ public class GaplessPlayer {
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mCurrentMediaPlayer.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 mPlaybackService.sendBroadcast(audioEffectIntent);
-                Log.v(TAG, "Closing effect for session: " + mCurrentMediaPlayer.getAudioSessionId());
+
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Closing effect for session: " + mCurrentMediaPlayer.getAudioSessionId());
+                }
             }
             // Release the current player
             mCurrentMediaPlayer.release();
@@ -282,7 +289,9 @@ public class GaplessPlayer {
                 mCurrentMediaPlayer.seekTo(position);
             }
         } catch (IllegalStateException exception) {
-            Log.e(TAG, "Illegal state during seekTo");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Illegal state during seekTo");
+            }
         }
     }
 
@@ -298,7 +307,9 @@ public class GaplessPlayer {
                 return mCurrentMediaPlayer.getCurrentPosition();
             }
         } catch (IllegalStateException exception) {
-            Log.e(TAG, "Illegal state during CurrentPositon");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Illegal state during CurrentPositon");
+            }
             return 0;
         }
         return 0;
@@ -316,7 +327,9 @@ public class GaplessPlayer {
                 return mCurrentMediaPlayer.getDuration();
             }
         } catch (IllegalStateException exception) {
-            Log.e(TAG, "Illegal state during CurrentPositon");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Illegal state during CurrentPositon");
+            }
             return 0;
         }
         return 0;
@@ -448,7 +461,11 @@ public class GaplessPlayer {
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                 audioEffectIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                Log.v(TAG, "Opening effect session: " + mp.getAudioSessionId());
+
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Opening effect session: " + mp.getAudioSessionId());
+                }
+
                 mPlaybackService.sendBroadcast(audioEffectIntent);
 
 
@@ -511,7 +528,11 @@ public class GaplessPlayer {
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mp.getAudioSessionId());
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
                     audioEffectOpenIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                    Log.v(TAG, "Opening effect for session: " + mp.getAudioSessionId());
+
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "Opening effect for session: " + mp.getAudioSessionId());
+                    }
+
                     mPlaybackService.sendBroadcast(audioEffectOpenIntent);
 
                     // Playback start
@@ -652,7 +673,11 @@ public class GaplessPlayer {
                     Intent audioEffectIntent = new Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
                     audioEffectIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionID);
                     audioEffectIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mPlaybackService.getPackageName());
-                    Log.v(TAG, "Closing effect for session: " + audioSessionID + " because playback ended");
+
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "Closing effect for session: " + audioSessionID + " because playback ended");
+                    }
+
                     mPlaybackService.sendBroadcast(audioEffectIntent);
                 }
             }
@@ -731,7 +756,10 @@ public class GaplessPlayer {
     private class ReleaseGaplessPlayerTask extends TimerTask {
         @Override
         public void run() {
-            Log.v(TAG, "Release player object");
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "Release player object");
+            }
+
             synchronized (mReleasePlayerTimer) {
                 mReleasePlayerTask = null;
             }

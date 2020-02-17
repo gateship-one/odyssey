@@ -40,6 +40,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -100,9 +101,7 @@ public class MediaScannerService extends Service {
     @Override
     public void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);
-        Log.v(TAG, "Calling super.onDestroy()");
         super.onDestroy();
-        Log.v(TAG, "Called super.onDestroy()");
     }
 
     @Override
@@ -121,7 +120,9 @@ public class MediaScannerService extends Service {
                 directory = new FileModel(startDirectory);
             }
 
-            Log.v(TAG, "start mediascanning");
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "start mediascanning");
+            }
 
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mWakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "odyssey:wakelock:mediascanner");
@@ -215,7 +216,9 @@ public class MediaScannerService extends Service {
     }
 
     private void finishService() {
-        Log.v(TAG, "finish mediascanning");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "finish mediascanning");
+        }
 
         mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);
@@ -260,7 +263,9 @@ public class MediaScannerService extends Service {
 
         @Override
         public void onScanCompleted(String path, Uri uri) {
-            Log.v(TAG, "scan completed: " + uri);
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "scan completed: " + uri);
+            }
 
             mScannedFiles++;
 
@@ -269,7 +274,10 @@ public class MediaScannerService extends Service {
             updateNotification();
 
             if (mBunchScannedFiles == mNumberOfFiles) {
-                Log.v(TAG, "Bunch complete, proceed to next one");
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Bunch complete, proceed to next one");
+                }
+
                 scanNextBunch(mContext);
             }
         }
@@ -279,9 +287,15 @@ public class MediaScannerService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "Broadcast requested");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Broadcast requested");
+            }
+
             if (intent.getAction().equals(ACTION_CANCEL_MEDIASCANNING)) {
-                Log.e(TAG, "Cancel requested");
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Cancel requested");
+                }
+
                 // abort scan after finish scanning current folder
                 mAbort = true;
                 // cancel notification
@@ -302,7 +316,10 @@ public class MediaScannerService extends Service {
         @Override
         protected List<FileModel> doInBackground(FileModel... params) {
             List<FileModel> files = FileExplorerHelper.getInstance().getMissingDBFiles(mContext, params[0]);
-            Log.v(TAG, "Got missing tracks: " + files.size());
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "Got missing tracks: " + files.size());
+            }
+
             mFilesToScan = files.size();
             scanFileList(mContext, files);
             return files;

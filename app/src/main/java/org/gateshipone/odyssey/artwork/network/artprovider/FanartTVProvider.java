@@ -29,6 +29,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
 import org.gateshipone.odyssey.artwork.network.LimitingRequestQueue;
@@ -150,8 +151,10 @@ public class FanartTVProvider extends ArtProvider {
                         }
                     }, error -> errorListener.fetchVolleyError(model, context, error));
                 } else {
-                    Log.v(TAG, "Response ( " + artist + " )" + " doesn't match requested model: " +
-                            "( " + model.getLoggingString() + " )");
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "Response ( " + artist + " )" + " doesn't match requested model: " +
+                                "( " + model.getLoggingString() + " )");
+                    }
 
                     errorListener.fetchVolleyError(model, context, null);
                 }
@@ -172,11 +175,11 @@ public class FanartTVProvider extends ArtProvider {
      */
     private void getArtists(final String artistName, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
 
-        Log.v(FanartTVProvider.class.getSimpleName(), artistName);
-
         String url = MUSICBRAINZ_API_URL + "/" + "artist/?query=artist:" + artistName + MUSICBRAINZ_LIMIT_RESULT + MUSICBRAINZ_FORMAT_JSON;
 
-        Log.v(TAG, "Requesting release mbid for: " + url);
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Requesting release mbid for: " + url);
+        }
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(url, null, listener, errorListener);
 
@@ -192,9 +195,11 @@ public class FanartTVProvider extends ArtProvider {
      */
     private void getArtistImageURL(final String artistMBID, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
 
-        Log.v(FanartTVProvider.class.getSimpleName(), artistMBID);
-
         String url = FANART_TV_API_URL + "/" + artistMBID + "?api_key=" + API_KEY;
+
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Requesting artist image url for: " + url);
+        }
 
         OdysseyJsonObjectRequest jsonObjectRequest = new OdysseyJsonObjectRequest(url, null, listener, errorListener);
 
@@ -212,6 +217,10 @@ public class FanartTVProvider extends ArtProvider {
     private void getArtistImage(final String url, final ArtworkRequestModel model,
                                 final Response.Listener<ImageResponse> listener, final Response.ErrorListener errorListener) {
         Log.v(FanartTVProvider.class.getSimpleName(), url);
+
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Request artist image for: " + url);
+        }
 
         Request<ImageResponse> byteResponse = new OdysseyByteRequest(model, url, listener, errorListener);
 

@@ -43,6 +43,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.FileModel;
@@ -1795,7 +1796,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * think of now :P.
      */
     private void handlePlaybackException(GaplessPlayer.PlaybackException exception) {
-        Log.e(TAG, "Exception " + exception.getReason().toString() + "occurred with file " + exception.getFilePath(), exception.getCause());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "Exception " + exception.getReason().toString() + "occurred with file " + exception.getFilePath(), exception.getCause());
+        }
         Toast.makeText(getBaseContext(), TAG + ":" + exception.getReason().toString() + " - " + exception.getFilePath(), Toast.LENGTH_LONG).show();
         // TODO better handling?
         stop();

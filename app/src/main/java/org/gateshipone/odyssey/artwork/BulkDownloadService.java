@@ -41,6 +41,7 @@ import android.util.Log;
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.network.ArtworkRequestModel;
 import org.gateshipone.odyssey.artwork.network.ImageResponse;
@@ -120,9 +121,8 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     public void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);
         unregisterReceiver(mConnectionStateChangeReceiver);
-        Log.v(TAG, "Calling super.onDestroy()");
+
         super.onDestroy();
-        Log.v(TAG, "Called super.onDestroy()");
     }
 
     @Nullable
@@ -134,7 +134,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_START_BULKDOWNLOAD.equals(intent.getAction())) {
-            Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "Starting bulk download in service with thread id: " + Thread.currentThread().getId());
+            }
 
             // reset counter
             mSumArtworkRequests = 0;
@@ -188,7 +190,10 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     @Override
     public void fetchJSONException(final ArtworkRequestModel model, final Context context, final JSONException exception) {
-        Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        }
+
         ImageResponse imageResponse = new ImageResponse();
         imageResponse.model = model;
         imageResponse.image = null;
@@ -198,7 +203,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     @Override
     public void fetchVolleyError(final ArtworkRequestModel model, final Context context, final VolleyError error) {
-        Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
+        }
 
         if (error != null) {
             NetworkResponse networkResponse = error.networkResponse;
@@ -216,7 +223,10 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     }
 
     public void fetchError(final ArtworkRequestModel model, final Context context) {
-        Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
+        }
+
         ImageResponse imageResponse = new ImageResponse();
         imageResponse.model = model;
         imageResponse.image = null;
@@ -283,7 +293,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     }
 
     private void startBulkDownload() {
-        Log.v(TAG, "Bulkloading started with: " + mArtworkRequestQueue.size());
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Bulkloading started with: " + mArtworkRequestQueue.size());
+        }
 
         mSumArtworkRequests = mArtworkRequestQueue.size();
 
@@ -368,7 +380,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     }
 
     private void updateNotification(final int pendingRequests) {
-        Log.v(TAG, "Remaining requests: " + pendingRequests);
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Remaining requests: " + pendingRequests);
+        }
 
         int finishedRequests = mSumArtworkRequests - pendingRequests;
 
@@ -403,9 +417,15 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "Broadcast requested");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Broadcast requested");
+            }
+
             if (ACTION_CANCEL_BULKDOWNLOAD.equals(intent.getAction())) {
-                Log.e(TAG, "Cancel requested");
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Cancel requested");
+                }
+
                 finishedLoading();
             }
         }
@@ -416,8 +436,11 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Cancel all downloads because of connection change");
+                }
+
                 // Cancel all downloads
-                Log.v(TAG, "Cancel all downloads because of connection change");
                 finishedLoading();
             }
 

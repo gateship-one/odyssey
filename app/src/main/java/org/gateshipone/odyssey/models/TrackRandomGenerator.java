@@ -40,7 +40,6 @@ import java.util.Random;
  */
 public class TrackRandomGenerator {
     private static final String TAG = TrackRandomGenerator.class.getSimpleName();
-    private static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
 
     /**
      * Underlying data structure for artist-track buckets
@@ -97,7 +96,7 @@ public class TrackRandomGenerator {
             // Increase the track number (index) of the original playlist
             trackNo++;
         }
-        if (DEBUG_ENABLED) {
+        if (BuildConfig.DEBUG) {
             Log.v(TAG, "Recreated buckets with: " + hashMap.size() + " artists");
         }
 
@@ -116,7 +115,7 @@ public class TrackRandomGenerator {
         boolean smartRandom = mRandomGenerator.getLimitedRandomNumber(100) < mIntelligenceFactor;
 
         if (smartRandom) {
-            if (DEBUG_ENABLED) {
+            if (BuildConfig.DEBUG) {
                 Log.v(TAG, "Use smart random");
             }
             if (mData.isEmpty()) {
@@ -145,7 +144,7 @@ public class TrackRandomGenerator {
 
             // Remove track to prevent double plays
             artistsTracks.remove(randomTrackNo);
-            if (DEBUG_ENABLED) {
+            if (BuildConfig.DEBUG) {
                 Log.v(TAG, "Tracks from artist left: " + artistsTracks.size());
             }
 
@@ -153,17 +152,17 @@ public class TrackRandomGenerator {
             if (artistsTracks.isEmpty()) {
                 // No tracks left from artist, remove from map
                 mData.remove(randomArtistNumber);
-                if (DEBUG_ENABLED) {
+                if (BuildConfig.DEBUG) {
                     Log.v(TAG, "Artists left: " + mData.size());
                 }
             }
-            if (DEBUG_ENABLED) {
+            if (BuildConfig.DEBUG) {
                 Log.v(TAG, "Selected artist no.: " + randomArtistNumber + " with internal track no.: " + randomTrackNo + " and original track no.: " + songNumber);
             }
             // Get random track number
             return songNumber;
         } else {
-            if (DEBUG_ENABLED) {
+            if (BuildConfig.DEBUG) {
                 Log.v(TAG, "Use traditional random");
             }
             return mRandomGenerator.getLimitedRandomNumber(mOriginalList.size());
@@ -223,7 +222,7 @@ public class TrackRandomGenerator {
 
             mNumbersGiven++;
             if (mNumbersGiven == RESEED_COUNT) {
-                if (DEBUG_ENABLED) {
+                if (BuildConfig.DEBUG) {
                     Log.v(TAG, "Reseeded PRNG");
                 }
                 mInternalSeed = mJavaGenerator.nextInt();
@@ -244,7 +243,7 @@ public class TrackRandomGenerator {
             do {
                 r = getInternalRandomNumber();
                 if ((System.nanoTime() - startTime) > TIMEOUT_NS) {
-                    if (DEBUG_ENABLED) {
+                    if (BuildConfig.DEBUG) {
                         Log.w(TAG, "Random generation timed out");
                     }
                     // Fallback to java generator

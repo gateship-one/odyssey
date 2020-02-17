@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.OdysseyServiceState;
@@ -104,7 +105,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      * @param autosave True if it's an auto generated state
      */
     public void saveState(List<TrackModel> playList, OdysseyServiceState state, String title, boolean autosave) {
-        Log.v(TAG, "save state");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "save state");
+        }
 
         final long stateTimeStamp = System.currentTimeMillis();
 

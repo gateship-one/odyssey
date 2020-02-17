@@ -33,6 +33,8 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 
+import org.gateshipone.odyssey.BuildConfig;
+
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,7 +75,9 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
 
     @Override
     public void onRequestFinished(Request request) {
-        Log.v(TAG, "Request finished");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Request finished");
+        }
     }
 
     @Override
@@ -81,7 +85,10 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         if (null == request) {
             return null;
         }
-        Log.v(TAG, "RATE LIMITING REQUEST ADDED");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "RATE LIMITING REQUEST ADDED");
+        }
+
         synchronized (mLimitingRequestQueue) {
             mLimitingRequestQueue.add(request);
             if (null == mLimiterTimer) {
@@ -104,13 +111,19 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
                 Request request = mLimitingRequestQueue.poll();
                 if (null != request) {
                     realAddRequest(request);
-                    Log.v(TAG, "RATE LIMITING FORWARED");
+
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "RATE LIMITING FORWARED");
+                    }
                 } else {
                     // Stop the timer, no requests left
                     mLimiterTimer.cancel();
                     mLimiterTimer.purge();
                     mLimiterTimer = null;
-                    Log.v(TAG, "RATE LIMITING EMPTY, STOPPING");
+
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "RATE LIMITING EMPTY, STOPPING");
+                    }
                 }
             }
         }
@@ -126,7 +139,10 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         synchronized (mLimitingRequestQueue) {
             for (Request<?> request : mLimitingRequestQueue) {
                 if (filter.apply(request)) {
-                    Log.v(TAG, "Canceling request: " + request);
+                    if (BuildConfig.DEBUG) {
+                        Log.v(TAG, "Canceling request: " + request);
+                    }
+
                     request.cancel();
                     mLimitingRequestQueue.remove(request);
                 }
