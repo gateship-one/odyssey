@@ -34,10 +34,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ArtistViewModel extends GenericViewModel<ArtistModel> {
 
-    public ArtistViewModel(@NonNull final Application application) {
+    private ArtistViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -80,4 +82,18 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
         }
     }
 
+    public static class ArtistViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+        private final Application mApplication;
+
+        public ArtistViewModelFactory(final Application application) {
+            mApplication = application;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new ArtistViewModel(mApplication);
+        }
+    }
 }

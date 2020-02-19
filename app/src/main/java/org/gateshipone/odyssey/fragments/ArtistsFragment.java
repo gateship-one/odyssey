@@ -125,7 +125,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
     @Override
     GenericViewModel<ArtistModel> getViewModel() {
-        return new ViewModelProvider(this).get(ArtistViewModel.class);
+        return new ViewModelProvider(this, new ArtistViewModel.ArtistViewModelFactory(getActivity().getApplication())).get(ArtistViewModel.class);
     }
 
     @Override
