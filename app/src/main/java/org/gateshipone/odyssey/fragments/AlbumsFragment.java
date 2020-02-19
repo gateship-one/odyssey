@@ -32,9 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
-
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.database.MusicDatabaseFactory;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
