@@ -314,8 +314,9 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public void setDragOffset(float offset) {
         if (offset > 1.0f || offset < 0.0f) {
             mDragOffset = 1.0f;
+        } else {
+            mDragOffset = offset;
         }
-        mDragOffset = offset;
 
         invalidate();
         requestLayout();
