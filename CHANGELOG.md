@@ -1,3 +1,9 @@
+### Version: 1.1.x Tag: release-x (2020-xx-xx) ###
+* further improvements for the artwork retrival
+* add czech translation
+* update french translation
+* improve widget behaviour
+
 ### Version: 1.1.18 Tag: release-30 (2019-06-05) ###
 * replace random with smart random feature
 * improve artwork retrival
