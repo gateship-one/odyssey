@@ -1,0 +1,4 @@
+* further improvements for the artwork retrival
+* add czech translation
+* update french translation
+* improve widget behaviour

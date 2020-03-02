@@ -1,4 +1,4 @@
-### Version: 1.1.x Tag: release-x (2020-xx-xx) ###
+### Version: 1.1.19 Tag: release-31 (2020-03-02) ###
 * further improvements for the artwork retrival
 * add czech translation
 * update french translation
