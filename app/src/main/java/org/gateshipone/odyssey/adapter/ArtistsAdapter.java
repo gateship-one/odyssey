@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -35,6 +34,8 @@ import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
+
+import androidx.preference.PreferenceManager;
 
 public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistsAdapter.class.getSimpleName();

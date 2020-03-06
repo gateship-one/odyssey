@@ -25,7 +25,6 @@ package org.gateshipone.odyssey.viewmodels;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -37,6 +36,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 public class AlbumViewModel extends GenericViewModel<AlbumModel> {
 

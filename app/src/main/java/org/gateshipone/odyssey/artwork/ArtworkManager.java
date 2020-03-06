@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -61,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import androidx.preference.PreferenceManager;
 
 public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTask.ImageSavedCallback {
 

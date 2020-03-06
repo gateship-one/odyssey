@@ -24,7 +24,6 @@ package org.gateshipone.odyssey.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 
 import org.gateshipone.odyssey.R;
@@ -37,6 +36,7 @@ import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumModel, GenericViewItemHolder> implements ArtworkManager.onNewAlbumImageListener {
 

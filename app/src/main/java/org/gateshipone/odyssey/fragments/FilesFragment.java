@@ -160,7 +160,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             }
         }
 
-        SharedPreferences sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
 
         // try to resume the saved search string

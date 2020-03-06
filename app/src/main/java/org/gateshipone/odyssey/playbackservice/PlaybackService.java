@@ -39,7 +39,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,6 +61,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+
+import androidx.preference.PreferenceManager;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 

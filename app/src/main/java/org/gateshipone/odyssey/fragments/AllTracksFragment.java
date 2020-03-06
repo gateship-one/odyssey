@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -50,6 +49,7 @@ import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 public class AllTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 

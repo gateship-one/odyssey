@@ -26,7 +26,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -37,6 +36,8 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.RemoteControlReceiver;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
+
+import androidx.preference.PreferenceManager;
 
 public class PlaybackServiceStatusHelper {
     public enum SLS_STATES {SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE}

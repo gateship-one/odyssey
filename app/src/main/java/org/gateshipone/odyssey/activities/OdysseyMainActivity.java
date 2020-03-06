@@ -30,7 +30,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -95,6 +94,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 
 public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
