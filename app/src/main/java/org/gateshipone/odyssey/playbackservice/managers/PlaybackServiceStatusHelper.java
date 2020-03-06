@@ -144,11 +144,11 @@ public class PlaybackServiceStatusHelper {
         switch (currentState) {
             case PLAYING:
             case PAUSE:
-                // Call the notification manager, it handles the rest.
-                mNotificationManager.updateNotification(currentTrack, currentState, mMediaSession.getSessionToken());
-
                 // Update MediaSession metadata.
                 updateMetadata(currentTrack, currentState);
+
+                // Call the notification manager, it handles the rest.
+                mNotificationManager.updateNotification(currentTrack, currentState, mMediaSession.getSessionToken());
 
                 // Broadcast all the information.
                 broadcastPlaybackInformation(info);
@@ -157,7 +157,7 @@ public class PlaybackServiceStatusHelper {
                 if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
                     mLastTrack = currentTrack;
 
-                    if ( !mHideArtwork ) {
+                    if (!mHideArtwork) {
                         startCoverImageTask();
                     }
                 }
@@ -197,7 +197,7 @@ public class PlaybackServiceStatusHelper {
     private void updateMetadata(TrackModel track, PlaybackService.PLAYSTATE playbackState) {
         if (track != null) {
             if (playbackState == PlaybackService.PLAYSTATE.PLAYING) {
-                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f)
+                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, mPlaybackService.getTrackPosition(), 1.0f)
                         .setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT + PlaybackStateCompat.ACTION_PAUSE +
                                 PlaybackStateCompat.ACTION_PLAY + PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS +
                                 PlaybackStateCompat.ACTION_STOP + PlaybackStateCompat.ACTION_SEEK_TO).build());
@@ -314,7 +314,7 @@ public class PlaybackServiceStatusHelper {
         mMediaSession.setMetadata(metaDataBuilder.build());
 
         // Start the actual task based on the current track. (mLastTrack get sets before in updateStatus())
-        mCoverLoader.getImage(mLastTrack,-1,-1);
+        mCoverLoader.getImage(mLastTrack, -1, -1);
     }
 
     /**
@@ -390,6 +390,7 @@ public class PlaybackServiceStatusHelper {
 
     /**
      * Hides all visible artwork (notification, lockscreen background, widget)
+     *
      * @param enable True to hide artwork, false to show artwork.
      */
     public void hideArtwork(boolean enable) {
@@ -411,24 +412,26 @@ public class PlaybackServiceStatusHelper {
     }
 
     /**
-    * Hides all visible artwork on the lockscreen (notification, lockscreen background).
-    * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
-    */
+     * Hides all visible artwork on the lockscreen (notification, lockscreen background).
+     *
+     * @param enable True to hide artwork on lockscreen, false to show artwork on lockscreen.
+     */
     public void hideMediaOnLockscreen(boolean enable) {
-      mHideMediaOnLockscreen = enable;
-      mNotificationManager.hideMediaOnLockscreen(enable);
+        mHideMediaOnLockscreen = enable;
+        mNotificationManager.hideMediaOnLockscreen(enable);
 
-      mLastTrack = null;
-      updateStatus();
+        mLastTrack = null;
+        updateStatus();
     }
 
     /**
      * Checks if the albumKey for the new artwork is for the currently playing track and
      * then reloads the artwork to show it in the notification, ... .
+     *
      * @param albumKey Key to identify and compare the artwork with the current track
      */
     public void newAlbumArtworkReady(String albumKey) {
-        if ( albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork ) {
+        if (albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork) {
             // Start cover loader
             startCoverImageTask();
         }
