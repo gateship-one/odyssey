@@ -37,6 +37,7 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * The url for the album cover
      */
+    @Deprecated
     private final String mAlbumArtURL;
 
     /**
@@ -140,6 +141,7 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * Return the url for the album cover
      */
+    @Deprecated
     public String getAlbumArtURL() {
         return mAlbumArtURL;
     }

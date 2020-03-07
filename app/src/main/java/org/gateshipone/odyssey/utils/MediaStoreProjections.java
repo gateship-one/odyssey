@@ -45,6 +45,7 @@ class MediaStoreProjections {
         String ALBUM = PROJECTION[0];
         String ALBUM_KEY = PROJECTION[1];
         String NUMER_OF_SONGS = PROJECTION[2];
+        @Deprecated
         String ALBUM_ART = PROJECTION[3];
         String ARTIST = PROJECTION[4];
         String FIRST_YEAR = PROJECTION[5];
@@ -84,6 +85,7 @@ class MediaStoreProjections {
         String ALBUM_KEY = PROJECTION[3];
         String ALBUM = PROJECTION[4];
         String ARTIST = PROJECTION[5];
+        @Deprecated
         String DATA = PROJECTION[6];
         String DATE_ADDED = PROJECTION[7];
         String DURATION = PROJECTION[8];
@@ -123,10 +125,9 @@ class MediaStoreProjections {
         String ALBUM_KEY = PROJECTION[3];
         String ALBUM = PROJECTION[4];
         String ARTIST = PROJECTION[5];
-        String DATA = PROJECTION[6];
-        String ID = PROJECTION[7];
-        String AUDIO_ID = PROJECTION[8];
-        String DURATION = PROJECTION[9];
+        String ID = PROJECTION[6];
+        String AUDIO_ID = PROJECTION[7];
+        String DURATION = PROJECTION[8];
 
         String PLAY_ORDER = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
     }
@@ -213,7 +214,6 @@ class MediaStoreProjections {
                     MediaStore.Audio.Playlists.Members.ALBUM_KEY,
                     MediaStore.Audio.Playlists.Members.ALBUM,
                     MediaStore.Audio.Playlists.Members.ARTIST,
-                    MediaStore.Audio.Playlists.Members.DATA,
                     MediaStore.Audio.Playlists.Members._ID,
                     MediaStore.Audio.Playlists.Members.AUDIO_ID,
                     MediaStore.MediaColumns.DURATION
@@ -226,7 +226,6 @@ class MediaStoreProjections {
                     MediaStore.Audio.Playlists.Members.ALBUM_KEY,
                     MediaStore.Audio.Playlists.Members.ALBUM,
                     MediaStore.Audio.Playlists.Members.ARTIST,
-                    MediaStore.Audio.Playlists.Members.DATA,
                     MediaStore.Audio.Playlists.Members._ID,
                     MediaStore.Audio.Playlists.Members.AUDIO_ID,
                     MediaStore.Audio.AudioColumns.DURATION,
