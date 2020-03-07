@@ -22,10 +22,12 @@
 
 package org.gateshipone.odyssey.models;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class TrackModel implements GenericModel, Parcelable {
 
@@ -52,7 +54,7 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * The url path to the related media file
      */
-    private final String mTrackURL;
+    private final Uri mTrackUri;
 
     /**
      * The duration of the track in ms
@@ -74,7 +76,7 @@ public class TrackModel implements GenericModel, Parcelable {
      */
     private final int mDateAdded;
 
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId, int dateAdded) {
+    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, Uri uri, long trackId, int dateAdded) {
         if (name != null) {
             mTrackName = name;
         } else {
@@ -100,11 +102,8 @@ public class TrackModel implements GenericModel, Parcelable {
         }
         mTrackDuration = duration;
         mTrackNumber = trackNumber;
-        if (url != null) {
-            mTrackURL = url;
-        } else {
-            mTrackURL = "";
-        }
+
+        mTrackUri = uri;
 
         mTrackId = trackId;
 
@@ -114,8 +113,8 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * Constructs a TrackModel instance with the given parameters.
      */
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, String url, long trackId) {
-        this(name, artistName, albumName, albumKey, duration, trackNumber, url, trackId, -1);
+    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, Uri uri, long trackId) {
+        this(name, artistName, albumName, albumKey, duration, trackNumber, uri, trackId, -1);
     }
 
     /**
@@ -135,7 +134,7 @@ public class TrackModel implements GenericModel, Parcelable {
         mTrackArtistName = in.readString();
         mTrackAlbumName = in.readString();
         mTrackAlbumKey = in.readString();
-        mTrackURL = in.readString();
+        mTrackUri = (Uri) in.readValue(Uri.class.getClassLoader());
         mTrackDuration = in.readLong();
         mTrackNumber = in.readInt();
         mTrackId = in.readLong();
@@ -171,7 +170,12 @@ public class TrackModel implements GenericModel, Parcelable {
      */
     public String getTrackDisplayedName() {
         if (mTrackName.isEmpty()) {
-            return mTrackURL.substring(mTrackURL.lastIndexOf('/') + 1);
+            // TODO add replacement here
+            if (mTrackUri == null) {
+                return "";
+            } else {
+                return mTrackUri.getPath() == null ? "" : mTrackUri.getPath();
+            }
         }
 
         return mTrackName;
@@ -224,8 +228,17 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * Return the url of the track
      */
-    public String getTrackURL() {
-        return mTrackURL;
+    @Nullable
+    public Uri getTrackUri() {
+        return mTrackUri;
+    }
+
+    public String getTrackUriString() {
+        if (mTrackUri == null) {
+            return "";
+        } else {
+            return mTrackUri.toString();
+        }
     }
 
     /**
@@ -292,7 +305,7 @@ public class TrackModel implements GenericModel, Parcelable {
         dest.writeString(mTrackArtistName);
         dest.writeString(mTrackAlbumName);
         dest.writeString(mTrackAlbumKey);
-        dest.writeString(mTrackURL);
+        dest.writeValue(mTrackUri);
         dest.writeLong(mTrackDuration);
         dest.writeInt(mTrackNumber);
         dest.writeLong(mTrackId);

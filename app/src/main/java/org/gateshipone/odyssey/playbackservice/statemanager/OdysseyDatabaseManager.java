@@ -27,6 +27,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
 import org.gateshipone.odyssey.BuildConfig;
@@ -164,7 +165,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             values.put(StateTracksTable.COLUMN_TRACKNUMBER, item.getTrackNumber());
             values.put(StateTracksTable.COLUMN_TRACKARTIST, item.getTrackArtistName());
             values.put(StateTracksTable.COLUMN_TRACKALBUM, item.getTrackAlbumName());
-            values.put(StateTracksTable.COLUMN_TRACKURL, item.getTrackURL());
+            values.put(StateTracksTable.COLUMN_TRACKURL, item.getTrackUriString());
             values.put(StateTracksTable.COLUMN_TRACKALBUMKEY, item.getTrackAlbumKey());
             values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
             values.put(StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, stateTimeStamp);
@@ -217,7 +218,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
                 final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
+                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, Uri.parse(url), id);
 
                 playList.add(item);
 
@@ -261,7 +262,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                     final String albumKey = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKALBUMKEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACKID));
 
-                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id);
+                    TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, Uri.parse(url), id);
 
                     playList.add(item);
 

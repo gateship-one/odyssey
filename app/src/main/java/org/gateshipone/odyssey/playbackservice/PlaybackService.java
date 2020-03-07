@@ -33,6 +33,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -670,7 +671,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
                 try {
                     if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
-                        mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackURL());
+                        mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackUri());
                     } else {
                         mPlayer.setNextTrack(null);
                     }
@@ -849,7 +850,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
             // Try to start playback of the track url.
             try {
-                mPlayer.play(item.getTrackURL(), jumpTime);
+                mPlayer.play(item.getTrackUri(), jumpTime);
             } catch (GaplessPlayer.PlaybackException e) {
                 // Handle an error of the play command
                 handlePlaybackException(e);
@@ -1827,7 +1828,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Sets the next track for gapless playing
             if (mNextPlayingIndex >= 0 && mNextPlayingIndex < mCurrentList.size()) {
                 try {
-                    mPlayer.setNextTrack(mCurrentList.get(mNextPlayingIndex).getTrackURL());
+                    mPlayer.setNextTrack(mCurrentList.get(mNextPlayingIndex).getTrackUri());
                 } catch (GaplessPlayer.PlaybackException e) {
                     handlePlaybackException(e);
                 }
@@ -1871,7 +1872,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     private class PlaybackStartListener implements GaplessPlayer.OnTrackStartedListener {
         @Override
-        public void onTrackStarted(String URI) {
+        public void onTrackStarted(final Uri uri) {
             // Move the index to the next one
             mCurrentPlayingIndex = mNextPlayingIndex;
 
@@ -2018,9 +2019,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         while (iterator.hasNext()) {
             final TrackModel track = iterator.next();
 
-            if (parsedTracks.containsKey(track.getTrackURL())) {
+            if (parsedTracks.containsKey(track.getTrackUriString())) {
                 // if the track is in the map replace it in the playlist
-                iterator.set(parsedTracks.get(track.getTrackURL()));
+                iterator.set(parsedTracks.get(track.getTrackUriString()));
                 updatedNeeded = true;
             }
         }

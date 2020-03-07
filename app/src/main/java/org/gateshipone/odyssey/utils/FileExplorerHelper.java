@@ -91,7 +91,7 @@ public class FileExplorerHelper {
      * @return A dummy {@link TrackModel} that only contains the file name and the uri.
      */
     public TrackModel getDummyTrackModelForFile(FileModel file) {
-        return new TrackModel(file.getName(), null, null, null, 0, -1, file.getURLString(), -1);
+        return new TrackModel(file.getName(), null, null, null, 0, -1, FormatHelper.encodeURI(file.getURLString()), -1);
     }
 
     /**

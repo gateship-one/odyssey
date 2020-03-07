@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.utils;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,6 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 public class MusicLibraryHelper {
     private static final String TAG = "MusicLibraryHelper";
@@ -108,6 +111,7 @@ public class MusicLibraryHelper {
      * @param context  The application context to access the content resolver.
      * @return The created {@link AlbumModel}
      */
+    @Nullable
     public static AlbumModel createAlbumModelFromKey(final String albumKey, final Context context) {
         final String[] whereVal = {albumKey};
 
@@ -193,11 +197,12 @@ public class MusicLibraryHelper {
                     final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
                     final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
                     final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
                     final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
 
+                    final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
                     // add current track
-                    albumTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    albumTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, uri, id));
 
                 } while (cursor.moveToNext());
             }
@@ -267,12 +272,13 @@ public class MusicLibraryHelper {
                     final int number = cursor.getInt(cursor.getColumnIndex(ProjectionPlaylistTracks.TRACK));
                     final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.ARTIST));
                     final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.ALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.ALBUM_KEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(ProjectionPlaylistTracks.AUDIO_ID));
 
+                    final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
                     // add the track
-                    playlistTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                    playlistTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, uri, id));
 
                 } while (cursor.moveToNext());
             }
@@ -460,13 +466,14 @@ public class MusicLibraryHelper {
                     final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
                     final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
                     final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM_KEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
                     final int dateAdded = albumDateMap.containsKey(albumKey) ? albumDateMap.get(albumKey) : -1;
 
+                    final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
                     // add the track
-                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id, dateAdded));
+                    recentTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, uri, id, dateAdded));
 
                 } while (cursor.moveToNext());
             }
@@ -514,13 +521,14 @@ public class MusicLibraryHelper {
                     final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
                     final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
                     final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
                     final String albumKey = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM_KEY));
                     final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
 
+                    final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
                     // add the track
                     if (null == filterString || filterString.isEmpty() || trackName.toLowerCase().contains(filterString)) {
-                        allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, url, id));
+                        allTracks.add(new TrackModel(trackName, artistName, albumName, albumKey, duration, number, uri, id));
                     }
 
                 } while (cursor.moveToNext());
@@ -894,6 +902,7 @@ public class MusicLibraryHelper {
      * @param context The application context to access the content resolver.
      * @return The created {@link TrackModel} or null if the track couldn't be found in the MediaStore.
      */
+    @Nullable
     static TrackModel getTrackForUri(final Uri uri, final Context context) {
         final String uriPath = uri.getPath();
         final String uriScheme = uri.getScheme();
@@ -934,11 +943,12 @@ public class MusicLibraryHelper {
                 int no = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
                 String artist = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
                 String album = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
                 String albumKey = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM_KEY));
                 long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
 
-                track = new TrackModel(title, artist, album, albumKey, duration, no, url, id);
+                final Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
+                track = new TrackModel(title, artist, album, albumKey, duration, no, trackUri, id);
             }
 
             cursor.close();

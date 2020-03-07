@@ -27,12 +27,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.util.Log;
 
 import org.gateshipone.odyssey.BuildConfig;
-import org.gateshipone.odyssey.utils.FormatHelper;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -85,14 +84,14 @@ public class GaplessPlayer {
     private boolean mSecondPreparing = false;
 
     /**
-     * URL of the currently playing song (if any)
+     * Uri of the currently playing song (if any)
      */
-    private String mPrimarySource = null;
+    private Uri mPrimarySource = null;
 
     /**
-     * URL of the next song to play.
+     * Uri of the next song to play.
      */
-    private String mSecondarySource = null;
+    private Uri mSecondarySource = null;
 
     /**
      * Time value to seek to after preparing the current song. This is used for resuming playback
@@ -154,7 +153,7 @@ public class GaplessPlayer {
      * @param uri URL of the ressource to play.
      * @throws PlaybackException In case of error the Exception is thrown
      */
-    public void play(String uri) throws PlaybackException {
+    public void play(final Uri uri) throws PlaybackException {
         play(uri, 0);
     }
 
@@ -165,7 +164,7 @@ public class GaplessPlayer {
      * @param uri - Path to media file
      * @throws PlaybackException Exception if file could not be played (e.g. file removed)
      */
-    public synchronized void play(String uri, int jumpTime) throws PlaybackException {
+    public synchronized void play(final Uri uri, int jumpTime) throws PlaybackException {
         stopReleaseTask();
         // Another player currently exists, remove it.
         if (mCurrentMediaPlayer != null) {
@@ -181,10 +180,8 @@ public class GaplessPlayer {
         // Set the type of the stream to music.
         mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            // create a file descriptor for the given uri
-            FileInputStream fileInputStream = new FileInputStream(uri);
-            mCurrentMediaPlayer.setDataSource(fileInputStream.getFD());
-            fileInputStream.close();
+            mCurrentMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
+                    uri);
         } catch (IllegalArgumentException e) {
             throw new PlaybackException(REASON.ArgumentError, uri, e);
         } catch (SecurityException e) {
@@ -371,7 +368,7 @@ public class GaplessPlayer {
      *
      * @param uri URI of the next song to play.
      */
-    synchronized void setNextTrack(String uri) throws PlaybackException {
+    synchronized void setNextTrack(final Uri uri) throws PlaybackException {
         // Reset the prepared state of the second mediaplayer
         mSecondPrepared = false;
 
@@ -395,7 +392,7 @@ public class GaplessPlayer {
         }
 
         // Check if the uri contains something
-        if (uri != null && !uri.isEmpty()) {
+        if (uri != null) {
             // Create a new MediaPlayer to prepare as next song playback
             mNextMediaPlayer = new MediaPlayer();
 
@@ -410,8 +407,7 @@ public class GaplessPlayer {
 
             try {
                 // Try setting the data source
-                mNextMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(),
-                        FormatHelper.encodeURI(uri));
+                mNextMediaPlayer.setDataSource(mPlaybackService.getApplicationContext(), uri);
             } catch (IllegalArgumentException e) {
                 throw new PlaybackException(REASON.ArgumentError, uri, e);
             } catch (SecurityException e) {
@@ -569,7 +565,7 @@ public class GaplessPlayer {
     }
 
     public interface OnTrackStartedListener {
-        void onTrackStarted(String URI);
+        void onTrackStarted(final Uri uri);
     }
 
 
@@ -694,11 +690,11 @@ public class GaplessPlayer {
 
         final String mFilePath;
 
-        private PlaybackException(final REASON reason, final String filePath, final Throwable throwable) {
+        private PlaybackException(final REASON reason, final Uri fileUri, final Throwable throwable) {
             super(throwable);
 
             mReason = reason;
-            mFilePath = filePath;
+            mFilePath = fileUri.toString();
         }
 
         REASON getReason() {

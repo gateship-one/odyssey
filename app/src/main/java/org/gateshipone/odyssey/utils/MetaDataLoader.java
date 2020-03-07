@@ -29,7 +29,6 @@ import android.text.TextUtils;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
-import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class MetaDataLoader {
         for (TrackModel track : tracks) {
             if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
                 // add only tracks with an empty albumkey
-                unknownTracks.put(track.getTrackURL(), track.getTrackName());
+                unknownTracks.put(track.getTrackUriString(), track.getTrackName());
             }
         }
 
@@ -81,15 +80,12 @@ public class MetaDataLoader {
      *
      * @param context    The {@link Context} used to open the file and access the mediadb.
      * @param trackTitle The title for the {@link TrackModel} if a dummy track is created.
-     * @param trackUrl   The given url for track as a String.
+     * @param trackUri   The given url for track as a String.
      * @return A valid {@link TrackModel}.
      */
-    private TrackModel readTrackMetaData(final Context context, final String trackTitle, final String trackUrl) {
-        // parse the given url
-        final Uri uri = FormatHelper.encodeURI(trackUrl);
-
+    private TrackModel readTrackMetaData(final Context context, final String trackTitle, final Uri trackUri) {
         // lookup the current file in the media db
-        final TrackModel track = MusicLibraryHelper.getTrackForUri(uri, context);
+        final TrackModel track = MusicLibraryHelper.getTrackForUri(trackUri, context);
 
         if (track != null) {
             return track;
@@ -98,10 +94,7 @@ public class MetaDataLoader {
         try {
             // try to read the file metadata
             final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-
-            FileInputStream fileInputStream = new FileInputStream(trackUrl);
-            retriever.setDataSource(fileInputStream.getFD());
-            fileInputStream.close();
+            retriever.setDataSource(context.getContentResolver().openFileDescriptor(trackUri, "r").getFileDescriptor());
 
             final String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 
@@ -142,11 +135,11 @@ public class MetaDataLoader {
 
             final String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
 
-            return new TrackModel(title, artist, album, albumKey, duration, no, trackUrl, -1);
+            return new TrackModel(title, artist, album, albumKey, duration, no, trackUri, -1);
         } catch (Exception e) {
             // something went wrong so just create a dummy track with the given title
             final String albumKey = "" + trackTitle.hashCode();
-            return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUrl, -1);
+            return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUri, -1);
         }
     }
 
@@ -166,7 +159,8 @@ public class MetaDataLoader {
             Map<String, TrackModel> mParsedTracks = new HashMap<>();
 
             for (Map.Entry<String, String> unknownTrack : mUnknownTracks.entrySet()) {
-                mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), unknownTrack.getKey()));
+                final Uri trackUri = Uri.parse(unknownTrack.getKey());
+                mParsedTracks.put(unknownTrack.getKey(), readTrackMetaData(mContext, unknownTrack.getValue(), trackUri));
             }
 
             mMetaDataLoaderListener.metaDataLoaderFinished(mParsedTracks);
