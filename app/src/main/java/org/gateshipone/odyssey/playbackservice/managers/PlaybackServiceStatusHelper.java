@@ -203,7 +203,7 @@ public class PlaybackServiceStatusHelper {
                                 PlaybackStateCompat.ACTION_STOP + PlaybackStateCompat.ACTION_SEEK_TO).build());
             } else {
                 mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().
-                        setState(PlaybackStateCompat.STATE_PAUSED, 0, 1.0f).setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT +
+                        setState(PlaybackStateCompat.STATE_PAUSED, mPlaybackService.getTrackPosition(), 1.0f).setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT +
                         PlaybackStateCompat.ACTION_PAUSE + PlaybackStateCompat.ACTION_PLAY +
                         PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS + PlaybackStateCompat.ACTION_STOP +
                         PlaybackStateCompat.ACTION_SEEK_TO).build());
