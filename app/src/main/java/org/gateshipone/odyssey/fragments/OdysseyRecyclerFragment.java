@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.adapter.AlbumsRecyclerViewAdapter;
 import org.gateshipone.odyssey.adapter.GenericRecyclerViewAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
 import org.gateshipone.odyssey.utils.GridItemDecoration;
@@ -122,7 +121,8 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
 
     /**
      * Method to setup the recyclerview with a grid layout manager and a spacing item decoration.
-     * Make sure to call this method after the recyclerview was set.
+     * Make sure to call this method after the recyclerview was set and has
+     * a valid {@link GenericRecyclerViewAdapter} adapter.
      * <p>
      * This method will also add an observer to adjust the spancount of the grid after an orientation change.
      */
@@ -156,7 +156,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
 
                     // pass the columnWidth to the adapter to adjust the size of the griditems
                     final int columnWidth = recyclerViewWidth / newSpanCount;
-                    ((AlbumsRecyclerViewAdapter) mRecyclerView.getAdapter()).setItemSize(columnWidth);
+                    ((GenericRecyclerViewAdapter) mRecyclerView.getAdapter()).setItemSize(columnWidth);
                 }
             }
         });

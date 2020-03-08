@@ -124,6 +124,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
      *
      * @param size The new size in pixel.
      */
+    @Override
     public void setItemSize(int size) {
         mItemSize = size;
 

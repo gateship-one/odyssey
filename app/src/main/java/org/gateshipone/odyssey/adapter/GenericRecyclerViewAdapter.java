@@ -85,6 +85,8 @@ public abstract class GenericRecyclerViewAdapter<T extends GenericModel, VH exte
     @Override
     abstract public long getItemId(int position);
 
+    abstract public void setItemSize(int size);
+
     /**
      * Sets the scrollspeed in items per second.
      *

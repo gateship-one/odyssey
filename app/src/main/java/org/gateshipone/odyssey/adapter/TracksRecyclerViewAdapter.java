@@ -71,6 +71,11 @@ public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackM
     }
 
     @Override
+    public void setItemSize(int size) {
+        // method only needed if adapter supports grid view
+    }
+
+    @Override
     public void swapModel(List<TrackModel> data) {
         super.swapModel(data);
 
