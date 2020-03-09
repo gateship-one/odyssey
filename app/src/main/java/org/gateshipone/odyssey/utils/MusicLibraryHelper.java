@@ -733,7 +733,6 @@ public class MusicLibraryHelper {
                             final long artistID = cursor.getLong(albumIDColumnIndex);
 
                             // add the artist
-                            // workaround because no group command is allowed in ContentResolver query
                             if (!artistIds.contains(artistID)) {
                                 artists.add(new ArtistModel(artist, artistID));
                                 artistIds.add(artistID);
