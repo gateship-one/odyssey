@@ -877,6 +877,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             case PAUSE:
                 mLastPosition = position;
                 mPlayer.seekTo(position);
+                // TODO check if this causes any issue
                 mPlaybackServiceStatusHelper.updateStatus();
                 break;
             case RESUMED:
