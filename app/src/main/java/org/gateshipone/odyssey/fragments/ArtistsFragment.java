@@ -79,7 +79,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // Inflate the layout for this fragment
         View rootView;
 
-        SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));

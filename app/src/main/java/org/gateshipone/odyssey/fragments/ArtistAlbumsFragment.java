@@ -112,7 +112,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.recycler_list_refresh, container, false);
 
-        SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         // get swipe layout

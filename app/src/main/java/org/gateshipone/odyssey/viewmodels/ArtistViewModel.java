@@ -36,6 +36,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 public class ArtistViewModel extends GenericViewModel<ArtistModel> {
 
@@ -63,7 +64,7 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
             if (model != null) {
                 final Application application = model.getApplication();
 
-                SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(application);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
                 boolean showAlbumArtistsOnly = sharedPref.getBoolean(application.getString(R.string.pref_album_artists_only_key), application.getResources().getBoolean(R.bool.pref_album_artists_only_default));
 
                 return MusicLibraryHelper.getAllArtists(showAlbumArtistsOnly, application);

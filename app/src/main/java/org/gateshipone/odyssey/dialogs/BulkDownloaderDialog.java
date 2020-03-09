@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
 import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
@@ -94,7 +95,7 @@ public class BulkDownloaderDialog extends DialogFragment {
                     serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
 
                     // get the current settings for the bulk download
-                    SharedPreferences sharedPref = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
                     serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
                             getString(R.string.pref_artwork_provider_artist_default)));
                     serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),

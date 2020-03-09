@@ -1469,7 +1469,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     private void showHint() {
         mShowNPVHint = false;
 
-        SharedPreferences.Editor sharedPrefEditor = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+        SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
         sharedPrefEditor.putBoolean(getContext().getString(R.string.pref_show_npv_hint), false);
         sharedPrefEditor.apply();
 
