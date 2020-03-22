@@ -296,6 +296,7 @@
     <string name="contributor_translator_french">Francouzský překlad</string>
     <string name="contributor_translator_polish">Polský překlad</string>
     <string name="contributor_translator_czech">Český překlad</string>
+    <string name="contributor_translator_dutch">Dutch Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licence třetích stran</string>

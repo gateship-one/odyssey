@@ -252,6 +252,7 @@
     <string name="odyssey_contributors_title">Wnieśli wkład</string>
     <string name="contributor_translator_italian">włoskie tłumaczenie</string>
     <string name="contributor_translator_french">francuskie tłumaczenie</string>
+    <string name="contributor_translator_dutch">Dutch Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>

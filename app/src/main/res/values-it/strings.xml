@@ -263,6 +263,7 @@
     <string name="contributor_translator_italian">Traduzione Italiana</string>
     <string name="contributor_translator_french">Traduzione Francese</string>
     <string name="contributor_translator_polish">Traduzione Polacco</string>
+    <string name="contributor_translator_dutch">Dutch Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licenze di Terze Parti</string>
