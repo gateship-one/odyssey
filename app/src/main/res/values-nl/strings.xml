@@ -332,7 +332,7 @@
 
     <string name="preference_resume_step_size_dialog_title">Stap grootte: %d seconden</string>
     <string name="preference_random_intelligence_dialog_title">Willekeurige intelligentie: %d %%</string>
-    <string name="preference_random_intelligence_dumber">Willekeurig selecteert nummers volkomen willekeurig zonder te kijken nanar artiest</string>
+    <string name="preference_random_intelligence_dumber">Willekeurig selecteert nummers volkomen willekeurig zonder te kijken naar artiest</string>
     <string name="preference_random_intelligence_dumb">Willekeurig selecteert nummers volkomen willekeurig waarbij nauwelijks gekeken wordt naar artiest</string>
     <string name="preference_random_intelligence_balanced">Willekeurig selecteert een balans van nummers tussen artiest en nummer gebaseerde selectie</string>
     <string name="preference_random_intelligence_intelligent">Willekeurig selecteert nummers voornamelijk op artiest</string>
