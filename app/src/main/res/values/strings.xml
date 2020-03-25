@@ -215,13 +215,6 @@
     <string name="preference_library_click_action_play_next" translatable="false">@string/context_menu_action_enqueueasnext</string>
     <string name="preference_library_click_action_clear_and_play">Replace and play from index</string>
 
-    <string-array name="preference_library_click">
-        <item>@string/preference_library_click_action_add</item>
-        <item>@string/preference_library_click_action_play</item>
-        <item>@string/preference_library_click_action_play_next</item>
-        <item>@string/preference_library_click_action_clear_and_play</item>
-    </string-array>
-
     <string name="artwork_settings">Artwork settings</string>
 
     <string name="preference_clear_default_directory_title">Clear default directory</string>
