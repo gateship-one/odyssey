@@ -1,0 +1,320 @@
+<!--
+  ~ Copyright (C) 2020 Team Gateship-One
+  ~ (Hendrik Borghorst & Frederik Luetkes)
+  ~
+  ~ The AUTHORS.md file contains a detailed contributors list:
+  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <!-- permission request -->
+    <string name="permission_request_snackbar_explanation">Toegang to opslag is nodig om muziek bestanden te laden.</string>
+
+    <!-- nav drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- nav drawer menu -->
+    <string name="nav_menu_my_music">Mijn Muziek</string>
+    <string name="nav_menu_saved_playlists">Afspeellijsten</string>
+    <string name="nav_menu_settings">Instellingen</string>
+    <string name="nav_menu_bookmarks">Bladwijzers</string>
+    <string name="nav_menu_files">Bestanden</string>
+    <string name="nav_menu_info">Informatie</string>
+
+    <!-- activity titles -->
+    <string name="share_chooser_title">Deel nummer met</string>
+
+    <!-- fragment titles -->
+    <string name="fragment_title_my_music">Mijn Muziek</string>
+    <string name="fragment_title_saved_playlists">Afspeellijsten</string>
+    <string name="fragment_title_settings">Instellingen</string>
+    <string name="fragment_title_bookmarks">Bladwijzers</string>
+    <string name="fragment_title_recent_albums">Recent Toegevoegd</string>
+
+    <!-- saved playlists fragment -->
+    <string name="empty_saved_playlists_message">Geen afspeellijsten gevonden.</string>
+
+    <!-- bookmark fragment -->
+    <string name="fragment_bookmarks_tracks">Nummers</string>
+    <string name="empty_bookmarks_message">Geen bladwijzers gevonden.</string>
+
+    <!-- files fragment -->
+    <string name="empty_directory_message">Niet ondersteunde formaten of .nomedia bestand gevonden.</string>
+
+    <!-- my music tab titles -->
+    <string name="fragment_title_artists">Artiesten</string>
+    <string name="fragment_title_albums">Albums</string>
+    <string name="fragment_title_all_tracks">Nummers</string>
+    <string name="empty_artists_message">Geen artiesten gevonden.</string>
+    <string name="empty_tracks_message">Geen nummers gevonden.</string>
+    <string name="empty_albums_message">Geen albums gevonden.</string>
+
+    <!-- dialog titles -->
+    <string name="dialog_save_playlist">Afspeellijst opslaan</string>
+    <string name="dialog_create_bookmark">Maak Bladwijzer</string>
+    <string name="dialog_action_cancel">Annuleren</string>
+    <string name="dialog_action_save">Opslaan</string>
+    <string name="dialog_choose_storage_volume_title">Kies opslagvolume</string>
+    <string name="dialog_choose_bookmark">Kies bookmark</string>
+    <string name="dialog_choose_playlist">Kies afspeellijst</string>
+    <string name="dialog_equalizer_not_found_title">Geen equalizer beschikbaar</string>
+    <string name="dialog_equalizer_not_found_message">Uw toestel heeft geen equalizer</string>
+    <string name="dialog_sleep_timer">Slaaptijd instellen</string>
+    <string name="dialog_sleep_timer_action_start">Start</string>
+    <string name="dialog_sleep_timer_duration_minutes">Minuten</string>
+    <string name="dialog_sleep_timer_duration_seconds">Seconden</string>
+    <string name="dialog_sleep_timer_stop_after_current">Stop afspelen na het nu spelende nummer</string>
+
+    <!-- dialog default names  -->
+    <string name="default_playlist_title">Nieuwe Afspeellijst</string>
+    <string name="default_bookmark_title">Nieuwe Bladwijzer</string>
+    <string name="create_new_bookmark">Maak nieuwe bladwijzer</string>
+    <string name="create_new_playlist">Maak nieuwe afspeellijst</string>
+
+    <!-- actions -->
+    <string name="action_add_album">Voeg Album toe</string>
+    <string name="action_add_artist_albums">Voeg Albums toe</string>
+    <string name="action_switch_storage_volume">Wissel van opslagvolume</string>
+    <string name="action_add_directory">Voeg map toe aan afspeellijst</string>
+    <string name="action_search">Zoek</string>
+    <string name="action_add_playlist">Voeg afspeellijst toe</string>
+    <string name="action_set_default_directory">Stel in als standaard map</string>
+    <string name="action_start_mediascanner">Werk hier de mediadatabase bij</string>
+
+    <string name="action_reset_artwork">Opnieuw instellen artwork</string>
+
+    <string name="action_wikipedia_album">Open album</string>
+    <string name="action_wikipedia_artist">Open artiest</string>
+
+    <string name="action_show_recent_albums">Recente albums</string>
+
+    <string name="action_npv_show_playlist">Toon afspeellijst</string>
+    <string name="action_npv_show_cover">Toon albumhoes</string>
+    <string name="action_npv_more_options">Meer opties</string>
+
+    <!-- context menu titles -->
+    <string name="context_menu_action_enqueue">Voeg toe aan afspeellijst</string>
+    <string name="context_menu_action_enqueueasnext">Speel na huidig nummer</string>
+    <string name="context_menu_action_playsong">Nummer afspelen</string>
+    <string name="context_menu_action_playalbum">Album afspelen</string>
+    <string name="context_menu_action_playalbums">Albums afspelen</string>
+    <string name="context_menu_action_showartist">Toon artiest</string>
+    <string name="context_menu_action_showalbum">Toon album</string>
+    <string name="context_menu_action_removetrack">Verwijder nummer</string>
+    <string name="context_menu_action_removesection">Verwijder sectie</string>
+    <string name="context_menu_action_playplaylist">Afspeellijst afspelen</string>
+    <string name="context_menu_action_enqueueplaylist">Voeg afspeellijst toe</string>
+    <string name="context_menu_action_deleteplaylist">Verwijder afspeellijst</string>
+    <string name="context_menu_action_resumebookmark">Hervat Bladwijzer</string>
+    <string name="context_menu_action_deletebookmark">Verwijder Bladwijzer</string>
+    <string name="context_menu_action_enqueue_folder">Voeg map toe aan afspeellijst</string>
+    <string name="context_menu_action_play_folder">Map afspelen</string>
+    <string name="context_menu_action_enqueue_file">Voeg bestand toe aan afspeellijst</string>
+    <string name="context_menu_action_play_file">Bestand afspelen</string>
+
+    <!-- popup menu titles -->
+    <string name="popup_menu_action_shuffleplaylist">Shuffle afspeellijst</string>
+    <string name="popup_menu_action_clearplaylist">Legen afspeellijst</string>
+    <string name="popup_menu_action_saveplaylist">Afspeellijst opslaan</string>
+    <string name="popup_menu_action_createbookmark">Maak Bladwijzer</string>
+    <string name="popup_menu_action_startequalizer">Open equalizer</string>
+    <string name="popup_menu_action_sharetrack">Deel huidige nummer</string>
+    <string name="pop_menu_action_start_sleep_timer">Start slaaptimer</string>
+    <string name="pop_menu_action_cancel_sleep_timer">Annuleer slaaptimer</string>
+
+    <!-- preferences -->
+    <string name="preference_show_album_artists_only_title">Toon alleen albumartiesten</string>
+    <string name="preference_show_album_artists_only_summary">Toon alleen albumartiesten in plaats van alle artiesten uit de database.</string>
+
+    <string name="preference_launch_faq">F.A.Q.</string>
+    <string name="preference_launch_faq_text">Informatie over het verkrijgen van hulp voor deze applicatie</string>
+    <string name="preference_launch_about">Over</string>
+    <string name="preference_launch_about_text">Versie, licentie en bijdragers informatie</string>
+
+    <string name="preference_theme_title">Thema</string>
+    <string name="preference_theme_summary">Selecteer een ander design voor de applicatie.</string>
+    <string name="preference_theme_message">Selecteer een thema</string>
+
+    <string name="preference_dark_theme_title">Donker thema</string>
+    <string name="preference_dark_theme_message">Gebruik een donker thema</string>
+
+    <string name="preference_theme_item_indigo">Indigo</string>
+    <string name="preference_theme_item_orange">Oranje</string>
+    <string name="preference_theme_item_deep_orange">Donker Oranje</string>
+    <string name="preference_theme_item_blue">Blauw</string>
+    <string name="preference_theme_item_dark_grey">Donker Grijs</string>
+    <string name="preference_theme_item_brown">Bruin</string>
+    <string name="preference_theme_item_light_green">Licht Groen</string>
+    <string name="preference_theme_item_oled_dark">OLED Donker</string>
+    <string name="preference_theme_item_red">Rood</string>
+
+    <string name="preference_album_sort_order_title">Sortering Artiest Albums</string>
+    <string name="preference_album_sort_order_message">Sorteer op</string>
+    <string name="preference_album_sort_order_summary">Selecteer de album sortering van een artiest.</string>
+
+    <string name="preference_album_sort_order_name">Naam</string>
+    <string name="preference_album_sort_order_year">Jaar</string>
+
+    <string name="preference_default_view_title">Standaard weergave</string>
+    <string name="preference_default_view_message">Selecteer de standaard weergave</string>
+    <string name="preference_default_view_summary">Selecteer de standaard weergave van de applicatie.</string>
+
+    <string name="preference_default_view_my_music_artists">Artiesten</string>
+    <string name="preference_default_view_my_music_albums">Albums</string>
+    <string name="preference_default_view_my_music_tracks">Alle nummers</string>
+    <string name="preference_default_view_my_music_playlists">Afspeellijsten</string>
+    <string name="preference_default_view_my_music_bookmarks">Bladwijzers</string>
+    <string name="preference_default_view_my_music_files">Bestanden</string>
+
+    <string name="preference_library_view_title">Selecteer bibliotheek weergave</string>
+    <string name="preference_library_view_message">Selecteer bibliotheek weergave</string>
+    <string name="preference_library_view_summary">Selecteer het type weergave dat gebruikt moet worden voor de weergave van albums en artiesten.</string>
+
+    <string name="preference_library_view_grid">Raster</string>
+    <string name="preference_library_view_list">Lijst</string>
+
+    <string name="preference_show_artist_image_title">Artiest afbeelding tonen</string>
+    <string name="preference_show_artist_image_text">Wissel tussen de albumhoes en een afbeelding van de artiest in de weergave voor het nummer dat afgespeeld wordt</string>
+
+    <string name="preference_npv_show_playlist_title">Start met afspeellijst weergave</string>
+    <string name="preference_npv_show_playlist_text">Toon de afspeellijst indien odyssey geopend is via het widget of via een melding, terwijl het afspelen actief is</string>
+
+    <string name="preference_library_click_action_title">Klikactie nummer</string>
+    <string name="preference_library_click_action_summary">Selecteer de actie voor nummers in de bibliotheek</string>
+    <string name="preference_library_click_action_message">Selecteer de standaard actie wanneer je op een nummer in de bibliotheek klikt</string>
+
+    <string name="preference_library_click_action_clear_and_play">Vervang en speel vanaf index</string>
+
+    <string-array name="preference_library_click">
+        <item>@string/preference_library_click_action_add</item>
+        <item>@string/preference_library_click_action_play</item>
+        <item>@string/preference_library_click_action_play_next</item>
+        <item>@string/preference_library_click_action_clear_and_play</item>
+    </string-array>
+
+    <string name="artwork_settings">Artwork instellingen</string>
+
+    <string name="preference_clear_default_directory_title">Leeg standaard map</string>
+    <string name="preference_clear_default_directory_summary">Stel de standaard map opnieuw in op een beschikbare hoofdmap van het toestel.</string>
+
+    <string name="preference_category_design">Design</string>
+    <string name="preference_category_library">Bibliotheek</string>
+    <string name="preference_category_other">Overig</string>
+
+    <!-- artwork preferences -->
+    <string name="preference_artwork_album_provider_title">Aanbieder albumafbeeldingen</string>
+    <string name="preference_artwork_album_provider_summary">Selecteer een web service voor albumhoes afbeeldingen.</string>
+    <string name="preference_artwork_album_provider_message">Selecteer een web service voor albumhoes afbeeldingen.</string>
+
+    <string name="provider_off">Uit</string>
+
+    <string name="preference_artwork_artist_provider_title">Aanbieder van afbeeldingen van artiesten</string>
+    <string name="preference_artwork_artist_provider_summary">Selecteer een web service voor omslagafbeeldingen van artiesten.</string>
+    <string name="preference_artwork_artist_provider_message">Selecteer een web service voor afbeeldingen van artiesten.</string>
+
+    <string name="preference_artwork_clear_artist">Wis artiest afbeeldingen</string>
+    <string name="preference_artwork_clear_artist_summary">Verwijdert alle opgeslagen artiest afbeeldingen.</string>
+    <string name="preference_artwork_clear_album">Wis album afbeeldingen</string>
+    <string name="preference_artwork_clear_album_summary">Verwijdert alle opgeslagen album afbeeldingen.</string>
+
+    <string name="preference_artwork_clear_blocked_artist">Wis geblokkeerde artiest afbeeldingen</string>
+    <string name="preference_artwork_clear_blocked_artist_summary">Verwijdert alle vermeldingen voor artiesten die gezocht maar niet gevonden werden.</string>
+    <string name="preference_artwork_clear_blocked_album">Wis geblokkeerde album afbeeldingen</string>
+    <string name="preference_artwork_clear_blocked_album_summary">Verwijdert alle vermeldingen voor albums die gezocht maar niet gevonden werden.</string>
+
+    <string name="preference_artwork_bulk_load">Probeer alle afbeeldingen voor uw database te laden.</string>
+    <string name="preference_artwork_bulk_load_summary">Dit zal een heleboel afbeeldingen laden. Wees gewaarschuwd dat dit tijd kost. Het kan resulteren in een tijdelijke limiet van de web service.</string>
+
+    <string name="preference_artwork_wifi_only_title">Gebruik alleen WIFI voor download</string>
+    <string name="preference_artwork_wifi_only_text">Downloaden van illustraties gebeurt alleen wanneer verbonden aan WIFI.</string>
+
+    <string name="preference_artwork_hide_artwork_title">Verberg illustraties</string>
+    <string name="preference_artwork_hide_artwork_text">Schakelt zichtbaarheid van illustraties helemaal uit.</string>
+
+    <string name="preference_use_english_wikipedia_title">Gebruik engelse Wikipedia</string>
+    <string name="preference_use_english_wikipedia_text">Gebruikt de engelse Wikipedia versie om pagina\'s te bekijken</string>
+
+    <string name="preference_hide_media_on_lockscreen_title">Privé melding</string>
+    <string name="preference_hide_media_on_lockscreen_text">Verberg media informatie op het vergrendelingsscherm (Afhankelijk van uw systeem privacy instelling voor het vergrendelingsscherm)</string>
+
+    <string name="preference_artwork_use_local_images_title">Gebruik lokale albumafbeeldingen</string>
+    <string name="preference_artwork_use_local_images_text">Negeer album illustraties uit de Android Media Database en gebruik in plaats daarvan lokale afbeeldingen. Als er geen lokale afbeelding wordt gevonden, wordt die van de album web service gebruikt.</string>
+
+    <string name="preference_category_artwork_settings">Illustraties instellingen</string>
+    <string name="preference_category_artwork_database_cleanup">Database opschonen</string>
+    <string name="preference_category_artwork_other_actions">Overige acties</string>
+
+    <!-- About activity -->
+    <string name="artwork_provided_by">Illustraties aangeboden door:</string>
+    <string name="license_text">Deze applicatie is gelicenseerd onder de GPLv3 licentie.\nMaterial iconen zijn gelicenseerd onder de CC-BY licentie van Google.</string>
+    <string name="sources_text">De bron code is beschikbaar op GitHub:\nhttps://github.com/gateship-one/odyssey</string>
+    <string name="activity_about_version">Versie:</string>
+
+    <!-- PBS working message -->
+    <string name="playbackservice_working">Even geduld aub</string>
+
+    <!-- Bulk downloader service -->
+    <string name="downloader_notification_title">Bulk download actief</string>
+    <string name="downloader_notification_remaining_images">Gedownloade afbeeldingen:</string>
+    <string name="downloader_notification_initialize">Begin download</string>
+
+    <string name="bulk_download_notice_title">Afbeelding downloaden</string>
+    <string name="bulk_download_notice_text">Downloaden van een grote hoeveelheid afbeeldingen vraagt veel van de servers van de web service die u koos. Als de server een te grote server belasting detecteert kan het gebeuren dat de server de download annuleert.\n\nOverweeg alstublieft een donatie aan de illustraties services.</string>
+
+    <!-- Media scanner service -->
+    <string name="mediascanner_notification_title">Media-database bijwerken</string>
+    <string name="mediascanner_notification_text">Bestand %1$d/%2$d scannen</string>
+
+    <!-- Notification channel names -->
+    <string name="notification_channel_playback">Afspelen</string>
+    <string name="notification_channel_downloader">Downloader</string>
+    <string name="notification_channel_library_scanner">Bibliotheek scanner</string>
+
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Verborgen Inhoud</string>
+
+    <!-- Contributors activity -->
+    <string name="odyssey_contributors_title">Bijdragers</string>
+    <string name="contributor_translator_italian">Italiaanse Vertaling</string>
+    <string name="contributor_translator_french">Franse Vertaling</string>
+    <string name="contributor_translator_polish">Poolse Vertaling</string>
+    <string name="contributor_translator_czech">Tjechische Vertaling</string>
+    <string name="contributor_translator_dutch">Nederlandse Vertaling</string>
+
+    <!-- Thirdparty Licenses dialog -->
+    <string name="odyssey_thirdparty_licenses_dialog_title">Licenties van derden</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_sleep_timer_confirmation_message">Slaaptimer ingesteld</string>
+    <string name="snackbar_uri_not_supported_message">Het geselecteerde pad %1$s wordt niet ondersteund.</string>
+
+    <string name="preference_resume_step_size_title">Automatisch terugspoelen</string>
+    <string name="preference_resume_step_size_text">Aantal seconden dat terugespoeld wordt bij hervatting.</string>
+
+    <string name="preference_resume_step_size_dialog_title">Stap grootte: %d seconden</string>
+    <string name="preference_random_intelligence_dialog_title">Willekeurige intelligentie: %d %%</string>
+    <string name="preference_random_intelligence_dumber">Willekeurig selecteert nummers volkomen willekeurig zonder te kijken naar artiest</string>
+    <string name="preference_random_intelligence_dumb">Willekeurig selecteert nummers volkomen willekeurig waarbij nauwelijks gekeken wordt naar artiest</string>
+    <string name="preference_random_intelligence_balanced">Willekeurig selecteert een balans van nummers tussen artiest en nummer gebaseerde selectie</string>
+    <string name="preference_random_intelligence_intelligent">Willekeurig selecteert nummers voornamelijk op artiest</string>
+    <string name="preference_random_intelligence_more_intelligent">Willekeurig selecteert nummers alleen op de artiest</string>
+
+    <string name="preference_smart_random_title">Intelligent willekeurig</string>
+    <string name="preference_smart_random_text">Selecteer een willekeurige selectie voorkeur. Deze optie zorgt voor een beter verdeeld willekeurig afspelen (voor artiesten). Dit is bruikbaar voor afspeellijsten met veel nummers van één artiest en een paar van andere artiesten.</string>
+</resources>
