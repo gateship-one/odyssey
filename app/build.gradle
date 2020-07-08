@@ -74,7 +74,7 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
@@ -84,5 +84,5 @@ dependencies {
 
     implementation 'com.android.volley:volley:1.1.1'
 
-    implementation 'info.debatty:java-string-similarity:1.2.1'
+    implementation 'info.debatty:java-string-similarity:2.0.0'
 }
