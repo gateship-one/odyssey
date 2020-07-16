@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.fragments;
 
 import android.database.DataSetObserver;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -39,6 +40,11 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
      * The reference to the possible abstract list view
      */
     protected AbsListView mListView;
+
+    /**
+     * Holds the state of the list view to restore the scroll position.
+     */
+    private Parcelable mListViewState;
 
     /**
      * The reference to the possible empty view which should replace the list view if no data is available
@@ -81,12 +87,21 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
         mTrimmingEnabled = true;
 
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
+
+        if (mListView != null) {
+            mListViewState = mListView.onSaveInstanceState();
+        }
     }
 
     @Override
     void swapModel(List<T> model) {
         // Transfer the data to the adapter so that the views can use it
         mAdapter.swapModel(model);
+
+        if (model != null && mListView != null && mListViewState != null) {
+            mListView.onRestoreInstanceState(mListViewState);
+            mListViewState = null;
+        }
     }
 
     /**

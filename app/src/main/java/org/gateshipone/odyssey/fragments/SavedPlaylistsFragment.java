@@ -43,8 +43,6 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -54,11 +52,6 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
      * Listener to open a playlist
      */
     private OnPlaylistSelectedListener mPlaylistSelectedCallback;
-
-    /**
-     * Save the last scroll position to resume there
-     */
-    private int mLastPosition = -1;
 
     public static SavedPlaylistsFragment newInstance() {
         return new SavedPlaylistsFragment();
@@ -130,32 +123,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     }
 
     /**
-     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
-     * <p>
-     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
-     */
-    @Override
-    protected void onDataReady(List<PlaylistModel> model) {
-        super.onDataReady(model);
-
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mListView.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
-    }
-
-    /**
      * Callback when an item in the ListView was clicked.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        // Save scroll position
-        mLastPosition = position;
-
         // identify current playlist
         PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 

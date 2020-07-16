@@ -44,8 +44,6 @@ import org.gateshipone.odyssey.utils.ScrollSpeedListener;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
@@ -55,11 +53,6 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * Listener to open an album
      */
     protected OnAlbumSelectedListener mAlbumSelectedCallback;
-
-    /**
-     * Save the last scroll position to resume there
-     */
-    protected int mLastPosition = -1;
 
     /**
      * Called to create instantiate the UI of the fragment.
@@ -147,31 +140,10 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     }
 
     /**
-     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
-     * <p>
-     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
-     */
-    @Override
-    protected void onDataReady(List<AlbumModel> model) {
-        super.onDataReady(model);
-
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mListView.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
-    }
-
-    /**
      * Callback when an item in the GridView was clicked.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // save last scroll position
-        mLastPosition = position;
-
         // identify current album
         AlbumModel currentAlbum = mAdapter.getItem(position);
 

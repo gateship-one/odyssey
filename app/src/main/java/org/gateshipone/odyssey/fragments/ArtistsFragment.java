@@ -49,8 +49,6 @@ import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -61,11 +59,6 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Listener to open an artist
      */
     private OnArtistSelectedListener mArtistSelectedCallback;
-
-    /**
-     * Save the last scroll position to resume there
-     */
-    private int mLastPosition = -1;
 
     public static ArtistsFragment newInstance() {
         return new ArtistsFragment();
@@ -159,31 +152,10 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     }
 
     /**
-     * Called when the observed {@link androidx.lifecycle.LiveData} is changed.
-     * <p>
-     * This method will update the related adapter and the {@link androidx.swiperefreshlayout.widget.SwipeRefreshLayout} if present.
-     *
-     * @param model The data observed by the {@link androidx.lifecycle.LiveData}.
-     */
-    @Override
-    protected void onDataReady(List<ArtistModel> model) {
-        super.onDataReady(model);
-
-        // Reset old scroll position
-        if (mLastPosition >= 0) {
-            mListView.setSelection(mLastPosition);
-            mLastPosition = -1;
-        }
-    }
-
-    /**
      * Callback when an item in the ListView was clicked.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Save scroll position
-        mLastPosition = position;
-
         // identify current artist
         ArtistModel currentArtist = mAdapter.getItem(position);
 
