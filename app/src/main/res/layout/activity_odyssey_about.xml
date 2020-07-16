@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -22,6 +21,7 @@
   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -64,6 +64,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/standard_padding_small"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="@string/activity_about_version"
@@ -76,9 +77,39 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
-                    android:text="@string/app_name"
+                    android:textColor="?attr/odyssey_color_text_background_secondary"
+                    android:textSize="@dimen/material_font_style_size_subheading"
+                    tools:text="1.1.19" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_about_git_hash_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/standard_padding_small"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:text="@string/activity_about_git_hash"
                     android:textColor="?attr/odyssey_color_text_background_secondary"
                     android:textSize="@dimen/material_font_style_size_subheading" />
+
+                <TextView
+                    android:id="@+id/activity_about_git_hash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:textColor="?attr/odyssey_color_text_background_secondary"
+                    android:textSize="@dimen/material_font_style_size_subheading"
+                    tools:text="e662b285" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -90,10 +121,10 @@
                 android:layout_marginTop="@dimen/material_content_spacing"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/odyssey_contributors_title"
-                android:textSize="@dimen/material_font_style_size_subheading"
                 android:textColor="?attr/odyssey_color_text_background_primary"
-                app:rippleColor="?attr/odyssey_color_text_background_secondary"
-                app:backgroundTint="?attr/odyssey_color_background_selected" />
+                android:textSize="@dimen/material_font_style_size_subheading"
+                app:backgroundTint="?attr/odyssey_color_background_selected"
+                app:rippleColor="?attr/odyssey_color_text_background_secondary" />
 
             <TextView
                 android:layout_width="match_parent"

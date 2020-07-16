@@ -22,6 +22,16 @@
 
 apply plugin: 'com.android.application'
 
+def getGitCommitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+
+    return stdout.toString().trim()
+}
+
 android {
     File keystorePropertiesFile = rootProject.file("keystore.properties")
 
@@ -64,6 +74,17 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.config
             }
+
+            // for debug builds try to include the current git hash
+            def gitCommitHash
+
+            try {
+                gitCommitHash = getGitCommitHash()
+            } catch (Exception ignored) {
+                gitCommitHash = "unknown"
+            }
+
+            buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
         }
     }
     lintOptions {
