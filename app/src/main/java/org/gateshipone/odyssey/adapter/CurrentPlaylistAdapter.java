@@ -94,7 +94,7 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
             e.printStackTrace();
         }
 
-        mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
+        mArtworkManager = ArtworkManager.getInstance(context);
         mTrackCache = new LruCache<>(CACHE_SIZE);
     }
 

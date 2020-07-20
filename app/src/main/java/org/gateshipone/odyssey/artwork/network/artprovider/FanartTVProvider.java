@@ -85,7 +85,7 @@ public class FanartTVProvider extends ArtProvider {
     private static FanartTVProvider mInstance;
 
     private FanartTVProvider(final Context context) {
-        mRequestQueue = LimitingRequestQueue.getInstance(context);
+        mRequestQueue = LimitingRequestQueue.getInstance(context.getApplicationContext());
     }
 
     public static synchronized FanartTVProvider getInstance(final Context context) {
@@ -96,16 +96,15 @@ public class FanartTVProvider extends ArtProvider {
     }
 
     @Override
-    public void fetchImage(final ArtworkRequestModel model, final Context context,
-                           final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
+    public void fetchImage(final ArtworkRequestModel model, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         switch (model.getType()) {
             case ALBUM:
                 // not used for this provider
                 break;
             case ARTIST:
                 getArtists(model.getLuceneEscapedEncodedArtistName(),
-                        response -> parseMusicBrainzArtistsJSON(model, context, response, listener, errorListener),
-                        error -> errorListener.fetchVolleyError(model, context, error));
+                        response -> parseMusicBrainzArtistsJSON(model, response, listener, errorListener),
+                        error -> errorListener.fetchVolleyError(model, error));
                 break;
         }
     }
@@ -115,12 +114,11 @@ public class FanartTVProvider extends ArtProvider {
      * The response will be used to get an image for the requested artist (via getArtistImageURL and getArtistImage).
      *
      * @param model         The model representing the artist for which an image was requested.
-     * @param context       The current application context.
      * @param response      The artist info response as a {@link JSONObject}.
      * @param listener      Callback if an image could be loaded successfully.
      * @param errorListener Callback if an error occured.
      */
-    private void parseMusicBrainzArtistsJSON(final ArtworkRequestModel model, final Context context, final JSONObject response,
+    private void parseMusicBrainzArtistsJSON(final ArtworkRequestModel model, final JSONObject response,
                                              final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         JSONArray artists;
         try {
@@ -144,25 +142,25 @@ public class FanartTVProvider extends ArtProvider {
 
                             JSONObject firstThumbImage = thumbImages.getJSONObject(0);
                             model.setMBID(artistMBID);
-                            getArtistImage(firstThumbImage.getString("url"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
+                            getArtistImage(firstThumbImage.getString("url"), model, listener, error -> errorListener.fetchVolleyError(model, error));
 
                         } catch (JSONException e) {
-                            errorListener.fetchJSONException(model, context, e);
+                            errorListener.fetchJSONException(model, e);
                         }
-                    }, error -> errorListener.fetchVolleyError(model, context, error));
+                    }, error -> errorListener.fetchVolleyError(model, error));
                 } else {
                     if (BuildConfig.DEBUG) {
                         Log.v(TAG, "Response ( " + artist + " )" + " doesn't match requested model: " +
                                 "( " + model.getLoggingString() + " )");
                     }
 
-                    errorListener.fetchVolleyError(model, context, null);
+                    errorListener.fetchVolleyError(model, null);
                 }
             } else {
-                errorListener.fetchError(model, context);
+                errorListener.fetchError(model);
             }
         } catch (JSONException e) {
-            errorListener.fetchJSONException(model, context, e);
+            errorListener.fetchJSONException(model, e);
         }
     }
 

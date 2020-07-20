@@ -76,7 +76,7 @@ public class LastFMProvider extends ArtProvider {
     private static LastFMProvider mInstance;
 
     private LastFMProvider(final Context context) {
-        mRequestQueue = LimitingRequestQueue.getInstance(context);
+        mRequestQueue = LimitingRequestQueue.getInstance(context.getApplicationContext());
     }
 
     public static synchronized LastFMProvider getInstance(final Context context) {
@@ -87,13 +87,12 @@ public class LastFMProvider extends ArtProvider {
     }
 
     @Override
-    public void fetchImage(final ArtworkRequestModel model, final Context context,
-                           final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
+    public void fetchImage(final ArtworkRequestModel model, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         switch (model.getType()) {
             case ALBUM:
                 getAlbumImageURL(model,
-                        response -> parseJSONResponse(model, context, response, listener, errorListener),
-                        error -> errorListener.fetchVolleyError(model, context, error));
+                        response -> parseJSONResponse(model, response, listener, errorListener),
+                        error -> errorListener.fetchVolleyError(model, error));
                 break;
             case ARTIST:
                 // not used any more for this provider (api changed no valid artist images any more, only stars)
@@ -108,8 +107,7 @@ public class LastFMProvider extends ArtProvider {
      * @param listener      Callback listener to handle the response
      * @param errorListener Callback to handle a fetch error
      */
-    private void getAlbumImageURL(final ArtworkRequestModel model,
-                                  final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
+    private void getAlbumImageURL(final ArtworkRequestModel model, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
         String albumName = model.getEncodedAlbumName();
         String artistName = model.getEncodedArtistName();
 
@@ -133,12 +131,11 @@ public class LastFMProvider extends ArtProvider {
      * The response will be used to get an image for the requested album.
      *
      * @param model         The model representing the album for which an image was requested.
-     * @param context       The current application context.
      * @param response      The album info response as a {@link JSONObject}.
      * @param listener      Callback if an image could be loaded successfully.
      * @param errorListener Callback if an error occured.
      */
-    private void parseJSONResponse(final ArtworkRequestModel model, final Context context, final JSONObject response,
+    private void parseJSONResponse(final ArtworkRequestModel model, final JSONObject response,
                                    final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         try {
             final JSONObject baseObj = response.getJSONObject("album");
@@ -161,9 +158,9 @@ public class LastFMProvider extends ArtProvider {
                     if (image.getString("size").equals(LAST_FM_REQUESTED_IMAGE_SIZE)) {
                         String url = image.getString("#text");
                         if (!url.isEmpty()) {
-                            getByteImage(image.getString("#text"), model, listener, error -> errorListener.fetchVolleyError(model, context, error));
+                            getByteImage(image.getString("#text"), model, listener, error -> errorListener.fetchVolleyError(model, error));
                         } else {
-                            errorListener.fetchVolleyError(model, context, null);
+                            errorListener.fetchVolleyError(model, null);
                         }
                     }
                 }
@@ -173,10 +170,10 @@ public class LastFMProvider extends ArtProvider {
                             "( " + model.getLoggingString() + " )");
                 }
 
-                errorListener.fetchVolleyError(model, context, null);
+                errorListener.fetchVolleyError(model, null);
             }
         } catch (JSONException e) {
-            errorListener.fetchJSONException(model, context, e);
+            errorListener.fetchJSONException(model, e);
         }
     }
 

@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.artwork.network;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,7 +36,7 @@ import java.io.ByteArrayOutputStream;
 public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkRequestModel> {
 
     public interface ImageSavedCallback {
-        void onImageSaved(ArtworkRequestModel artworkRequestModel, Context context);
+        void onImageSaved(ArtworkRequestModel artworkRequestModel);
     }
 
     /**
@@ -55,13 +54,12 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
      */
     private static final int MAXIMUM_IMAGE_SIZE = 1024 * 1024;
 
-    @SuppressLint("StaticFieldLeak")
-    private final Context mApplicationContext;
+    private final ArtworkDatabaseManager mArtworkDatabaseManager;
 
     private final ImageSavedCallback mImageSavedCallback;
 
-    public InsertImageTask(final Context applicationContext, final ImageSavedCallback imageSavedCallback) {
-        mApplicationContext = applicationContext;
+    public InsertImageTask(final Context context, final ImageSavedCallback imageSavedCallback) {
+        mArtworkDatabaseManager = ArtworkDatabaseManager.getInstance(context);
         mImageSavedCallback = imageSavedCallback;
     }
 
@@ -101,18 +99,16 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
 
     @Override
     protected void onPostExecute(ArtworkRequestModel artworkRequestModel) {
-        mImageSavedCallback.onImageSaved(artworkRequestModel, mApplicationContext);
+        mImageSavedCallback.onImageSaved(artworkRequestModel);
     }
 
     private void insertImage(final ArtworkRequestModel model, final byte[] image, final String localArtworkPath) {
-        final ArtworkDatabaseManager artworkDatabase = ArtworkDatabaseManager.getInstance(mApplicationContext);
-
         switch (model.getType()) {
             case ALBUM:
-                artworkDatabase.insertAlbumImage(mApplicationContext, (AlbumModel) model.getGenericModel(), image, localArtworkPath);
+                mArtworkDatabaseManager.insertAlbumImage((AlbumModel) model.getGenericModel(), image, localArtworkPath);
                 break;
             case ARTIST:
-                artworkDatabase.insertArtistImage(mApplicationContext, (ArtistModel) model.getGenericModel(), image);
+                mArtworkDatabaseManager.insertArtistImage((ArtistModel) model.getGenericModel(), image);
                 break;
         }
     }

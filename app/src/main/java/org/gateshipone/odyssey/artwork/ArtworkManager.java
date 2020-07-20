@@ -142,9 +142,13 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     private final ArrayList<ArtworkManager.onNewAlbumImageListener> mAlbumListeners;
 
+    private final Context mApplicationContext;
+
     private ArtworkManager(Context context) {
 
-        mDBManager = ArtworkDatabaseManager.getInstance(context);
+        mApplicationContext = context.getApplicationContext();
+
+        mDBManager = ArtworkDatabaseManager.getInstance(mApplicationContext);
 
         mArtistListeners = new ArrayList<>();
         mAlbumListeners = new ArrayList<>();
@@ -152,13 +156,13 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         ConnectionStateReceiver receiver = new ConnectionStateReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        context.registerReceiver(receiver, filter);
+        mApplicationContext.registerReceiver(receiver, filter);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        mArtistProvider = sharedPref.getString(context.getString(R.string.pref_artist_provider_key), context.getString(R.string.pref_artwork_provider_artist_default));
-        mAlbumProvider = sharedPref.getString(context.getString(R.string.pref_album_provider_key), context.getString(R.string.pref_artwork_provider_album_default));
-        mWifiOnly = sharedPref.getBoolean(context.getString(R.string.pref_download_wifi_only_key), context.getResources().getBoolean(R.bool.pref_download_wifi_default));
-        mUseLocalImages = sharedPref.getBoolean(context.getString(R.string.pref_artwork_use_local_images_key), context.getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mApplicationContext);
+        mArtistProvider = sharedPref.getString(mApplicationContext.getString(R.string.pref_artist_provider_key), mApplicationContext.getString(R.string.pref_artwork_provider_artist_default));
+        mAlbumProvider = sharedPref.getString(mApplicationContext.getString(R.string.pref_album_provider_key), mApplicationContext.getString(R.string.pref_artwork_provider_album_default));
+        mWifiOnly = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_download_wifi_only_key), mApplicationContext.getResources().getBoolean(R.bool.pref_download_wifi_default));
+        mUseLocalImages = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_artwork_use_local_images_key), mApplicationContext.getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -192,43 +196,42 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      *
      * @param album {@link AlbumModel} to reload the image for
      */
-    public void resetImage(final AlbumModel album, final Context context) {
+    public void resetImage(final AlbumModel album) {
         if (null == album) {
             return;
         }
 
         // Clear the old image
-        mDBManager.removeAlbumImage(context, album);
+        mDBManager.removeAlbumImage(album);
 
         // Clear the old image from the cache
         BitmapCache.getInstance().removeAlbumBitmap(album);
 
         // Reload the image from the internet
-        fetchImage(album, context);
+        fetchImage(album);
     }
-
 
     /**
      * Removes the image for the artist and tries to reload it from the internet
      *
      * @param artist {@link ArtistModel} to reload the image for
      */
-    public void resetImage(final ArtistModel artist, final Context context) {
+    public void resetImage(final ArtistModel artist) {
         if (null == artist) {
             return;
         }
 
         // Clear the old image
-        mDBManager.removeArtistImage(context, artist);
+        mDBManager.removeArtistImage(artist);
 
         // Clear the old image from the cache
         BitmapCache.getInstance().removeArtistImage(artist);
 
         // Reload the image from the internet
-        fetchImage(artist, context);
+        fetchImage(artist);
     }
 
-    public Bitmap getImage(final ArtistModel artist, int width, int height, boolean skipCache, final Context context) throws ImageNotFoundException {
+    public Bitmap getImage(final ArtistModel artist, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == artist) {
             return null;
         }
@@ -241,7 +244,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             }
         }
 
-        final String image = mDBManager.getArtistImage(context, artist);
+        final String image = mDBManager.getArtistImage(artist);
 
         // Checks if the database has an image for the requested artist
         if (null != image) {
@@ -253,7 +256,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         return null;
     }
 
-    public Bitmap getImage(final AlbumModel album, int width, int height, boolean skipCache, final Context context) throws ImageNotFoundException {
+    public Bitmap getImage(final AlbumModel album, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == album) {
             return null;
         }
@@ -275,7 +278,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             return bm;
         }
 
-        final String image = mDBManager.getAlbumImage(context, album);
+        final String image = mDBManager.getAlbumImage(album);
 
         // Checks if the database has an image for the requested album
         if (null != image) {
@@ -287,40 +290,39 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         return null;
     }
 
-    public Bitmap getImage(final TrackModel track, int width, int height, boolean skipCache, final Context context) throws ImageNotFoundException {
+    public Bitmap getImage(final TrackModel track, int width, int height, boolean skipCache) throws ImageNotFoundException {
         if (null == track) {
             return null;
         }
 
         // get album information for the current track
-        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), context);
+        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), mApplicationContext);
         if (album == null) {
             return null;
         }
 
-        return getImage(album, width, height, skipCache, context);
+        return getImage(album, width, height, skipCache);
     }
 
     /**
      * Starts an asynchronous fetch for the image of the given artist.
      *
      * @param artistModel        Artist to fetch an image for.
-     * @param context            The application context.
      * @param imageSavedCallback Callback if an image was saved.
      * @param errorCallback      Callback if an error occured.
      */
-    void fetchImage(final ArtistModel artistModel, final Context context,
+    void fetchImage(final ArtistModel artistModel,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
-        if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
+        if (!NetworkUtils.isDownloadAllowed(mApplicationContext, mWifiOnly)) {
             return;
         }
 
         final ArtworkRequestModel requestModel = new ArtworkRequestModel(artistModel);
 
-        if (mArtistProvider.equals(context.getString(R.string.pref_artwork_provider_fanarttv_key))) {
-            FanartTVProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+        if (mArtistProvider.equals(mApplicationContext.getString(R.string.pref_artwork_provider_fanarttv_key))) {
+            FanartTVProvider.getInstance(mApplicationContext).fetchImage(requestModel,
+                    response -> new InsertImageTask(mApplicationContext, imageSavedCallback).execute(response),
                     errorCallback);
         }
     }
@@ -330,28 +332,26 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * This method will use internal callbacks.
      *
      * @param artistModel Artist to fetch an image for.
-     * @param context     The application context.
      */
-    public void fetchImage(final ArtistModel artistModel, final Context context) {
-        fetchImage(artistModel, context, this, this);
+    public void fetchImage(final ArtistModel artistModel) {
+        fetchImage(artistModel, this, this);
     }
 
     /**
      * Starts an asynchronous fetch for the image of the given album.
      *
      * @param albumModel         Album to fetch an image for.
-     * @param context            The application context.
      * @param imageSavedCallback Callback if an image was saved.
      * @param errorCallback      Callback if an error occured.
      */
-    void fetchImage(final AlbumModel albumModel, final Context context,
+    void fetchImage(final AlbumModel albumModel,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
         if (mUseLocalImages) {
-            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumKey(), context);
+            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumKey(), mApplicationContext);
 
             for (final String location : storageLocations) {
-                final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(context, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
+                final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(mApplicationContext, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
 
                 if (!artworkFiles.isEmpty()) {
                     // use the first valid cover file
@@ -365,26 +365,26 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                     response.url = null;
                     response.localArtworkPath = coverFile.getAbsolutePath();
 
-                    new InsertImageTask(context, imageSavedCallback).execute(response);
+                    new InsertImageTask(mApplicationContext, imageSavedCallback).execute(response);
 
                     return;
                 }
             }
         }
 
-        if (!NetworkUtils.isDownloadAllowed(context, mWifiOnly)) {
+        if (!NetworkUtils.isDownloadAllowed(mApplicationContext, mWifiOnly)) {
             return;
         }
 
         ArtworkRequestModel requestModel = new ArtworkRequestModel(albumModel);
 
-        if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
-            MusicBrainzProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+        if (mAlbumProvider.equals(mApplicationContext.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
+            MusicBrainzProvider.getInstance(mApplicationContext).fetchImage(requestModel,
+                    response -> new InsertImageTask(mApplicationContext, imageSavedCallback).execute(response),
                     errorCallback);
-        } else if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
-            LastFMProvider.getInstance(context).fetchImage(requestModel, context,
-                    response -> new InsertImageTask(context, imageSavedCallback).execute(response),
+        } else if (mAlbumProvider.equals(mApplicationContext.getString(R.string.pref_artwork_provider_lastfm_key))) {
+            LastFMProvider.getInstance(mApplicationContext).fetchImage(requestModel,
+                    response -> new InsertImageTask(mApplicationContext, imageSavedCallback).execute(response),
                     errorCallback);
         }
     }
@@ -394,10 +394,9 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      * This method will use internal callbacks.
      *
      * @param albumModel Album to fetch an image for.
-     * @param context    The application context.
      */
-    public void fetchImage(final AlbumModel albumModel, final Context context) {
-        fetchImage(albumModel, context, this, this);
+    public void fetchImage(final AlbumModel albumModel) {
+        fetchImage(albumModel, this, this);
     }
 
     /**
@@ -405,13 +404,13 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      *
      * @param trackModel Track to be used for image fetching
      */
-    public void fetchImage(final TrackModel trackModel, final Context context) {
+    public void fetchImage(final TrackModel trackModel) {
         // Create a dummy album
         AlbumModel album = new AlbumModel(trackModel.getTrackAlbumName(), null,
                 trackModel.getTrackArtistName(), trackModel.getTrackAlbumKey(),
-                MusicLibraryHelper.getAlbumIDFromKey(trackModel.getTrackAlbumKey(), context));
+                MusicLibraryHelper.getAlbumIDFromKey(trackModel.getTrackAlbumKey(), mApplicationContext));
 
-        fetchImage(album, context);
+        fetchImage(album);
     }
 
     /**
@@ -467,8 +466,8 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     }
 
     @Override
-    public void onImageSaved(final ArtworkRequestModel artworkRequestModel, final Context applicationContext) {
-        broadcastNewArtwokInfo(artworkRequestModel, applicationContext);
+    public void onImageSaved(final ArtworkRequestModel artworkRequestModel) {
+        broadcastNewArtwokInfo(artworkRequestModel);
 
         switch (artworkRequestModel.getType()) {
             case ALBUM:
@@ -489,7 +488,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     }
 
     @Override
-    public void fetchJSONException(ArtworkRequestModel model, Context context, JSONException exception) {
+    public void fetchJSONException(ArtworkRequestModel model, JSONException exception) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
         }
@@ -498,11 +497,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(mApplicationContext, this).execute(imageResponse);
     }
 
     @Override
-    public void fetchVolleyError(ArtworkRequestModel model, Context context, VolleyError error) {
+    public void fetchVolleyError(ArtworkRequestModel model, VolleyError error) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
         }
@@ -510,7 +509,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         if (error != null) {
             NetworkResponse networkResponse = error.networkResponse;
             if (networkResponse != null && networkResponse.statusCode == 503) {
-                cancelAllRequests(context);
+                cancelAllRequests();
                 return;
             }
         }
@@ -519,10 +518,10 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(mApplicationContext, this).execute(imageResponse);
     }
 
-    public void fetchError(ArtworkRequestModel model, Context context) {
+    public void fetchError(ArtworkRequestModel model) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "Error fetching: " + model.getLoggingString());
         }
@@ -531,25 +530,24 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(mApplicationContext, this).execute(imageResponse);
     }
 
     /**
      * This will cancel the last used album/artist image providers. To make this useful on connection change
      * it is important to cancel all requests when changing the provider in settings.
      */
-    public void cancelAllRequests(Context context) {
-        LimitingRequestQueue.getInstance(context).cancelAll(request -> true);
+    public void cancelAllRequests() {
+        LimitingRequestQueue.getInstance(mApplicationContext).cancelAll(request -> true);
     }
 
     /**
      * Used to broadcast information about new available artwork to {@link BroadcastReceiver} like
      * the {@link org.gateshipone.odyssey.widget.OdysseyWidgetProvider} to reload its artwork.
      *
-     * @param model   The model that an image was inserted for.
-     * @param context Context used for broadcasting
+     * @param model The model that an image was inserted for.
      */
-    private void broadcastNewArtwokInfo(ArtworkRequestModel model, Context context) {
+    private void broadcastNewArtwokInfo(ArtworkRequestModel model) {
         Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
 
         switch (model.getType()) {
@@ -566,7 +564,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                 break;
         }
 
-        context.sendBroadcast(newImageIntent);
+        mApplicationContext.sendBroadcast(newImageIntent);
     }
 
     private class ConnectionStateReceiver extends BroadcastReceiver {
@@ -579,7 +577,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                 }
 
                 // Cancel all downloads
-                cancelAllRequests(context);
+                cancelAllRequests();
             }
         }
     }

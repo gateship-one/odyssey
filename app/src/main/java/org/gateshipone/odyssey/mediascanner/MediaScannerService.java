@@ -45,6 +45,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -163,7 +164,7 @@ public class MediaScannerService extends Service {
 
             // start scanning
             if (null != directory) {
-                scanDirectory(this, directory);
+                scanDirectory(directory);
             }
         }
 
@@ -180,22 +181,22 @@ public class MediaScannerService extends Service {
         }
     }
 
-    private void scanDirectory(final Context context, FileModel basePath) {
-        new ListCreationTask(context).execute(basePath);
+    private void scanDirectory(FileModel basePath) {
+        new ListCreationTask(this).execute(basePath);
     }
 
-    private void scanFileList(final Context context, List<FileModel> files) {
+    private void scanFileList(List<FileModel> files) {
+        mFilesToScan = files.size();
+
         mRemainingFiles = files;
 
-        scanNextBunch(context);
+        scanNextBunch();
     }
 
     /**
      * Proceeds to the next bunch of files to scan if any available.
-     *
-     * @param context Context used for scanning.
      */
-    private void scanNextBunch(final Context context) {
+    private void scanNextBunch() {
         if (mRemainingFiles.isEmpty() || mAbort) {
             // No files left to scan, stop service (delayed to allow the ServiceConnection to the MediaScanner to close itself)
             Timer delayedStopTimer = new Timer();
@@ -212,7 +213,7 @@ public class MediaScannerService extends Service {
             listIterator.remove();
             i++;
         }
-        MediaScannerConnection.scanFile(context, bunch, null, new MediaScanCompletedCallback(bunch.length, context));
+        MediaScannerConnection.scanFile(getApplicationContext(), bunch, null, new MediaScanCompletedCallback(bunch.length));
     }
 
     private void finishService() {
@@ -249,14 +250,11 @@ public class MediaScannerService extends Service {
 
     private class MediaScanCompletedCallback implements MediaScannerConnection.OnScanCompletedListener {
 
-        private final Context mContext;
-
         private final int mNumberOfFiles;
 
         private int mBunchScannedFiles;
 
-        public MediaScanCompletedCallback(final int numberOfFiles, final Context context) {
-            mContext = context;
+        public MediaScanCompletedCallback(final int numberOfFiles) {
             mNumberOfFiles = numberOfFiles;
             mBunchScannedFiles = 0;
         }
@@ -278,7 +276,7 @@ public class MediaScannerService extends Service {
                     Log.v(TAG, "Bunch complete, proceed to next one");
                 }
 
-                scanNextBunch(mContext);
+                scanNextBunch();
             }
         }
     }
@@ -305,23 +303,30 @@ public class MediaScannerService extends Service {
         }
     }
 
-    private class ListCreationTask extends AsyncTask<FileModel, Integer, List<FileModel>> {
+    private static class ListCreationTask extends AsyncTask<FileModel, Integer, List<FileModel>> {
 
-        Context mContext;
+        private final WeakReference<MediaScannerService> mMediaScannerService;
 
-        public ListCreationTask(Context context) {
-            mContext = context;
+        public ListCreationTask(final MediaScannerService mediaScannerService) {
+            mMediaScannerService = new WeakReference<>(mediaScannerService);
         }
 
         @Override
         protected List<FileModel> doInBackground(FileModel... params) {
-            List<FileModel> files = FileExplorerHelper.getInstance().getMissingDBFiles(mContext, params[0]);
-            if (BuildConfig.DEBUG) {
-                Log.v(TAG, "Got missing tracks: " + files.size());
+            final MediaScannerService mediaScannerService = mMediaScannerService.get();
+
+            final List<FileModel> files = new ArrayList<>();
+
+            if (mediaScannerService != null) {
+
+                files.addAll(FileExplorerHelper.getInstance().getMissingDBFiles(mediaScannerService.getApplicationContext(), params[0]));
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Got missing tracks: " + files.size());
+                }
+
+                mediaScannerService.scanFileList(files);
             }
 
-            mFilesToScan = files.size();
-            scanFileList(mContext, files);
             return files;
         }
     }

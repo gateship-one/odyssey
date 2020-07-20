@@ -64,7 +64,7 @@ public class MusicBrainzProvider extends ArtProvider {
     private static MusicBrainzProvider mInstance;
 
     private MusicBrainzProvider(final Context context) {
-        mRequestQueue = LimitingRequestQueue.getInstance(context);
+        mRequestQueue = LimitingRequestQueue.getInstance(context.getApplicationContext());
     }
 
     public static synchronized MusicBrainzProvider getInstance(final Context context) {
@@ -75,13 +75,12 @@ public class MusicBrainzProvider extends ArtProvider {
     }
 
     @Override
-    public void fetchImage(final ArtworkRequestModel model, final Context context,
-                           final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
+    public void fetchImage(final ArtworkRequestModel model, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         switch (model.getType()) {
             case ALBUM:
                 getAlbumMBID(model,
-                        response -> parseMusicBrainzReleaseJSON(model, 0, response, context, listener, errorListener),
-                        error -> errorListener.fetchVolleyError(model, context, error));
+                        response -> parseMusicBrainzReleaseJSON(model, 0, response, listener, errorListener),
+                        error -> errorListener.fetchVolleyError(model, error));
                 break;
             case ARTIST:
                 // not used for this provider
@@ -122,14 +121,13 @@ public class MusicBrainzProvider extends ArtProvider {
      * @param model         Album to check for an image
      * @param releaseIndex  Index of the requested release to check for an image
      * @param response      Response to check use to search for an image
-     * @param context       Context used for lookup
      * @param listener      Callback to handle the response
      * @param errorListener Callback to handle errors
      */
-    private void parseMusicBrainzReleaseJSON(final ArtworkRequestModel model, final int releaseIndex, final JSONObject response, final Context context,
+    private void parseMusicBrainzReleaseJSON(final ArtworkRequestModel model, final int releaseIndex, final JSONObject response,
                                              final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         if (releaseIndex >= MUSICBRAINZ_LIMIT_RESULT_COUNT) {
-            errorListener.fetchVolleyError(model, context, null);
+            errorListener.fetchVolleyError(model, null);
             return;
         }
 
@@ -156,9 +154,9 @@ public class MusicBrainzProvider extends ArtProvider {
                         }
 
                         if (releaseIndex + 1 < releases.length()) {
-                            parseMusicBrainzReleaseJSON(model, releaseIndex + 1, response, context, listener, errorListener);
+                            parseMusicBrainzReleaseJSON(model, releaseIndex + 1, response, listener, errorListener);
                         } else {
-                            errorListener.fetchVolleyError(model, context, error);
+                            errorListener.fetchVolleyError(model, error);
                         }
                     });
                 } else {
@@ -168,16 +166,16 @@ public class MusicBrainzProvider extends ArtProvider {
                     }
 
                     if (releaseIndex + 1 < releases.length()) {
-                        parseMusicBrainzReleaseJSON(model, releaseIndex + 1, response, context, listener, errorListener);
+                        parseMusicBrainzReleaseJSON(model, releaseIndex + 1, response, listener, errorListener);
                     } else {
-                        errorListener.fetchVolleyError(model, context, null);
+                        errorListener.fetchVolleyError(model, null);
                     }
                 }
             } else {
-                errorListener.fetchVolleyError(model, context, null);
+                errorListener.fetchVolleyError(model, null);
             }
         } catch (JSONException e) {
-            errorListener.fetchJSONException(model, context, e);
+            errorListener.fetchJSONException(model, e);
         }
     }
 

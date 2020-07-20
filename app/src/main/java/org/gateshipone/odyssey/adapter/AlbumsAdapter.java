@@ -58,7 +58,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
             mListItemHeight = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
         }
 
-        mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
+        mArtworkManager = ArtworkManager.getInstance(context);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mHideArtwork = sharedPreferences.getBoolean(context.getString(R.string.pref_hide_artwork_key), context.getResources().getBoolean(R.bool.pref_hide_artwork_default));

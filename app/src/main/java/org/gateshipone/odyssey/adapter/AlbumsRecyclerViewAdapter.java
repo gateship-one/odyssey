@@ -55,7 +55,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
     public AlbumsRecyclerViewAdapter(final Context context, final boolean useList) {
         super();
 
-        mArtworkManager = ArtworkManager.getInstance(context.getApplicationContext());
+        mArtworkManager = ArtworkManager.getInstance(context);
 
         mUseList = useList;
         if (mUseList) {

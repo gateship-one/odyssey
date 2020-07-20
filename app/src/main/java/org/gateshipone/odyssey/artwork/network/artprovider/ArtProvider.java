@@ -22,8 +22,6 @@
 
 package org.gateshipone.odyssey.artwork.network.artprovider;
 
-import android.content.Context;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
@@ -35,14 +33,14 @@ import org.json.JSONException;
 public abstract class ArtProvider {
 
     public interface ArtFetchError {
-        void fetchJSONException(final ArtworkRequestModel model, final Context context, final JSONException exception);
+        void fetchJSONException(final ArtworkRequestModel model, final JSONException exception);
 
-        void fetchVolleyError(final ArtworkRequestModel model, final Context context, final VolleyError error);
+        void fetchVolleyError(final ArtworkRequestModel model, final VolleyError error);
 
-        void fetchError(final ArtworkRequestModel model, final Context context);
+        void fetchError(final ArtworkRequestModel model);
     }
 
-    public abstract void fetchImage(final ArtworkRequestModel model, final Context context, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener);
+    public abstract void fetchImage(final ArtworkRequestModel model, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener);
 
     boolean compareAlbumResponse(final String expectedAlbum, final String expectedArtist, final String retrievedAlbum, final String retrievedArtist) {
         return StringCompareUtils.compareStrings(expectedAlbum, retrievedAlbum) && StringCompareUtils.compareStrings(expectedArtist, retrievedArtist);

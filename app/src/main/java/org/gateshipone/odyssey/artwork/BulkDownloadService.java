@@ -182,14 +182,14 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     }
 
     @Override
-    public void onImageSaved(final ArtworkRequestModel artworkRequestModel, final Context applicationContext) {
-        mArtworkManager.onImageSaved(artworkRequestModel, applicationContext);
+    public void onImageSaved(final ArtworkRequestModel artworkRequestModel) {
+        mArtworkManager.onImageSaved(artworkRequestModel);
 
         performNextRequest();
     }
 
     @Override
-    public void fetchJSONException(final ArtworkRequestModel model, final Context context, final JSONException exception) {
+    public void fetchJSONException(final ArtworkRequestModel model, final JSONException exception) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
         }
@@ -198,11 +198,11 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(getApplicationContext(), this).execute(imageResponse);
     }
 
     @Override
-    public void fetchVolleyError(final ArtworkRequestModel model, final Context context, final VolleyError error) {
+    public void fetchVolleyError(final ArtworkRequestModel model, final VolleyError error) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "VolleyError for request: " + model.getLoggingString());
         }
@@ -219,10 +219,11 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(getApplicationContext(), this).execute(imageResponse);
     }
 
-    public void fetchError(final ArtworkRequestModel model, final Context context) {
+    @Override
+    public void fetchError(final ArtworkRequestModel model) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "JSONException fetching: " + model.getLoggingString());
         }
@@ -231,7 +232,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         imageResponse.model = model;
         imageResponse.image = null;
         imageResponse.url = null;
-        new InsertImageTask(context, this).execute(imageResponse);
+        new InsertImageTask(getApplicationContext(), this).execute(imageResponse);
     }
 
 
@@ -335,7 +336,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
                 AlbumModel album = (AlbumModel) requestModel.getGenericModel();
                 if (mUseLocalImages || album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
                     try {
-                        mDatabaseManager.getAlbumImage(getApplicationContext(), album);
+                        mDatabaseManager.getAlbumImage(album);
                     } catch (ImageNotFoundException e) {
                         return true;
                     }
@@ -344,7 +345,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             break;
             case ARTIST: {
                 try {
-                    mDatabaseManager.getArtistImage(getApplicationContext(), (ArtistModel) requestModel.getGenericModel());
+                    mDatabaseManager.getArtistImage((ArtistModel) requestModel.getGenericModel());
                 } catch (ImageNotFoundException e) {
                     return true;
                 }
@@ -357,10 +358,10 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     private void createRequest(final ArtworkRequestModel requestModel) {
         switch (requestModel.getType()) {
             case ALBUM:
-                mArtworkManager.fetchImage((AlbumModel) requestModel.getGenericModel(), getApplicationContext(), this, this);
+                mArtworkManager.fetchImage((AlbumModel) requestModel.getGenericModel(), this, this);
                 break;
             case ARTIST:
-                mArtworkManager.fetchImage((ArtistModel) requestModel.getGenericModel(), getApplicationContext(), this, this);
+                mArtworkManager.fetchImage((ArtistModel) requestModel.getGenericModel(), this, this);
                 break;
         }
 
@@ -369,7 +370,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     private void finishedLoading() {
         mArtworkRequestQueue.clear();
 
-        ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests(getApplicationContext());
+        ArtworkManager.getInstance(getApplicationContext()).cancelAllRequests();
 
         mNotificationManager.cancel(NOTIFICATION_ID);
         stopForeground(true);

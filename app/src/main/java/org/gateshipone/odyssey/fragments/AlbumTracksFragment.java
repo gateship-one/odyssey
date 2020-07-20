@@ -325,7 +325,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         switch (item.getItemId()) {
             case R.id.action_reset_artwork:
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-                ArtworkManager.getInstance(getContext()).resetImage(mAlbum, getContext());
+                ArtworkManager.getInstance(getContext()).resetImage(mAlbum);
                 return true;
             case R.id.action_add_album:
                 enqueueAlbum();

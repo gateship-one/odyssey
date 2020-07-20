@@ -54,8 +54,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     private static final String DIRECTORY_ARTIST_IMAGES = "artistArt";
 
+    private final Context mApplicationContext;
+
     private ArtworkDatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        mApplicationContext = context.getApplicationContext();
     }
 
     public static synchronized ArtworkDatabaseManager getInstance(Context context) {
@@ -97,7 +101,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not in the database and it was not searched for before.
      */
-    public synchronized String getAlbumImage(final Context context, final AlbumModel album) throws ImageNotFoundException {
+    public synchronized String getAlbumImage(final AlbumModel album) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final long albumId = album.getAlbumID();
@@ -139,7 +143,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             if (hasFullImagePath) {
                 return artworkFilename;
             } else {
-                return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
+                return FileUtils.getFullArtworkFilePath(mApplicationContext, artworkFilename, DIRECTORY_ALBUM_IMAGES);
             }
         }
 
@@ -156,7 +160,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @return The byte[] containing the raw image file. This can be decoded with BitmapFactory.
      * @throws ImageNotFoundException If the image is not found and it was not searched for before.
      */
-    public synchronized String getArtistImage(final Context context, ArtistModel artist) throws ImageNotFoundException {
+    public synchronized String getArtistImage(ArtistModel artist) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
         final String artistName = artist.getArtistName();
@@ -191,7 +195,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            return FileUtils.getFullArtworkFilePath(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
+            return FileUtils.getFullArtworkFilePath(mApplicationContext, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         // If we reach this, no entry was found for the given request. Throw an exception
@@ -207,13 +211,13 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @param image  byte[] containing the raw image that was downloaded. This can be null in which case
      *               the database entry will have the not_found flag set.
      */
-    public synchronized void insertArtistImage(final Context context, final ArtistModel artist, final byte[] image) {
+    public synchronized void insertArtistImage(final ArtistModel artist, final byte[] image) {
         final SQLiteDatabase database = getWritableDatabase();
 
         long artistID = artist.getArtistID();
         if (artistID == -1) {
             // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), context);
+            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mApplicationContext);
         }
 
         final String artistIDString = String.valueOf(artistID);
@@ -230,7 +234,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             }
 
             try {
-                FileUtils.saveArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES, image);
+                FileUtils.saveArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ARTIST_IMAGES, image);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -260,7 +264,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @param artworkFullImagePath Optional path to an album image if local image support is active otherwise null. If this parameter is null
      *                             the not_found flag is set if image is null as well.
      */
-    public synchronized void insertAlbumImage(final Context context, final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
+    public synchronized void insertAlbumImage(final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String albumID = String.valueOf(album.getAlbumID());
@@ -278,7 +282,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             }
 
             try {
-                FileUtils.saveArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES, image);
+                FileUtils.saveArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ALBUM_IMAGES, image);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -304,27 +308,27 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * Removes all lines from the artists table
      */
-    public synchronized void clearArtistImages(final Context context) {
+    public synchronized void clearArtistImages() {
         final SQLiteDatabase database = getWritableDatabase();
 
         database.delete(ArtistArtTable.TABLE_NAME, null, null);
 
         database.close();
 
-        FileUtils.removeArtworkDirectory(context, DIRECTORY_ARTIST_IMAGES);
+        FileUtils.removeArtworkDirectory(mApplicationContext, DIRECTORY_ARTIST_IMAGES);
     }
 
     /**
      * Removes all lines from the albums table
      */
-    public synchronized void clearAlbumImages(final Context context) {
+    public synchronized void clearAlbumImages() {
         final SQLiteDatabase database = getWritableDatabase();
 
         database.delete(AlbumArtTable.TABLE_NAME, null, null);
 
         database.close();
 
-        FileUtils.removeArtworkDirectory(context, DIRECTORY_ALBUM_IMAGES);
+        FileUtils.removeArtworkDirectory(mApplicationContext, DIRECTORY_ALBUM_IMAGES);
     }
 
     /**
@@ -358,10 +362,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * Removes the artist image for the given artist.
      *
-     * @param context The application context to access the file.
-     * @param artist  The {@link ArtistModel} representing the artist.
+     * @param artist The {@link ArtistModel} representing the artist.
      */
-    public synchronized void removeArtistImage(final Context context, final ArtistModel artist) {
+    public synchronized void removeArtistImage(final ArtistModel artist) {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String where = ArtistArtTable.COLUMN_ARTIST_ID + "=? OR " + ArtistArtTable.COLUMN_ARTIST_NAME + "=?";
@@ -374,7 +377,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
             final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
-            FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ARTIST_IMAGES);
+            FileUtils.removeArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
 
         requestCursor.close();
@@ -387,10 +390,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     /**
      * Removes the album image for the given album.
      *
-     * @param context The application context to access the file.
-     * @param album   The {@link AlbumModel} representing the album.
+     * @param album The {@link AlbumModel} representing the album.
      */
-    public synchronized void removeAlbumImage(final Context context, final AlbumModel album) {
+    public synchronized void removeAlbumImage(final AlbumModel album) {
         final SQLiteDatabase database = getWritableDatabase();
 
         final long albumId = album.getAlbumID();
@@ -421,7 +423,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
 
             if (!hasFullImagePath) {
-                FileUtils.removeArtworkFile(context, artworkFilename, DIRECTORY_ALBUM_IMAGES);
+                FileUtils.removeArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ALBUM_IMAGES);
             }
         }
 

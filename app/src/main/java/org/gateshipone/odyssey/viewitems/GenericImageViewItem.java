@@ -89,7 +89,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
      */
     public void startCoverImageTask() {
         if (mLoaderTask == null && mHolder.artworkManager != null && mHolder.modelItem != null && !mCoverDone) {
-            mLoaderTask = new AsyncLoader(getContext());
+            mLoaderTask = new AsyncLoader();
             mLoaderTask.execute(mHolder);
         }
     }

@@ -399,7 +399,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         switch (item.getItemId()) {
             case R.id.action_reset_artwork:
                 mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
-                ArtworkManager.getInstance(getContext()).resetImage(mArtist, getContext());
+                ArtworkManager.getInstance(getContext()).resetImage(mArtist);
                 return true;
             case R.id.action_add_artist_albums:
                 enqueueArtist();

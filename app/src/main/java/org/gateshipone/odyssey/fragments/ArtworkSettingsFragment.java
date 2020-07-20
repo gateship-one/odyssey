@@ -70,7 +70,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         Preference clearAlbums = findPreference(getString(R.string.pref_clear_album_key));
         clearAlbums.setOnPreferenceClickListener(preference -> {
             final Context context = getContext();
-            ArtworkDatabaseManager.getInstance(context).clearAlbumImages(context);
+            ArtworkDatabaseManager.getInstance(context).clearAlbumImages();
             return true;
         });
 
@@ -78,7 +78,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
         Preference clearArtist = findPreference(getString(R.string.pref_clear_artist_key));
         clearArtist.setOnPreferenceClickListener(preference -> {
             final Context context = getContext();
-            ArtworkDatabaseManager.getInstance(context).clearArtistImages(context);
+            ArtworkDatabaseManager.getInstance(context).clearArtistImages();
             return true;
         });
 
@@ -181,7 +181,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
             ArtworkManager artworkManager = ArtworkManager.getInstance(getContext().getApplicationContext());
 
-            artworkManager.cancelAllRequests(getContext());
+            artworkManager.cancelAllRequests();
 
             if (key.equals(albumProviderKey)) {
                 artworkManager.setAlbumProvider(sharedPreferences.getString(albumProviderKey, getString(R.string.pref_artwork_provider_album_default)));
