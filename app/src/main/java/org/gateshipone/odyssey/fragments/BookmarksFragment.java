@@ -174,7 +174,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         // identify current bookmark
         BookmarkModel bookmark = mAdapter.getItem(position);
 
-        OdysseyDatabaseManager.getInstance(getActivity().getApplicationContext()).removeState(bookmark.getId());
+        OdysseyDatabaseManager.getInstance(getContext()).removeState(bookmark.getId());
 
         refreshContent();
     }

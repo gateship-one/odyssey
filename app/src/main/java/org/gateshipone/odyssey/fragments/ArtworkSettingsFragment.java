@@ -179,7 +179,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
             getActivity().getApplicationContext().sendBroadcast(nextIntent);
 
-            ArtworkManager artworkManager = ArtworkManager.getInstance(getContext().getApplicationContext());
+            ArtworkManager artworkManager = ArtworkManager.getInstance(getContext());
 
             artworkManager.cancelAllRequests();
 

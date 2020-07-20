@@ -127,7 +127,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
 
-        mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext().getApplicationContext(), useList);
+        mRecyclerAdapter = new AlbumsRecyclerViewAdapter(getContext(), useList);
 
         if (useList) {
             mRecyclerView.setAdapter(mRecyclerAdapter);
@@ -177,7 +177,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
+        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
 
         if (mToolbarAndFABCallback != null) {
             // set up play button
@@ -220,7 +220,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
+        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener((AlbumsRecyclerViewAdapter) mRecyclerAdapter);
 
         ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
     }

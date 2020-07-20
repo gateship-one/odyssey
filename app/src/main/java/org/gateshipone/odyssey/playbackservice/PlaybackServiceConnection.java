@@ -39,9 +39,9 @@ public class PlaybackServiceConnection implements ServiceConnection {
     private IOdysseyPlaybackService mPlaybackService;
 
     /**
-     * Context used for binding to the service
+     * Application context used for binding to the service
      */
-    private Context mContext;
+    private Context mApplicationContext;
 
     /**
      * Callback handler for connection state changes
@@ -49,7 +49,7 @@ public class PlaybackServiceConnection implements ServiceConnection {
     private ConnectionNotifier mNotifier;
 
     public PlaybackServiceConnection(Context context) {
-        mContext = context;
+        mApplicationContext = context.getApplicationContext();
         mPlaybackService = null;
     }
 
@@ -85,15 +85,15 @@ public class PlaybackServiceConnection implements ServiceConnection {
      * This initiates the connection to the PlaybackService by binding to it
      */
     public void openConnection() {
-        Intent serviceStartIntent = new Intent(mContext, PlaybackService.class);
-        mContext.bindService(serviceStartIntent, this, Context.BIND_AUTO_CREATE);
+        Intent serviceStartIntent = new Intent(mApplicationContext, PlaybackService.class);
+        mApplicationContext.bindService(serviceStartIntent, this, Context.BIND_AUTO_CREATE);
     }
 
     /**
      * Disconnects the connection by unbinding from the service (not needed anymore)
      */
     public synchronized void closeConnection() {
-        mContext.unbindService(this);
+        mApplicationContext.unbindService(this);
         mPlaybackService = null;
         if (mNotifier != null) {
             mNotifier.onDisconnect();

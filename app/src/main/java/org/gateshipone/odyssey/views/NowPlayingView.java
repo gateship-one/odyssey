@@ -236,7 +236,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         mLastTrack = new TrackModel();
 
-        mServiceConnection = new PlaybackServiceConnection(getContext().getApplicationContext());
+        mServiceConnection = new PlaybackServiceConnection(getContext());
         mServiceConnection.setNotifier(new ServiceConnectionListener());
     }
 
@@ -1042,8 +1042,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             getContext().getApplicationContext().unregisterReceiver(mNowPlayingReceiver);
             mNowPlayingReceiver = null;
         }
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewAlbumImageListener(this);
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener(this);
+        ArtworkManager.getInstance(getContext()).unregisterOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener(this);
 
         mServiceConnection.closeConnection();
 
@@ -1076,8 +1076,8 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         }
 
         invalidate();
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewAlbumImageListener(this);
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener(this);
+        ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
+        ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener(this);
 
         // Register shared preference listener
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());

@@ -125,14 +125,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
     public void onResume() {
         super.onResume();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).registerOnNewArtistImageListener((ArtistsAdapter) mAdapter);
+        ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener((ArtistsAdapter) mAdapter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ArtworkManager.getInstance(getContext().getApplicationContext()).unregisterOnNewArtistImageListener((ArtistsAdapter) mAdapter);
+        ArtworkManager.getInstance(getContext()).unregisterOnNewArtistImageListener((ArtistsAdapter) mAdapter);
     }
 
     /**
