@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.GridView;
 
 import org.gateshipone.odyssey.R;
@@ -41,24 +40,18 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
 
     private final Context mContext;
 
-    /**
-     * The parent grid to adjust the layoutparams.
-     */
-    private final AbsListView mListView;
-
     private ArtworkManager mArtworkManager;
 
     private boolean mUseList;
-    private int mListItemHeight;
 
+    private int mListItemHeight;
 
     private boolean mHideArtwork;
 
-    public AlbumsAdapter(final Context context, final AbsListView listView, final boolean useList) {
+    public AlbumsAdapter(final Context context, final boolean useList) {
         super();
 
         mContext = context;
-        mListView = listView;
 
         mUseList = useList;
         if (mUseList) {
@@ -108,7 +101,7 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
         } else {
             GridViewItem gridItem;
             ViewGroup.LayoutParams layoutParams;
-            int width = ((GridView) mListView).getColumnWidth();
+            int width = ((GridView) parent).getColumnWidth();
 
             // Check if a view can be recycled
             if (convertView != null) {
