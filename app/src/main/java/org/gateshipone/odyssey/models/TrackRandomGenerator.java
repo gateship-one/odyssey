@@ -180,7 +180,7 @@ public class TrackRandomGenerator {
         mIntelligenceFactor = factor;
     }
 
-    private class BetterPseudoRandomGenerator {
+    private static class BetterPseudoRandomGenerator {
         /**
          * Timeout in ns (1 second)
          */

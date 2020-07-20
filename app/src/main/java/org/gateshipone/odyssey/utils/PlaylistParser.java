@@ -125,7 +125,7 @@ public abstract class PlaylistParser {
         return createTrackModels(context, getFileURLsFromFile(context));
     }
 
-    private class NoPrefixFoundException extends Exception {
+    private static class NoPrefixFoundException extends Exception {
 
     }
 }

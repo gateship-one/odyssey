@@ -688,7 +688,7 @@ public class GaplessPlayer {
     /**
      * Exception class used to signal playback errors
      */
-    class PlaybackException extends Exception {
+    static class PlaybackException extends Exception {
 
         final REASON mReason;
 

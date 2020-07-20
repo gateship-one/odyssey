@@ -229,7 +229,7 @@ public class FileModel implements GenericModel, Comparable<FileModel> {
     /**
      * Comparator class for the FileModel
      */
-    private class FileModelComparator implements Comparator<FileModel> {
+    private static class FileModelComparator implements Comparator<FileModel> {
 
         @Override
         public int compare(FileModel f1, FileModel f2) {
@@ -256,7 +256,7 @@ public class FileModel implements GenericModel, Comparable<FileModel> {
     /**
      * Filename filter class for the FileModel.
      */
-    private class FileExtensionFilter implements FilenameFilter {
+    private static class FileExtensionFilter implements FilenameFilter {
 
         private List<String> mExtensions;
 
