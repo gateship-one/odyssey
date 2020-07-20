@@ -36,6 +36,10 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
 
     private long mLastTime = 0;
     private int mLastFirstVisibleItem = 0;
+
+    /**
+     * Items per second scrolling over the screen
+     */
     private int mScrollSpeed = 0;
 
     private final ScrollSpeedAdapter mAdapter;
@@ -46,7 +50,11 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
     }
 
     /**
-     * Callback method to be invoked while the list view or grid view is being scrolled.
+     * Called when a scroll is started/ended and resets the values.
+     * If scrolling stops this will start CoverImageTasks
+     *
+     * @param view        View that has a scrolling state change
+     * @param scrollState New scrolling state of the view
      */
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -62,40 +70,46 @@ public class ScrollSpeedListener implements AbsListView.OnScrollListener {
     }
 
     /**
-     * Callback method to be invoked when the list or grid has been scrolled.
+     * Called when the associated Listview/GridView is scrolled by the user.
+     * This method evaluates if the view is scrolled slow enough to start loading images.
+     *
+     * @param view             View that is being scrolled.
+     * @param firstVisibleItem Index of the first visible item
+     * @param visibleItemCount Count of visible items
+     * @param totalItemCount   Total item count
      */
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         // New row started if this is true.
         if (firstVisibleItem != mLastFirstVisibleItem) {
             long currentTime = System.currentTimeMillis();
-            if (currentTime == mLastTime) {
-                return;
-            }
+
             // Calculate the duration of scroll per line
             long timeScrollPerRow = currentTime - mLastTime;
 
-
-            if (view instanceof GridView) {
-                GridView gw = (GridView) view;
-                mScrollSpeed = (int) (1000 / timeScrollPerRow) * gw.getNumColumns();
+            if (timeScrollPerRow != 0) {
+                if (view instanceof GridView) {
+                    GridView gw = (GridView) view;
+                    mScrollSpeed = (int) (1000 / timeScrollPerRow) * gw.getNumColumns();
+                } else {
+                    mScrollSpeed = (int) (1000 / timeScrollPerRow);
+                }
             } else {
-                mScrollSpeed = (int) (1000 / timeScrollPerRow);
+                mScrollSpeed = Integer.MAX_VALUE;
             }
 
             // Calculate how many items per second of loading images is possible
-            int possibleItems = (int) (1000 / mAdapter.getAverageImageLoadTime());
+            int imageLoadingRate = (int) (1000 / mAdapter.getAverageImageLoadTime());
 
-
-            // Set the scrollspeed in the adapter
+            // Set the scroll speed in the adapter
             mAdapter.setScrollSpeed(mScrollSpeed);
 
-            // Save values for next comparsion
+            // Save values for next comparison
             mLastFirstVisibleItem = firstVisibleItem;
             mLastTime = currentTime;
             // Start the grid image loader task only if scroll speed is slow enough:
             // The devices is able to render the images needed for the scroll speed
-            if (mScrollSpeed < possibleItems) {
+            if (mScrollSpeed < imageLoadingRate) {
                 for (int i = 0; i < visibleItemCount; i++) {
                     GenericImageViewItem item = (GenericImageViewItem) view.getChildAt(i);
                     item.startCoverImageTask();
