@@ -335,6 +335,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             case ALBUM: {
                 AlbumModel album = (AlbumModel) requestModel.getGenericModel();
                 if (mUseLocalImages || album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
+                    // TODO adapt logic for android 10
                     try {
                         mDatabaseManager.getAlbumImage(album);
                     } catch (ImageNotFoundException e) {

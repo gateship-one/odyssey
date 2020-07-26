@@ -23,13 +23,18 @@
 package org.gateshipone.odyssey.artwork;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Size;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
@@ -56,6 +61,7 @@ import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -270,12 +276,29 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         }
 
         // Check local artwork database
-        String albumURL = album.getAlbumArtURL();
-        if (!mUseLocalImages && albumURL != null && !albumURL.isEmpty()) {
-            // Local album art found (android database)
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
-            BitmapCache.getInstance().putAlbumBitmap(album, bm);
-            return bm;
+        if (!mUseLocalImages) {
+            // check for artworks in the android media framework
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Bitmap bm;
+
+                final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumID());
+                try {
+                    bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(width, height), null);
+                    BitmapCache.getInstance().putAlbumBitmap(album, bm);
+                    return bm;
+                } catch (IOException ignored) {
+                    // use our own database instead
+                }
+            } else {
+                String albumURL = album.getAlbumArtURL();
+
+                if (albumURL != null && !albumURL.isEmpty()) {
+                    // Local album art found (android database)
+                    Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
+                    BitmapCache.getInstance().putAlbumBitmap(album, bm);
+                    return bm;
+                }
+            }
         }
 
         final String image = mDBManager.getAlbumImage(album);
