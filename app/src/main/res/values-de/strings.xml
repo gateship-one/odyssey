@@ -225,4 +225,6 @@
     <string name="preference_artwork_use_local_images_text">Ignoriere Albenbilder aus der Android Mediendatenbank und nutze stattdessen lokale Albenbilder. Wenn kein lokales Bild gefunden wird, wird der gewählte Albenbilderanbieter genutzt.</string>
     <string name="contributor_translator_czech">Tschechische Übersetzung</string>
     <string name="contributor_translator_dutch">Niederländische Übersetzung</string>
+    <string name="dialog_no_browser_found_title">Kein Browser verfügbar</string>
+    <string name="dialog_no_browser_found_message">Auf dem Gerät wurde kein Browser gefunden</string>
 </resources>

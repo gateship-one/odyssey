@@ -468,7 +468,13 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         } else {
             intent.setData(Uri.parse("https://" + Locale.getDefault().getLanguage() + ".wikipedia.org/wiki/" + name));
         }
-        getContext().startActivity(intent);
+
+        try {
+            getContext().startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            final ErrorDialog noBrowserFoundDlg = ErrorDialog.newInstance(R.string.dialog_no_browser_found_title, R.string.dialog_no_browser_found_message);
+            noBrowserFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "BrowserNotFoundDlg");
+        }
     }
 
     /**
