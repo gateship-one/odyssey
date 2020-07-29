@@ -28,6 +28,7 @@ import android.os.Bundle;
 import org.gateshipone.odyssey.R;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -40,12 +41,12 @@ public class ErrorDialog extends DialogFragment {
     /**
      * Returns a new ErrorDialog with title and message id as arguments
      */
-    public static ErrorDialog newInstance(int title, int message) {
-        Bundle args = new Bundle();
+    public static ErrorDialog newInstance(@StringRes final int title, @StringRes final int message) {
+        final Bundle args = new Bundle();
         args.putInt(ErrorDialog.ARG_ERRORDIALOGTITLE, title);
         args.putInt(ErrorDialog.ARG_ERRORDIALOGMESSAGE, message);
 
-        ErrorDialog fragment = new ErrorDialog();
+        final ErrorDialog fragment = new ErrorDialog();
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,10 +58,10 @@ public class ErrorDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
 
         // read arguments to identify the error title and message
-        Bundle mArgs = getArguments();
+        Bundle mArgs = requireArguments();
 
         int titleId = mArgs.getInt(ARG_ERRORDIALOGTITLE, -1);
         int messageId = mArgs.getInt(ARG_ERRORDIALOGMESSAGE, -1);
@@ -69,7 +70,7 @@ public class ErrorDialog extends DialogFragment {
         String dialogMessage = (messageId == -1) ? "" : getString(messageId);
 
         builder.setTitle(dialogTitle).setMessage(dialogMessage)
-                .setNegativeButton(R.string.error_dialog_ok_action, (dialog, id) -> getDialog().cancel());
+                .setNegativeButton(R.string.error_dialog_ok_action, (dialog, id) -> dismiss());
 
         // Create the AlertDialog object and return it
         return builder.create();
