@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.dialogs.ErrorDialog;
 import org.gateshipone.odyssey.dialogs.LicensesDialog;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
@@ -63,19 +65,37 @@ public class OdysseyAboutActivity extends GenericActivity {
         findViewById(R.id.logo_musicbrainz).setOnClickListener(view -> {
             Intent urlIntent = new Intent(Intent.ACTION_VIEW);
             urlIntent.setData(Uri.parse(getString(R.string.url_musicbrainz)));
-            startActivity(urlIntent);
+
+            try {
+                startActivity(urlIntent);
+            } catch (ActivityNotFoundException e) {
+                final ErrorDialog noBrowserFoundDlg = ErrorDialog.newInstance(R.string.dialog_no_browser_found_title, R.string.dialog_no_browser_found_message);
+                noBrowserFoundDlg.show(getSupportFragmentManager(), "BrowserNotFoundDlg");
+            }
         });
 
         findViewById(R.id.logo_lastfm).setOnClickListener(view -> {
             Intent urlIntent = new Intent(Intent.ACTION_VIEW);
             urlIntent.setData(Uri.parse(getString(R.string.url_lastfm)));
-            startActivity(urlIntent);
+
+            try {
+                startActivity(urlIntent);
+            } catch (ActivityNotFoundException e) {
+                final ErrorDialog noBrowserFoundDlg = ErrorDialog.newInstance(R.string.dialog_no_browser_found_title, R.string.dialog_no_browser_found_message);
+                noBrowserFoundDlg.show(getSupportFragmentManager(), "BrowserNotFoundDlg");
+            }
         });
 
         findViewById(R.id.logo_fanarttv).setOnClickListener(view -> {
             Intent urlIntent = new Intent(Intent.ACTION_VIEW);
             urlIntent.setData(Uri.parse(getString(R.string.url_fanarttv)));
-            startActivity(urlIntent);
+
+            try {
+                startActivity(urlIntent);
+            } catch (ActivityNotFoundException e) {
+                final ErrorDialog noBrowserFoundDlg = ErrorDialog.newInstance(R.string.dialog_no_browser_found_title, R.string.dialog_no_browser_found_message);
+                noBrowserFoundDlg.show(getSupportFragmentManager(), "BrowserNotFoundDlg");
+            }
         });
     }
 
