@@ -26,6 +26,6 @@ If you are not familiar with android programming just add the translation for `Y
 
 No! We like the user interface the way it is. Before changing it contact us, sometimes we get used to non-intuitive things and are willing to change things.
 
-## I want to add new features to M.A.L.P., should I just implement them?
+## I want to add new features to Odyssey, should I just implement them?
 
 Also no! Just ask us first, to ensure they are implemented the way other features are implemented and fit well in the existing source code.
