@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
@@ -75,6 +76,8 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
 
     private boolean mHideArtwork;
 
+    private int mListItemHeight;
+
     /**
      * {@link LruCache} to reduce load on the IPC between GUI and PBS.
      */
@@ -85,6 +88,8 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
 
         mContext = context;
         mPlaybackServiceConnection = playbackServiceConnection;
+
+        mListItemHeight = (int) context.getResources().getDimension(R.dimen.material_list_item_height);
 
         try {
             mPlaylistSize = mPlaybackServiceConnection.getPBS().getPlaylistSize();
@@ -226,6 +231,7 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
 
             // Check if the scroll speed currently is already 0, then start the image task right away.
             if (mScrollSpeed == 0) {
+                listViewItem.setImageDimension(mListItemHeight, mListItemHeight);
                 listViewItem.startCoverImageTask();
             }
         }
