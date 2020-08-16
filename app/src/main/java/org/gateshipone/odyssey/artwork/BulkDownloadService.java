@@ -28,19 +28,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Size;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
@@ -59,7 +55,6 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.NetworkUtils;
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -348,20 +343,15 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
                     }
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // check if an image can be open via the android media framework
-                        // required for android 10 or later
-                        final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumID());
+                        // TODO check if an image can be open via the android media framework
+                        // would be required for android 10 or later
 
+                        // for now just download images for every album regardless
+                        // if an image is present in the android media framework
                         try {
-                            // TODO replace with more efficient approach!!
-                            getContentResolver().loadThumbnail(imageUri, new Size(42, 42), null);
-                        } catch (IOException e) {
-                            // no filed found in the android media framework therefore check our own database
-                            try {
-                                mDatabaseManager.getAlbumImage(album);
-                            } catch (ImageNotFoundException e2) {
-                                return true;
-                            }
+                            mDatabaseManager.getAlbumImage(album);
+                        } catch (ImageNotFoundException e2) {
+                            return true;
                         }
                     } else if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
                         try {
