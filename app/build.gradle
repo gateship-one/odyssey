@@ -69,13 +69,24 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.config
             }
+
+            // try to get the current git hash
+            def gitCommitHash
+
+            try {
+                gitCommitHash = getGitCommitHash()
+            } catch (Exception ignored) {
+                gitCommitHash = "unknown"
+            }
+
+            buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
         }
         debug {
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.config
             }
 
-            // for debug builds try to include the current git hash
+            // try to get the current git hash
             def gitCommitHash
 
             try {

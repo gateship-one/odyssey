@@ -26,7 +26,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.BuildConfig;
@@ -46,12 +45,8 @@ public class OdysseyAboutActivity extends GenericActivity {
         String versionName = BuildConfig.VERSION_NAME;
         ((TextView) findViewById(R.id.activity_about_version)).setText(versionName);
 
-        if (BuildConfig.DEBUG) {
-            findViewById(R.id.activity_about_git_hash_container).setVisibility(View.VISIBLE);
-
-            String gitHash = BuildConfig.GIT_COMMIT_HASH;
-            ((TextView) findViewById(R.id.activity_about_git_hash)).setText(gitHash);
-        }
+        String gitHash = BuildConfig.GIT_COMMIT_HASH;
+        ((TextView) findViewById(R.id.activity_about_git_hash)).setText(gitHash);
 
         findViewById(R.id.odyssey_contributors).setOnClickListener(view -> {
             Intent myIntent = new Intent(OdysseyAboutActivity.this, OdysseyContributorsActivity.class);
