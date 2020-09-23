@@ -184,6 +184,12 @@
     <string name="preference_album_sort_order_name">Name</string>
     <string name="preference_album_sort_order_year">Year</string>
 
+    <string name="preference_tracks_sort_order_title">Album Tracks sort order</string>
+    <string name="preference_tracks_sort_order_summary">Select the sort order for tracks of an album.</string>
+
+    <string name="preference_album_tracks_sort_number">Tracknumber</string>
+    <string name="preference_album_tracks_sort_name">Displayname (Filename)</string>
+
     <string name="preference_default_view_title">Default view</string>
     <string name="preference_default_view_message">Select default view</string>
     <string name="preference_default_view_summary">Select the default view of the application.</string>

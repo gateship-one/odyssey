@@ -67,6 +67,10 @@
     <string name="pref_artist_albums_sort_year_key" translatable="false">year</string>
     <string name="pref_artist_albums_sort_default" translatable="false">@string/pref_artist_albums_sort_name_key</string>
 
+    <string name="pref_album_tracks_sort_number_key" translatable="false">number</string>
+    <string name="pref_album_tracks_sort_name_key" translatable="false">name</string>
+    <string name="pref_album_tracks_sort_default" translatable="false">@string/pref_album_tracks_sort_number_key</string>
+
     <string name="pref_view_my_music_artists_key" translatable="false">my_music_artists</string>
     <string name="pref_view_my_music_albums_key" translatable="false">my_music_albums</string>
     <string name="pref_view_my_music_tracks_key" translatable="false">my_music_tracks</string>
@@ -91,6 +95,7 @@
     <string name="pref_album_artists_only_key" translatable="false">pref_album_artists_only</string>
     <bool name="pref_album_artists_only_default">true</bool>
     <string name="pref_album_sort_order_key" translatable="false">pref_album_sort_order</string>
+    <string name="pref_album_tracks_sort_order_key" translatable="false">pref_album_tracks_sort_order</string>
     <string name="pref_start_view_key" translatable="false">pref_start_view</string>
     <string name="pref_artwork_settings_key" translatable="false">pref_artwork_settings</string>
     <string name="pref_open_equalizer_key" translatable="false">pref_open_equalizer</string>
@@ -125,6 +130,11 @@
     <string-array name="preference_album_sort_orders_values" translatable="false">
         <item>@string/pref_artist_albums_sort_name_key</item>
         <item>@string/pref_artist_albums_sort_year_key</item>
+    </string-array>
+
+    <string-array name="preference_album_tracks_sort_orders_values" translatable="false">
+        <item>@string/pref_album_tracks_sort_number_key</item>
+        <item>@string/pref_album_tracks_sort_name_key</item>
     </string-array>
 
     <string-array name="preference_default_view_values" translatable="false">

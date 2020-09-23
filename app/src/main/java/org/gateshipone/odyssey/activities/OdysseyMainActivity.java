@@ -183,7 +183,6 @@ public class OdysseyMainActivity extends GenericActivity
         // get fileexplorerhelper
         mFileExplorerHelper = FileExplorerHelper.getInstance();
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // enable back navigation

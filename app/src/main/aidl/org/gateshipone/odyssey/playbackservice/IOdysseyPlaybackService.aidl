@@ -49,15 +49,15 @@ interface IOdysseyPlaybackService {
     void playPlaylistFile(String path, int position);
 
     // enqueue all tracks of an album from mediastore
-    void enqueueAlbum(String albumKey);
-    void playAlbum(String albumKey, int position);
+    void enqueueAlbum(String albumKey, String orderKey);
+    void playAlbum(String albumKey, String orderKey, int position);
 
     void enqueueRecentAlbums();
     void playRecentAlbums();
 
     // enqueue all tracks of an artist from mediastore
-    void enqueueArtist(long artistId, String orderKey);
-    void playArtist(long artistId, String orderKey);
+    void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey);
+    void playArtist(long artistId, String albumOrderKey, String trackOrderKey);
 
     /**
      * position = playlist position of jump target

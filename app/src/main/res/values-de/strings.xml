@@ -227,4 +227,8 @@
     <string name="contributor_translator_dutch">Niederländische Übersetzung</string>
     <string name="dialog_no_browser_found_title">Kein Browser verfügbar</string>
     <string name="dialog_no_browser_found_message">Auf dem Gerät wurde kein Browser gefunden</string>
+    <string name="preference_tracks_sort_order_title">Liedersortierung</string>
+    <string name="preference_tracks_sort_order_summary">Wähle die Sortierung für Lieder eines Albums.</string>
+    <string name="preference_album_tracks_sort_number">Liednummer</string>
+    <string name="preference_album_tracks_sort_name">Anzeigename (Dateiname)</string>
 </resources>

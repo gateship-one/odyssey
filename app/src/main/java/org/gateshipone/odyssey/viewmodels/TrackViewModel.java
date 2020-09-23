@@ -23,8 +23,10 @@
 package org.gateshipone.odyssey.viewmodels;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
@@ -34,6 +36,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 public class TrackViewModel extends GenericViewModel<TrackModel> {
 
@@ -83,7 +86,12 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
                         return MusicLibraryHelper.getAllTracks(null, application);
                     } else {
                         // load album tracks
-                        return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, application);
+
+                        // read order preference
+                        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
+                        final String orderKey = sharedPref.getString(application.getString(R.string.pref_album_tracks_sort_order_key), application.getString(R.string.pref_album_tracks_sort_default));
+
+                        return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, orderKey, application);
                     }
                 }
             }

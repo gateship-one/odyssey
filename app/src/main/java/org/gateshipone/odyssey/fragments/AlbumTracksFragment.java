@@ -398,8 +398,12 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     private void enqueueAlbum() {
         // Enqueue complete album
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
+
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey(), trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -415,8 +419,12 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     private void playAlbum(int position) {
         // clear playlist and play current album
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
+
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), position);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), trackOrderKey, position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

@@ -289,16 +289,16 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueAlbum(String albumKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumKey);
+    public void enqueueAlbum(String albumKey, String orderKey) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumKey, orderKey);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playAlbum(String albumKey, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALBUM, albumKey, position);
+    public void playAlbum(String albumKey, String orderKey, int position) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALBUM, albumKey, orderKey, position);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -321,16 +321,16 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueArtist(long artistId, String orderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId, orderKey);
+    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId, albumOrderKey, trackOrderKey);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playArtist(long artistId, String orderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYARTIST, artistId, orderKey);
+    public void playArtist(long artistId, String albumOrderKey, String trackOrderKey) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYARTIST, artistId, albumOrderKey, trackOrderKey);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

@@ -71,6 +71,11 @@
         <item>@string/preference_album_sort_order_year</item>
     </string-array>
 
+    <string-array name="preference_album_tracks_sort_orders">
+        <item>@string/preference_album_tracks_sort_number</item>
+        <item>@string/preference_album_tracks_sort_name</item>
+    </string-array>
+
     <string-array name="preference_odyssey_styles">
         <item>@string/preference_theme_item_indigo</item>
         <item>@string/preference_theme_item_orange</item>

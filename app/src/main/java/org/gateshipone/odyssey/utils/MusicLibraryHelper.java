@@ -174,17 +174,26 @@ public class MusicLibraryHelper {
      * Return a list of all tracks of an album.
      *
      * @param context  The application context to access the content resolver.
+     * @param orderKey String to specify the order of the tracks
      * @param albumKey The key to identify the album in the MediaStore
      * @return The list of {@link TrackModel} of all tracks for the given album.
      */
-    public static List<TrackModel> getTracksForAlbum(final String albumKey, final Context context) {
+    public static List<TrackModel> getTracksForAlbum(final String albumKey, final String orderKey, final Context context) {
         final List<TrackModel> albumTracks = new ArrayList<>();
 
         final String[] whereVal = {albumKey};
 
         final String where = ProjectionTracks.ALBUM_KEY + "=?";
 
-        final String orderBy = ProjectionTracks.TRACK;
+        String orderBy;
+
+        if (orderKey.equals(context.getString(R.string.pref_album_tracks_sort_number_key))) {
+            orderBy = ProjectionTracks.TRACK;
+        } else if (orderKey.equals(context.getString(R.string.pref_album_tracks_sort_name_key))) {
+            orderBy = ProjectionTracks.DISPLAY_NAME;
+        } else {
+            orderBy = ProjectionTracks.TRACK;
+        }
 
         final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, ProjectionTracks.PROJECTION, where, whereVal, orderBy);
 
@@ -216,19 +225,20 @@ public class MusicLibraryHelper {
     /**
      * Return a list of all tracks of an artist
      *
-     * @param context  The application context to access the content resolver.
-     * @param artistId The id to identify the artist in the MediaStore
-     * @param orderKey String to specify the order of the tracks
+     * @param context       The application context to access the content resolver.
+     * @param artistId      The id to identify the artist in the MediaStore
+     * @param albumOrderKey String to specify the order of the artist albums
+     * @param trackOrderKey String to specify the order of the tracks
      * @return The list of {@link TrackModel} of all tracks for the given artist in the specified order.
      */
-    public static List<TrackModel> getTracksForArtist(final long artistId, final String orderKey, final Context context) {
+    public static List<TrackModel> getTracksForArtist(final long artistId, final String albumOrderKey, final String trackOrderKey, final Context context) {
         List<TrackModel> artistTracks = new ArrayList<>();
 
         String orderBy;
 
-        if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_name_key))) {
+        if (albumOrderKey.equals(context.getString(R.string.pref_artist_albums_sort_name_key))) {
             orderBy = ProjectionAlbums.ALBUM;
-        } else if (orderKey.equals(context.getString(R.string.pref_artist_albums_sort_year_key))) {
+        } else if (albumOrderKey.equals(context.getString(R.string.pref_artist_albums_sort_year_key))) {
             orderBy = ProjectionAlbums.FIRST_YEAR;
         } else {
             orderBy = ProjectionAlbums.ALBUM;
@@ -241,7 +251,7 @@ public class MusicLibraryHelper {
             if (cursor.moveToFirst()) {
                 do {
                     String albumKey = cursor.getString(cursor.getColumnIndex(ProjectionAlbums.ALBUM_KEY));
-                    artistTracks.addAll(getTracksForAlbum(albumKey, context));
+                    artistTracks.addAll(getTracksForAlbum(albumKey, trackOrderKey, context));
                 } while (cursor.moveToNext());
             }
 
@@ -551,7 +561,7 @@ public class MusicLibraryHelper {
      */
     public static void savePlaylist(final String playlistName, final List<TrackModel> tracks, final Context context) {
         // remove playlist if exists
-        PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, ProjectionPlaylists.NAME + "=?", new String[]{playlistName});
+        PermissionHelper.delete(context, MediaStore.Audio.Playlists.getContentUri("external"), ProjectionPlaylists.NAME + "=?", new String[]{playlistName});
 
         // create new playlist and save row
         final ContentValues inserts = new ContentValues();
@@ -559,7 +569,7 @@ public class MusicLibraryHelper {
         inserts.put(ProjectionPlaylists.DATE_ADDED, System.currentTimeMillis());
         inserts.put(ProjectionPlaylists.DATE_MODIFIED, System.currentTimeMillis());
 
-        final Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, inserts);
+        final Uri currentRow = PermissionHelper.insert(context, MediaStore.Audio.Playlists.getContentUri("external"), inserts);
 
         // create list of valid tracks
         final List<ContentValues> values = new ArrayList<>();

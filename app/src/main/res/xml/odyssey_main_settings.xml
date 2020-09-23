@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -78,6 +77,16 @@
             android:persistent="true"
             android:summary="@string/preference_album_sort_order_summary"
             android:title="@string/preference_album_sort_order_title"
+            app:iconSpaceReserved="false" />
+        <ListPreference
+            android:defaultValue="@string/pref_album_tracks_sort_number_key"
+            android:dialogTitle="@string/preference_album_sort_order_message"
+            android:entries="@array/preference_album_tracks_sort_orders"
+            android:entryValues="@array/preference_album_tracks_sort_orders_values"
+            android:key="@string/pref_album_tracks_sort_order_key"
+            android:persistent="true"
+            android:summary="@string/preference_tracks_sort_order_summary"
+            android:title="@string/preference_tracks_sort_order_title"
             app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="@string/pref_view_default"

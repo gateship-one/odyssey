@@ -951,13 +951,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Enqueue all tracks of an album identified by the albumKey.
      *
      * @param albumKey The key of the album
+     * @param orderKey String to specify the order of the tracks
      */
-    public void enqueueAlbum(String albumKey) {
+    public void enqueueAlbum(String albumKey, String orderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current albumkey from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, getApplicationContext());
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, orderKey, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -971,12 +972,13 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * A previous playlist will be cleared.
      *
      * @param albumKey The key of the album
+     * @param orderKey String to specify the order of the tracks
      * @param position The position to start playback
      */
-    public void playAlbum(String albumKey, int position) {
+    public void playAlbum(String albumKey, String orderKey, int position) {
         clearPlaylist();
 
-        enqueueAlbum(albumKey);
+        enqueueAlbum(albumKey, orderKey);
 
         jumpToIndex(position);
     }
@@ -1011,15 +1013,16 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Enqueue all tracks of an artist identified by the artistId.
      *
-     * @param artistId The id of the artist
-     * @param orderKey String to specify the order of the tracks
+     * @param artistId      The id of the artist
+     * @param albumOrderKey String to specify the order of the artist albums
+     * @param trackOrderKey String to specify the order of the tracks
      */
-    public void enqueueArtist(long artistId, String orderKey) {
+    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current artistId from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, orderKey, getApplicationContext());
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, albumOrderKey, trackOrderKey, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -1032,13 +1035,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Play all tracks of an artist identified by the artistId.
      * A previous playlist will be cleared.
      *
-     * @param artistId The id of the artist
-     * @param orderKey String to specify the order of the tracks
+     * @param artistId      The id of the artist
+     * @param albumOrderKey String to specify the order of the artist albums
+     * @param trackOrderKey String to specify the order of the tracks
      */
-    public void playArtist(long artistId, String orderKey) {
+    public void playArtist(long artistId, String albumOrderKey, String trackOrderKey) {
         clearPlaylist();
 
-        enqueueArtist(artistId, orderKey);
+        enqueueArtist(artistId, albumOrderKey, trackOrderKey);
 
         jumpToIndex(0);
     }

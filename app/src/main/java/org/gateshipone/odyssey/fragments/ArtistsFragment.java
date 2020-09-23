@@ -236,11 +236,12 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -268,11 +269,12 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

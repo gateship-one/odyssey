@@ -114,6 +114,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+        mHideArtwork = sharedPref.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
         // get swipe layout
         mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
@@ -156,9 +157,6 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
         mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
@@ -299,9 +297,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
+
         // enqueue album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -319,9 +321,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
         String albumKey = clickedAlbum.getAlbumKey();
 
+        // Read order preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
+
         // play album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumKey, trackOrderKey, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -421,11 +427,12 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     private void enqueueArtist() {
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -439,11 +446,12 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     private void playArtist() {
         // Read order preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String orderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
+        String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // play artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), orderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
