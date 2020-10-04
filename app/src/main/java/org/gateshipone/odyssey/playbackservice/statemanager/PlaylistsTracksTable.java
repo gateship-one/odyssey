@@ -24,77 +24,77 @@ package org.gateshipone.odyssey.playbackservice.statemanager;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class StateTracksTable {
+public class PlaylistsTracksTable {
+
+    public static final String TABLE_NAME = "odyssey_playlist_tracks";
 
     /**
-     * The name of the table.
-     */
-    public static final String TABLE_NAME = "odyssey_state_tracks";
-
-    /**
-     * Name of the column that holds a unique id for each track
+     * The name of the column that holds a unique id for each track.
      */
     public static final String COLUMN_ID = "_id";
 
     /**
      * Name of the column that holds the number of the track in the related album
      */
-    public static final String COLUMN_TRACKNUMBER = "tracknumber";
+    public static final String COLUMN_TRACK_NUMBER = "tracknumber";
 
     /**
      * Name of the column that holds the title of the track
      */
-    public static final String COLUMN_TRACKTITLE = "title";
+    public static final String COLUMN_TRACK_TITLE = "title";
 
     /**
      * Name of the column that holds the album name of the track
      */
-    public static final String COLUMN_TRACKALBUM = "album";
+    public static final String COLUMN_TRACK_ALBUM = "album";
 
     /**
      * Name of the column that holds the album key of the track
      */
-    public static final String COLUMN_TRACKALBUMKEY = "albumkey";
+    public static final String COLUMN_TRACK_ALBUMKEY = "albumkey";
 
     /**
      * Name of the column that holds the duration of the track
      */
-    public static final String COLUMN_TRACKDURATION = "duration";
+    public static final String COLUMN_TRACK_DURATION = "duration";
 
     /**
      * Name of the column that holds the artist name of the track
      */
-    public static final String COLUMN_TRACKARTIST = "artist";
+    public static final String COLUMN_TRACK_ARTIST = "artist";
 
     /**
      * Name of the column that holds the url of the track
      */
-    public static final String COLUMN_TRACKURL = "url";
+    public static final String COLUMN_TRACK_URL = "url";
 
     /**
      * Name of the column that holds the id of the track from mediastore
      */
-    public static final String COLUMN_TRACKID = "trackid";
+    public static final String COLUMN_TRACK_ID = "trackid";
 
     /**
-     * Name of the column that holds the timestamp related to the bookmark
+     * Name of the column that holds the id related to the playlist
      */
-    public static final String COLUMN_BOOKMARK_TIMESTAMP = "bookmark_timestamp";
+    public static final String COLUMN_PLAYLIST_ID = "playlist_id";
+
+    public static final String COLUMN_PLAYLIST_POSITION = "playlist_position";
 
     /**
      * Database creation SQL statement
      */
     private static final String DATABASE_CREATE = "create table if not exists " + TABLE_NAME + "(" +
             COLUMN_ID + " integer primary key autoincrement," +
-            COLUMN_TRACKNUMBER + " integer," +
-            COLUMN_TRACKTITLE + " text," +
-            COLUMN_TRACKALBUM + " text," +
-            COLUMN_TRACKALBUMKEY + " text," +
-            COLUMN_TRACKDURATION + " integer," +
-            COLUMN_TRACKARTIST + " text," +
-            COLUMN_TRACKURL + " text," +
-            COLUMN_TRACKID + " integer," +
-            COLUMN_BOOKMARK_TIMESTAMP + " integer " +
+            COLUMN_TRACK_NUMBER + " integer," +
+            COLUMN_TRACK_TITLE + " text," +
+            COLUMN_TRACK_ALBUM + " text," +
+            COLUMN_TRACK_ALBUMKEY + " text," +
+            COLUMN_TRACK_DURATION + " integer," +
+            COLUMN_TRACK_ARTIST + " text," +
+            COLUMN_TRACK_URL + " text," +
+            COLUMN_TRACK_ID + " integer," +
+            COLUMN_PLAYLIST_ID + " integer," +
+            COLUMN_PLAYLIST_POSITION + " integer" +
             ");";
 
     public static void onCreate(SQLiteDatabase database) {

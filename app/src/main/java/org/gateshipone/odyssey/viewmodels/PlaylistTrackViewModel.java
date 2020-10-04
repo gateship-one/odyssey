@@ -26,7 +26,10 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PlaylistParser;
 import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
@@ -40,14 +43,14 @@ import androidx.lifecycle.ViewModelProvider;
 public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
 
     /**
-     * The path to the playlist file.
+     * The playlistModel that contains all information to load the playlist tracks.
      */
-    private final String mPath;
+    private final PlaylistModel mPlaylistModel;
 
-    private PlaylistTrackViewModel(@NonNull final Application application, final String playlistPath) {
+    private PlaylistTrackViewModel(@NonNull final Application application, final PlaylistModel playlistModel) {
         super(application);
 
-        mPath = playlistPath;
+        mPlaylistModel = playlistModel;
     }
 
     @Override
@@ -68,11 +71,22 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
             final PlaylistTrackViewModel model = mViewModel.get();
 
             if (model != null) {
-                PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(model.mPath));
-                if (parser == null) {
-                    return null;
+
+                final PlaylistModel playlist = model.mPlaylistModel;
+                final Application application = model.getApplication();
+
+                switch (playlist.getPlaylistType()) {
+                    case MEDIASTORE:
+                        return MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistID(), application);
+                    case ODYSSEY_LOCAL:
+                        return OdysseyDatabaseManager.getInstance(application).getTracksForPlaylist(playlist.getPlaylistID());
+                    case FILE:
+                        PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(playlist.getPlaylistPath()));
+                        if (parser == null) {
+                            return null;
+                        }
+                        return parser.parseList(model.getApplication());
                 }
-                return parser.parseList(model.getApplication());
             }
 
             return null;
@@ -92,17 +106,17 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
 
         private final Application mApplication;
 
-        private final String mPath;
+        private final PlaylistModel mPlaylistModel;
 
-        public PlaylistTrackViewModelFactory(final Application application, final String playlistPath) {
+        public PlaylistTrackViewModelFactory(final Application application, final PlaylistModel playlistModel) {
             mApplication = application;
-            mPath = playlistPath;
+            mPlaylistModel = playlistModel;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new PlaylistTrackViewModel(mApplication, mPath);
+            return (T) new PlaylistTrackViewModel(mApplication, mPlaylistModel);
         }
     }
 }

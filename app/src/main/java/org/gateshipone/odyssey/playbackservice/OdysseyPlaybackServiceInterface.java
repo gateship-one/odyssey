@@ -23,7 +23,9 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
+import android.os.RemoteException;
 
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 import java.lang.ref.WeakReference;
@@ -257,32 +259,16 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueuePlaylist(long playlistId) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlistId);
+    public void enqueuePlaylist(PlaylistModel playlist) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST, playlist);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playPlaylist(long playlistId, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST, playlistId, position);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void enqueuePlaylistFile(String path) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLISTFILE, path);
-        Message msg = mService.get().getHandler().obtainMessage();
-        msg.obj = obj;
-        mService.get().getHandler().sendMessage(msg);
-    }
-
-    @Override
-    public void playPlaylistFile(String path, int position) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLISTFILE, path, position);
+    public void playPlaylist(PlaylistModel playlist, int position) throws RemoteException {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST, playlist, position);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

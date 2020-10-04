@@ -22,6 +22,7 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
 /**
@@ -39,7 +40,6 @@ public class ControlObject {
         ODYSSEY_RESUMEBOOKMARK, ODYSSEY_DELETEBOOKMARK, ODYSSEY_CREATEBOOKMARK,
         ODYSSEY_SAVEPLAYLIST, ODYSSEY_CLEARPLAYLIST, ODYSSEY_SHUFFLEPLAYLIST,
         ODYSSEY_ENQUEUEPLAYLIST, ODYSSEY_PLAYPLAYLIST,
-        ODYSSEY_ENQUEUEPLAYLISTFILE, ODYSSEY_PLAYPLAYLISTFILE,
         ODYSSEY_ENQUEUEFILE, ODYSSEY_PLAYFILE,
         ODYSSEY_PLAYDIRECTORY, ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES, ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES,
         ODYSSEY_ENQUEUEALBUM, ODYSSEY_PLAYALBUM,
@@ -56,6 +56,7 @@ public class ControlObject {
     private String mSecondStringParam;
     private TrackModel mTrack;
     private long mLongParam;
+    private PlaylistModel mPlaylist;
 
     public ControlObject(PLAYBACK_ACTION action) {
         mAction = action;
@@ -120,9 +121,14 @@ public class ControlObject {
         mIntparam = intParam;
     }
 
-    public ControlObject(PLAYBACK_ACTION action, long longParam, int intParam) {
+    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist) {
         mAction = action;
-        mLongParam = longParam;
+        mPlaylist = playlist;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist, int intParam) {
+        mAction = action;
+        mPlaylist = playlist;
         mIntparam = intParam;
     }
 
@@ -152,5 +158,9 @@ public class ControlObject {
 
     public TrackModel getTrack() {
         return mTrack;
+    }
+
+    public PlaylistModel getPlaylist() {
+        return mPlaylist;
     }
 }

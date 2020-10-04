@@ -32,6 +32,7 @@ import android.util.Log;
 
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.models.BookmarkModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.OdysseyServiceState;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
@@ -50,20 +51,59 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     /**
      * The version of the database
      */
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     private static OdysseyDatabaseManager mInstance;
 
     /**
      * Array of returned columns from the StateTracks table
      */
-    private String[] projectionTrackModels = {StateTracksTable.COLUMN_TRACKNUMBER, StateTracksTable.COLUMN_TRACKTITLE, StateTracksTable.COLUMN_TRACKALBUM, StateTracksTable.COLUMN_TRACKALBUMKEY,
-            StateTracksTable.COLUMN_TRACKDURATION, StateTracksTable.COLUMN_TRACKARTIST, StateTracksTable.COLUMN_TRACKURL, StateTracksTable.COLUMN_TRACKID};
+    private String[] projectionTrackModels = {
+            StateTracksTable.COLUMN_TRACKNUMBER,
+            StateTracksTable.COLUMN_TRACKTITLE,
+            StateTracksTable.COLUMN_TRACKALBUM,
+            StateTracksTable.COLUMN_TRACKALBUMKEY,
+            StateTracksTable.COLUMN_TRACKDURATION,
+            StateTracksTable.COLUMN_TRACKARTIST,
+            StateTracksTable.COLUMN_TRACKURL,
+            StateTracksTable.COLUMN_TRACKID
+    };
 
     /**
      * Array of returned columns from the State table
      */
-    private String[] projectionState = {StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TRACKNUMBER, StateTable.COLUMN_TRACKPOSITION, StateTable.COLUMN_RANDOM_STATE, StateTable.COLUMN_REPEAT_STATE};
+    private String[] projectionState = {
+            StateTable.COLUMN_BOOKMARK_TIMESTAMP,
+            StateTable.COLUMN_TRACKNUMBER,
+            StateTable.COLUMN_TRACKPOSITION,
+            StateTable.COLUMN_RANDOM_STATE,
+            StateTable.COLUMN_REPEAT_STATE
+    };
+
+    /**
+     * Array of returned columns from the Playlists table
+     */
+    private String[] projectionPlaylists = {
+            PlaylistsTable.COLUMN_ID,
+            PlaylistsTable.COLUMN_TITLE,
+            PlaylistsTable.COLUMN_TRACKS
+    };
+
+    /**
+     * Array of returned columns from the PlaylistTracks table
+     */
+    private String[] projectionPlaylistTracks = {
+            PlaylistsTracksTable.COLUMN_ID,
+            PlaylistsTracksTable.COLUMN_TRACK_NUMBER,
+            PlaylistsTracksTable.COLUMN_TRACK_TITLE,
+            PlaylistsTracksTable.COLUMN_TRACK_ALBUM,
+            PlaylistsTracksTable.COLUMN_TRACK_ALBUMKEY,
+            PlaylistsTracksTable.COLUMN_TRACK_DURATION,
+            PlaylistsTracksTable.COLUMN_TRACK_ARTIST,
+            PlaylistsTracksTable.COLUMN_TRACK_URL,
+            PlaylistsTracksTable.COLUMN_TRACK_ID,
+            PlaylistsTracksTable.COLUMN_PLAYLIST_ID
+    };
 
     private OdysseyDatabaseManager(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -76,7 +116,6 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         return mInstance;
     }
 
-
     /**
      * Called when the database is created for the first time.
      * This method creates the StateTracks and the State table
@@ -85,15 +124,18 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     public void onCreate(final SQLiteDatabase db) {
         StateTracksTable.onCreate(db);
         StateTable.onCreate(db);
+        PlaylistsTracksTable.onCreate(db);
+        PlaylistsTable.onCreate(db);
     }
 
     /**
      * Called when the database needs to be upgraded.
-     * This method is currently not implemented.
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // FIXME if database schema change provide update path here
+        if (newVersion == 22) {
+            onCreate(db);
+        }
     }
 
     /**
@@ -120,8 +162,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (autosave) {
             // delete previous auto saved states if this save is an auto generated save
-            final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_AUTOSAVE}, StateTable.COLUMN_AUTOSAVE + "=?", new String[]{"1"},
-                    "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
+            final Cursor stateCursor = odysseyStateDB.query(
+                    StateTable.TABLE_NAME,
+                    new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_AUTOSAVE},
+                    StateTable.COLUMN_AUTOSAVE + "=?",
+                    new String[]{"1"},
+                    "",
+                    "",
+                    StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
 
             if (stateCursor.moveToFirst()) {
                 do {
@@ -196,16 +244,25 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Return the playlist for the given timestamp
+     * Return all tracks from a bookmark.
+     *
+     * @param timeStamp The timestamp which identifies the bookmark.
+     * @return All tracks for the bookmark as list of {@link TrackModel}.
      */
-    public List<TrackModel> readPlaylist(long timeStamp) {
+    public List<TrackModel> readBookmarkTracks(long timeStamp) {
 
         final SQLiteDatabase odysseyStateDB = getReadableDatabase();
 
         final List<TrackModel> playList = new ArrayList<>();
 
-        final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME, projectionTrackModels, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
-                "", "", StateTracksTable.COLUMN_ID);
+        final Cursor cursor = odysseyStateDB.query(
+                StateTracksTable.TABLE_NAME,
+                projectionTrackModels,
+                StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                new String[]{Long.toString(timeStamp)},
+                "",
+                "",
+                StateTracksTable.COLUMN_ID);
 
         if (cursor.moveToFirst()) {
             do {
@@ -233,23 +290,37 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns the playlist for the most recent timestamp
+     * Return all tracks from the most recent bookmark
+     *
+     * @return All tracks for the bookmark as list of {@link TrackModel}.
      */
-    public List<TrackModel> readPlaylist() {
+    public List<TrackModel> readBookmarkTracks() {
 
         final SQLiteDatabase odysseyStateDB = getReadableDatabase();
 
         final List<TrackModel> playList = new ArrayList<>();
 
         // query the most recent timestamp
-        final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP}, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
+        final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME,
+                new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP},
+                "",
+                null,
+                "",
+                "",
+                StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC",
+                "1");
 
         if (stateCursor.moveToFirst()) {
             final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
             // get the playlist tracks for the queried timestamp
-            final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME, projectionTrackModels, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)},
-                    "", "", StateTracksTable.COLUMN_ID);
+            final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME,
+                    projectionTrackModels,
+                    StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                    new String[]{Long.toString(timeStamp)},
+                    "",
+                    "",
+                    StateTracksTable.COLUMN_ID);
 
             if (cursor.moveToFirst()) {
                 do {
@@ -288,7 +359,15 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final OdysseyServiceState state = new OdysseyServiceState();
 
-        final Cursor cursor = odysseyStateDB.query(StateTable.TABLE_NAME, projectionState, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)}, "", "", "", "1");
+        final Cursor cursor = odysseyStateDB.query(
+                StateTable.TABLE_NAME,
+                projectionState,
+                StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                new String[]{Long.toString(timeStamp)},
+                "",
+                "",
+                "",
+                "1");
 
         if (cursor.moveToFirst()) {
 
@@ -314,7 +393,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final OdysseyServiceState state = new OdysseyServiceState();
 
-        final Cursor cursor = odysseyStateDB.query(StateTable.TABLE_NAME, projectionState, "", null, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC", "1");
+        final Cursor cursor = odysseyStateDB.query(StateTable.TABLE_NAME,
+                projectionState,
+                "",
+                null,
+                "",
+                "",
+                StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC",
+                "1");
 
         if (cursor.moveToFirst()) {
 
@@ -344,8 +430,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final String where = StateTable.COLUMN_AUTOSAVE + "=?";
 
-        final Cursor bookmarkCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE, StateTable.COLUMN_TRACKS, StateTable.COLUMN_AUTOSAVE},
-                where, whereVal, "", "", StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
+        final Cursor bookmarkCursor = odysseyStateDB.query(
+                StateTable.TABLE_NAME,
+                new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE, StateTable.COLUMN_TRACKS, StateTable.COLUMN_AUTOSAVE},
+                where,
+                whereVal,
+                "",
+                "",
+                StateTable.COLUMN_BOOKMARK_TIMESTAMP + " DESC");
 
         if (bookmarkCursor != null) {
 
@@ -387,5 +479,244 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         odysseyStateDB.endTransaction();
 
         odysseyStateDB.close();
+    }
+
+    /**
+     * Method to save a list of {@link TrackModel} as a playlist in the database.
+     *
+     * @param playlistName The name for the playlist.
+     * @param tracks       The list of {@link TrackModel} that should be part of the playlist.
+     */
+    public void savePlaylist(final String playlistName, final List<TrackModel> tracks) {
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
+
+        final Cursor cursor = odysseyDB.query(
+                PlaylistsTable.TABLE_NAME,
+                projectionPlaylists,
+                PlaylistsTable.COLUMN_TITLE + "=?",
+                new String[]{playlistName},
+                "",
+                "",
+                ""
+        );
+
+        if (cursor.moveToFirst()) {
+            final long playlistId = cursor.getLong(cursor.getColumnIndex(PlaylistsTable.COLUMN_ID));
+
+            int result = -1;
+
+            // delete playlist
+            result = odysseyDB.delete(PlaylistsTable.TABLE_NAME,
+                    PlaylistsTable.COLUMN_ID + "=?",
+                    new String[]{Long.toString(playlistId)}
+            );
+
+            if (result > 0) {
+                // delete tracks only if playlist was removed
+                odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+                        PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
+                        new String[]{Long.toString(playlistId)}
+                );
+            }
+        }
+
+        cursor.close();
+
+        odysseyDB.beginTransaction();
+
+        // create new playlist
+        final ContentValues values = new ContentValues();
+        values.put(PlaylistsTable.COLUMN_TITLE, playlistName);
+        values.put(PlaylistsTable.COLUMN_TRACKS, tracks.size());
+
+        final long playlistId = odysseyDB.insert(PlaylistsTable.TABLE_NAME, null, values);
+
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
+
+        odysseyDB.beginTransaction();
+
+        // add tracks
+        if (playlistId != -1) {
+            // fix this if tracks should be appended
+            int index = 1;
+
+            for (TrackModel track : tracks) {
+                values.clear();
+
+                // set TrackModel parameters
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_TITLE, track.getTrackName());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_DURATION, track.getTrackDuration());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_NUMBER, track.getTrackNumber());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_ARTIST, track.getTrackArtistName());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_ALBUM, track.getTrackAlbumName());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_URL, track.getTrackUriString());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_ALBUMKEY, track.getTrackAlbumKey());
+                values.put(PlaylistsTracksTable.COLUMN_TRACK_ID, track.getTrackId());
+                values.put(PlaylistsTracksTable.COLUMN_PLAYLIST_ID, playlistId);
+                values.put(PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION, index);
+
+                odysseyDB.insert(PlaylistsTracksTable.TABLE_NAME, null, values);
+
+                index++;
+            }
+        }
+
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
+
+        odysseyDB.close();
+    }
+
+    /**
+     * Removes a playlist from the database.
+     *
+     * @param playlistId The id to identify the playlist that should be deleted.
+     * @return True if a playlist was removed otherwise false.
+     */
+    public boolean removePlaylist(final long playlistId) {
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
+
+        int result = -1;
+
+        odysseyDB.beginTransaction();
+
+        // delete playlist
+        result = odysseyDB.delete(PlaylistsTable.TABLE_NAME,
+                PlaylistsTable.COLUMN_ID + "=?",
+                new String[]{Long.toString(playlistId)}
+        );
+
+        if (result > 0) {
+            // delete tracks only if playlist was removed
+            odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+                    PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
+                    new String[]{Long.toString(playlistId)}
+            );
+        }
+
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
+
+        odysseyDB.close();
+
+        return result > 0;
+    }
+
+    /**
+     * Method to return all playlists that are stored in the database.
+     *
+     * @return The stored playlists as a list of {@link PlaylistModel}.
+     */
+    public List<PlaylistModel> getPlaylists() {
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
+
+        final ArrayList<PlaylistModel> playlists = new ArrayList<>();
+
+        final Cursor cursor = odysseyDB.query(PlaylistsTable.TABLE_NAME,
+                projectionPlaylists,
+                "",
+                null,
+                "",
+                "",
+                PlaylistsTable.COLUMN_TITLE
+        );
+
+        if (cursor != null) {
+
+            if (cursor.moveToFirst()) {
+                final int playlistTitleColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_TITLE);
+                final int playlistIDColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_ID);
+
+                do {
+                    final String playlistTitle = cursor.getString(playlistTitleColumnIndex);
+                    final long playlistID = cursor.getLong(playlistIDColumnIndex);
+
+                    playlists.add(new PlaylistModel(playlistTitle, playlistID, PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL));
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        odysseyDB.close();
+
+        return playlists;
+    }
+
+    /**
+     * Returns all tracks that are stored for a playlist.
+     *
+     * @param playlistId The id to identify the playlist.
+     * @return All playlist tracks as a list of {@link TrackModel}.
+     */
+    public List<TrackModel> getTracksForPlaylist(final long playlistId) {
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
+
+        final List<TrackModel> tracks = new ArrayList<>();
+
+        final Cursor cursor = odysseyDB.query(
+                PlaylistsTracksTable.TABLE_NAME,
+                projectionPlaylistTracks,
+                PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
+                new String[]{Long.toString(playlistId)},
+                "",
+                "",
+                PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                final String trackName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_TITLE));
+                final long duration = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_DURATION));
+                final int number = cursor.getInt(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_NUMBER));
+                final String artistName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ARTIST));
+                final String albumName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ALBUM));
+                final String url = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_URL));
+                final String albumKey = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ALBUMKEY));
+                final long id = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ID));
+
+                TrackModel item = new TrackModel(trackName, artistName, albumName, albumKey, duration, number, Uri.parse(url), id);
+
+                tracks.add(item);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        odysseyDB.close();
+
+        return tracks;
+    }
+
+    /**
+     * Method to remove a single track from a playlist.
+     *
+     * @param playlistId    The id of the playlist.
+     * @param trackPosition The position of the track in the playlist.
+     * @return True if the track was removed otherwise false.
+     */
+    public boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition) {
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
+
+        int result = -1;
+
+        final String where = PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=? AND " + PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION + "=?";
+        final String[] whereVal = {Long.toString(playlistId), Integer.toString(trackPosition)};
+
+        odysseyDB.beginTransaction();
+
+        // delete tracks
+        result = odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+                where,
+                whereVal
+        );
+
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
+
+        odysseyDB.close();
+
+        return result > 0;
     }
 }

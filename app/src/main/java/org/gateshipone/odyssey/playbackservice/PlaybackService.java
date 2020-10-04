@@ -47,6 +47,7 @@ import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
@@ -300,7 +301,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mDatabaseManager = OdysseyDatabaseManager.getInstance(getApplicationContext());
 
         // read a possible saved playlist from the database
-        mCurrentList = mDatabaseManager.readPlaylist();
+        mCurrentList = mDatabaseManager.readBookmarkTracks();
 
         // Create empty bucket list
         mTrackRandomGenerator = new TrackRandomGenerator();
@@ -1428,89 +1429,63 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Save the current playlist in mediastore
+     * Save the current playlist in odyssey internal database
      */
     public void savePlaylist(String name) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        MusicLibraryHelper.savePlaylist(name, mCurrentList, getApplicationContext());
+        mDatabaseManager.savePlaylist(name, mCurrentList);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
     }
 
     /**
-     * enqueue a selected playlist from mediastore
+     * Play a selected playlist from mediastore/odyssey db/file.
      *
-     * @param playlistId the id of the selected playlist
+     * @param playlist the {@link PlaylistModel} that represents the playlist
      */
-    public void enqueuePlaylist(long playlistId) {
+    public void enqueuePlaylist(PlaylistModel playlist) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        // get playlist from mediastore
-        List<TrackModel> playlistTracks = MusicLibraryHelper.getTracksForPlaylist(playlistId, getApplicationContext());
+        final List<TrackModel> playlistTracks = new ArrayList<>();
 
-        // add tracks to current playlist
-        enqueueTracks(playlistTracks);
-
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
-        mBusy = false;
-    }
-
-    /**
-     * Play a selected playlist from mediastore.
-     * A previous playlist will be cleared.
-     *
-     * @param playlistId the id of the selected playlist
-     * @param position   the position to start the playback
-     */
-    public void playPlaylist(long playlistId, int position) {
-        clearPlaylist();
-
-        enqueuePlaylist(playlistId);
-
-        jumpToIndex(position);
-    }
-
-    /**
-     * enqueue a selected playlist from the selected file path
-     *
-     * @param path the path to a playlistfile
-     */
-    public void enqueuePlaylistFile(String path) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
-        mBusy = true;
-
-        // Parse the playlist file with a parser
-        PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(path));
-        if (parser == null) {
-            return;
+        switch (playlist.getPlaylistType()) {
+            case MEDIASTORE:
+                playlistTracks.addAll(MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistID(), getApplicationContext()));
+                break;
+            case ODYSSEY_LOCAL:
+                playlistTracks.addAll(mDatabaseManager.getTracksForPlaylist(playlist.getPlaylistID()));
+                break;
+            case FILE:
+                PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(playlist.getPlaylistPath()));
+                if (parser == null) {
+                    return;
+                }
+                playlistTracks.addAll(parser.parseList(this));
+                break;
         }
-        ArrayList<TrackModel> playlistTracks = parser.parseList(this);
 
         // add tracks to current playlist
         enqueueTracks(playlistTracks);
-
-        // start meta data extraction for new tracks
-        mMetaDataLoader.getTrackListMetaData(getApplicationContext(), playlistTracks);
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
     }
 
     /**
-     * Play a selected playlist from the selected file path.
+     * Play a selected playlist from mediastore/odyssey db/file.
      * A previous playlist will be cleared.
      *
-     * @param path     the path to a playlistfile
+     * @param playlist the {@link PlaylistModel} that represents the playlist that should be played
      * @param position the position to start the playback
      */
-    public void playPlaylistFile(String path, int position) {
+    public void playPlaylist(PlaylistModel playlist, int position) {
         clearPlaylist();
 
-        enqueuePlaylistFile(path);
+        enqueuePlaylist(playlist);
 
         jumpToIndex(position);
     }
@@ -1526,7 +1501,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         clearPlaylist();
 
         // get playlist from database
-        mCurrentList = mDatabaseManager.readPlaylist(timestamp);
+        mCurrentList = mDatabaseManager.readBookmarkTracks(timestamp);
 
         // get state from database
         OdysseyServiceState state = mDatabaseManager.getState(timestamp);

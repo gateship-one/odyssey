@@ -44,9 +44,10 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
-import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
+import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.FileViewModel;
@@ -68,7 +69,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     private OnDirectorySelectedListener mOnDirectorySelectedCallback;
 
-    private OnPlaylistFileSelectedListener mOnPlaylistFileSelectedCallback;
+    private OnPlaylistSelectedListener mOnPlaylistSelectedCallback;
 
     /**
      * the current directory that is displayed by the fragment
@@ -204,7 +205,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         }
 
         try {
-            mOnPlaylistFileSelectedCallback = (OnPlaylistFileSelectedListener) context;
+            mOnPlaylistSelectedCallback = (OnPlaylistSelectedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnPlaylistFileSelectedListener");
         }
@@ -259,7 +260,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             // file is directory open new fragment
             mOnDirectorySelectedCallback.onDirectorySelected(selectedFile.getPath(), false);
         } else if (selectedFile.isPlaylist()) {
-            mOnPlaylistFileSelectedCallback.onPlaylistFileSelected(selectedFile.getNameWithoutExtension(), selectedFile.getPath());
+            mOnPlaylistSelectedCallback.onPlaylistSelected(new PlaylistModel(selectedFile.getNameWithoutExtension(), selectedFile.getPath()));
         } else {
             switch (mClickAction) {
                 case ACTION_ADD_SONG:

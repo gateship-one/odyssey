@@ -97,7 +97,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
                 });
 
         // setup playlist ViewModel
-        final PlaylistViewModel model = new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true))
+        final PlaylistViewModel model = new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), true, true))
                 .get(PlaylistViewModel.class);
         model.getData()
                 .observe(this, data -> mPlaylistsListViewAdapter.swapModel(data));

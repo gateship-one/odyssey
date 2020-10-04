@@ -45,16 +45,10 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
      */
     private final String mAlbumKey;
 
-    /**
-     * The playlist id if tracks of a specific playlist should be loaded.
-     */
-    private final long mPlaylistID;
-
-    private TrackViewModel(@NonNull final Application application, final String albumKey, final long playlistID) {
+    private TrackViewModel(@NonNull final Application application, final String albumKey) {
         super(application);
 
         mAlbumKey = albumKey;
-        mPlaylistID = playlistID;
     }
 
     @Override
@@ -77,22 +71,17 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
             if (model != null) {
                 final Application application = model.getApplication();
 
-                if (model.mPlaylistID != -1) {
-                    // load playlist tracks
-                    return MusicLibraryHelper.getTracksForPlaylist(model.mPlaylistID, application);
+                if (model.mAlbumKey.isEmpty()) {
+                    // load all tracks
+                    return MusicLibraryHelper.getAllTracks(null, application);
                 } else {
-                    if (model.mAlbumKey.isEmpty()) {
-                        // load all tracks
-                        return MusicLibraryHelper.getAllTracks(null, application);
-                    } else {
-                        // load album tracks
+                    // load album tracks
 
-                        // read order preference
-                        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
-                        final String orderKey = sharedPref.getString(application.getString(R.string.pref_album_tracks_sort_order_key), application.getString(R.string.pref_album_tracks_sort_default));
+                    // read order preference
+                    final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(application);
+                    final String orderKey = sharedPref.getString(application.getString(R.string.pref_album_tracks_sort_order_key), application.getString(R.string.pref_album_tracks_sort_default));
 
-                        return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, orderKey, application);
-                    }
+                    return MusicLibraryHelper.getTracksForAlbum(model.mAlbumKey, orderKey, application);
                 }
             }
 
@@ -116,30 +105,23 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
 
         private final String mAlbumKey;
 
-        private final long mPlaylistID;
-
-        private TrackViewModelFactory(final Application application, final String albumKey, final long playlistID) {
+        public TrackViewModelFactory(final Application application, final String albumKey) {
             mApplication = application;
-            mAlbumKey = albumKey;
-            mPlaylistID = playlistID;
+            if (albumKey != null) {
+                mAlbumKey = albumKey;
+            } else {
+                mAlbumKey = "";
+            }
         }
 
         public TrackViewModelFactory(final Application application) {
-            this(application, "", -1);
-        }
-
-        public TrackViewModelFactory(final Application application, final String albumKey) {
-            this(application, albumKey, -1);
-        }
-
-        public TrackViewModelFactory(final Application application, final long playlistID) {
-            this(application, "", playlistID);
+            this(application, null);
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new TrackViewModel(mApplication, mAlbumKey, mPlaylistID);
+            return (T) new TrackViewModel(mApplication, mAlbumKey);
         }
     }
 }

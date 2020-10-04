@@ -65,7 +65,6 @@ import org.gateshipone.odyssey.fragments.SettingsFragment;
 import org.gateshipone.odyssey.listener.OnAlbumSelectedListener;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
-import org.gateshipone.odyssey.listener.OnPlaylistFileSelectedListener;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
@@ -73,6 +72,7 @@ import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
@@ -100,8 +100,7 @@ public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
         OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
-        OnPlaylistSelectedListener, OnPlaylistFileSelectedListener, OnDirectorySelectedListener,
-        OnStartSleepTimerListener {
+        OnPlaylistSelectedListener, OnDirectorySelectedListener, OnStartSleepTimerListener {
 
     public enum REQUESTEDVIEW {
         NONE,
@@ -734,32 +733,9 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     @Override
-    public void onPlaylistSelected(String playlistTitle, long playlistID) {
+    public void onPlaylistSelected(PlaylistModel playlistModel) {
         // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlistTitle, playlistID);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // set enter / exit animation
-        final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
-
-        // Replace whatever is in the fragment_container view with this
-        // fragment,
-        // and add the transaction to the back stack so the user can navigate
-        // back
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack("PlaylistTracksFragment");
-
-        // Commit the transaction
-        transaction.commit();
-    }
-
-    @Override
-    public void onPlaylistFileSelected(String name, String path) {
-        // Create fragment and give it an argument for the selected playlist
-        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(name, path);
+        PlaylistTracksFragment newFragment = PlaylistTracksFragment.newInstance(playlistModel);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

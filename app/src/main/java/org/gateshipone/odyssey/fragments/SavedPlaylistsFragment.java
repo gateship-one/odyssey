@@ -39,6 +39,7 @@ import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.models.PlaylistModel;
+import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
@@ -87,7 +88,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     @Override
     GenericViewModel<PlaylistModel> getViewModel() {
-        return new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false)).get(PlaylistViewModel.class);
+        return new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false, false)).get(PlaylistViewModel.class);
     }
 
     /**
@@ -130,11 +131,8 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // identify current playlist
         PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
-        String playlistName = clickedPlaylist.getPlaylistName();
-        long playlistID = clickedPlaylist.getPlaylistID();
-
         // open playlistfragment
-        mPlaylistSelectedCallback.onPlaylistSelected(playlistName, playlistID);
+        mPlaylistSelectedCallback.onPlaylistSelected(clickedPlaylist);
     }
 
     /**
@@ -187,7 +185,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(clickedPlaylist.getPlaylistID());
+            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(clickedPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -205,7 +203,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(clickedPlaylist.getPlaylistID(), 0);
+            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(clickedPlaylist, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -222,7 +220,16 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         final PlaylistModel clickedPlaylist = mAdapter.getItem(position);
 
         // delete current playlist
-        final boolean reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
+        boolean reloadData = false;
+
+        switch (clickedPlaylist.getPlaylistType()) {
+            case MEDIASTORE:
+                reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
+                break;
+            case ODYSSEY_LOCAL:
+                reloadData = OdysseyDatabaseManager.getInstance(getContext()).removePlaylist(clickedPlaylist.getPlaylistID());
+                break;
+        }
 
         if (reloadData) {
             // reload data

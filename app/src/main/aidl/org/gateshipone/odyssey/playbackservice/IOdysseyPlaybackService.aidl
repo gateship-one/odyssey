@@ -21,6 +21,7 @@ package org.gateshipone.odyssey.playbackservice;
 
 // Declare any non-default types here with import statements
 import org.gateshipone.odyssey.models.TrackModel;
+import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 
 interface IOdysseyPlaybackService {
@@ -38,15 +39,12 @@ interface IOdysseyPlaybackService {
      */
     void seekTo(int position);
 
-    // save current playlist in mediastore
+    // save current playlist in odyssey db
     void savePlaylist(String name);
 
-    // enqueue a playlist from mediastore
-    void enqueuePlaylist(long playlistId);
-    void playPlaylist(long playlistId, int position);
-
-    void enqueuePlaylistFile(String path);
-    void playPlaylistFile(String path, int position);
+    // enqueue a playlist from mediastore/odyssey db/file
+    void enqueuePlaylist(in PlaylistModel playlist);
+    void playPlaylist(in PlaylistModel playlist, int position);
 
     // enqueue all tracks of an album from mediastore
     void enqueueAlbum(String albumKey, String orderKey);

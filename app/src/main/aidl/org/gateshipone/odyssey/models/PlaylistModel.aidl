@@ -20,9 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.listener;
+// IPlaylistModel.aidl
+package org.gateshipone.odyssey.models;
 
-
-public interface OnPlaylistFileSelectedListener {
-    void onPlaylistFileSelected(String name, String path);
-}
+parcelable PlaylistModel;

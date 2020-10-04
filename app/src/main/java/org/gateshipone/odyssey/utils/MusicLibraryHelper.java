@@ -554,6 +554,8 @@ public class MusicLibraryHelper {
      * Save a playlist in the MediaStore.
      * A previous playlist with the same name will be deleted.
      * Only tracks that exists in the MediaStore will be saved in the playlist.
+     * <p>
+     * TODO this will not be used any more!
      *
      * @param playlistName The name for the playlist
      * @param tracks       The tracklist for the playlist
@@ -809,7 +811,7 @@ public class MusicLibraryHelper {
                     final long playlistID = cursor.getLong(playlistIDColumnIndex);
 
                     // add the playlist
-                    playlists.add(new PlaylistModel(playlistTitle, playlistID));
+                    playlists.add(new PlaylistModel(playlistTitle, playlistID, PlaylistModel.PLAYLIST_TYPES.MEDIASTORE));
                 } while (cursor.moveToNext());
             }
 
