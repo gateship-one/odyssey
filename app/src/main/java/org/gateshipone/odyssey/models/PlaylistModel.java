@@ -42,7 +42,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
     }
 
     /**
-     * The name of the playlist
+     * The name of the playlist.
      */
     private final String mPlaylistName;
 
@@ -50,6 +50,11 @@ public class PlaylistModel implements GenericModel, Parcelable {
      * Unique id to identify the playlist in the mediastore or the odyssey db.
      */
     private final long mPlaylistID;
+
+    /**
+     * The number of tracks of the playlist.
+     */
+    private final int mPlaylistTracks;
 
     /**
      * File path to playlist.
@@ -62,7 +67,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
      */
     private final PLAYLIST_TYPES mPlaylistType;
 
-    private PlaylistModel(String playlistName, long playlistId, String playlistPath, PLAYLIST_TYPES playlistType) {
+    private PlaylistModel(String playlistName, long playlistId, int playlistTracks, String playlistPath, PLAYLIST_TYPES playlistType) {
         if (playlistName != null) {
             mPlaylistName = playlistName;
         } else {
@@ -76,6 +81,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
         }
 
         mPlaylistID = playlistId;
+        mPlaylistTracks = playlistTracks;
         mPlaylistType = playlistType;
     }
 
@@ -83,14 +89,21 @@ public class PlaylistModel implements GenericModel, Parcelable {
      * Constructs a PlaylistModel of type FILE.
      */
     public PlaylistModel(String playlistName, String playlistPath) {
-        this(playlistName, -1, playlistPath, PLAYLIST_TYPES.FILE);
+        this(playlistName, -1, -1, playlistPath, PLAYLIST_TYPES.FILE);
     }
 
     /**
      * Constructs a PlaylistModel instance with the given parameters.
      */
     public PlaylistModel(String playlistName, long playlistID, PLAYLIST_TYPES playlistType) {
-        this(playlistName, playlistID, null, playlistType);
+        this(playlistName, playlistID, -1, null, playlistType);
+    }
+
+    /**
+     * Constructs a PlaylistModel instance with the given parameters.
+     */
+    public PlaylistModel(String playlistName, long playlistID, int mPlaylistTracks, PLAYLIST_TYPES playlistType) {
+        this(playlistName, playlistID, mPlaylistTracks, null, playlistType);
     }
 
     /**
@@ -100,9 +113,10 @@ public class PlaylistModel implements GenericModel, Parcelable {
      */
     protected PlaylistModel(Parcel in) {
         mPlaylistID = in.readLong();
+        mPlaylistTracks = in.readInt();
+        mPlaylistType = PLAYLIST_TYPES.values()[in.readInt()];
         mPlaylistName = in.readString();
         mPlaylistPath = in.readString();
-        mPlaylistType = PLAYLIST_TYPES.values()[in.readInt()];
     }
 
     /**
@@ -144,6 +158,13 @@ public class PlaylistModel implements GenericModel, Parcelable {
     }
 
     /**
+     * Return the number of tracks of the playlist
+     */
+    public int getPlaylistTracks() {
+        return mPlaylistTracks;
+    }
+
+    /**
      * Return the path to the playlist file.
      * Only valid if mPlaylistType is FILE.
      */
@@ -180,9 +201,10 @@ public class PlaylistModel implements GenericModel, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mPlaylistID);
+        dest.writeInt(mPlaylistTracks);
+        dest.writeInt(mPlaylistType.ordinal());
         dest.writeString(mPlaylistName);
         dest.writeString(mPlaylistPath);
-        dest.writeInt(mPlaylistType.ordinal());
     }
 
 }

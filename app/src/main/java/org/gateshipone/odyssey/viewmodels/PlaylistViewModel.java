@@ -32,6 +32,7 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -93,6 +94,9 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
 
                 // add playlists from odyssey local storage
                 playlists.addAll(OdysseyDatabaseManager.getInstance(application).getPlaylists());
+
+                // sort the recent albums
+                Collections.sort(playlists, (p1, p2) -> p1.getPlaylistName().compareToIgnoreCase(p2.getPlaylistName()));
 
                 return playlists;
             }

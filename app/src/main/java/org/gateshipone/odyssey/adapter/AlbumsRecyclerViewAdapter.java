@@ -74,12 +74,12 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
         GenericImageViewItem view;
 
         if (mUseList) {
-            view = new ListViewItem(parent.getContext(), "", this);
+            view = ListViewItem.createAlbumItem(parent.getContext(), this);
 
             // set a selectable background manually
             view.setBackgroundResource(ThemeUtils.getThemeResourceId(parent.getContext(), R.attr.selectableItemBackground));
         } else {
-            view = new GridViewItem(parent.getContext(), "", this);
+            view = GridViewItem.createAlbumItem(parent.getContext(), this);
 
             // apply custom layout params to ensure that the griditems have equal size
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemSize);
@@ -93,7 +93,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
     public void onBindViewHolder(@NonNull GenericViewItemHolder holder, int position) {
         final AlbumModel album = getItem(position);
 
-        holder.setTitle(album.getAlbumName());
+        holder.setAlbum(album);
 
         if (!mUseList) {
             // for griditems adjust the height each time data is set

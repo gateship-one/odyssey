@@ -231,4 +231,6 @@
     <string name="preference_tracks_sort_order_summary">Wähle die Sortierung für Lieder eines Albums.</string>
     <string name="preference_album_tracks_sort_number">Liednummer</string>
     <string name="preference_album_tracks_sort_name">Anzeigename (Dateiname)</string>
+    <string name="playlist_type_global">Global</string>
+    <string name="playlist_type_local">Lokal</string>
 </resources>

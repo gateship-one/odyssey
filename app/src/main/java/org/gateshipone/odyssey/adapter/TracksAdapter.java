@@ -78,7 +78,7 @@ public class TracksAdapter extends GenericSectionAdapter<TrackModel> {
         if (convertView != null) {
             listViewItem = (ListViewItem) convertView;
         } else {
-            listViewItem = new ListViewItem(mContext, false, this);
+            listViewItem = ListViewItem.createAlbumTrackItem(mContext, this);
         }
 
         listViewItem.setAlbumTrack(track, mShowDiscNumber);

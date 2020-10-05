@@ -75,6 +75,7 @@ import java.util.TimerTask;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ViewDragHelper;
@@ -1446,24 +1447,19 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
 
     private void showPlaceholderImage() {
-        // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
-
-        Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, tintColor);
-
         // Show the placeholder image until the cover fetch process finishes
         mCoverImage.clearAlbumImage();
 
-        tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
-
-        drawable = getResources().getDrawable(R.drawable.cover_placeholder_96dp, null);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, tintColor);
-
-
         // The same for the small header image
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.cover_placeholder_96dp, null);
+
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+        }
+
         mTopCoverImage.setImageDrawable(drawable);
     }
 

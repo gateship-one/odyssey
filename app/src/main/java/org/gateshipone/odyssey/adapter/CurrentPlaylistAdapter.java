@@ -210,18 +210,21 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
             // Check if view is recyclable
             if (convertView != null) {
                 listViewItem = (ListViewItem) convertView;
-                listViewItem.setTrack(currentTrack, position == mCurrentPlayingIndex);
             } else {
-                listViewItem = new ListViewItem(mContext, currentTrack, position == mCurrentPlayingIndex, this);
+                listViewItem = ListViewItem.createCurrentPlaylistItem(mContext, this);
             }
+
+            listViewItem.setTrack(currentTrack, position == mCurrentPlayingIndex);
         } else {
             // Check if view is recyclable
             if (convertView != null) {
                 listViewItem = (ListViewItem) convertView;
-                listViewItem.setTrack(currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
             } else {
-                listViewItem = new ListViewItem(mContext, currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex, this);
+                listViewItem = ListViewItem.createCurrentPlaylistSectionItem(mContext, this);
             }
+
+            listViewItem.setTrack(currentTrack, currentTrack.getTrackAlbumName(), position == mCurrentPlayingIndex);
+
             if (!mHideArtwork) {
                 listViewItem.prepareArtworkFetching(mArtworkManager, currentTrack);
             } else {

@@ -55,11 +55,11 @@ public class BookmarksAdapter extends GenericSectionAdapter<BookmarkModel> {
         // Check if a view can be recycled
         if (convertView != null) {
             listViewItem = (ListViewItem) convertView;
-
-            listViewItem.setBookmark(bookmark);
         } else {
-            listViewItem = new ListViewItem(mContext, bookmark, this);
+            listViewItem = ListViewItem.createBookmarkItem(mContext, this);
         }
+
+        listViewItem.setBookmark(bookmark);
 
         return listViewItem;
     }

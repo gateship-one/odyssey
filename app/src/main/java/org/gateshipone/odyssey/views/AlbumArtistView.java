@@ -38,6 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 
@@ -125,6 +126,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
     /**
      * Sets the album image to the given bitmap
+     *
      * @param image {@link Bitmap} to show as an album cover
      */
     public void setAlbumImage(Bitmap image) {
@@ -137,6 +139,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
     /**
      * Sets the artist image to the given bitmap.
+     *
      * @param image {@link Bitmap} to show as an artist image
      */
     public void setArtistImage(Bitmap image) {
@@ -153,9 +156,12 @@ public class AlbumArtistView extends ViewSwitcher {
         // get tint color
         int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
 
-        Drawable drawable = getResources().getDrawable(R.drawable.cover_placeholder, null);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, tintColor);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.cover_placeholder, null);
+
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, tintColor);
+        }
 
         mAlbumImage.setImageDrawable(drawable);
         mAlbumImageAvailable = false;

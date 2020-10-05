@@ -75,18 +75,18 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArtistModel artist = getItem(position);
-        String label = artist.getArtistName();
+        final ArtistModel artist = getItem(position);
 
         if (mUseList) {
             ListViewItem listItem;
             // Check if a view can be recycled
             if (convertView != null) {
                 listItem = (ListViewItem) convertView;
-                listItem.setTitle(label);
             } else {
-                listItem = new ListViewItem(mContext, label, this);
+                listItem = ListViewItem.createArtistItem(mContext, this);
             }
+
+            listItem.setArtist(artist);
 
             if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
@@ -107,14 +107,16 @@ public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implement
             // Check if a view can be recycled
             if (convertView != null) {
                 gridItem = (GridViewItem) convertView;
-                gridItem.setTitle(label);
+                gridItem.setArtist(artist);
 
                 layoutParams = gridItem.getLayoutParams();
                 layoutParams.height = width;
                 layoutParams.width = width;
             } else {
                 // Create new view if no reusable is available
-                gridItem = new GridViewItem(mContext, label, this);
+                gridItem = GridViewItem.createArtistItem(mContext, this);
+                gridItem.setArtist(artist);
+
                 layoutParams = new android.widget.AbsListView.LayoutParams(width, width);
             }
 

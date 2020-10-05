@@ -34,14 +34,6 @@ public class GenericViewItemHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void setTitle(final String title) {
-        if (itemView instanceof ListViewItem) {
-            ((ListViewItem) itemView).setTitle(title);
-        } else if (itemView instanceof GridViewItem) {
-            ((GridViewItem) itemView).setTitle(title);
-        }
-    }
-
     public void prepareArtworkFetching(final ArtworkManager artworkManager, final AlbumModel album) {
         ((GenericImageViewItem) itemView).prepareArtworkFetching(artworkManager, album);
     }
@@ -56,5 +48,13 @@ public class GenericViewItemHolder extends RecyclerView.ViewHolder {
 
     public void setAlbumTrack(final TrackModel trackModel, final boolean mShowDiscNumber) {
         ((ListViewItem) itemView).setAlbumTrack(trackModel, mShowDiscNumber);
+    }
+
+    public void setAlbum(final AlbumModel album) {
+        if (itemView instanceof ListViewItem) {
+            ((ListViewItem) itemView).setAlbum(album);
+        } else if (itemView instanceof GridViewItem) {
+            ((GridViewItem) itemView).setAlbum(album);
+        }
     }
 }

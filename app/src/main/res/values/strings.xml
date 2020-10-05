@@ -51,6 +51,8 @@
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">No playlists found.</string>
+    <string name="playlist_type_global">Global</string>
+    <string name="playlist_type_local">Local</string>
 
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Tracks</string>

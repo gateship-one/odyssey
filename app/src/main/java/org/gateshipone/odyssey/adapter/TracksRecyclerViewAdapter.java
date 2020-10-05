@@ -48,7 +48,7 @@ public class TracksRecyclerViewAdapter extends GenericRecyclerViewAdapter<TrackM
     @NonNull
     @Override
     public GenericViewItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ListViewItem view = new ListViewItem(parent.getContext(), false, this);
+        ListViewItem view = ListViewItem.createAlbumTrackItem(parent.getContext(), this);
 
         // set a selectable background manually
         view.setBackgroundResource(ThemeUtils.getThemeResourceId(parent.getContext(), R.attr.selectableItemBackground));

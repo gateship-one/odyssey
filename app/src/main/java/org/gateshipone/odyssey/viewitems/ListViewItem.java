@@ -24,12 +24,15 @@ package org.gateshipone.odyssey.viewitems;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
+import org.gateshipone.odyssey.models.AlbumModel;
+import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
@@ -37,6 +40,9 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.FormatHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 /**
@@ -69,152 +75,133 @@ public class ListViewItem extends GenericImageViewItem {
      */
     private TextView mSectionTitleView;
 
-    /**
-     * Base constructor to create a non section-type element.
-     *
-     * @param context  The current context.
-     * @param showIcon If the icon of the item should be shown. It is not changeable after creation.
-     * @param adapter  The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final boolean showIcon, final ScrollSpeedAdapter adapter) {
-        super(context, R.layout.listview_item_file, 0, 0, adapter);
+    public static ListViewItem createAlbumItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(
+                context,
+                R.layout.listview_item_image,
+                R.id.item_image,
+                R.id.item_image_switcher,
+                false,
+                false,
+                true,
+                adapter
+        );
+    }
+
+    public static ListViewItem createArtistItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(
+                context,
+                R.layout.listview_item_image,
+                R.id.item_image,
+                R.id.item_image_switcher,
+                false,
+                false,
+                true,
+                adapter
+        );
+    }
+
+    public static ListViewItem createSavedPlaylistItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item_file,
+                0,
+                0,
+                true,
+                false,
+                false,
+                adapter);
+    }
+
+    public static ListViewItem createBookmarkItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item_file,
+                0,
+                0,
+                true,
+                false,
+                false,
+                adapter);
+    }
+
+    public static ListViewItem createFileItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item_file,
+                0,
+                0,
+                true,
+                false,
+                false,
+                adapter);
+    }
+
+    public static ListViewItem createAlbumTrackItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item,
+                0,
+                0,
+                false,
+                false,
+                false,
+                adapter);
+    }
+
+    public static ListViewItem createCurrentPlaylistItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item,
+                0,
+                0,
+                false,
+                false,
+                false,
+                adapter);
+    }
+
+    public static ListViewItem createCurrentPlaylistSectionItem(final Context context, final ScrollSpeedAdapter adapter) {
+        return new ListViewItem(context,
+                R.layout.listview_item_section,
+                R.id.section_header_image,
+                R.id.section_header_image_switcher,
+                false,
+                true,
+                false,
+                adapter);
+    }
+
+    private ListViewItem(final Context context,
+                         @LayoutRes final int layoutID,
+                         @IdRes final int imageviewID,
+                         @IdRes final int switcherID,
+                         final boolean hasIcon,
+                         final boolean hasSection,
+                         final boolean hideSubtitles,
+                         final ScrollSpeedAdapter adapter) {
+        super(context, layoutID, imageviewID, switcherID, adapter);
 
         mTitleView = findViewById(R.id.item_title);
         mSubtitleView = findViewById(R.id.item_subtitle);
         mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
-        mIconView = findViewById(R.id.item_icon);
 
-        if (showIcon) {
-            mIconView.setVisibility(VISIBLE);
+        if (hideSubtitles) {
+            mSubtitleView.setVisibility(View.GONE);
+            mAdditionalSubtitleView.setVisibility(View.GONE);
+        }
+
+        if (hasIcon) {
+            mIconView = findViewById(R.id.item_icon);
+
             ViewGroup basicItemLayout = findViewById(R.id.basic_listview_item);
             basicItemLayout.setPadding(0, 0, basicItemLayout.getPaddingRight(), 0);
-        } else {
-            mIconView.setVisibility(GONE);
         }
-    }
 
-    /**
-     * Base constructor to create a section-type element.
-     *
-     * @param context The current context.
-     * @param adapter The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final ScrollSpeedAdapter adapter) {
-        super(context, R.layout.listview_item_section, R.id.section_header_image, R.id.section_header_image_switcher, adapter);
-
-        mTitleView = findViewById(R.id.item_title);
-        mSubtitleView = findViewById(R.id.item_subtitle);
-        mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
-        mSectionTitleView = findViewById(R.id.section_header_text);
-    }
-
-    /**
-     * Constructor to create a image item element (i.e. for artists or albums).
-     *
-     * @param context The current context.
-     * @param title   The title of the item.
-     * @param adapter The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final String title, final ScrollSpeedAdapter adapter) {
-        super(context, R.layout.listview_item_image, R.id.item_image, R.id.item_image_switcher, adapter);
-
-        mTitleView = findViewById(R.id.item_title);
-        mSubtitleView = findViewById(R.id.item_subtitle);
-        mAdditionalSubtitleView = findViewById(R.id.item_additional_subtitle);
-
-        // hide subtitles
-        mSubtitleView.setVisibility(GONE);
-        mAdditionalSubtitleView.setVisibility(GONE);
-
-        setTitle(title);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a section item for the given track.
-     *
-     * @param context      The current context.
-     * @param track        The current track model.
-     * @param sectionTitle The title of the section.
-     * @param isPlaying    Flag if the current item should be marked as currently played track.
-     * @param adapter      The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final TrackModel track, final String sectionTitle, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
-        this(context, adapter);
-
-        setTrack(track, sectionTitle, isPlaying);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a basic item for the given track.
-     *
-     * @param context   The current context.
-     * @param track     The current track model.
-     * @param isPlaying Flag if the current item should be marked as currently played track.
-     * @param adapter   The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final TrackModel track, final boolean isPlaying, final ScrollSpeedAdapter adapter) {
-        this(context, false, adapter);
-
-        setTrack(track, isPlaying);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a basic item for the given file.
-     *
-     * @param context The current context.
-     * @param file    The current file model.
-     * @param adapter The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final FileModel file, final ScrollSpeedAdapter adapter) {
-        this(context, true, adapter);
-
-        setFile(file);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a basic item for the given playlist. The subtitle views will be hidden.
-     *
-     * @param context  The current context.
-     * @param playlist The current playlist model.
-     * @param adapter  The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final PlaylistModel playlist, final ScrollSpeedAdapter adapter) {
-        this(context, true, adapter);
-
-        setPlaylist(playlist);
-
-        // hide subtitles
-        mSubtitleView.setVisibility(GONE);
-        mAdditionalSubtitleView.setVisibility(GONE);
-    }
-
-    /**
-     * Derived constructor to increase speed by directly selecting the right methods for the need of the using adapter.
-     * <p>
-     * Constructor that creates a basic item for the given bookmark.
-     *
-     * @param context  The current context.
-     * @param bookmark The current bookmark model.
-     * @param adapter  The scroll speed adapter for cover loading.
-     */
-    public ListViewItem(final Context context, final BookmarkModel bookmark, final ScrollSpeedAdapter adapter) {
-        this(context, true, adapter);
-
-        setBookmark(bookmark);
+        if (hasSection) {
+            mSectionTitleView = findViewById(R.id.section_header_text);
+        }
     }
 
     /**
      * Extracts the information from a track model (without currently played track indicator).
      *
-     * @param track   The current track model.
+     * @param track The current track model.
      */
     public void setAlbumTrack(final TrackModel track, final boolean showDiscNumber) {
         // title (number + name)
@@ -283,6 +270,24 @@ public class ListViewItem extends GenericImageViewItem {
     }
 
     /**
+     * Extracts the information from a album model.
+     *
+     * @param album The current album model.
+     */
+    public void setAlbum(final AlbumModel album) {
+        setTitle(album.getAlbumName());
+    }
+
+    /**
+     * Extracts the information from an artist model.
+     *
+     * @param artist The current artist model.
+     */
+    public void setArtist(final ArtistModel artist) {
+        setTitle(artist.getArtistName());
+    }
+
+    /**
      * Extracts the information from a bookmark model.
      *
      * @param bookmark The current bookmark model.
@@ -300,7 +305,7 @@ public class ListViewItem extends GenericImageViewItem {
 
         if (numberOfTracks > 0) {
             // set number of tracks only if this bookmark contains tracks
-            numberOfTracksString = bookmark.getNumberOfTracks() + " " + context.getString(R.string.fragment_bookmarks_tracks);
+            numberOfTracksString = numberOfTracks + " " + context.getString(R.string.fragment_bookmarks_tracks);
         }
 
         // get date string
@@ -313,7 +318,7 @@ public class ListViewItem extends GenericImageViewItem {
         }
 
         // get icon
-        Drawable icon = context.getDrawable(R.drawable.ic_bookmark_black_48dp);
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_bookmark_black_48dp);
 
         if (icon != null) {
             // get tint color
@@ -340,7 +345,7 @@ public class ListViewItem extends GenericImageViewItem {
         String playlistTitle = playlist.getPlaylistName();
 
         // get icon
-        Drawable icon = context.getDrawable(R.drawable.ic_queue_music_48dp);
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_queue_music_48dp);
 
         if (icon != null) {
             // get tint color
@@ -350,13 +355,31 @@ public class ListViewItem extends GenericImageViewItem {
         }
 
         setTitle(playlistTitle);
+
+        switch (playlist.getPlaylistType()) {
+            case MEDIASTORE:
+                setSubtitle(context.getString(R.string.playlist_type_global));
+                setAddtionalSubtitle("");
+                break;
+            case ODYSSEY_LOCAL:
+                setSubtitle(context.getString(R.string.playlist_type_local));
+                String numberOfTracksString = "";
+                int numberOfTracks = playlist.getPlaylistTracks();
+
+                if (numberOfTracks > 0) {
+                    numberOfTracksString = numberOfTracks + " " + context.getString(R.string.fragment_bookmarks_tracks);
+                }
+                setAddtionalSubtitle(numberOfTracksString);
+                break;
+        }
+
         setIcon(icon);
     }
 
     /**
      * Extracts the information from a file model.
      *
-     * @param file    The current file model.
+     * @param file The current file model.
      */
     public void setFile(final FileModel file) {
         final Context context = getContext();
@@ -368,10 +391,10 @@ public class ListViewItem extends GenericImageViewItem {
         Drawable icon;
         if (file.isDirectory()) {
             // choose directory icon
-            icon = context.getDrawable(R.drawable.ic_folder_48dp);
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_folder_48dp);
         } else {
             // choose file icon
-            icon = context.getDrawable(R.drawable.ic_file_48dp);
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_file_48dp);
         }
 
         if (icon != null) {
@@ -395,7 +418,7 @@ public class ListViewItem extends GenericImageViewItem {
      *
      * @param title The title as a string (i.e. a combination of number and title of a track)
      */
-    public void setTitle(final String title) {
+    private void setTitle(final String title) {
         mTitleView.setText(title);
     }
 

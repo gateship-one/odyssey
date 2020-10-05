@@ -74,18 +74,18 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AlbumModel album = getItem(position);
-        String label = album.getAlbumName();
+        final AlbumModel album = getItem(position);
 
         if (mUseList) {
             ListViewItem listItem;
             // Check if a view can be recycled
             if (convertView != null) {
                 listItem = (ListViewItem) convertView;
-                listItem.setTitle(label);
             } else {
-                listItem = new ListViewItem(mContext, label, this);
+                listItem = ListViewItem.createAlbumItem(mContext, this);
             }
+
+            listItem.setAlbum(album);
 
             if (!mHideArtwork) {
                 // This will prepare the view for fetching the image from the internet if not already saved in local database.
@@ -106,13 +106,15 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
             // Check if a view can be recycled
             if (convertView != null) {
                 gridItem = (GridViewItem) convertView;
-                gridItem.setTitle(label);
+                gridItem.setAlbum(album);
 
                 layoutParams = gridItem.getLayoutParams();
                 layoutParams.height = width;
                 layoutParams.width = width;
             } else {
-                gridItem = new GridViewItem(mContext, label, this);
+                gridItem = GridViewItem.createAlbumItem(mContext, this);
+                gridItem.setAlbum(album);
+
                 layoutParams = new android.widget.AbsListView.LayoutParams(width, width);
             }
 

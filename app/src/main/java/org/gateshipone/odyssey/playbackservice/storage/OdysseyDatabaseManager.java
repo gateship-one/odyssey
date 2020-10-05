@@ -662,12 +662,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 final int playlistTitleColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_TITLE);
                 final int playlistIDColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_ID);
+                final int playlistTracksColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_TRACKS);
 
                 do {
                     final String playlistTitle = cursor.getString(playlistTitleColumnIndex);
                     final long playlistID = cursor.getLong(playlistIDColumnIndex);
+                    final int playlistTracks = cursor.getInt(playlistTracksColumnIndex);
 
-                    playlists.add(new PlaylistModel(playlistTitle, playlistID, PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL));
+                    playlists.add(new PlaylistModel(playlistTitle, playlistID, playlistTracks, PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL));
                 } while (cursor.moveToNext());
             }
 
