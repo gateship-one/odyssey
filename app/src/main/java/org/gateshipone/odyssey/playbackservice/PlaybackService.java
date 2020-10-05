@@ -51,7 +51,7 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.models.TrackRandomGenerator;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
-import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import org.gateshipone.odyssey.utils.MetaDataLoader;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;

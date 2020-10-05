@@ -27,7 +27,7 @@ import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.BookmarkModel;
-import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

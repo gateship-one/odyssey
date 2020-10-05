@@ -20,7 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.playbackservice.statemanager;
+package org.gateshipone.odyssey.playbackservice.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdysseyDatabaseManager extends SQLiteOpenHelper {
-    public static final String TAG = "OdysseyStateManager";
+    public static final String TAG = "OdysseyDatabaseManager";
 
     /**
      * The name of the database
@@ -156,13 +156,13 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final ContentValues values = new ContentValues();
 
-        final SQLiteDatabase odysseyStateDB = getWritableDatabase();
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
 
-        odysseyStateDB.beginTransaction();
+        odysseyDB.beginTransaction();
 
         if (autosave) {
             // delete previous auto saved states if this save is an auto generated save
-            final Cursor stateCursor = odysseyStateDB.query(
+            final Cursor stateCursor = odysseyDB.query(
                     StateTable.TABLE_NAME,
                     new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_AUTOSAVE},
                     StateTable.COLUMN_AUTOSAVE + "=?",
@@ -176,27 +176,50 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                     final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                     // delete playlist
-                    odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                    odysseyDB.delete(
+                            StateTracksTable.TABLE_NAME,
+                            StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                            new String[]{Long.toString(timeStamp)}
+                    );
 
                     // delete state
-                    odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                    odysseyDB.delete(
+                            StateTable.TABLE_NAME,
+                            StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                            new String[]{Long.toString(timeStamp)}
+                    );
                 } while (stateCursor.moveToNext());
             }
 
             stateCursor.close();
         } else {
             // delete the state with the same name from the database if exists
-            final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME, new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE}, StateTable.COLUMN_TITLE + "=?", new String[]{title},
-                    "", "", "");
+            final Cursor stateCursor = odysseyDB.query(
+                    StateTable.TABLE_NAME,
+                    new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE},
+                    StateTable.COLUMN_TITLE + "=?",
+                    new String[]{title},
+                    "",
+                    "",
+                    ""
+            );
 
             if (stateCursor.moveToFirst()) {
                 final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                 // delete playlist
-                odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                odysseyDB.delete(
+                        StateTracksTable.TABLE_NAME,
+                        StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                        new String[]{Long.toString(timeStamp)}
+                );
 
                 // delete state
-                odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timeStamp)});
+                odysseyDB.delete(
+                        StateTable.TABLE_NAME,
+                        StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                        new String[]{Long.toString(timeStamp)}
+                );
             }
 
             stateCursor.close();
@@ -218,7 +241,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             values.put(StateTracksTable.COLUMN_TRACKID, item.getTrackId());
             values.put(StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP, stateTimeStamp);
 
-            odysseyStateDB.insert(StateTracksTable.TABLE_NAME, null, values);
+            odysseyDB.insert(StateTracksTable.TABLE_NAME, null, values);
         }
 
         // save the current state
@@ -234,13 +257,13 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         values.put(StateTable.COLUMN_TITLE, title);
         values.put(StateTable.COLUMN_TRACKS, playList.size());
 
-        odysseyStateDB.insert(StateTable.TABLE_NAME, null, values);
+        odysseyDB.insert(StateTable.TABLE_NAME, null, values);
 
-        odysseyStateDB.setTransactionSuccessful();
-        odysseyStateDB.endTransaction();
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
 
         // close the connection
-        odysseyStateDB.close();
+        odysseyDB.close();
     }
 
     /**
@@ -251,11 +274,11 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public List<TrackModel> readBookmarkTracks(long timeStamp) {
 
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
 
         final List<TrackModel> playList = new ArrayList<>();
 
-        final Cursor cursor = odysseyStateDB.query(
+        final Cursor cursor = odysseyDB.query(
                 StateTracksTable.TABLE_NAME,
                 projectionTrackModels,
                 StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
@@ -284,7 +307,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         cursor.close();
 
-        odysseyStateDB.close();
+        odysseyDB.close();
 
         return playList;
     }
@@ -296,12 +319,13 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public List<TrackModel> readBookmarkTracks() {
 
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
 
         final List<TrackModel> playList = new ArrayList<>();
 
         // query the most recent timestamp
-        final Cursor stateCursor = odysseyStateDB.query(StateTable.TABLE_NAME,
+        final Cursor stateCursor = odysseyDB.query(
+                StateTable.TABLE_NAME,
                 new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP},
                 "",
                 null,
@@ -314,7 +338,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
             // get the playlist tracks for the queried timestamp
-            final Cursor cursor = odysseyStateDB.query(StateTracksTable.TABLE_NAME,
+            final Cursor cursor = odysseyDB.query(
+                    StateTracksTable.TABLE_NAME,
                     projectionTrackModels,
                     StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
                     new String[]{Long.toString(timeStamp)},
@@ -345,7 +370,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         stateCursor.close();
 
-        odysseyStateDB.close();
+        odysseyDB.close();
 
         return playList;
     }
@@ -355,11 +380,11 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public OdysseyServiceState getState(final long timeStamp) {
 
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
 
         final OdysseyServiceState state = new OdysseyServiceState();
 
-        final Cursor cursor = odysseyStateDB.query(
+        final Cursor cursor = odysseyDB.query(
                 StateTable.TABLE_NAME,
                 projectionState,
                 StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
@@ -379,7 +404,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         cursor.close();
 
-        odysseyStateDB.close();
+        odysseyDB.close();
 
         return state;
     }
@@ -389,11 +414,12 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public OdysseyServiceState getState() {
 
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
 
         final OdysseyServiceState state = new OdysseyServiceState();
 
-        final Cursor cursor = odysseyStateDB.query(StateTable.TABLE_NAME,
+        final Cursor cursor = odysseyDB.query(
+                StateTable.TABLE_NAME,
                 projectionState,
                 "",
                 null,
@@ -412,7 +438,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         cursor.close();
 
-        odysseyStateDB.close();
+        odysseyDB.close();
 
         return state;
     }
@@ -422,7 +448,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public List<BookmarkModel> getBookmarks() {
 
-        final SQLiteDatabase odysseyStateDB = getReadableDatabase();
+        final SQLiteDatabase odysseyDB = getReadableDatabase();
 
         final ArrayList<BookmarkModel> bookmarks = new ArrayList<>();
 
@@ -430,7 +456,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final String where = StateTable.COLUMN_AUTOSAVE + "=?";
 
-        final Cursor bookmarkCursor = odysseyStateDB.query(
+        final Cursor bookmarkCursor = odysseyDB.query(
                 StateTable.TABLE_NAME,
                 new String[]{StateTable.COLUMN_BOOKMARK_TIMESTAMP, StateTable.COLUMN_TITLE, StateTable.COLUMN_TRACKS, StateTable.COLUMN_AUTOSAVE},
                 where,
@@ -455,7 +481,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             bookmarkCursor.close();
         }
 
-        odysseyStateDB.close();
+        odysseyDB.close();
 
         return bookmarks;
     }
@@ -465,20 +491,28 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     public void removeState(final long timestamp) {
 
-        final SQLiteDatabase odysseyStateDB = getWritableDatabase();
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
 
-        odysseyStateDB.beginTransaction();
+        odysseyDB.beginTransaction();
 
         // delete playlist
-        odysseyStateDB.delete(StateTracksTable.TABLE_NAME, StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
+        odysseyDB.delete(
+                StateTracksTable.TABLE_NAME,
+                StateTracksTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                new String[]{Long.toString(timestamp)}
+        );
 
         // delete state
-        odysseyStateDB.delete(StateTable.TABLE_NAME, StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?", new String[]{Long.toString(timestamp)});
+        odysseyDB.delete(
+                StateTable.TABLE_NAME,
+                StateTable.COLUMN_BOOKMARK_TIMESTAMP + "=?",
+                new String[]{Long.toString(timestamp)}
+        );
 
-        odysseyStateDB.setTransactionSuccessful();
-        odysseyStateDB.endTransaction();
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
 
-        odysseyStateDB.close();
+        odysseyDB.close();
     }
 
     /**
@@ -503,17 +537,17 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             final long playlistId = cursor.getLong(cursor.getColumnIndex(PlaylistsTable.COLUMN_ID));
 
-            int result = -1;
-
             // delete playlist
-            result = odysseyDB.delete(PlaylistsTable.TABLE_NAME,
+            int result = odysseyDB.delete(
+                    PlaylistsTable.TABLE_NAME,
                     PlaylistsTable.COLUMN_ID + "=?",
                     new String[]{Long.toString(playlistId)}
             );
 
             if (result > 0) {
                 // delete tracks only if playlist was removed
-                odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+                odysseyDB.delete(
+                        PlaylistsTracksTable.TABLE_NAME,
                         PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
                         new String[]{Long.toString(playlistId)}
                 );
@@ -577,19 +611,19 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     public boolean removePlaylist(final long playlistId) {
         final SQLiteDatabase odysseyDB = getWritableDatabase();
 
-        int result = -1;
-
         odysseyDB.beginTransaction();
 
         // delete playlist
-        result = odysseyDB.delete(PlaylistsTable.TABLE_NAME,
+        int result = odysseyDB.delete(
+                PlaylistsTable.TABLE_NAME,
                 PlaylistsTable.COLUMN_ID + "=?",
                 new String[]{Long.toString(playlistId)}
         );
 
         if (result > 0) {
             // delete tracks only if playlist was removed
-            odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+            odysseyDB.delete(
+                    PlaylistsTracksTable.TABLE_NAME,
                     PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
                     new String[]{Long.toString(playlistId)}
             );
@@ -613,7 +647,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         final ArrayList<PlaylistModel> playlists = new ArrayList<>();
 
-        final Cursor cursor = odysseyDB.query(PlaylistsTable.TABLE_NAME,
+        final Cursor cursor = odysseyDB.query(
+                PlaylistsTable.TABLE_NAME,
                 projectionPlaylists,
                 "",
                 null,
@@ -707,7 +742,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         odysseyDB.beginTransaction();
 
         // delete tracks
-        result = odysseyDB.delete(PlaylistsTracksTable.TABLE_NAME,
+        result = odysseyDB.delete(
+                PlaylistsTracksTable.TABLE_NAME,
                 where,
                 whereVal
         );

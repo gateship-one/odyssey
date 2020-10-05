@@ -27,7 +27,7 @@ import android.os.AsyncTask;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.PlaylistModel;
-import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.lang.ref.WeakReference;

@@ -20,7 +20,7 @@
  *
  */
 
-package org.gateshipone.odyssey.playbackservice.statemanager;
+package org.gateshipone.odyssey.playbackservice.storage;
 
 import android.database.sqlite.SQLiteDatabase;
 

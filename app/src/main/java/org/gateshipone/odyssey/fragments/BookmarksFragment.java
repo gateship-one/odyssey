@@ -37,7 +37,7 @@ import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.BookmarksAdapter;
 import org.gateshipone.odyssey.models.BookmarkModel;
-import org.gateshipone.odyssey.playbackservice.statemanager.OdysseyDatabaseManager;
+import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
