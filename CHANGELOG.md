@@ -2,11 +2,15 @@
 
 ## Version: 1.1.20 Tag: release-32 (2020-mm-dd)
 
-* add dutch translation (thanks to Harry van der Wolf)
-* update french translation
-* preserve search query between views ([Issue #199](https://github.com/gateship-one/odyssey/issues/199))
-* upgrade to android 10
-  * if your device is running android 10 and you detect any bugs compared to the prior version please let us know via GitHub or by Email
+* Add dutch translation (thanks to Harry van der Wolf)
+* Update french translation
+* Preserve search query between views ([Issue #199](https://github.com/gateship-one/odyssey/issues/199))
+* Exclude artworks from backups
+* Upgrade to Android 10
+  * If your device is running Android 10 and you detect any bugs compared to the prior version please let us know via GitHub or by Email
+* Changes related to Android 10
+  * Playlists will now be stored internal (due to issues with Android 10)
+  * Add option to sort by filename (due to occasional broken sorting with Android 10 [#192](https://github.com/gateship-one/odyssey/issues/192)))
 
 ## Version: 1.1.19 Tag: release-31 (2020-03-02)
 
