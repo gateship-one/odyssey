@@ -83,13 +83,17 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion == 22) {
+        // drop all tables below version 22
+        if (oldVersion < 22) {
             AlbumArtTable.dropTable(db);
             ArtistArtTable.dropTable(db);
-            onCreate(db);
+
+            AlbumArtTable.createTable(db);
+            ArtistArtTable.createTable(db);
         }
 
-        if (newVersion == 23) {
+        // add column for image full path with version 23
+        if (oldVersion < 23) {
             db.execSQL("ALTER TABLE " + AlbumArtTable.TABLE_NAME + " ADD COLUMN " + AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH + " integer default 0");
         }
     }

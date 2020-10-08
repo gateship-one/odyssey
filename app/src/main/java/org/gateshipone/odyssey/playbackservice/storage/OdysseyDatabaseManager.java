@@ -133,8 +133,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion == 22) {
-            onCreate(db);
+        // new playlist tables introduced with version 22
+        if (oldVersion < 22) {
+            PlaylistsTracksTable.onCreate(db);
+            PlaylistsTable.onCreate(db);
         }
     }
 
