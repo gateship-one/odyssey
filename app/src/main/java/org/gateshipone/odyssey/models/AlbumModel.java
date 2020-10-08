@@ -140,6 +140,8 @@ public class AlbumModel implements GenericModel, Parcelable {
 
     /**
      * Return the url for the album cover
+     * <p>
+     * This method shouldn't be used on devices running Android 10 or later.
      */
     @Deprecated
     public String getAlbumArtURL() {

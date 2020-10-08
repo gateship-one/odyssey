@@ -148,6 +148,11 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     private final ArrayList<ArtworkManager.onNewAlbumImageListener> mAlbumListeners;
 
+    /**
+     * Minimum value for an image size that should be loaded (prevent loading images with a size of 0)
+     */
+    private final int mMinimumImageSizeValue;
+
     private final Context mApplicationContext;
 
     private ArtworkManager(Context context) {
@@ -169,6 +174,8 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         mAlbumProvider = sharedPref.getString(mApplicationContext.getString(R.string.pref_album_provider_key), mApplicationContext.getString(R.string.pref_artwork_provider_album_default));
         mWifiOnly = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_download_wifi_only_key), mApplicationContext.getResources().getBoolean(R.bool.pref_download_wifi_default));
         mUseLocalImages = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_artwork_use_local_images_key), mApplicationContext.getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
+
+        mMinimumImageSizeValue = (int) mApplicationContext.getResources().getDimension(R.dimen.material_list_item_height);
     }
 
     public static synchronized ArtworkManager getInstance(Context context) {
@@ -242,10 +249,16 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             return null;
         }
 
+        // in some cases images with a size of 0 are requested, use a minimum size in this case
+        // a higher resolution will be requested later anyway
+        final int requestedWidth = Math.max(mMinimumImageSizeValue, width);
+        final int requestedHeight = Math.max(mMinimumImageSizeValue, height);
+
         if (!skipCache) {
             // Try cache first
             Bitmap cacheImage = BitmapCache.getInstance().requestArtistImage(artist);
-            if (cacheImage != null && width <= cacheImage.getWidth() && height <= cacheImage.getWidth()) {
+            if (cacheImage != null && requestedWidth <= cacheImage.getWidth() &&
+                    requestedHeight <= cacheImage.getHeight()) {
                 return cacheImage;
             }
         }
@@ -255,7 +268,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         // Checks if the database has an image for the requested artist
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, width, height);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, requestedWidth, requestedHeight);
             BitmapCache.getInstance().putArtistImage(artist, bm);
             return bm;
         }
@@ -267,10 +280,16 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             return null;
         }
 
+        // in some cases images with a size of 0 are requested, use a minimum size in this case
+        // a higher resolution will be requested later anyway
+        final int requestedWidth = Math.max(mMinimumImageSizeValue, width);
+        final int requestedHeight = Math.max(mMinimumImageSizeValue, height);
+
         if (!skipCache) {
             // Try cache first
             Bitmap cacheBitmap = BitmapCache.getInstance().requestAlbumBitmap(album);
-            if (cacheBitmap != null && width <= cacheBitmap.getWidth() && height <= cacheBitmap.getWidth()) {
+            if (cacheBitmap != null && requestedWidth <= cacheBitmap.getWidth()
+                    && requestedHeight <= cacheBitmap.getHeight()) {
                 return cacheBitmap;
             }
         }
@@ -283,18 +302,19 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
 
                 final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumID());
                 try {
-                    bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(width, height), null);
+                    bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(requestedWidth, requestedHeight), null);
                     BitmapCache.getInstance().putAlbumBitmap(album, bm);
                     return bm;
                 } catch (IOException ignored) {
                     // use our own database instead
                 }
             } else {
-                String albumURL = album.getAlbumArtURL();
+                // this is still the way to go for devices running an android version below 10
+                @SuppressWarnings("deprecation") String albumURL = album.getAlbumArtURL();
 
                 if (albumURL != null && !albumURL.isEmpty()) {
                     // Local album art found (android database)
-                    Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
+                    Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, requestedWidth, requestedHeight);
                     BitmapCache.getInstance().putAlbumBitmap(album, bm);
                     return bm;
                 }
@@ -306,7 +326,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         // Checks if the database has an image for the requested album
         if (null != image) {
             // Create a bitmap from the data blob in the database
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, width, height);
+            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(image, requestedWidth, requestedHeight);
             BitmapCache.getInstance().putAlbumBitmap(album, bm);
             return bm;
         }
@@ -332,7 +352,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      *
      * @param artistModel        Artist to fetch an image for.
      * @param imageSavedCallback Callback if an image was saved.
-     * @param errorCallback      Callback if an error occured.
+     * @param errorCallback      Callback if an error occurred.
      */
     void fetchImage(final ArtistModel artistModel,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
@@ -365,7 +385,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      *
      * @param albumModel         Album to fetch an image for.
      * @param imageSavedCallback Callback if an image was saved.
-     * @param errorCallback      Callback if an error occured.
+     * @param errorCallback      Callback if an error occurred.
      */
     void fetchImage(final AlbumModel albumModel,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
