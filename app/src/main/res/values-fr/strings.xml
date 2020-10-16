@@ -49,6 +49,8 @@
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">Aucune liste de lecture trouvée</string>
+    <string name="playlist_type_global">Globale</string>
+    <string name="playlist_type_local">Locale</string>
 
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Pistes musicales</string>
@@ -80,6 +82,8 @@
     <string name="dialog_sleep_timer_duration_minutes">Minutes</string>
     <string name="dialog_sleep_timer_duration_seconds">Secondes</string>
     <string name="dialog_sleep_timer_stop_after_current">Arrêter après la piste en cours de lecture</string>
+    <string name="dialog_no_browser_found_title">Aucun navigateur disponible</string>
+    <string name="dialog_no_browser_found_message">Votre appareil n\'a pas de navigateur</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nouvelle liste de lecture</string>
@@ -172,6 +176,12 @@
 
     <string name="preference_album_sort_order_name">Nom</string>
     <string name="preference_album_sort_order_year">Année</string>
+
+    <string name="preference_tracks_sort_order_title">Tri des pistes d\'un album</string>
+    <string name="preference_tracks_sort_order_summary">Choisir l\'ordre de tri des pistes d\'un album.</string>
+
+    <string name="preference_album_tracks_sort_number">Par numéro de piste</string>
+    <string name="preference_album_tracks_sort_name">Par nom affiché (nom du fichier)</string>
 
     <string name="preference_default_view_title">Affichage par défaut</string>
     <string name="preference_default_view_message">Vue par défaut</string>
