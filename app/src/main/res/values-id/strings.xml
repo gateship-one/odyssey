@@ -1,0 +1,326 @@
+<!--
+  ~ Copyright (C) 2020 Team Gateship-One
+  ~ (Hendrik Borghorst & Frederik Luetkes)
+  ~
+  ~ The AUTHORS.md file contains a detailed contributors list:
+  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <!-- permission request -->
+    <string name="permission_request_snackbar_explanation">Izin Penyimpanan diperlukan untuk memuat file musik.</string>
+
+    <!-- nav drawer -->
+    <string name="navigation_drawer_open">Buka panel navigasi</string>
+    <string name="navigation_drawer_close">Tutup panel navigasi</string>
+
+    <!-- nav drawer menu -->
+    <string name="nav_menu_my_music">Laguku</string>
+    <string name="nav_menu_saved_playlists">Daftar Putar</string>
+    <string name="nav_menu_settings">Pengaturan</string>
+    <string name="nav_menu_bookmarks">Bookmark</string>
+    <string name="nav_menu_files">File</string>
+    <string name="nav_menu_info">Informasi</string>
+
+    <!-- activity titles -->
+    <string name="share_chooser_title">Bagikan trek dengan</string>
+
+    <!-- fragment titles -->
+    <string name="fragment_title_my_music">Laguku</string>
+    <string name="fragment_title_saved_playlists">Daftar Putar</string>
+    <string name="fragment_title_settings">Pengaturan</string>
+    <string name="fragment_title_bookmarks">Bookmark</string>
+    <string name="fragment_title_recent_albums">Baru-baru ini ditambahkan</string>
+
+    <!-- saved playlists fragment -->
+    <string name="empty_saved_playlists_message">Tidak ada playlist yang ditemukan.</string>
+    <string name="playlist_type_global">Global</string>
+    <string name="playlist_type_local">Lokal</string>
+
+    <!-- bookmark fragment -->
+    <string name="fragment_bookmarks_tracks">Trek</string>
+    <string name="empty_bookmarks_message">Tidak ada bookmark yang ditemukan.</string>
+
+    <!-- files fragment -->
+    <string name="empty_directory_message">Format tidak didukung atau file .nomedia di temukan.</string>
+
+    <!-- my music tab titles -->
+    <string name="fragment_title_artists">Artis</string>
+    <string name="fragment_title_albums">Album</string>
+    <string name="fragment_title_all_tracks">Trek</string>
+    <string name="empty_artists_message">Tidak ada artis yang ditemukan.</string>
+    <string name="empty_tracks_message">Tidak ada trek yang ditemukan.</string>
+    <string name="empty_albums_message">Tidak ada album yang ditemukan.</string>
+
+    <!-- dialog titles -->
+    <string name="dialog_save_playlist">Simpan Daftar Putar</string>
+    <string name="dialog_create_bookmark">Buat Bookmark</string>
+    <string name="dialog_action_cancel">Membatalkan</string>
+    <string name="dialog_action_save">Simpan</string>
+    <string name="dialog_choose_storage_volume_title">Pilih volume penyimpanan</string>
+    <string name="dialog_choose_bookmark">Pilih bookmark</string>
+    <string name="dialog_choose_playlist">Pilih playlist</string>
+    <string name="dialog_equalizer_not_found_title">Tidak ada equalizer yang tersedia</string>
+    <string name="dialog_equalizer_not_found_message">Perangkat Anda tidak memiliki equalizer</string>
+    <string name="dialog_sleep_timer">Atur waktu tidur</string>
+    <string name="dialog_sleep_timer_action_start">Mulai</string>
+    <string name="dialog_sleep_timer_duration_minutes">Menit</string>
+    <string name="dialog_sleep_timer_duration_seconds">Detik</string>
+    <string name="dialog_sleep_timer_stop_after_current">Hentikan pemutaran setelah lagu sedang diputar</string>
+    <string name="dialog_no_browser_found_title">Tidak ada Browser yang tersedia</string>
+    <string name="dialog_no_browser_found_message">Perangkat Anda tidak memiliki browser</string>
+
+    <!-- dialog default names  -->
+    <string name="default_playlist_title">Daftar Putar Baru</string>
+    <string name="default_bookmark_title">Bookmark Baru</string>
+    <string name="create_new_bookmark">Buat bookmark baru</string>
+    <string name="create_new_playlist">Buat playlist baru</string>
+
+    <!-- actions -->
+    <string name="action_add_album">Tambahkan Album</string>
+    <string name="action_add_artist_albums">Tambahkan Album</string>
+    <string name="action_switch_storage_volume">Ganti volume penyimpanan</string>
+    <string name="action_add_directory">Tambahkan direktori ke daftar putar</string>
+    <string name="action_search">Cari</string>
+    <string name="action_add_playlist">Tambahkan daftar putar</string>
+    <string name="action_set_default_directory">Tetapkan sebagai direktori default</string>
+    <string name="action_start_mediascanner">Perbarui basis data media di sini</string>
+
+    <string name="action_reset_artwork">Setel ulang artwork</string>
+
+    <string name="action_wikipedia_album">Buka album</string>
+    <string name="action_wikipedia_artist">Buka artis</string>
+
+    <string name="action_show_recent_albums">Album terbaru</string>
+
+    <string name="action_npv_show_playlist">Tampilkan playlist</string>
+    <string name="action_npv_show_cover">Tampilkan sampul</string>
+    <string name="action_npv_more_options">Opsi lanjutan</string>
+
+    <!-- context menu titles -->
+    <string name="context_menu_action_enqueue">Tambahkan ke Daftar Putar</string>
+    <string name="context_menu_action_enqueueasnext">Putar setelah lagu saat ini</string>
+    <string name="context_menu_action_playsong">Mainkan lagu</string>
+    <string name="context_menu_action_playalbum">Mainkan album</string>
+    <string name="context_menu_action_playalbums">Mainkan album</string>
+    <string name="context_menu_action_showartist">Tampilkan artis</string>
+    <string name="context_menu_action_showalbum">Tampilkan album</string>
+    <string name="context_menu_action_removetrack">Hapus trek</string>
+    <string name="context_menu_action_removesection">Hapus bagian</string>
+    <string name="context_menu_action_playplaylist">Mainkan daftar putar</string>
+    <string name="context_menu_action_enqueueplaylist">Tambahkan daftar putar</string>
+    <string name="context_menu_action_deleteplaylist">Hapus daftar putar</string>
+    <string name="context_menu_action_resumebookmark">Lanjutkan Bookmark</string>
+    <string name="context_menu_action_deletebookmark">Hapus Bookmark</string>
+    <string name="context_menu_action_enqueue_folder">Tambahkan folder ke playlist</string>
+    <string name="context_menu_action_play_folder">Mainkan folder</string>
+    <string name="context_menu_action_enqueue_file">Tambahkan file ke playlist</string>
+    <string name="context_menu_action_play_file">Mainkan file</string>
+
+    <!-- popup menu titles -->
+    <string name="popup_menu_action_shuffleplaylist">Acak daftar putar</string>
+    <string name="popup_menu_action_clearplaylist">Hapus daftar putar</string>
+    <string name="popup_menu_action_saveplaylist">Simpan daftar putar</string>
+    <string name="popup_menu_action_createbookmark">Buat bookmark</string>
+    <string name="popup_menu_action_startequalizer">Buka equalizer</string>
+    <string name="popup_menu_action_sharetrack">Bagikan trek saat ini</string>
+    <string name="pop_menu_action_start_sleep_timer">Mulai pengatur waktu tidur</string>
+    <string name="pop_menu_action_cancel_sleep_timer">Batalkan pengatur waktu tidur</string>
+
+    <!-- templates -->
+    
+    <!-- preferences -->
+    <string name="preference_show_album_artists_only_title">Hanya tampilkan artis album</string>
+    <string name="preference_show_album_artists_only_summary">Hanya tampilkan artis album, bukan semua artis dari database.</string>
+
+    <string name="preference_launch_faq">F.A.Q.</string>
+    <string name="preference_launch_faq_text">Informasi cara mendapatkan bantuan untuk aplikasi ini</string>
+    <string name="preference_launch_about">Tentang</string>
+    <string name="preference_launch_about_text">Informasi versi, lisensi dan kontributor</string>
+
+    <string name="preference_theme_title">Tema</string>
+    <string name="preference_theme_summary">Pilih desain yang berbeda untuk aplikasi.</string>
+    <string name="preference_theme_message">Pilih sebuah tema</string>
+
+    <string name="preference_dark_theme_title">Tema gelap</string>
+    <string name="preference_dark_theme_message">Gunakan tema gelap</string>
+
+    <string name="preference_theme_item_indigo">Nila</string>
+    <string name="preference_theme_item_orange">Oranye</string>
+    <string name="preference_theme_item_deep_orange">Oranye Tua</string>
+    <string name="preference_theme_item_blue">Biru</string>
+    <string name="preference_theme_item_dark_grey">Abu-abu gelap</string>
+    <string name="preference_theme_item_brown">Cokelat</string>
+    <string name="preference_theme_item_light_green">Hijau muda</string>
+    <string name="preference_theme_item_oled_dark">OLED Gelap</string>
+    <string name="preference_theme_item_red">Merah</string>
+
+    <string name="preference_album_sort_order_title">Urutan sortir Album Artis</string>
+    <string name="preference_album_sort_order_message">Sortir dengan</string>
+    <string name="preference_album_sort_order_summary">Pilih tata urutan album artis.</string>
+
+    <string name="preference_album_sort_order_name">Nama</string>
+    <string name="preference_album_sort_order_year">Tahub</string>
+
+    <string name="preference_tracks_sort_order_title">Urutan Lagu Album</string>
+    <string name="preference_tracks_sort_order_summary">Pilih urutan trek album.</string>
+
+    <string name="preference_album_tracks_sort_number">Nomor trek</string>
+    <string name="preference_album_tracks_sort_name">Nama tampilan (Nama file)</string>
+
+    <string name="preference_default_view_title">Tampilan default</string>
+    <string name="preference_default_view_message">Pilih tampilan default</string>
+    <string name="preference_default_view_summary">Pilih tampilan default aplikasi.</string>
+
+    <string name="preference_default_view_my_music_artists">Artis</string>
+    <string name="preference_default_view_my_music_albums">Album</string>
+    <string name="preference_default_view_my_music_tracks">All tracks</string>
+    <string name="preference_default_view_my_music_playlists">Daftar putar</string>
+    <string name="preference_default_view_my_music_bookmarks">Bookmark</string>
+    <string name="preference_default_view_my_music_files">File</string>
+
+    <string name="preference_library_view_title">Pilih tampilan perpustakaan</string>
+    <string name="preference_library_view_message">Pilih tampilan perpustakaan</string>
+    <string name="preference_library_view_summary">Pilih jenis tampilan yang digunakan untuk album dan artis.</string>
+
+    <string name="preference_library_view_grid">Kotak</string>
+    <string name="preference_library_view_list">Daftar</string>
+
+    <string name="preference_show_artist_image_title">Tampilkan gambar artis</string>
+    <string name="preference_show_artist_image_text">Bergantian antara sampul album dan gambar artis dalam tampilan untuk lagu yang sedang diputar</string>
+
+    <string name="preference_npv_show_playlist_title">Mulai dengan melihat daftar putar</string>
+    <string name="preference_npv_show_playlist_text">Tampilkan daftar putar jika odyssey dibuka melalui widget atau notifikasi saat pemutaran aktif</string>
+
+    <string name="preference_library_click_action_title">Lacak tindakan klik</string>
+    <string name="preference_library_click_action_summary">Pilih tindakan untuk trek di perpustakaan</string>
+    <string name="preference_library_click_action_message">Pilih tindakan default yang akan diambil jika Anda mengklik trek di tampilan perpustakaan</string>
+
+    <string name="preference_library_click_action_clear_and_play">Ganti dan mainkan dari indeks</string>
+
+    <string name="artwork_settings">Pengaturan Artwork</string>
+
+    <string name="preference_clear_default_directory_title">Hapus direktori default</string>
+    <string name="preference_clear_default_directory_summary">Setel ulang direktori default ke direktori root yang tersedia pada perangkat.</string>
+
+    <string name="preference_category_design">Rancangan</string>
+    <string name="preference_category_library">Perpustakaan</string>
+    <string name="preference_category_other">Lainnya</string>
+
+    <!-- artwork preferences -->
+    <string name="preference_artwork_album_provider_title">Penyedia gambar album</string>
+    <string name="preference_artwork_album_provider_summary">Pilih penyedia gambar sampul album.</string>
+    <string name="preference_artwork_album_provider_message">Pilih penyedia gambar sampul album.</string>
+
+    <string name="provider_off">Off</string>
+
+    <string name="preference_artwork_artist_provider_title">Penyedia gambar artis</string>
+    <string name="preference_artwork_artist_provider_summary">Pilih penyedia gambar untuk sampul artis.</string>
+    <string name="preference_artwork_artist_provider_message">Pilih penyedia gambar untuk sampul artis.</string>
+
+    <string name="preference_artwork_clear_artist">Hapus gambar artis</string>
+    <string name="preference_artwork_clear_artist_summary">Menghapus semua gambar yang disimpan untuk artis.</string>
+    <string name="preference_artwork_clear_album">Hapus gambar album</string>
+    <string name="preference_artwork_clear_album_summary">Menghapus semua gambar yang disimpan untuk album.</string>
+
+    <string name="preference_artwork_clear_blocked_artist">Clear blocked artist images</string>
+    <string name="preference_artwork_clear_blocked_artist_summary">Menghapus semua entri untuk artis yang dicari tetapi tidak ditemukan.</string>
+    <string name="preference_artwork_clear_blocked_album">Hapus gambar artis yang diblokir</string>
+    <string name="preference_artwork_clear_blocked_album_summary">Menghapus semua entri untuk album yang dicari tetapi tidak ditemukan.</string>
+
+    <string name="preference_artwork_bulk_load">Coba muat semua gambar untuk database Anda.</string>
+    <string name="preference_artwork_bulk_load_summary">Ini akan memuat banyak gambar. Berhati-hatilah karena ini akan memakan waktu. Ini dapat mengakibatkan batas kecepatan sementara dari penyedia.</string>
+
+    <string name="preference_artwork_wifi_only_title">Hanya gunakan WIFI untuk mengunduh</string>
+    <string name="preference_artwork_wifi_only_text">Pengunduhan Artwork hanya akan berlangsung jika perangkat terhubung melalui WIFI.</string>
+
+    <string name="preference_artwork_hide_artwork_title">Menyembunyikan artwork</string>
+    <string name="preference_artwork_hide_artwork_text">Menonaktifkan visibilitas seluruh artwork.</string>
+
+    <string name="preference_use_english_wikipedia_title">Gunakan Wikipedia bahasa Inggris</string>
+    <string name="preference_use_english_wikipedia_text">Gunakan versi Wikipedia bahasa Inggris untuk mencari halaman</string>
+
+    <string name="preference_hide_media_on_lockscreen_title">Pemberitahuan pribadi</string>
+    <string name="preference_hide_media_on_lockscreen_text">Sembunyikan informasi media di layar kunci (tergantung pada pengaturan privasi layar kunci sistem Anda)</string>
+
+    <string name="preference_artwork_use_local_images_title">Use local album images</string>
+    <string name="preference_artwork_use_local_images_text">Ignore album artworks found in the Android Media Database and use local images instead. If no local image is found the selected album artwork provider will be used.</string>
+
+    <string name="preference_category_artwork_settings">Pengaturan Artwork</string>
+    <string name="preference_category_artwork_database_cleanup">Pembersihan database</string>
+    <string name="preference_category_artwork_other_actions">Aksi lainnya</string>
+
+    <!-- About activity -->
+    <string name="artwork_provided_by">Artwork disediakan oleh:</string>
+    <string name="license_text">Aplikasi ini berlisensi di bawah lisensi GPLv3.\nIkon material dilisensikan di bawah lisensi CC-BY oleh Google.</string>
+    <string name="sources_text">Kode sumber tersedia di GitHub:\nhttps://github.com/gateship-one/odyssey</string>
+    <string name="activity_about_version">Versi:</string>
+    
+    <!-- PBS working message -->
+    <string name="playbackservice_working">Tunggu sebentar</string>
+
+    <!-- Bulk downloader service -->
+    <string name="downloader_notification_title">Download massal sedang berjalan</string>
+    <string name="downloader_notification_remaining_images">Gambar terunduh:</string>
+    <string name="downloader_notification_initialize">Inisialisasi unduhan</string>
+
+    <string name="bulk_download_notice_title">Download gambar</string>
+    <string name="bulk_download_notice_text">Mendownload gambar dalam jumlah besar akan membebani server layanan yang Anda pilih. Mungkin terjadi bahwa beban server mencegah pengunduhan gambar. Pengunduh kemudian akan membatalkan tindakannya jika mendeteksi kelebihan muatan.\n\nHarap pertimbangkan untuk menyumbang ke layanan karya seni.</string>
+
+    <!-- Media scanner service -->
+    <string name="mediascanner_notification_title">Memperbarui database media</string>
+    <string name="mediascanner_notification_text">Memindai file %1$d/%2$d</string>
+
+    <!-- Notification channel names -->
+    <string name="notification_channel_playback">Putar ulang</string>
+    <string name="notification_channel_downloader">Pengunduh</string>
+    <string name="notification_channel_library_scanner">Pemindai perpustakaan</string>
+
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Konten disembunyikan</string>
+
+    <!-- Contributors activity -->
+    <string name="odyssey_contributors_title">Kontributor</string>
+    <string name="contributor_translator_italian">Italian Translation</string>
+    <string name="contributor_translator_french">French Translation</string>
+    <string name="contributor_translator_polish">Polish Translation</string>
+    <string name="contributor_translator_czech">Czech Translation</string>
+    <string name="contributor_translator_dutch">Dutch Translation</string>
+    <string name="contributor_translator_indonesia">Indonesia Translation</string>
+
+    <!-- Thirdparty Licenses dialog -->
+    <string name="odyssey_thirdparty_licenses_dialog_title">Lisensi Pihak Ketiga</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_sleep_timer_confirmation_message">Pengatur waktu tidur disetel</string>
+    <string name="snackbar_uri_not_supported_message">Jalur yang dipilih %1$s tidak didukung.</string>
+
+    <string name="preference_resume_step_size_title">Automatic rewind</string>
+    <string name="preference_resume_step_size_text">Jumlah detik pemutaran diputar ulang setelah dilanjutkan.</string>
+
+    <string name="preference_resume_step_size_dialog_title">Ukuran langkah: %d detik</string>
+    <string name="preference_random_intelligence_dialog_title">Intelijen acak: %d %%</string>
+    <string name="preference_random_intelligence_dumber">Random memilih trek secara acak tanpa memperhatikan artisnya</string>
+    <string name="preference_random_intelligence_dumb">Acak sebagian besar memilih trek sepenuhnya acak dengan hampir tidak memperhatikan artis</string>
+    <string name="preference_random_intelligence_balanced">Pemilihan acak trek yang seimbang antara artis- dan pemilihan berbasis trek</string>
+    <string name="preference_random_intelligence_intelligent">Acak sebagian besar memilih trek berdasarkan artis</string>
+    <string name="preference_random_intelligence_more_intelligent">Acak sepenuhnya memilih trek berdasarkan artis</string>
+
+    <string name="preference_smart_random_title">Acak cerdas</string>
+    <string name="preference_smart_random_text">Pilih preferensi pemilihan acak. Opsi ini memungkinkan pemutaran acak didistribusikan secara lebih seragam (untuk artis). Ini berguna untuk daftar putar dengan banyak trek dari satu artis dan beberapa trek dari artis lain.</string>
+</resources>
