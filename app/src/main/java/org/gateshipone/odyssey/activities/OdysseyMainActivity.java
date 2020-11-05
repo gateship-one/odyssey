@@ -796,7 +796,7 @@ public class OdysseyMainActivity extends GenericActivity
                 if (fragment instanceof MyMusicFragment) {
                     ((MyMusicFragment) fragment).refresh();
                 } else if (fragment instanceof OdysseyFragment) {
-                    ((OdysseyFragment) fragment).refreshContent();
+                    ((OdysseyFragment<?>) fragment).refreshContent();
                 }
             }
         }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -22,6 +21,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -39,10 +39,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/odyssey_cover_background"
-            android:tint="?attr/odyssey_color_text_background_primary"
-            android:scaleType="centerCrop"
             android:padding="16dp"
-            android:src="@drawable/cover_placeholder_96dp" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_placeholder_96dp"
+            app:tint="?attr/odyssey_color_text_background_primary" />
 
         <ImageView
             android:id="@+id/grid_item_cover_image"
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
-            android:background="?attr/odyssey_grid_gradient"/>
+            android:background="?attr/odyssey_grid_gradient" />
 
         <TextView
             android:id="@+id/grid_item_title"

@@ -104,7 +104,7 @@ public class MetaDataLoader {
 
             if (durationString != null) {
                 try {
-                    duration = Long.valueOf(durationString);
+                    duration = Long.parseLong(durationString);
                 } catch (NumberFormatException e) {
                     duration = 0;
                 }
@@ -120,10 +120,10 @@ public class MetaDataLoader {
                         // if string has the format (trackNumber / numberOfTracks)
                         String[] components = noString.split("/");
                         if (components.length > 0) {
-                            no = Integer.valueOf(components[0]);
+                            no = Integer.parseInt(components[0]);
                         }
                     } else {
-                        no = Integer.valueOf(noString);
+                        no = Integer.parseInt(noString);
                     }
                 } catch (NumberFormatException e) {
                     no = -1;

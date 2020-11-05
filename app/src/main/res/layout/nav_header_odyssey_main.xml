@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -22,30 +21,32 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
     android:gravity="bottom"
     android:orientation="vertical"
     android:theme="@style/AppTheme.NavDrawerHeader">
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:tint="?attr/odyssey_color_navheader_icon"
         android:alpha="0.1"
-        android:src="@drawable/odyssey_256dp"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/odyssey_256dp"
+        app:tint="?attr/odyssey_color_navheader_icon" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:fontFamily="sans-serif-thin"
         android:padding="@dimen/standard_padding_outside"
         android:text="@string/app_name"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="@dimen/notification_font_size_big"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="?attr/odyssey_color_text_accent"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textSize="@dimen/notification_font_size_big" />
 
 </RelativeLayout>

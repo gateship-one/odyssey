@@ -156,7 +156,7 @@ abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends
 
                     // pass the columnWidth to the adapter to adjust the size of the griditems
                     final int columnWidth = recyclerViewWidth / newSpanCount;
-                    ((GenericRecyclerViewAdapter) mRecyclerView.getAdapter()).setItemSize(columnWidth);
+                    ((GenericRecyclerViewAdapter<?, ?>) mRecyclerView.getAdapter()).setItemSize(columnWidth);
                 }
             }
         });

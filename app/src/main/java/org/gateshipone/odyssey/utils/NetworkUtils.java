@@ -62,7 +62,7 @@ public class NetworkUtils {
                 return false;
             }
         } else {
-            @SuppressWarnings("deprecation") final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
             if (networkInfo != null) {
                 final boolean isWifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_ETHERNET;

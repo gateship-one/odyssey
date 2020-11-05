@@ -81,46 +81,55 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     public synchronized void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        if (intent.getAction() == null) {
+        final String action = intent.getAction();
+
+        if (action == null) {
             return;
         }
         // Type checks
-        if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION)) {
-            // Extract the payload from the intent
-            NowPlayingInformation info = intent.getParcelableExtra(PlaybackServiceStatusHelper.INTENT_NOWPLAYINGNAME);
+        switch (action) {
+            case PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION: {
+                // Extract the payload from the intent
+                NowPlayingInformation info = intent.getParcelableExtra(PlaybackServiceStatusHelper.INTENT_NOWPLAYINGNAME);
 
-            // Check if a payload was sent
-            if (null != info) {
-                PlaybackService.PLAYSTATE state = info.getPlayState();
-                if (state == PlaybackService.PLAYSTATE.STOPPED || state == PlaybackService.PLAYSTATE.RESUMED) {
-                    mLastInfo = new NowPlayingInformation();
-                    mLastCover = null;
+                // Check if a payload was sent
+                if (null != info) {
+                    PlaybackService.PLAYSTATE state = info.getPlayState();
+                    if (state == PlaybackService.PLAYSTATE.STOPPED || state == PlaybackService.PLAYSTATE.RESUMED) {
+                        mLastInfo = new NowPlayingInformation();
+                        mLastCover = null;
 
-                    setWidgetContent(mLastInfo, context);
+                        setWidgetContent(mLastInfo, context);
 
-                } else if (state == PlaybackService.PLAYSTATE.PLAYING || state == PlaybackService.PLAYSTATE.PAUSE) {
-                    // Refresh the widget with the new information
-                    setWidgetContent(info, context);
+                    } else if (state == PlaybackService.PLAYSTATE.PLAYING || state == PlaybackService.PLAYSTATE.PAUSE) {
+                        // Refresh the widget with the new information
+                        setWidgetContent(info, context);
 
-                    // Save the information for later usage (when the asynchronous bitmap loader finishes)
-                    mLastInfo = info;
+                        // Save the information for later usage (when the asynchronous bitmap loader finishes)
+                        mLastInfo = info;
+                    }
                 }
             }
-        } else if (intent.getAction().equals(PlaybackServiceStatusHelper.MESSAGE_HIDE_ARTWORK_CHANGED)) {
-            mHideArtwork = intent.getBooleanExtra(PlaybackServiceStatusHelper.MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
-            NowPlayingInformation info = mLastInfo;
-            // Forces an update
-            mLastInfo = new NowPlayingInformation();
-            setWidgetContent(info, context);
-            mLastInfo = info;
-        } else if (intent.getAction().equals(ArtworkManager.ACTION_NEW_ARTWORK_READY)) {
-            // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
-            String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-            if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(albumKey)) {
-                CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
-                coverLoader.getImage(mLastInfo.getCurrentTrack(), -1, -1);
-                mLastCover = null;
+            break;
+            case PlaybackServiceStatusHelper.MESSAGE_HIDE_ARTWORK_CHANGED: {
+                mHideArtwork = intent.getBooleanExtra(PlaybackServiceStatusHelper.MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
+                NowPlayingInformation info = mLastInfo;
+                // Forces an update
+                mLastInfo = new NowPlayingInformation();
+                setWidgetContent(info, context);
+                mLastInfo = info;
             }
+            break;
+            case ArtworkManager.ACTION_NEW_ARTWORK_READY: {
+                // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
+                String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
+                if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(albumKey)) {
+                    CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
+                    coverLoader.getImage(mLastInfo.getCurrentTrack(), -1, -1);
+                    mLastCover = null;
+                }
+            }
+            break;
         }
     }
 

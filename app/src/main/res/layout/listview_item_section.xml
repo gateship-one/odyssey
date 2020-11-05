@@ -21,6 +21,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -54,7 +55,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     android:src="@drawable/cover_placeholder_96dp"
-                    android:tint="?attr/odyssey_color_text_background_primary" />
+                    app:tint="?attr/odyssey_color_text_background_primary" />
 
                 <ImageView
                     android:id="@+id/section_header_image"
@@ -69,8 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif-regular"
-                android:singleLine="true"
                 android:paddingStart="@dimen/material_standard_horizontal_spacing"
+                android:singleLine="true"
                 android:textSize="@dimen/material_font_style_size_title"
                 tools:text="section header" />
         </LinearLayout>
@@ -78,8 +79,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_divider_size"
-            android:layout_marginEnd="@dimen/material_screen_edge_spacing"
             android:layout_marginStart="@dimen/material_screen_edge_spacing"
+            android:layout_marginEnd="@dimen/material_screen_edge_spacing"
             android:background="?attr/odyssey_color_background_selected" />
     </LinearLayout>
 

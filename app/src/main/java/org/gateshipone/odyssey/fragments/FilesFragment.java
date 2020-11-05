@@ -220,11 +220,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         if (mToolbarAndFABCallback != null) {
             // set toolbar behaviour and title
-            if (mIsRootDirectory) {
-                mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, true, false);
-            } else {
-                mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, false, false);
-            }
+            mToolbarAndFABCallback.setupToolbar(mCurrentDirectory.getName(), false, mIsRootDirectory, false);
         }
     }
 
@@ -323,24 +319,24 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         final int itemId = item.getItemId();
 
         if (itemId == R.id.fragment_files_action_add_folder) {
-                enqueueFolderAndSubFolders(info.position);
-                return true;
+            enqueueFolderAndSubFolders(info.position);
+            return true;
         } else if (itemId == R.id.fragment_files_action_play_folder) {
-                playFolderAndSubFolders(info.position);
-                return true;
+            playFolderAndSubFolders(info.position);
+            return true;
         } else if (itemId == R.id.fragment_files_action_add_file) {
-                enqueueFile(info.position, false);
-                return true;
+            enqueueFile(info.position, false);
+            return true;
         } else if (itemId == R.id.fragment_files_action_enqueueasnext) {
-                enqueueFile(info.position, true);
-                return true;
+            enqueueFile(info.position, true);
+            return true;
         } else if (itemId == R.id.fragment_files_action_play_file) {
-                playFile(info.position, false);
-                return true;
+            playFile(info.position, false);
+            return true;
         }
 
-                return super.onContextItemSelected(item);
-        }
+        return super.onContextItemSelected(item);
+    }
 
     /**
      * Initialize the options menu.
@@ -391,20 +387,20 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         final int itemId = item.getItemId();
 
         if (itemId == R.id.action_add_directory) {
-                enqueueCurrentFolderAndSubFolders();
-                return true;
+            enqueueCurrentFolderAndSubFolders();
+            return true;
         } else if (itemId == R.id.action_switch_storage_volume) {
-                ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
-                chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
-                return true;
+            ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
+            chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
+            return true;
         } else if (itemId == R.id.action_set_default_directory) {
-                SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
-                sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
-                sharedPrefEditor.apply();
-                return true;
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
+            sharedPrefEditor.apply();
+            return true;
         } else if (itemId == R.id.action_start_mediascanner) {
-                startMediaScanning();
-                return true;
+            startMediaScanning();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

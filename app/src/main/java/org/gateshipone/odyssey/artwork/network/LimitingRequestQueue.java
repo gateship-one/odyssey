@@ -40,7 +40,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestFinishedListener {
+public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestFinishedListener<Request<?>> {
     private static final String TAG = LimitingRequestQueue.class.getSimpleName();
 
     private Timer mLimiterTimer;
@@ -108,7 +108,7 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         @Override
         public void run() {
             synchronized (mLimitingRequestQueue) {
-                Request request = mLimitingRequestQueue.poll();
+                Request<?> request = mLimitingRequestQueue.poll();
                 if (null != request) {
                     realAddRequest(request);
 

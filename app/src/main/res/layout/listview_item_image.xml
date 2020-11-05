@@ -21,6 +21,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="@dimen/material_list_item_height"
@@ -40,7 +41,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:src="@drawable/cover_placeholder_96dp"
-            android:tint="?attr/odyssey_color_text_background_primary" />
+            app:tint="?attr/odyssey_color_text_background_primary" />
 
         <ImageView
             android:id="@+id/item_image"
