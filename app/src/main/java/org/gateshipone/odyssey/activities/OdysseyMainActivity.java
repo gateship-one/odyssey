@@ -213,33 +213,29 @@ public class OdysseyMainActivity extends GenericActivity
         if (findViewById(R.id.fragment_container) != null && (savedInstanceState == null)) {
             Fragment fragment;
 
-            switch (navId) {
-                case R.id.nav_saved_playlists:
-                    fragment = SavedPlaylistsFragment.newInstance();
-                    break;
-                case R.id.nav_bookmarks:
-                    fragment = BookmarksFragment.newInstance();
-                    break;
-                case R.id.nav_files:
-                    // open the default directory
-                    List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+            if (navId == R.id.nav_saved_playlists) {
+                fragment = SavedPlaylistsFragment.newInstance();
+            } else if (navId == R.id.nav_bookmarks) {
+                fragment = BookmarksFragment.newInstance();
 
-                    String defaultDirectory = "/";
+            } else if (navId == R.id.nav_files) {
+                // open the default directory
+                List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
-                    if (!storageVolumesList.isEmpty()) {
-                        // choose the latest used storage volume as default
-                        defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
-                    }
+                String defaultDirectory = "/";
 
-                    fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
-                    break;
-                case R.id.nav_settings:
-                    fragment = SettingsFragment.newInstance();
-                    break;
-                case R.id.nav_my_music:
-                default:
-                    fragment = MyMusicFragment.newInstance(getDefaultTab());
-                    break;
+                if (!storageVolumesList.isEmpty()) {
+                    // choose the latest used storage volume as default
+                    defaultDirectory = sharedPref.getString(getString(R.string.pref_file_browser_root_dir_key), storageVolumesList.get(0));
+                }
+
+                fragment = FilesFragment.newInstance(defaultDirectory, storageVolumesList.contains(defaultDirectory));
+            } else if (navId == R.id.nav_settings) {
+                fragment = SettingsFragment.newInstance();
+            } else if (navId == R.id.nav_my_music) {
+                fragment = MyMusicFragment.newInstance(getDefaultTab());
+            } else {
+                fragment = MyMusicFragment.newInstance(getDefaultTab());
             }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -484,48 +480,47 @@ public class OdysseyMainActivity extends GenericActivity
             CurrentPlaylistView currentPlaylistView = findViewById(R.id.now_playing_playlist);
 
             if (currentPlaylistView != null && mNowPlayingDragStatus == DRAG_STATUS.DRAGGED_UP) {
-                switch (item.getItemId()) {
-                    case R.id.view_current_playlist_action_playnext:
-                        currentPlaylistView.enqueueTrackAsNext(info.position);
-                        return true;
-                    case R.id.view_current_playlist_action_remove_track:
-                        currentPlaylistView.removeTrack(info.position);
-                        return true;
-                    case R.id.view_current_playlist_action_remove_section:
-                        currentPlaylistView.removeSection(info.position);
-                        return true;
-                    case R.id.view_current_playlist_action_showalbum: {
-                        String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                        AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+                final int itemId = item.getItemId();
 
-                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-                        coordinatorLayout.setVisibility(View.VISIBLE);
+                if (itemId == R.id.view_current_playlist_action_playnext) {
+                    currentPlaylistView.enqueueTrackAsNext(info.position);
+                    return true;
+                } else if (itemId == R.id.view_current_playlist_action_remove_track) {
+                    currentPlaylistView.removeTrack(info.position);
+                    return true;
+                } else if (itemId == R.id.view_current_playlist_action_remove_section) {
+                    currentPlaylistView.removeSection(info.position);
+                    return true;
+                } else if (itemId == R.id.view_current_playlist_action_showalbum) {
+                    String albumKey = currentPlaylistView.getAlbumKey(info.position);
+                    AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
 
-                        NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
-                        if (nowPlayingView != null) {
-                            nowPlayingView.minimize();
-                        }
+                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                    coordinatorLayout.setVisibility(View.VISIBLE);
 
-                        onAlbumSelected(tmpAlbum, null);
-                        return true;
+                    NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
+                    if (nowPlayingView != null) {
+                        nowPlayingView.minimize();
                     }
-                    case R.id.view_current_playlist_action_showartist: {
-                        String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-                        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
-                        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
-                        coordinatorLayout.setVisibility(View.VISIBLE);
+                    onAlbumSelected(tmpAlbum, null);
+                    return true;
+                } else if (itemId == R.id.view_current_playlist_action_showartist) {
+                    String artistTitle = currentPlaylistView.getArtistTitle(info.position);
+                    long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
-                        NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
-                        if (nowPlayingView != null) {
-                            nowPlayingView.minimize();
-                        }
-                        onArtistSelected(new ArtistModel(artistTitle, artistID), null);
-                        return true;
+                    View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+                    coordinatorLayout.setVisibility(View.VISIBLE);
+
+                    NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
+                    if (nowPlayingView != null) {
+                        nowPlayingView.minimize();
                     }
-                    default:
-                        return super.onContextItemSelected(item);
+                    onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+                    return true;
                 }
+
+                return super.onContextItemSelected(item);
             }
         }
 

@@ -159,19 +159,20 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.saved_playlists_context_menu_action_play:
-                playPlaylist(info.position);
-                return true;
-            case R.id.saved_playlists_context_menu_action_enqueue:
-                enqueuePlaylist(info.position);
-                return true;
-            case R.id.saved_playlists_context_menu_action_delete:
-                deletePlaylist(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.saved_playlists_context_menu_action_play) {
+            playPlaylist(info.position);
+            return true;
+        } else if (itemId == R.id.saved_playlists_context_menu_action_enqueue) {
+            enqueuePlaylist(info.position);
+            return true;
+        } else if (itemId == R.id.saved_playlists_context_menu_action_delete) {
+            deletePlaylist(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

@@ -320,26 +320,27 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.fragment_files_action_add_folder:
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.fragment_files_action_add_folder) {
                 enqueueFolderAndSubFolders(info.position);
                 return true;
-            case R.id.fragment_files_action_play_folder:
+        } else if (itemId == R.id.fragment_files_action_play_folder) {
                 playFolderAndSubFolders(info.position);
                 return true;
-            case R.id.fragment_files_action_add_file:
+        } else if (itemId == R.id.fragment_files_action_add_file) {
                 enqueueFile(info.position, false);
                 return true;
-            case R.id.fragment_files_action_enqueueasnext:
+        } else if (itemId == R.id.fragment_files_action_enqueueasnext) {
                 enqueueFile(info.position, true);
                 return true;
-            case R.id.fragment_files_action_play_file:
+        } else if (itemId == R.id.fragment_files_action_play_file) {
                 playFile(info.position, false);
                 return true;
-            default:
+        }
+
                 return super.onContextItemSelected(item);
         }
-    }
 
     /**
      * Initialize the options menu.
@@ -387,20 +388,21 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_directory:
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.action_add_directory) {
                 enqueueCurrentFolderAndSubFolders();
                 return true;
-            case R.id.action_switch_storage_volume:
+        } else if (itemId == R.id.action_switch_storage_volume) {
                 ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
                 chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
                 return true;
-            case R.id.action_set_default_directory:
+        } else if (itemId == R.id.action_set_default_directory) {
                 SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
                 sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
                 sharedPrefEditor.apply();
                 return true;
-            case R.id.action_start_mediascanner:
+        } else if (itemId == R.id.action_start_mediascanner) {
                 startMediaScanning();
                 return true;
         }

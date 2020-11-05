@@ -273,22 +273,23 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.fragment_album_tracks_action_play:
-                playTrack(info.position);
-                return true;
-            case R.id.fragment_album_tracks_action_enqueue:
-                enqueueTrack(info.position, false);
-                return true;
-            case R.id.fragment_album_tracks_action_enqueueasnext:
-                enqueueTrack(info.position, true);
-                return true;
-            case R.id.fragment_album_tracks_action_showartist:
-                showArtist(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.fragment_album_tracks_action_play) {
+            playTrack(info.position);
+            return true;
+        } else if (itemId == R.id.fragment_album_tracks_action_enqueue) {
+            enqueueTrack(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_album_tracks_action_enqueueasnext) {
+            enqueueTrack(info.position, true);
+            return true;
+        } else if (itemId == R.id.fragment_album_tracks_action_showartist) {
+            showArtist(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**
@@ -322,14 +323,15 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_reset_artwork:
-                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-                ArtworkManager.getInstance(getContext()).resetImage(mAlbum);
-                return true;
-            case R.id.action_add_album:
-                enqueueAlbum();
-                return true;
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.action_reset_artwork) {
+            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
+            ArtworkManager.getInstance(getContext()).resetImage(mAlbum);
+            return true;
+        } else if (itemId == R.id.action_add_album) {
+            enqueueAlbum();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

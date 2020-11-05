@@ -174,22 +174,23 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.fragment_all_tracks_action_enqueue:
-                enqueueTrack(info.position, false);
-                return true;
-            case R.id.fragment_all_tracks_action_enqueueasnext:
-                enqueueTrack(info.position, true);
-                return true;
-            case R.id.fragment_all_tracks_action_play:
-                playTrack(info.position, false);
-                return true;
-            case R.id.fragment_all_tracks_showartist:
-                showArtist(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.fragment_all_tracks_action_enqueue) {
+            enqueueTrack(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_all_tracks_action_enqueueasnext) {
+            enqueueTrack(info.position, true);
+            return true;
+        } else if (itemId == R.id.fragment_all_tracks_action_play) {
+            playTrack(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_all_tracks_showartist) {
+            showArtist(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

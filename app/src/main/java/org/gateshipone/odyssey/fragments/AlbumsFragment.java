@@ -113,19 +113,20 @@ public class AlbumsFragment extends GenericAlbumsFragment {
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.fragment_albums_action_enqueue:
-                enqueueAlbum(info.position);
-                return true;
-            case R.id.fragment_albums_action_play:
-                playAlbum(info.position);
-                return true;
-            case R.id.fragment_albums_action_showartist:
-                showArtist(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.fragment_albums_action_enqueue) {
+            enqueueAlbum(info.position);
+            return true;
+        } else if (itemId == R.id.fragment_albums_action_play) {
+            playAlbum(info.position);
+            return true;
+        } else if (itemId == R.id.fragment_albums_action_showartist) {
+            showArtist(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

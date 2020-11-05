@@ -134,16 +134,17 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.bookmarks_context_menu_action_resume:
-                resumeBookmark(info.position);
-                return true;
-            case R.id.bookmarks_context_menu_action_delete:
-                deleteBookmark(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.bookmarks_context_menu_action_resume) {
+            resumeBookmark(info.position);
+            return true;
+        } else if (itemId == R.id.bookmarks_context_menu_action_delete) {
+            deleteBookmark(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

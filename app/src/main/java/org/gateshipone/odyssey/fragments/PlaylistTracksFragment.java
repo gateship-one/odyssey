@@ -217,22 +217,23 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
             return super.onContextItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.fragment_album_tracks_action_play:
-                playTrack(info.position);
-                return true;
-            case R.id.fragment_playlist_tracks_action_enqueue:
-                enqueueTrack(info.position, false);
-                return true;
-            case R.id.fragment_playlist_tracks_action_enqueueasnext:
-                enqueueTrack(info.position, true);
-                return true;
-            case R.id.fragment_playlist_tracks_action_remove:
-                removeTrackFromPlaylist(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        final int itemId = item.getItemId();
+
+        if (itemId == R.id.fragment_album_tracks_action_play) {
+            playTrack(info.position);
+            return true;
+        } else if (itemId == R.id.fragment_playlist_tracks_action_enqueue) {
+            enqueueTrack(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_playlist_tracks_action_enqueueasnext) {
+            enqueueTrack(info.position, true);
+            return true;
+        } else if (itemId == R.id.fragment_playlist_tracks_action_remove) {
+            removeTrackFromPlaylist(info.position);
+            return true;
         }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

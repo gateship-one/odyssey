@@ -365,87 +365,83 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
      */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.view_nowplaying_action_shuffleplaylist:
-                try {
-                    mServiceConnection.getPBS().shufflePlaylist();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                return true;
-            case R.id.view_nowplaying_action_clearplaylist:
-                try {
-                    mServiceConnection.getPBS().clearPlaylist();
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                return true;
-            case R.id.view_nowplaying_action_saveplaylist:
-                // open dialog in order to save the current playlist as a playlist in the mediastore
-                ChoosePlaylistDialog choosePlaylistDialog = new ChoosePlaylistDialog();
-                choosePlaylistDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChoosePlaylistDialog");
-                return true;
-            case R.id.view_nowplaying_action_createbookmark:
-                // open dialog in order to save the current playlist as a bookmark in the odyssey db
-                ChooseBookmarkDialog chooseBookmarkDialog = new ChooseBookmarkDialog();
-                chooseBookmarkDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseBookmarkDialog");
-                return true;
-            case R.id.view_nowplaying_action_startequalizer:
-                // start the audio equalizer
-                Activity activity = (Activity) getContext();
-                if (activity != null) {
-                    Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
-                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
+        final int itemId = item.getItemId();
 
-                    try {
-                        startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+        if (itemId == R.id.view_nowplaying_action_shuffleplaylist) {
+            try {
+                mServiceConnection.getPBS().shufflePlaylist();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_clearplaylist) {
+            try {
+                mServiceConnection.getPBS().clearPlaylist();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_saveplaylist) {
+            // open dialog in order to save the current playlist as a playlist in the mediastore
+            ChoosePlaylistDialog choosePlaylistDialog = new ChoosePlaylistDialog();
+            choosePlaylistDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChoosePlaylistDialog");
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_createbookmark) {
+            // open dialog in order to save the current playlist as a bookmark in the odyssey db
+            ChooseBookmarkDialog chooseBookmarkDialog = new ChooseBookmarkDialog();
+            chooseBookmarkDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseBookmarkDialog");
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_startequalizer) {
+            // start the audio equalizer
+            Activity activity = (Activity) getContext();
+            if (activity != null) {
+                Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
-                    try {
-                        activity.startActivityForResult(startEqualizerIntent, 0);
-                    } catch (ActivityNotFoundException e) {
-                        ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
-                        equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
-                    }
-                }
-                return true;
-            case R.id.action_wikipedia_album: {
-                openWikipediaPage(true);
-                return true;
-            }
-            case R.id.action_wikipedia_artist: {
-                openWikipediaPage(false);
-                return true;
-            }
-            case R.id.view_nowplaying_action_share_track: {
-                shareCurrentTrack();
-                return true;
-            }
-            case R.id.view_nowplaying_action_start_sleep_timer: {
-                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                final long durationMS = sharedPref.getLong(getContext().getString(R.string.pref_last_used_sleep_timer_key), 0);
-                final boolean stopAfterCurrent = sharedPref.getBoolean(getContext().getString(R.string.pref_last_used_sleep_timer_stop_after_current_key), false);
-
-                final TimeDurationDialog dialog = TimeDurationDialog.newInstance(durationMS, stopAfterCurrent);
-                dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "TimeDurationDialog");
-                return true;
-            }
-            case R.id.view_nowplaying_action_cancel_sleep_timer: {
                 try {
-                    mServiceConnection.getPBS().cancelSleepTimer();
+                    startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mServiceConnection.getPBS().getAudioSessionID());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                return true;
+
+                try {
+                    activity.startActivityForResult(startEqualizerIntent, 0);
+                } catch (ActivityNotFoundException e) {
+                    ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
+                    equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
+                }
             }
-            default:
-                return false;
+            return true;
+        } else if (itemId == R.id.action_wikipedia_album) {
+            openWikipediaPage(true);
+            return true;
+        } else if (itemId == R.id.action_wikipedia_artist) {
+            openWikipediaPage(false);
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_share_track) {
+            shareCurrentTrack();
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_start_sleep_timer) {
+            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            final long durationMS = sharedPref.getLong(getContext().getString(R.string.pref_last_used_sleep_timer_key), 0);
+            final boolean stopAfterCurrent = sharedPref.getBoolean(getContext().getString(R.string.pref_last_used_sleep_timer_stop_after_current_key), false);
+
+            final TimeDurationDialog dialog = TimeDurationDialog.newInstance(durationMS, stopAfterCurrent);
+            dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "TimeDurationDialog");
+            return true;
+        } else if (itemId == R.id.view_nowplaying_action_cancel_sleep_timer) {
+            try {
+                mServiceConnection.getPBS().cancelSleepTimer();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            return true;
         }
+
+        return false;
     }
 
     private void openWikipediaPage(boolean showAlbum) {
