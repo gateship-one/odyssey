@@ -233,4 +233,5 @@
     <string name="preference_album_tracks_sort_name">Anzeigename (Dateiname)</string>
     <string name="playlist_type_global">Global</string>
     <string name="playlist_type_local">Lokal</string>
+    <string name="contributor_translator_indonesia">Indonesische Übersetzung</string>
 </resources>

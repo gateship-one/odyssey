@@ -9,6 +9,7 @@
 - Dennis Guse - Optional private notification
 - zeritti - Czech Translation
 - Harry van der Wolf - Dutch Translation
+- HafitzSetya - Indonesian Translation
 
 and more, see: [Contributors](https://github.com/gateship-one/odyssey/graphs/contributors)
 

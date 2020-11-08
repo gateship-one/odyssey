@@ -324,6 +324,7 @@
     <string name="contributor_translator_polish">Polish Translation</string>
     <string name="contributor_translator_czech">Czech Translation</string>
     <string name="contributor_translator_dutch">Dutch Translation</string>
+    <string name="contributor_translator_indonesia">Indonesian Translation</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Third Party Licenses</string>
