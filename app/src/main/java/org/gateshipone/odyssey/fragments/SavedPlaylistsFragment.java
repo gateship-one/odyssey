@@ -45,6 +45,7 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
@@ -60,11 +61,15 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_linear, container, false);
+        return inflater.inflate(R.layout.list_linear, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // get listview
-        mListView = rootView.findViewById(R.id.list_linear_listview);
+        mListView = view.findViewById(R.id.list_linear_listview);
 
         mAdapter = new SavedPlaylistsAdapter(getActivity());
 
@@ -72,18 +77,16 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         mListView.setOnItemClickListener(this);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_saved_playlists_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_saved_playlists_message);
 
         // register for context menu
         registerForContextMenu(mListView);
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
-
-        return rootView;
     }
 
     @Override

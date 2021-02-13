@@ -45,6 +45,7 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> implements AdapterView.OnItemClickListener {
@@ -54,31 +55,44 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      */
     protected OnAlbumSelectedListener mAlbumSelectedCallback;
 
-    /**
-     * Called to create instantiate the UI of the fragment.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView;
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
-        boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+        final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
 
         if (useList) {
             rootView = inflater.inflate(R.layout.list_refresh, container, false);
-            // get listview
-            mListView = rootView.findViewById(R.id.list_refresh_listview);
         } else {
             rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+        }
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+
+        final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+
+        if (useList) {
+            // get listview
+            mListView = view.findViewById(R.id.list_refresh_listview);
+        } else {
             // get gridview
-            mListView = rootView.findViewById(R.id.grid_refresh_gridview);
+            mListView = view.findViewById(R.id.grid_refresh_gridview);
         }
 
         // get swipe layout
-        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -92,15 +106,13 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         mListView.setOnItemClickListener(this);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_albums_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_albums_message);
 
         // register for context menu
         registerForContextMenu(mListView);
-
-        return rootView;
     }
 
     @Override

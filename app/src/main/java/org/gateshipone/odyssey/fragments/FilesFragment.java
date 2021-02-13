@@ -56,6 +56,7 @@ import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -112,20 +113,20 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         return fragment;
     }
 
-    /**
-     * Called to create instantiate the UI of the fragment.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.list_refresh, container, false);
+    }
 
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_refresh, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // get listview
-        mListView = rootView.findViewById(R.id.list_refresh_listview);
+        mListView = view.findViewById(R.id.list_refresh_listview);
 
         // get swipe layout
-        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -138,10 +139,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         mListView.setOnItemClickListener(this);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_directory_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_directory_message);
 
         // register listview for a context menu
         registerForContextMenu(mListView);
@@ -171,8 +172,6 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
-
-        return rootView;
     }
 
     @Override

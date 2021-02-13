@@ -48,8 +48,10 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewitems.GenericImageViewItem;
 import org.gateshipone.odyssey.viewmodels.ArtistViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.SearchViewModel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
@@ -64,31 +66,39 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         return new ArtistsFragment();
     }
 
-    /**
-     * Called to create instantiate the UI of the fragment.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView;
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
 
         if (useList) {
-            rootView = inflater.inflate(R.layout.list_refresh, container, false);
-            // get listview
-            mListView = rootView.findViewById(R.id.list_refresh_listview);
+            return inflater.inflate(R.layout.list_refresh, container, false);
         } else {
-            rootView = inflater.inflate(R.layout.grid_refresh, container, false);
+            return inflater.inflate(R.layout.grid_refresh, container, false);
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
+
+        boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+
+        if (useList) {
+            // get listview
+            mListView = view.findViewById(R.id.list_refresh_listview);
+        } else {
             // get gridview
-            mListView = rootView.findViewById(R.id.grid_refresh_gridview);
+            mListView = view.findViewById(R.id.grid_refresh_gridview);
         }
 
         // get swipe layout
-        mSwipeRefreshLayout = rootView.findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
                 ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
@@ -102,10 +112,10 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         mListView.setOnItemClickListener(this);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_artists_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_artists_message);
 
         // register for context menu
         registerForContextMenu(mListView);
@@ -113,7 +123,14 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
-        return rootView;
+        SearchViewModel searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+        searchViewModel.getSearchString().observe(getViewLifecycleOwner(), searchString -> {
+            if (searchString != null) {
+                applyFilter(searchString);
+            } else {
+                removeFilter();
+            }
+        });
     }
 
     @Override

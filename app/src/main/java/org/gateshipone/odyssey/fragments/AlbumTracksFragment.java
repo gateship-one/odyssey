@@ -103,18 +103,19 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         return fragment;
     }
 
-    /**
-     * Called to create instantiate the UI of the fragment.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.recycler_list, container, false);
+        return inflater.inflate(R.layout.recycler_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mRecyclerAdapter = new TracksRecyclerViewAdapter(false);
 
         // get listview
-        mRecyclerView = rootView.findViewById(R.id.recycler_view);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdapter);
         mRecyclerView.addOnItemClicklistener(this);
 
@@ -123,10 +124,10 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         registerForContextMenu(mRecyclerView);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
 
         // set up toolbar
         Bundle args = getArguments();
@@ -144,8 +145,6 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
-
-        return rootView;
     }
 
     @Override

@@ -102,6 +102,8 @@ abstract public class OdysseyFragment<T extends GenericModel> extends OdysseyBas
             mListView.onRestoreInstanceState(mListViewState);
             mListViewState = null;
         }
+
+        updateView();
     }
 
     /**

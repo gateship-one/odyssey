@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Team Gateship-One
+ * Copyright (C) 2021 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -22,42 +22,27 @@
 
 package org.gateshipone.odyssey.viewmodels;
 
-import android.app.Application;
-
-import org.gateshipone.odyssey.models.GenericModel;
-
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-public abstract class GenericViewModel<T extends GenericModel> extends AndroidViewModel {
+public class SearchViewModel extends ViewModel {
 
-    private final MutableLiveData<List<T>> mData;
+    private final MutableLiveData<String> mSearchString;
 
-    abstract void loadData();
-
-    GenericViewModel(@NonNull final Application application) {
-        super(application);
-
-        mData = new MutableLiveData<>();
+    public SearchViewModel() {
+        mSearchString = new MutableLiveData<>();
     }
 
-    public LiveData<List<T>> getData() {
-        return mData;
+    public LiveData<String> getSearchString() {
+        return mSearchString;
     }
 
-    public void reloadData() {
-        loadData();
+    public void setSearchString(final String searchString) {
+        mSearchString.setValue(searchString);
     }
 
-    public void clearData() {
-        mData.setValue(null);
-    }
-
-    protected void setData(final List<T> data) {
-        mData.setValue(data);
+    public void clearSearchString() {
+        mSearchString.setValue(null);
     }
 }

@@ -42,6 +42,7 @@ import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements AdapterView.OnItemClickListener {
@@ -50,16 +51,17 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         return new BookmarksFragment();
     }
 
-    /**
-     * Called to create instantiate the UI of the fragment.
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.list_linear, container, false);
+        return inflater.inflate(R.layout.list_linear, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // get listview
-        mListView = rootView.findViewById(R.id.list_linear_listview);
+        mListView = view.findViewById(R.id.list_linear_listview);
 
         mAdapter = new BookmarksAdapter(getActivity());
 
@@ -68,17 +70,15 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
         mListView.setOnItemClickListener(this);
 
         // get empty view
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
 
         // set empty view message
-        ((TextView) rootView.findViewById(R.id.empty_view_message)).setText(R.string.empty_bookmarks_message);
+        ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_bookmarks_message);
 
         registerForContextMenu(mListView);
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
-
-        return rootView;
     }
 
     @Override
