@@ -371,6 +371,11 @@ public class ListViewItem extends GenericImageViewItem {
                 }
                 setAddtionalSubtitle(numberOfTracksString);
                 break;
+            case UNKNOWN:
+            case CREATE_NEW:
+                setSubtitle("");
+                setAddtionalSubtitle("");
+                break;
         }
 
         setIcon(icon);

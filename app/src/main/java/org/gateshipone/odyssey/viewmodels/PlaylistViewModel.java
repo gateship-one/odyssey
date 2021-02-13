@@ -84,7 +84,7 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                 if (model.mAddHeader) {
                     // add a dummy playlist for the choose playlist dialog
                     // this playlist represents the action to create a new playlist in the dialog
-                    playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), -1, PlaylistModel.PLAYLIST_TYPES.UNKNOWN));
+                    playlists.add(new PlaylistModel(application.getString(R.string.create_new_playlist), -1, PlaylistModel.PLAYLIST_TYPES.CREATE_NEW));
                 }
 
                 if (!model.mOnlyOdysseyPlaylists) {
@@ -95,8 +95,19 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
                 // add playlists from odyssey local storage
                 playlists.addAll(OdysseyDatabaseManager.getInstance(application).getPlaylists());
 
-                // sort the recent albums
-                Collections.sort(playlists, (p1, p2) -> p1.getPlaylistName().compareToIgnoreCase(p2.getPlaylistName()));
+                // sort the playlist
+                Collections.sort(playlists, (p1, p2) -> {
+                    // make sure that the place holder for a new playlist is always at the top
+                    if (p1.getPlaylistType() == PlaylistModel.PLAYLIST_TYPES.CREATE_NEW) {
+                        return -1;
+                    }
+
+                    if (p2.getPlaylistType() == PlaylistModel.PLAYLIST_TYPES.CREATE_NEW) {
+                        return 1;
+                    }
+
+                    return p1.getPlaylistName().compareToIgnoreCase(p2.getPlaylistName());
+                });
 
                 return playlists;
             }

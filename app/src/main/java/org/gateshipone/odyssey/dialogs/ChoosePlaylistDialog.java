@@ -81,11 +81,11 @@ public class ChoosePlaylistDialog extends DialogFragment {
                 .setAdapter(mPlaylistsListViewAdapter, (dialog, which) -> {
 
                     if (which == 0) {
-                        // open save dialog to create a new bookmark
+                        // open save dialog to create a new playlist
                         SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.PLAYLIST);
                         saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
                     } else {
-                        // override existing bookmark
+                        // override existing playlist
                         PlaylistModel playlist = mPlaylistsListViewAdapter.getItem(which);
                         String objectTitle = playlist.getPlaylistName();
                         mSaveCallback.onSaveObject(objectTitle, SaveDialog.OBJECTTYPE.PLAYLIST);

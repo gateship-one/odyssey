@@ -33,6 +33,8 @@ public class PlaylistModel implements GenericModel, Parcelable {
     public enum PLAYLIST_TYPES {
         // placeholder for dummy playlist objects
         UNKNOWN,
+        // represents a playlist that should be created
+        CREATE_NEW,
         // playlist is stored in the android mediastore
         MEDIASTORE,
         // playlist is stored in the odyssey database
