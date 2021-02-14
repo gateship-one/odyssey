@@ -1,5 +1,11 @@
 # Changelog Odyssey
 
+## Version: 1.1.21 Tag: release-33 (2021-02-13)
+
+* Add Indonesian translation
+* Update French translation
+* Fix creating a new playlists if mutliple already exists ([Issue #213](https://github.com/gateship-one/odyssey/issues/213))
+
 ## Version: 1.1.20 Tag: release-32 (2020-10-11)
 
 * Add dutch translation (thanks to Harry van der Wolf)

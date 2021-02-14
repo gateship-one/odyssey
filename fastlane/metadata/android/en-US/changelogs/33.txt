@@ -1,0 +1,3 @@
+* Add Indonesian translation
+* Update French translation
+* Fix creating a new playlists if mutliple already exists ([Issue #213](https://github.com/gateship-one/odyssey/issues/213))
