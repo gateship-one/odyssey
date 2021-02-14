@@ -373,6 +373,7 @@ public class ListViewItem extends GenericImageViewItem {
                 break;
             case UNKNOWN:
             case CREATE_NEW:
+            case FILE:
                 setSubtitle("");
                 setAddtionalSubtitle("");
                 break;
