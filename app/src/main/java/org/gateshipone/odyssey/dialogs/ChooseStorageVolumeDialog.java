@@ -27,6 +27,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
@@ -34,7 +36,6 @@ import org.gateshipone.odyssey.utils.FileExplorerHelper;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class ChooseStorageVolumeDialog extends DialogFragment {
@@ -72,7 +73,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
         List<String> storageVolumes = FileExplorerHelper.getInstance().getStorageVolumes(getContext());
 
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         builder.setTitle(R.string.dialog_choose_storage_volume_title);
         mStorageVolumesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, storageVolumes);

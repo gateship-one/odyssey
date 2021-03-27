@@ -26,10 +26,11 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class LicensesDialog extends DialogFragment {
@@ -46,7 +47,7 @@ public class LicensesDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         WebView view = new WebView(getActivity());
         view.loadUrl("file:///android_asset/thirdparty_licenses.html");
-        return new AlertDialog.Builder(getActivity())
+        return new MaterialAlertDialogBuilder(getActivity())
                 .setTitle(getString(R.string.odyssey_thirdparty_licenses_dialog_title))
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)

@@ -30,11 +30,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class TimeDurationDialog extends DialogFragment {
@@ -78,7 +79,7 @@ public class TimeDurationDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View durationView = inflater.inflate(R.layout.duration_picker, null);

@@ -229,9 +229,11 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
+        <!--        <item name="materialAlertDialogTheme">@style/AppTheme.Dialog</item>-->
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
         <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="dialogTheme">@style/AppTheme.Dialog</item>
+        <item name="materialAlertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="preferenceTheme">@style/AppTheme.Preference</item>
@@ -281,14 +283,17 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Dialog.Alert.Bridge">
-        <item name="android:colorAccent">?attr/odyssey_color_accent</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:windowBackground">?attr/odyssey_color_background</item>
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
+        <item name="android:windowBackground">?attr/odyssey_color_background</item>
+        <item name="buttonBarButtonStyle">@style/AppTheme.Dialog.ButtonBarButtonStyle</item>
+    </style>
+
+    <style name="AppTheme.Dialog.ButtonBarButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/odyssey_color_accent</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.Bridge">
@@ -296,6 +301,7 @@
         <item name="android:dialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="alertDialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="dialogTheme">@style/AppThemeLight.Dialog</item>
+        <item name="materialAlertDialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="preferenceTheme">@style/AppThemeLight.Preference</item>
@@ -341,17 +347,18 @@
         <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
     </style>
 
-    <style name="AppThemeLight.Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-        <item name="android:colorAccent">?attr/odyssey_color_accent</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:windowBackground">?attr/odyssey_color_background</item>
+    <style name="AppThemeLight.Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
+        <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
+        <item name="android:windowBackground">?attr/odyssey_color_background</item>
+        <item name="buttonBarButtonStyle">@style/AppTheme.Dialog.ButtonBarButtonStyle</item>
     </style>
 
     <style name="AppThemeLight.NumberPicker" parent="AppThemeLight">
+        <item name="colorControlNormal">?attr/odyssey_color_accent</item>
+        <item name="android:colorControlNormal">?odyssey_color_accent</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
     </style>
 </resources>

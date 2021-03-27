@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -160,7 +161,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable, tintColor);
+            DrawableCompat.setTintList(drawable, ColorStateList.valueOf(tintColor).withAlpha(255));
         }
 
         mAlbumImage.setImageDrawable(drawable);

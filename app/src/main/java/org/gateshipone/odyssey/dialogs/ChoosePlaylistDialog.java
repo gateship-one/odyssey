@@ -27,6 +27,8 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
@@ -72,7 +74,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         mPlaylistsListViewAdapter = new SavedPlaylistsAdapter(getActivity());
 

@@ -27,11 +27,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.EditText;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class SaveDialog extends DialogFragment {
@@ -88,7 +89,7 @@ public class SaveDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         // read arguments to identify type of the object which should be saved
         Bundle mArgs = getArguments();

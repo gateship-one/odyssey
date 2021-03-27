@@ -32,12 +32,13 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
@@ -54,7 +55,7 @@ public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View seekView = inflater.inflate(R.layout.dumbness_select_dialog, null);
