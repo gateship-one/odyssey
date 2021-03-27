@@ -31,7 +31,7 @@
         style="@style/Widget.MaterialComponents.TabLayout.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        app:background="?attr/colorPrimary"
         app:tabIndicatorColor="?attr/colorAccent" />
 
     <androidx.viewpager.widget.ViewPager

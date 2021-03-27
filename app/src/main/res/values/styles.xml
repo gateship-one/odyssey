@@ -238,10 +238,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="odyssey_navdrawer_theme">@style/AppTheme.NavDrawer</item>
+        <item name="odyssey_appbaroverlay_theme">@style/AppTheme.AppBarOverlay</item>
         <!-- Odyssey color values -->
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
         <item name="android:colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="android:colorAccent">?attr/odyssey_color_accent</item>
         <item name="android:colorPrimary">?attr/odyssey_color_primary</item>
@@ -300,10 +302,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="odyssey_navdrawer_theme">@style/AppThemeLight.NavDrawer</item>
+        <item name="odyssey_appbaroverlay_theme">@style/AppThemeLight.AppBarOverlay</item>
         <!-- Odyssey color values -->
         <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="colorAccent">?attr/odyssey_color_accent</item>
         <item name="colorPrimary">?attr/odyssey_color_primary</item>
+        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
         <item name="android:colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
         <item name="android:colorAccent">?attr/odyssey_color_accent</item>
         <item name="android:colorPrimary">?attr/odyssey_color_primary</item>

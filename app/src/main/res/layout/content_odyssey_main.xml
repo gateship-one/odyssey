@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="?attr/odyssey_appbaroverlay_theme"
         app:expanded="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -46,8 +46,8 @@
 
             <include
                 layout="@layout/imageview_appbar"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_collapseMode="parallax" />
 
             <androidx.appcompat.widget.Toolbar
@@ -71,8 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginEnd="@dimen/fab_margin">
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="?attr/actionBarSize">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/odyssey_play_button"
@@ -80,7 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/fab_margin"
             android:src="@drawable/ic_play_arrow_48dp"
-            android:tint="?attr/odyssey_color_text_accent" />
+            app:backgroundTint="?attr/colorAccent"
+            app:tint="?attr/odyssey_color_text_accent" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

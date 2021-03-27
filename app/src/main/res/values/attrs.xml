@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -23,17 +22,18 @@
 
 <resources>
     <declare-styleable name="OdysseyColors">
-        <attr name="odyssey_color_primary" format="reference|color"/>
-        <attr name="odyssey_color_primary_dark" format="reference|color"/>
-        <attr name="odyssey_color_accent" format="reference|color"/>
-        <attr name="odyssey_color_background" format="reference|color"/>
-        <attr name="odyssey_color_background_selected" format="reference|color"/>
-        <attr name="odyssey_color_text_accent" format="reference|color"/>
-        <attr name="odyssey_color_text_background_secondary" format="reference|color"/>
-        <attr name="odyssey_color_text_background_primary" format="reference|color"/>
-        <attr name="odyssey_color_navheader_icon" format="reference|color"/>
-        <attr name="odyssey_cover_background" format="reference|color"/>
-        <attr name="odyssey_grid_gradient" format="reference"/>
-        <attr name="odyssey_navdrawer_theme" format="reference"/>
+        <attr name="odyssey_color_primary" format="reference|color" />
+        <attr name="odyssey_color_primary_dark" format="reference|color" />
+        <attr name="odyssey_color_accent" format="reference|color" />
+        <attr name="odyssey_color_background" format="reference|color" />
+        <attr name="odyssey_color_background_selected" format="reference|color" />
+        <attr name="odyssey_color_text_accent" format="reference|color" />
+        <attr name="odyssey_color_text_background_secondary" format="reference|color" />
+        <attr name="odyssey_color_text_background_primary" format="reference|color" />
+        <attr name="odyssey_color_navheader_icon" format="reference|color" />
+        <attr name="odyssey_cover_background" format="reference|color" />
+        <attr name="odyssey_grid_gradient" format="reference" />
+        <attr name="odyssey_navdrawer_theme" format="reference" />
+        <attr name="odyssey_appbaroverlay_theme" format="reference" />
     </declare-styleable>
 </resources>
