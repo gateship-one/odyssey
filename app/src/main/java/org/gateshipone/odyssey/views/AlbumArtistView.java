@@ -161,7 +161,7 @@ public class AlbumArtistView extends ViewSwitcher {
 
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(drawable, ColorStateList.valueOf(tintColor).withAlpha(255));
+            DrawableCompat.setTintList(drawable, ColorStateList.valueOf(tintColor));
         }
 
         mAlbumImage.setImageDrawable(drawable);

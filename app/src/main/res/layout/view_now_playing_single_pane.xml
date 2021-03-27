@@ -43,8 +43,8 @@
                 android:id="@+id/now_playing_topCover"
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="false"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:src="@drawable/cover_placeholder" />
@@ -53,12 +53,12 @@
                 android:id="@+id/now_playing_header_textLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:layout_toEndOf="@+id/now_playing_topCover"
                 android:layout_toStartOf="@+id/now_playing_layout_dragged_down"
+                android:layout_toEndOf="@+id/now_playing_topCover"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:paddingEnd="@dimen/material_content_spacing"
-                android:paddingStart="@dimen/material_content_spacing">
+                android:paddingStart="@dimen/material_content_spacing"
+                android:paddingEnd="@dimen/material_content_spacing">
 
                 <TextView
                     android:id="@+id/now_playing_track_title"
@@ -145,8 +145,8 @@
             android:id="@+id/now_playing_bodyLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/now_playing_headerLayout">
+            android:layout_below="@+id/now_playing_headerLayout"
+            android:layout_alignParentBottom="true">
 
             <RelativeLayout
                 android:id="@+id/now_playing_coverLayout"
@@ -191,8 +191,8 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
                     android:paddingLeft="@dimen/material_standard_horizontal_spacing"
-                    android:paddingRight="@dimen/material_standard_horizontal_spacing"
-                    android:paddingTop="@dimen/standard_padding_medium">
+                    android:paddingTop="@dimen/standard_padding_medium"
+                    android:paddingRight="@dimen/material_standard_horizontal_spacing">
 
                     <TextView
                         android:id="@+id/now_playing_elapsedTime"

@@ -823,6 +823,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mCoverImage = findViewById(R.id.now_playing_cover);
         // Small header cover image
         mTopCoverImage = findViewById(R.id.now_playing_topCover);
+        showPlaceholderImage();
 
         // View with the ListView of the playlist
         mPlaylistView = findViewById(R.id.now_playing_playlist);
@@ -1453,7 +1454,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable, tintColor);
+            DrawableCompat.setTintList(drawable, ColorStateList.valueOf(tintColor));
         }
 
         mTopCoverImage.setImageDrawable(drawable);
