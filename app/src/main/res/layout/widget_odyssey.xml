@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -20,46 +19,46 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="96dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"
     android:background="@color/colorWidgetBackground">
 
     <ImageView
-        android:id="@+id/widget_big_cover"
+        android:id="@+id/widget_cover"
         android:layout_width="96dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_height="96dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:scaleType="fitCenter"
         android:src="@drawable/odyssey_notification" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="4dp"
-        android:layout_toEndOf="@+id/widget_big_cover"
-        android:gravity="center_vertical"
+        android:layout_toEndOf="@+id/widget_cover"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/widget_big_trackName"
+            android:id="@+id/widget_trackName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="@dimen/material_font_style_size_subheading" />
 
         <TextView
-            android:id="@+id/widget_big_ArtistAlbum"
+            android:id="@+id/widget_artistAlbum"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
             android:textColor="@android:color/secondary_text_dark"
@@ -67,14 +66,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:maxHeight="48dp">
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical">
 
             <ImageButton
-                android:id="@+id/widget_big_previous"
+                android:id="@+id/widget_previous"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
@@ -82,9 +80,9 @@
                 android:tint="@android:color/primary_text_dark" />
 
             <ImageButton
-                android:id="@+id/widget_big_play"
+                android:id="@+id/widget_play"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
@@ -92,9 +90,9 @@
                 android:tint="@android:color/primary_text_dark" />
 
             <ImageButton
-                android:id="@+id/widget_big_next"
+                android:id="@+id/widget_next"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
