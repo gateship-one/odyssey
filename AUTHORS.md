@@ -5,7 +5,7 @@
 - Alessandra Ghiazza - Italian Translation
 - Kévin Minions - French Translation
 - mray (GitHub user) - Image tweaks
-- Daria Szatan - Polish Translation
+- Daria Szatan & Paweł Wojtczak - Polish Translation
 - Dennis Guse - Optional private notification
 - zeritti - Czech Translation
 - Harry van der Wolf - Dutch Translation
