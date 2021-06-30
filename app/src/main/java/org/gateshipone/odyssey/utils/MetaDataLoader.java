@@ -25,7 +25,6 @@ package org.gateshipone.odyssey.utils;
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -62,7 +61,7 @@ public class MetaDataLoader {
         HashMap<String, String> unknownTracks = new HashMap<>();
 
         for (TrackModel track : tracks) {
-            if (TextUtils.isEmpty(track.getTrackAlbumKey())) {
+            if (track.getTrackAlbumId() == -1) {
                 // add only tracks with an empty albumkey
                 unknownTracks.put(track.getTrackUriString(), track.getTrackName());
             }
@@ -133,13 +132,13 @@ public class MetaDataLoader {
             final String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
             final String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
 
-            final String albumKey = "" + ((artist == null ? "" : artist) + (album == null ? "" : album)).hashCode();
+            final long albumId = MusicLibraryHelper.verifyAlbumId(-1, album, artist, context);
 
-            return new TrackModel(title, artist, album, albumKey, duration, no, trackUri, -1);
+            return new TrackModel(title, artist, -1, album, albumId, duration, no, trackUri, -1);
         } catch (Exception e) {
             // something went wrong so just create a dummy track with the given title
-            final String albumKey = "" + trackTitle.hashCode();
-            return new TrackModel(trackTitle, null, null, albumKey, 0, -1, trackUri, -1);
+            final long albumId = MusicLibraryHelper.verifyAlbumId(-1, trackTitle, "", context);
+            return new TrackModel(trackTitle, null, -1, null, albumId, 0, -1, trackUri, -1);
         }
     }
 

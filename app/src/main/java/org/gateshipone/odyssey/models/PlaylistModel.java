@@ -51,7 +51,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
     /**
      * Unique id to identify the playlist in the mediastore or the odyssey db.
      */
-    private final long mPlaylistID;
+    private final long mPlaylistId;
 
     /**
      * The number of tracks of the playlist.
@@ -82,7 +82,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
             mPlaylistPath = "";
         }
 
-        mPlaylistID = playlistId;
+        mPlaylistId = playlistId;
         mPlaylistTracks = playlistTracks;
         mPlaylistType = playlistType;
     }
@@ -97,15 +97,15 @@ public class PlaylistModel implements GenericModel, Parcelable {
     /**
      * Constructs a PlaylistModel instance with the given parameters.
      */
-    public PlaylistModel(String playlistName, long playlistID, PLAYLIST_TYPES playlistType) {
-        this(playlistName, playlistID, -1, null, playlistType);
+    public PlaylistModel(String playlistName, long playlistId, PLAYLIST_TYPES playlistType) {
+        this(playlistName, playlistId, -1, null, playlistType);
     }
 
     /**
      * Constructs a PlaylistModel instance with the given parameters.
      */
-    public PlaylistModel(String playlistName, long playlistID, int mPlaylistTracks, PLAYLIST_TYPES playlistType) {
-        this(playlistName, playlistID, mPlaylistTracks, null, playlistType);
+    public PlaylistModel(String playlistName, long playlistId, int mPlaylistTracks, PLAYLIST_TYPES playlistType) {
+        this(playlistName, playlistId, mPlaylistTracks, null, playlistType);
     }
 
     /**
@@ -114,7 +114,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
      * see {@link Parcelable}
      */
     protected PlaylistModel(Parcel in) {
-        mPlaylistID = in.readLong();
+        mPlaylistId = in.readLong();
         mPlaylistTracks = in.readInt();
         mPlaylistType = PLAYLIST_TYPES.values()[in.readInt()];
         mPlaylistName = in.readString();
@@ -148,8 +148,8 @@ public class PlaylistModel implements GenericModel, Parcelable {
     /**
      * Return the id of the playlist
      */
-    public long getPlaylistID() {
-        return mPlaylistID;
+    public long getPlaylistId() {
+        return mPlaylistId;
     }
 
     /**
@@ -202,7 +202,7 @@ public class PlaylistModel implements GenericModel, Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mPlaylistID);
+        dest.writeLong(mPlaylistId);
         dest.writeInt(mPlaylistTracks);
         dest.writeInt(mPlaylistType.ordinal());
         dest.writeString(mPlaylistName);

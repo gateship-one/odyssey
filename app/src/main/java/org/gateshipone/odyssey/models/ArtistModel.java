@@ -39,27 +39,27 @@ public class ArtistModel implements GenericModel, Parcelable {
      */
     private final long mArtistID;
 
-    private String mMBID;
+    private String mMBId;
 
     private boolean mImageFetching;
 
     /**
      * Constructs a ArtistModel instance with the given parameters.
      */
-    public ArtistModel(String name, long artistID) {
+    public ArtistModel(String name, long artistId) {
         if (name != null) {
             mArtistName = name;
         } else {
             mArtistName = "";
         }
 
-        mArtistID = artistID;
+        mArtistID = artistId;
     }
 
     protected ArtistModel(Parcel in) {
         mArtistName = in.readString();
         mArtistID = in.readLong();
-        mMBID = in.readString();
+        mMBId = in.readString();
         mImageFetching = in.readByte() != 0;
     }
 
@@ -67,7 +67,7 @@ public class ArtistModel implements GenericModel, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mArtistName);
         dest.writeLong(mArtistID);
-        dest.writeString(mMBID);
+        dest.writeString(mMBId);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
     }
 
@@ -111,12 +111,12 @@ public class ArtistModel implements GenericModel, Parcelable {
         return "Artist: " + getArtistName();
     }
 
-    public void setMBID(String mbid) {
-        mMBID = mbid;
+    public void setMBId(String mbid) {
+        mMBId = mbid;
     }
 
-    public String getMBID() {
-        return mMBID;
+    public String getMBId() {
+        return mMBId;
     }
 
     /**

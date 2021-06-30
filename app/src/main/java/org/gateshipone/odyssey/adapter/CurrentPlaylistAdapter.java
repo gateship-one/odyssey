@@ -28,14 +28,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import androidx.collection.LruCache;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
-
-import androidx.collection.LruCache;
 
 public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAdapter {
 
@@ -166,7 +166,7 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
             if (position > 0) {
                 previousTrack = (TrackModel) getItem(position - 1);
                 if (previousTrack != null) {
-                    newAlbum = !previousTrack.getTrackAlbumKey().equals(track.getTrackAlbumKey());
+                    newAlbum = previousTrack.getTrackAlbumId() != track.getTrackAlbumId();
                 }
             } else {
                 return VIEW_TYPES.TYPE_SECTION_TRACK_ITEM.ordinal();

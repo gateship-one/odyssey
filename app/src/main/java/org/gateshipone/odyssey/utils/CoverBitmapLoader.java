@@ -47,7 +47,7 @@ public class CoverBitmapLoader {
      * Load the image for the given track from the mediastore.
      */
     public void getImage(final TrackModel track, final int width, final int height) {
-        if (track != null && !track.getTrackAlbumKey().isEmpty()) {
+        if (track != null && track.getTrackAlbumId() != -1) {
             // start the loader thread to load the image async
             final Thread loaderThread = new Thread(new TrackAlbumImageRunner(track, width, height));
             loaderThread.start();
@@ -104,7 +104,7 @@ public class CoverBitmapLoader {
         @Override
         public void run() {
             // At first get image independent of resolution (can be replaced later with higher resolution)
-            final AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(mTrack.getTrackAlbumKey(), mApplicationContext);
+            final AlbumModel album = MusicLibraryHelper.createAlbumModelFromId(mTrack.getTrackAlbumId(), mApplicationContext);
             if (album == null) {
                 // No album found for track, abort
                 return;
@@ -176,8 +176,8 @@ public class CoverBitmapLoader {
         private final ArtistModel mArtist;
 
         private TrackArtistImageRunner(final TrackModel trackModel, final int width, final int height) {
-            long artistID = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mApplicationContext);
-            mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistID);
+            long artistId = MusicLibraryHelper.getArtistIDFromName(trackModel.getTrackArtistName(), mApplicationContext);
+            mArtist = new ArtistModel(trackModel.getTrackArtistName(), artistId);
             mWidth = width;
             mHeight = height;
         }

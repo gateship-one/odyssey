@@ -30,14 +30,14 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.RemoteControlReceiver;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
-
-import androidx.preference.PreferenceManager;
 
 public class PlaybackServiceStatusHelper {
     public enum SLS_STATES {SLS_START, SLS_RESUME, SLS_PAUSE, SLS_COMPLETE}
@@ -154,7 +154,7 @@ public class PlaybackServiceStatusHelper {
                 broadcastPlaybackInformation(info);
 
                 // Only update cover image if album changed to preserve energy
-                if (mLastTrack == null || !info.getCurrentTrack().getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
+                if (mLastTrack == null || info.getCurrentTrack().getTrackAlbumId() != mLastTrack.getTrackAlbumId()) {
                     mLastTrack = currentTrack;
 
                     if (!mHideArtwork) {
@@ -425,13 +425,13 @@ public class PlaybackServiceStatusHelper {
     }
 
     /**
-     * Checks if the albumKey for the new artwork is for the currently playing track and
+     * Checks if the album id for the new artwork is for the currently playing track and
      * then reloads the artwork to show it in the notification, ... .
      *
-     * @param albumKey Key to identify and compare the artwork with the current track
+     * @param albumId Id to identify and compare the artwork with the current track
      */
-    public void newAlbumArtworkReady(String albumKey) {
-        if (albumKey != null && mLastTrack != null && albumKey.equals(mLastTrack.getTrackAlbumKey()) && !mHideArtwork) {
+    public void newAlbumArtworkReady(long albumId) {
+        if (mLastTrack != null && albumId == mLastTrack.getTrackAlbumId() && !mHideArtwork) {
             // Start cover loader
             startCoverImageTask();
         }

@@ -78,6 +78,19 @@ public class ControlObject {
         mAction = action;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, long longParam, String param) {
+        mLongParam = longParam;
+        mStringparam = param;
+        mAction = action;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, long longParam, String param, int intParam) {
+        mLongParam = longParam;
+        mStringparam = param;
+        mIntparam = intParam;
+        mAction = action;
+    }
+
     public ControlObject(PLAYBACK_ACTION action, String param, String param2, int intParam) {
         mStringparam = param;
         mSecondStringParam = param2;

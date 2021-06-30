@@ -25,6 +25,8 @@ package org.gateshipone.odyssey.utils;
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.core.content.ContextCompat;
+
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
@@ -33,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-
-import androidx.core.content.ContextCompat;
 
 public class FileExplorerHelper {
 
@@ -91,7 +91,7 @@ public class FileExplorerHelper {
      * @return A dummy {@link TrackModel} that only contains the file name and the uri.
      */
     public TrackModel getDummyTrackModelForFile(FileModel file) {
-        return new TrackModel(file.getName(), null, null, null, 0, -1, FormatHelper.encodeURI(file.getURLString()), -1);
+        return new TrackModel(file.getName(), null, -1, null, -1, 0, -1, FormatHelper.encodeURI(file.getURLString()), -1);
     }
 
     /**

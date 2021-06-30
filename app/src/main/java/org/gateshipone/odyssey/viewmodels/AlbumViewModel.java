@@ -26,17 +26,17 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
 
 public class AlbumViewModel extends GenericViewModel<AlbumModel> {
 
@@ -117,9 +117,9 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
 
         private final boolean mLoadRecent;
 
-        private AlbumViewModelFactory(final Application application, final long artistID, final boolean loadRecent) {
+        private AlbumViewModelFactory(final Application application, final long artistId, final boolean loadRecent) {
             mApplication = application;
-            mArtistID = artistID;
+            mArtistID = artistId;
             mLoadRecent = loadRecent;
         }
 
@@ -127,8 +127,8 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
             this(application, -1, loadRecent);
         }
 
-        public AlbumViewModelFactory(final Application application, final long artistID) {
-            this(application, artistID, false);
+        public AlbumViewModelFactory(final Application application, final long artistId) {
+            this(application, artistId, false);
         }
 
         @NonNull

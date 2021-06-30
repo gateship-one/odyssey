@@ -26,13 +26,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Semaphore;
 
 public class PlaybackServiceHandler extends Handler {
     private final WeakReference<PlaybackService> mService;
 
-    private Semaphore mLock;
+    private final Semaphore mLock;
 
     public PlaybackServiceHandler(Looper looper, PlaybackService service) {
         super(looper);
@@ -41,8 +43,10 @@ public class PlaybackServiceHandler extends Handler {
     }
 
     @Override
-    public void handleMessage(Message msg) {
-        super.handleMessage(msg);
+    public void handleMessage(@Nullable Message msg) {
+        if (msg == null) {
+            return;
+        }
 
         ControlObject msgObj = (ControlObject) msg.obj;
 
@@ -129,10 +133,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
                     break;
                 case ODYSSEY_ENQUEUEALBUM:
-                    mService.get().enqueueAlbum(msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().enqueueAlbum(msgObj.getLongParam(), msgObj.getStringParam());
                     break;
                 case ODYSSEY_PLAYALBUM:
-                    mService.get().playAlbum(msgObj.getStringParam(), msgObj.getSecondStringParam(), msgObj.getIntParam());
+                    mService.get().playAlbum(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEARTIST:
                     mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam());

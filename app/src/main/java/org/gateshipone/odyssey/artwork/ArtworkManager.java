@@ -36,6 +36,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 
+import androidx.preference.PreferenceManager;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
@@ -67,8 +69,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import androidx.preference.PreferenceManager;
-
 public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTask.ImageSavedCallback {
 
     private static final String TAG = ArtworkManager.class.getSimpleName();
@@ -92,9 +92,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     public static final String ACTION_NEW_ARTWORK_READY = "org.gateshipone.odyssey.action_new_artwork_ready";
 
-    public static final String INTENT_EXTRA_KEY_ALBUM_KEY = "org.gateshipone.odyssey.extra.album_key";
-
-    private static final String INTENT_EXTRA_KEY_ALBUM_ID = "org.gateshipone.odyssey.extra.album_id";
+    public static final String INTENT_EXTRA_KEY_ALBUM_ID = "org.gateshipone.odyssey.extra.album_id";
 
     private static final String INTENT_EXTRA_KEY_ALBUM_NAME = "org.gateshipone.odyssey.extra.album_name";
 
@@ -300,7 +298,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 Bitmap bm;
 
-                final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumID());
+                final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumId());
                 try {
                     bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(requestedWidth, requestedHeight), null);
                     BitmapCache.getInstance().putAlbumBitmap(album, bm);
@@ -339,7 +337,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         }
 
         // get album information for the current track
-        AlbumModel album = MusicLibraryHelper.createAlbumModelFromKey(track.getTrackAlbumKey(), mApplicationContext);
+        AlbumModel album = MusicLibraryHelper.createAlbumModelFromId(track.getTrackAlbumId(), mApplicationContext);
         if (album == null) {
             return null;
         }
@@ -391,7 +389,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
         if (mUseLocalImages) {
-            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumKey(), mApplicationContext);
+            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumId(), mApplicationContext);
 
             for (final String location : storageLocations) {
                 final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(mApplicationContext, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
@@ -450,8 +448,8 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     public void fetchImage(final TrackModel trackModel) {
         // Create a dummy album
         AlbumModel album = new AlbumModel(trackModel.getTrackAlbumName(), null,
-                trackModel.getTrackArtistName(), trackModel.getTrackAlbumKey(),
-                MusicLibraryHelper.getAlbumIDFromKey(trackModel.getTrackAlbumKey(), mApplicationContext));
+                trackModel.getTrackArtistName(),
+                MusicLibraryHelper.verifyAlbumId(trackModel.getTrackAlbumId(), trackModel.getTrackAlbumName(), trackModel.getTrackArtistName(), mApplicationContext));
 
         fetchImage(album);
     }
@@ -596,8 +594,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         switch (model.getType()) {
             case ALBUM:
                 AlbumModel albumModel = (AlbumModel) model.getGenericModel();
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_ID, albumModel.getAlbumID());
-                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_KEY, albumModel.getAlbumKey());
+                newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_ID, albumModel.getAlbumId());
                 newImageIntent.putExtra(INTENT_EXTRA_KEY_ALBUM_NAME, albumModel.getAlbumName());
                 break;
             case ARTIST:

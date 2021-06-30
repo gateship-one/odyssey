@@ -228,10 +228,10 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         switch (clickedPlaylist.getPlaylistType()) {
             case MEDIASTORE:
-                reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistID(), getActivity().getApplicationContext());
+                reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistId(), getActivity().getApplicationContext());
                 break;
             case ODYSSEY_LOCAL:
-                reloadData = OdysseyDatabaseManager.getInstance(getContext()).removePlaylist(clickedPlaylist.getPlaylistID());
+                reloadData = OdysseyDatabaseManager.getInstance(getContext()).removePlaylist(clickedPlaylist.getPlaylistId());
                 break;
         }
 

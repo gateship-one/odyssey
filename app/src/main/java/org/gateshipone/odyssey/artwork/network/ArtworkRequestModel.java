@@ -57,13 +57,13 @@ public class ArtworkRequestModel {
         return mType;
     }
 
-    public void setMBID(final String mbid) {
+    public void setMBId(final String mbid) {
         switch (mType) {
             case ALBUM:
-                ((AlbumModel) mModel).setMBID(mbid);
+                ((AlbumModel) mModel).setMBId(mbid);
                 break;
             case ARTIST:
-                ((ArtistModel) mModel).setMBID(mbid);
+                ((ArtistModel) mModel).setMBId(mbid);
                 break;
         }
     }

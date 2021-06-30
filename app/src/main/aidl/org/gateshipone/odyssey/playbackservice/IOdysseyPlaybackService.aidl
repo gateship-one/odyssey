@@ -47,8 +47,8 @@ interface IOdysseyPlaybackService {
     void playPlaylist(in PlaylistModel playlist, int position);
 
     // enqueue all tracks of an album from mediastore
-    void enqueueAlbum(String albumKey, String orderKey);
-    void playAlbum(String albumKey, String orderKey, int position);
+    void enqueueAlbum(long albumId, String orderKey);
+    void playAlbum(long albumId, String orderKey, int position);
 
     void enqueueRecentAlbums();
     void playRecentAlbums();

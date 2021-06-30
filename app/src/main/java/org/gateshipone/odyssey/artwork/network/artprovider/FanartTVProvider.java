@@ -133,15 +133,15 @@ public class FanartTVProvider extends ArtProvider {
                 final boolean isMatching = compareArtistResponse(model.getArtistName(), artist);
 
                 if (isMatching) {
-                    final String artistMBID = artistObj.getString("id");
+                    final String artistMBId = artistObj.getString("id");
 
-                    getArtistImageURL(artistMBID, response1 -> {
+                    getArtistImageURL(artistMBId, response1 -> {
                         JSONArray thumbImages;
                         try {
                             thumbImages = response1.getJSONArray("artistthumb");
 
                             JSONObject firstThumbImage = thumbImages.getJSONObject(0);
-                            model.setMBID(artistMBID);
+                            model.setMBId(artistMBId);
                             getArtistImage(firstThumbImage.getString("url"), model, listener, error -> errorListener.fetchVolleyError(model, error));
 
                         } catch (JSONException e) {
@@ -187,13 +187,13 @@ public class FanartTVProvider extends ArtProvider {
     /**
      * Retrieves all available information (Artist image url, fanart url, ...) for an artist with an MBID of fanart.tv
      *
-     * @param artistMBID    Artists MBID to query
+     * @param artistMBId    Artists MBID to query
      * @param listener      Response listener to handle the artists information from fanart.tv
      * @param errorListener Error listener
      */
-    private void getArtistImageURL(final String artistMBID, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
+    private void getArtistImageURL(final String artistMBId, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
 
-        String url = FANART_TV_API_URL + "/" + artistMBID + "?api_key=" + API_KEY;
+        String url = FANART_TV_API_URL + "/" + artistMBId + "?api_key=" + API_KEY;
 
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "Requesting artist image url for: " + url);

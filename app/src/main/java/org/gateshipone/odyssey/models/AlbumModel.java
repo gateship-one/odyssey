@@ -46,22 +46,20 @@ public class AlbumModel implements GenericModel, Parcelable {
     private final String mArtistName;
 
     /**
-     * Unique key to identify the album in the mediastore
+     * Unique id to identify the album in the mediastore.
      */
-    private final String mAlbumKey;
+    private final long mAlbumId;
 
     /**
      * The date as an integer when this album was added to the device
      */
     private final int mDateAdded;
 
-    private long mAlbumID;
-
-    private String mMBID;
+    private String mMBId;
 
     private boolean mImageFetching;
 
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID, int dateAdded) {
+    public AlbumModel(String name, String albumArtURL, String artistName, long albumId, int dateAdded) {
         if (name != null) {
             mAlbumName = name;
         } else {
@@ -80,13 +78,7 @@ public class AlbumModel implements GenericModel, Parcelable {
             mArtistName = "";
         }
 
-        if (albumKey != null) {
-            mAlbumKey = albumKey;
-        } else {
-            mAlbumKey = "";
-        }
-
-        mAlbumID = albumID;
+        mAlbumId = albumId;
 
         mDateAdded = dateAdded;
     }
@@ -94,8 +86,8 @@ public class AlbumModel implements GenericModel, Parcelable {
     /**
      * Constructs a AlbumModel instance with the given parameters.
      */
-    public AlbumModel(String name, String albumArtURL, String artistName, String albumKey, long albumID) {
-        this(name, albumArtURL, artistName, albumKey, albumID, -1);
+    public AlbumModel(String name, String albumArtURL, String artistName, long albumId) {
+        this(name, albumArtURL, artistName, albumId, -1);
     }
 
     /**
@@ -107,10 +99,9 @@ public class AlbumModel implements GenericModel, Parcelable {
         mAlbumName = in.readString();
         mAlbumArtURL = in.readString();
         mArtistName = in.readString();
-        mAlbumKey = in.readString();
         mDateAdded = in.readInt();
-        mAlbumID = in.readLong();
-        mMBID = in.readString();
+        mAlbumId = in.readLong();
+        mMBId = in.readString();
         mImageFetching = in.readByte() != 0;
     }
 
@@ -155,23 +146,12 @@ public class AlbumModel implements GenericModel, Parcelable {
         return mArtistName;
     }
 
-    /**
-     * Return the unique album key
-     */
-    public String getAlbumKey() {
-        return mAlbumKey;
-    }
-
     public int getDateAdded() {
         return mDateAdded;
     }
 
-    public long getAlbumID() {
-        return mAlbumID;
-    }
-
-    public void setAlbumID(long albumID) {
-        mAlbumID = albumID;
+    public long getAlbumId() {
+        return mAlbumId;
     }
 
     /**
@@ -189,7 +169,7 @@ public class AlbumModel implements GenericModel, Parcelable {
             return false;
         }
         if (album instanceof AlbumModel) {
-            return mAlbumID == ((AlbumModel) album).mAlbumID && mAlbumName.equals(((AlbumModel) album).mAlbumName)
+            return mAlbumId == ((AlbumModel) album).mAlbumId && mAlbumName.equals(((AlbumModel) album).mAlbumName)
                     && mArtistName.equals(((AlbumModel) album).mArtistName);
         } else {
             return false;
@@ -206,12 +186,12 @@ public class AlbumModel implements GenericModel, Parcelable {
         return mAlbumName;
     }
 
-    public void setMBID(String mbid) {
-        mMBID = mbid;
+    public void setMBId(String mbid) {
+        mMBId = mbid;
     }
 
-    public String getMBID() {
-        return mMBID;
+    public String getMBId() {
+        return mMBId;
     }
 
 
@@ -244,10 +224,9 @@ public class AlbumModel implements GenericModel, Parcelable {
         dest.writeString(mAlbumName);
         dest.writeString(mAlbumArtURL);
         dest.writeString(mArtistName);
-        dest.writeString(mAlbumKey);
         dest.writeInt(mDateAdded);
-        dest.writeLong(mAlbumID);
-        dest.writeString(mMBID);
+        dest.writeLong(mAlbumId);
+        dest.writeString(mMBId);
         dest.writeByte((byte) (mImageFetching ? 1 : 0));
     }
 }

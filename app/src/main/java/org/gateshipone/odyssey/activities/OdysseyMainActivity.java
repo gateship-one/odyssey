@@ -41,6 +41,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -82,19 +95,6 @@ import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.PreferenceManager;
 
 public class OdysseyMainActivity extends GenericActivity
         implements NavigationView.OnNavigationItemSelectedListener, ToolbarAndFABCallback,
@@ -450,17 +450,17 @@ public class OdysseyMainActivity extends GenericActivity
 
             CurrentPlaylistView currentPlaylistView = findViewById(R.id.now_playing_playlist);
 
-            // check if track has a valid album key
-            String albumKey = currentPlaylistView.getAlbumKey(info.position);
-            AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+            // check if track has a valid album id
+            long albumId = currentPlaylistView.getAlbumId(info.position);
+            AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromId(albumId, getApplicationContext());
 
             menu.findItem(R.id.view_current_playlist_action_showalbum).setVisible(tmpAlbum != null);
 
             // check if track has a valid artist id
             String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-            long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+            long artistId = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
-            menu.findItem(R.id.view_current_playlist_action_showartist).setVisible(artistID != -1);
+            menu.findItem(R.id.view_current_playlist_action_showartist).setVisible(artistId != -1);
 
             // check the view type
             if (currentPlaylistView.getItemViewType(info.position) == CurrentPlaylistAdapter.VIEW_TYPES.TYPE_SECTION_TRACK_ITEM) {
@@ -492,8 +492,8 @@ public class OdysseyMainActivity extends GenericActivity
                     currentPlaylistView.removeSection(info.position);
                     return true;
                 } else if (itemId == R.id.view_current_playlist_action_showalbum) {
-                    String albumKey = currentPlaylistView.getAlbumKey(info.position);
-                    AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromKey(albumKey, getApplicationContext());
+                    long albumId = currentPlaylistView.getAlbumId(info.position);
+                    AlbumModel tmpAlbum = MusicLibraryHelper.createAlbumModelFromId(albumId, getApplicationContext());
 
                     View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
                     coordinatorLayout.setVisibility(View.VISIBLE);
@@ -507,7 +507,7 @@ public class OdysseyMainActivity extends GenericActivity
                     return true;
                 } else if (itemId == R.id.view_current_playlist_action_showartist) {
                     String artistTitle = currentPlaylistView.getArtistTitle(info.position);
-                    long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
+                    long artistId = MusicLibraryHelper.getArtistIDFromName(artistTitle, this);
 
                     View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
                     coordinatorLayout.setVisibility(View.VISIBLE);
@@ -516,7 +516,7 @@ public class OdysseyMainActivity extends GenericActivity
                     if (nowPlayingView != null) {
                         nowPlayingView.minimize();
                     }
-                    onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+                    onArtistSelected(new ArtistModel(artistTitle, artistId), null);
                     return true;
                 }
 

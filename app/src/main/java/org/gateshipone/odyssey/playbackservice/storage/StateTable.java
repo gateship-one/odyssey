@@ -85,8 +85,15 @@ public class StateTable {
             COLUMN_TRACKS + " integer" +
             ");";
 
-    public static void onCreate(SQLiteDatabase database) {
-        // create new table
+    private static final String DATABASE_DROP = "DROP TABLE if exists " + TABLE_NAME;
+
+    static void createTable(final SQLiteDatabase database) {
+        // Create table if not already existing
         database.execSQL(DATABASE_CREATE);
+    }
+
+    static void dropTable(final SQLiteDatabase database) {
+        // drop table if already existing
+        database.execSQL(DATABASE_DROP);
     }
 }

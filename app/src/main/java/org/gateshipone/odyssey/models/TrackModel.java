@@ -42,14 +42,19 @@ public class TrackModel implements GenericModel, Parcelable {
     private final String mTrackArtistName;
 
     /**
+     * The id of the artist of the track
+     */
+    private final long mTrackArtistId;
+
+    /**
      * The name of the album of the track
      */
     private final String mTrackAlbumName;
 
     /**
-     * The unique key of the album of the track
+     * The id of the album of the track
      */
-    private final String mTrackAlbumKey;
+    private final long mTrackAlbumId;
 
     /**
      * The url path to the related media file
@@ -76,7 +81,7 @@ public class TrackModel implements GenericModel, Parcelable {
      */
     private final int mDateAdded;
 
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, Uri uri, long trackId, int dateAdded) {
+    public TrackModel(String name, String artistName, long artistId, String albumName, long albumId, long duration, int trackNumber, Uri uri, long trackId, int dateAdded) {
         if (name != null) {
             mTrackName = name;
         } else {
@@ -89,17 +94,16 @@ public class TrackModel implements GenericModel, Parcelable {
             mTrackArtistName = "";
         }
 
+        mTrackArtistId = artistId;
+
         if (albumName != null) {
             mTrackAlbumName = albumName;
         } else {
             mTrackAlbumName = "";
         }
 
-        if (albumKey != null) {
-            mTrackAlbumKey = albumKey;
-        } else {
-            mTrackAlbumKey = "";
-        }
+        mTrackAlbumId = albumId;
+
         mTrackDuration = duration;
         mTrackNumber = trackNumber;
 
@@ -113,15 +117,15 @@ public class TrackModel implements GenericModel, Parcelable {
     /**
      * Constructs a TrackModel instance with the given parameters.
      */
-    public TrackModel(String name, String artistName, String albumName, String albumKey, long duration, int trackNumber, Uri uri, long trackId) {
-        this(name, artistName, albumName, albumKey, duration, trackNumber, uri, trackId, -1);
+    public TrackModel(String name, String artistName, long artistId, String albumName, long albumId, long duration, int trackNumber, Uri uri, long trackId) {
+        this(name, artistName, artistId, albumName, albumId, duration, trackNumber, uri, trackId, -1);
     }
 
     /**
      * Constructs a TrackModel with default values
      */
     public TrackModel() {
-        this(null, null, null, null, 0, 0, null, -1, -1);
+        this(null, null, -1, null, -1, 0, 0, null, -1);
     }
 
     /**
@@ -132,8 +136,9 @@ public class TrackModel implements GenericModel, Parcelable {
     protected TrackModel(Parcel in) {
         mTrackName = in.readString();
         mTrackArtistName = in.readString();
+        mTrackArtistId = in.readLong();
         mTrackAlbumName = in.readString();
-        mTrackAlbumKey = in.readString();
+        mTrackAlbumId = in.readLong();
         mTrackUri = (Uri) in.readValue(Uri.class.getClassLoader());
         mTrackDuration = in.readLong();
         mTrackNumber = in.readInt();
@@ -189,6 +194,13 @@ public class TrackModel implements GenericModel, Parcelable {
     }
 
     /**
+     * Return the id of the artist
+     */
+    public long getTrackArtistId() {
+        return mTrackArtistId;
+    }
+
+    /**
      * Return the name of the album
      */
     public String getTrackAlbumName() {
@@ -196,10 +208,10 @@ public class TrackModel implements GenericModel, Parcelable {
     }
 
     /**
-     * Return the unique album key
+     * Return the album id
      */
-    public String getTrackAlbumKey() {
-        return mTrackAlbumKey;
+    public long getTrackAlbumId() {
+        return mTrackAlbumId;
     }
 
     /**
@@ -303,8 +315,9 @@ public class TrackModel implements GenericModel, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mTrackName);
         dest.writeString(mTrackArtistName);
+        dest.writeLong(mTrackArtistId);
         dest.writeString(mTrackAlbumName);
-        dest.writeString(mTrackAlbumKey);
+        dest.writeLong(mTrackAlbumId);
         dest.writeValue(mTrackUri);
         dest.writeLong(mTrackDuration);
         dest.writeInt(mTrackNumber);

@@ -25,6 +25,10 @@ package org.gateshipone.odyssey.viewmodels;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -35,10 +39,6 @@ import org.gateshipone.odyssey.utils.PlaylistParserFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
 
@@ -77,9 +77,9 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
 
                 switch (playlist.getPlaylistType()) {
                     case MEDIASTORE:
-                        return MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistID(), application);
+                        return MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistId(), application);
                     case ODYSSEY_LOCAL:
-                        return OdysseyDatabaseManager.getInstance(application).getTracksForPlaylist(playlist.getPlaylistID());
+                        return OdysseyDatabaseManager.getInstance(application).getTracksForPlaylist(playlist.getPlaylistId());
                     case FILE:
                         PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(playlist.getPlaylistPath()));
                         if (parser == null) {

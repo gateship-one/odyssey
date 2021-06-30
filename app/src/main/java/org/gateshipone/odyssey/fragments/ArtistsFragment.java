@@ -177,13 +177,13 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
-        long artistID = currentArtist.getArtistID();
+        long artistId = currentArtist.getArtistID();
 
         // If no artist ID is available get one (it is probably missing because of which method was used
         // to query artists. AlbumArtists vs. Artists MediaStore table.
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
+        if (artistId == -1) {
+            // Try to get the artistId manually because it seems to be missing
+            artistId = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         Bitmap bitmap = null;
@@ -194,7 +194,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         }
 
         // send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artist, artistID), bitmap);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artist, artistId), bitmap);
     }
 
     /**
@@ -245,11 +245,11 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
-        long artistID = currentArtist.getArtistID();
+        long artistId = currentArtist.getArtistID();
 
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
+        if (artistId == -1) {
+            // Try to get the artistId manually because it seems to be missing
+            artistId = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         // Read order preference
@@ -259,7 +259,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistID, albumOrderKey, trackOrderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(artistId, albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -278,11 +278,11 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         ArtistModel currentArtist = mAdapter.getItem(position);
 
         String artist = currentArtist.getArtistName();
-        long artistID = currentArtist.getArtistID();
+        long artistId = currentArtist.getArtistID();
 
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
+        if (artistId == -1) {
+            // Try to get the artistId manually because it seems to be missing
+            artistId = MusicLibraryHelper.getArtistIDFromName(artist, getActivity());
         }
 
         // Read order preference
@@ -292,7 +292,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistID, albumOrderKey, trackOrderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().playArtist(artistId, albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

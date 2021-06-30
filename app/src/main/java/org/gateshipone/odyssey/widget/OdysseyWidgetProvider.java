@@ -32,6 +32,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.activities.OdysseySplashActivity;
@@ -41,8 +43,6 @@ import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
-
-import androidx.annotation.NonNull;
 
 
 public class
@@ -122,8 +122,8 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             break;
             case ArtworkManager.ACTION_NEW_ARTWORK_READY: {
                 // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
-                String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-                if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(albumKey)) {
+                long albumId = intent.getLongExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_ID, -1);
+                if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumId() == albumId) {
                     CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
                     coverLoader.getImage(mLastInfo.getCurrentTrack(), -1, -1);
                     mLastCover = null;
@@ -154,7 +154,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             case PAUSE: {
                 if (!mHideArtwork) {
                     // Check if the tracks album changed
-                    if (!mLastInfo.getCurrentTrack().getTrackAlbumKey().equals(item.getTrackAlbumKey())) {
+                    if (mLastInfo.getCurrentTrack().getTrackAlbumId() != item.getTrackAlbumId()) {
                         // Album changed, it is necessary to start the image loader
                         views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
 

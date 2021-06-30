@@ -43,6 +43,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
@@ -63,8 +65,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-
-import androidx.preference.PreferenceManager;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 
@@ -949,17 +949,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Enqueue all tracks of an album identified by the albumKey.
+     * Enqueue all tracks of an album identified by the albumId.
      *
-     * @param albumKey The key of the album
+     * @param albumId  The id of the album
      * @param orderKey String to specify the order of the tracks
      */
-    public void enqueueAlbum(String albumKey, String orderKey) {
+    public void enqueueAlbum(long albumId, String orderKey) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
-        // get all tracks for the current albumkey from mediastore
-        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumKey, orderKey, getApplicationContext());
+        // get all tracks for the current albumId from mediastore
+        List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumId, orderKey, getApplicationContext());
 
         // add tracks to current playlist
         enqueueTracks(tracks);
@@ -969,17 +969,17 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Play all tracks of an album identified by the albumkey.
+     * Play all tracks of an album identified by the albumId.
      * A previous playlist will be cleared.
      *
-     * @param albumKey The key of the album
+     * @param albumId  The id of the album
      * @param orderKey String to specify the order of the tracks
      * @param position The position to start playback
      */
-    public void playAlbum(String albumKey, String orderKey, int position) {
+    public void playAlbum(long albumId, String orderKey, int position) {
         clearPlaylist();
 
-        enqueueAlbum(albumKey, orderKey);
+        enqueueAlbum(albumId, orderKey);
 
         jumpToIndex(position);
     }
@@ -1197,11 +1197,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         int endIndex = index + 1;
 
-        String albumKey = mCurrentList.get(index).getTrackAlbumKey();
+        long albumId = mCurrentList.get(index).getTrackAlbumId();
 
         // get endindex for section
         while (endIndex < mCurrentList.size()) {
-            if (albumKey.equals(mCurrentList.get(endIndex).getTrackAlbumKey())) {
+            if (albumId == mCurrentList.get(endIndex).getTrackAlbumId()) {
                 endIndex++;
             } else {
                 break;
@@ -1215,7 +1215,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (albumId == track.getTrackAlbumId()) {
                     iterator.remove();
                     endIndex--;
                 } else {
@@ -1238,7 +1238,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (albumId == track.getTrackAlbumId()) {
                     iterator.remove();
                 } else {
                     break;
@@ -1255,7 +1255,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             while (iterator.hasNext()) {
                 TrackModel track = iterator.next();
 
-                if (albumKey.equals(track.getTrackAlbumKey())) {
+                if (albumId == track.getTrackAlbumId()) {
                     iterator.remove();
                     if (beforeCurrentTrack) {
                         // if section is before current song update mCurrentPlayingIndex and mNextPlayingIndex
@@ -1454,10 +1454,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         switch (playlist.getPlaylistType()) {
             case MEDIASTORE:
-                playlistTracks.addAll(MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistID(), getApplicationContext()));
+                playlistTracks.addAll(MusicLibraryHelper.getTracksForPlaylist(playlist.getPlaylistId(), getApplicationContext()));
                 break;
             case ODYSSEY_LOCAL:
-                playlistTracks.addAll(mDatabaseManager.getTracksForPlaylist(playlist.getPlaylistID()));
+                playlistTracks.addAll(mDatabaseManager.getTracksForPlaylist(playlist.getPlaylistId()));
                 break;
             case FILE:
                 PlaylistParser parser = PlaylistParserFactory.getParser(new FileModel(playlist.getPlaylistPath()));
@@ -2061,8 +2061,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                         break;
                     case ArtworkManager.ACTION_NEW_ARTWORK_READY:
                         // Check if artwork is for currently playing album
-                        String albumKey = intent.getStringExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_KEY);
-                        mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumKey);
+                        long albumId = intent.getLongExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_ID, -1);
+                        mPlaybackServiceStatusHelper.newAlbumArtworkReady(albumId);
                         break;
                     case ACTION_SLEEPSTOP:
                         if (mStopAfterCurrent) {

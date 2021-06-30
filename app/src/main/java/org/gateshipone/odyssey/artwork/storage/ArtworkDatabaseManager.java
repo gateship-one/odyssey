@@ -108,7 +108,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized String getAlbumImage(final AlbumModel album) throws ImageNotFoundException {
         final SQLiteDatabase database = getReadableDatabase();
 
-        final long albumId = album.getAlbumID();
+        final long albumId = album.getAlbumId();
         final String albumName = album.getAlbumName();
         final String artistName = album.getArtistName();
 
@@ -218,20 +218,20 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void insertArtistImage(final ArtistModel artist, final byte[] image) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        long artistID = artist.getArtistID();
-        if (artistID == -1) {
-            // Try to get the artistID manually because it seems to be missing
-            artistID = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mApplicationContext);
+        long artistId = artist.getArtistID();
+        if (artistId == -1) {
+            // Try to get the artistId manually because it seems to be missing
+            artistId = MusicLibraryHelper.getArtistIDFromName(artist.getArtistName(), mApplicationContext);
         }
 
-        final String artistIDString = String.valueOf(artistID);
-        final String artistMBID = artist.getMBID();
+        final String artistIdString = String.valueOf(artistId);
+        final String artistMBId = artist.getMBId();
         final String artistName = artist.getArtistName();
 
         String artworkFilename = null;
         if (image != null) {
             try {
-                artworkFilename = FileUtils.createSHA256HashForString(artistIDString, artistMBID, artistName) + ".jpg";
+                artworkFilename = FileUtils.createSHA256HashForString(artistIdString, artistMBId, artistName) + ".jpg";
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 return;
@@ -246,8 +246,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         }
 
         final ContentValues values = new ContentValues();
-        values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistIDString);
-        values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artistMBID);
+        values.put(ArtistArtTable.COLUMN_ARTIST_ID, artistIdString);
+        values.put(ArtistArtTable.COLUMN_ARTIST_MBID, artistMBId);
         values.put(ArtistArtTable.COLUMN_ARTIST_NAME, artistName);
         values.put(ArtistArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
 
@@ -271,15 +271,15 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void insertAlbumImage(final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        final String albumID = String.valueOf(album.getAlbumID());
-        final String albumMBID = album.getMBID();
+        final String albumId = String.valueOf(album.getAlbumId());
+        final String albumMBId = album.getMBId();
         final String albumName = album.getAlbumName();
         final String albumArtistName = album.getArtistName();
 
         String artworkFilename = null;
         if (image != null) {
             try {
-                artworkFilename = FileUtils.createSHA256HashForString(albumID, albumMBID, albumName, albumArtistName) + ".jpg";
+                artworkFilename = FileUtils.createSHA256HashForString(albumId, albumMBId, albumName, albumArtistName) + ".jpg";
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 return;
@@ -294,8 +294,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         }
 
         final ContentValues values = new ContentValues();
-        values.put(AlbumArtTable.COLUMN_ALBUM_ID, albumID);
-        values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBID);
+        values.put(AlbumArtTable.COLUMN_ALBUM_ID, albumId);
+        values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBId);
         values.put(AlbumArtTable.COLUMN_ALBUM_NAME, albumName);
         values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumArtistName);
         values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename == null ? artworkFullImagePath : artworkFilename);
@@ -399,7 +399,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
     public synchronized void removeAlbumImage(final AlbumModel album) {
         final SQLiteDatabase database = getWritableDatabase();
 
-        final long albumId = album.getAlbumID();
+        final long albumId = album.getAlbumId();
         final String albumName = album.getAlbumName();
         final String artistName = album.getArtistName();
 

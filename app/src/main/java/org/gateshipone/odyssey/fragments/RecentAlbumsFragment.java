@@ -60,7 +60,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
     public static RecentAlbumsFragment newInstance() {
         return new RecentAlbumsFragment();
     }
-    
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -208,10 +208,10 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         AlbumModel clickedAlbum = mAdapter.getItem(position);
 
         String artistTitle = clickedAlbum.getArtistName();
-        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
+        long artistId = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistId), null);
     }
 
     private void enqueueAllAlbums() {

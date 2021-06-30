@@ -43,16 +43,15 @@ class MediaStoreProjections {
          * fast access to projection entries
          */
         String ALBUM = PROJECTION[0];
-        String ALBUM_KEY = PROJECTION[1];
-        String NUMER_OF_SONGS = PROJECTION[2];
+        String NUMER_OF_SONGS = PROJECTION[1];
         @Deprecated
-        String ALBUM_ART = PROJECTION[3];
-        String ARTIST = PROJECTION[4];
-        String FIRST_YEAR = PROJECTION[5];
-        String LAST_YEAR = PROJECTION[6];
-        String ID = PROJECTION[7];
+        String ALBUM_ART = PROJECTION[2];
+        String ARTIST = PROJECTION[3];
+        String FIRST_YEAR = PROJECTION[4];
+        String LAST_YEAR = PROJECTION[5];
+        String ID = PROJECTION[6];
         @RequiresApi(api = Build.VERSION_CODES.Q)
-        String ARTIST_ID = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? PROJECTION[8] : "";
+        String ARTIST_ID = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? PROJECTION[7] : "";
     }
 
     interface ProjectionArtists {
@@ -82,14 +81,15 @@ class MediaStoreProjections {
         String TITLE = PROJECTION[0];
         String DISPLAY_NAME = PROJECTION[1];
         String TRACK = PROJECTION[2];
-        String ALBUM_KEY = PROJECTION[3];
+        String ALBUM_ID = PROJECTION[3];
         String ALBUM = PROJECTION[4];
-        String ARTIST = PROJECTION[5];
+        String ARTIST_ID = PROJECTION[5];
+        String ARTIST = PROJECTION[6];
         @Deprecated
-        String DATA = PROJECTION[6];
-        String DATE_ADDED = PROJECTION[7];
-        String DURATION = PROJECTION[8];
-        String ID = PROJECTION[9];
+        String DATA = PROJECTION[7];
+        String DATE_ADDED = PROJECTION[8];
+        String DURATION = PROJECTION[9];
+        String ID = PROJECTION[10];
 
         String IS_MUSIC = MediaStore.Audio.Media.IS_MUSIC;
     }
@@ -122,12 +122,13 @@ class MediaStoreProjections {
         String TITLE = PROJECTION[0];
         String DISPLAY_NAME = PROJECTION[1];
         String TRACK = PROJECTION[2];
-        String ALBUM_KEY = PROJECTION[3];
+        String ALBUM_ID = PROJECTION[3];
         String ALBUM = PROJECTION[4];
-        String ARTIST = PROJECTION[5];
-        String ID = PROJECTION[6];
-        String AUDIO_ID = PROJECTION[7];
-        String DURATION = PROJECTION[8];
+        String ARTIST_ID = PROJECTION[5];
+        String ARTIST = PROJECTION[6];
+        String ID = PROJECTION[7];
+        String AUDIO_ID = PROJECTION[8];
+        String DURATION = PROJECTION[9];
 
         String PLAY_ORDER = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
     }
@@ -136,7 +137,6 @@ class MediaStoreProjections {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return new String[]{
                     MediaStore.Audio.Albums.ALBUM,
-                    MediaStore.Audio.Albums.ALBUM_KEY,
                     MediaStore.Audio.Albums.NUMBER_OF_SONGS,
                     MediaStore.Audio.Albums.ALBUM_ART,
                     MediaStore.Audio.Albums.ARTIST,
@@ -148,7 +148,6 @@ class MediaStoreProjections {
         } else {
             return new String[]{
                     MediaStore.Audio.Albums.ALBUM,
-                    MediaStore.Audio.Albums.ALBUM_KEY,
                     MediaStore.Audio.Albums.NUMBER_OF_SONGS,
                     MediaStore.Audio.Albums.ALBUM_ART,
                     MediaStore.Audio.Albums.ARTIST,
@@ -174,8 +173,9 @@ class MediaStoreProjections {
                     MediaStore.Audio.Media.TITLE,
                     MediaStore.Audio.Media.DISPLAY_NAME,
                     MediaStore.Audio.Media.TRACK,
-                    MediaStore.Audio.Media.ALBUM_KEY,
+                    MediaStore.Audio.Media.ALBUM_ID,
                     MediaStore.Audio.Media.ALBUM,
+                    MediaStore.Audio.Media.ARTIST_ID,
                     MediaStore.Audio.Media.ARTIST,
                     MediaStore.Audio.Media.DATA,
                     MediaStore.Audio.Media.DATE_ADDED,
@@ -187,8 +187,9 @@ class MediaStoreProjections {
                     MediaStore.Audio.Media.TITLE,
                     MediaStore.Audio.Media.DISPLAY_NAME,
                     MediaStore.Audio.Media.TRACK,
-                    MediaStore.Audio.Media.ALBUM_KEY,
+                    MediaStore.Audio.Media.ALBUM_ID,
                     MediaStore.Audio.Media.ALBUM,
+                    MediaStore.Audio.Media.ARTIST_ID,
                     MediaStore.Audio.Media.ARTIST,
                     MediaStore.Audio.Media.DATA,
                     MediaStore.Audio.Media.DATE_ADDED,
@@ -211,8 +212,9 @@ class MediaStoreProjections {
                     MediaStore.Audio.Playlists.Members.TITLE,
                     MediaStore.Audio.Playlists.Members.DISPLAY_NAME,
                     MediaStore.Audio.Playlists.Members.TRACK,
-                    MediaStore.Audio.Playlists.Members.ALBUM_KEY,
+                    MediaStore.Audio.Playlists.Members.ALBUM_ID,
                     MediaStore.Audio.Playlists.Members.ALBUM,
+                    MediaStore.Audio.Playlists.Members.ARTIST_ID,
                     MediaStore.Audio.Playlists.Members.ARTIST,
                     MediaStore.Audio.Playlists.Members._ID,
                     MediaStore.Audio.Playlists.Members.AUDIO_ID,
@@ -223,8 +225,9 @@ class MediaStoreProjections {
                     MediaStore.Audio.Playlists.Members.TITLE,
                     MediaStore.Audio.Playlists.Members.DISPLAY_NAME,
                     MediaStore.Audio.Playlists.Members.TRACK,
-                    MediaStore.Audio.Playlists.Members.ALBUM_KEY,
+                    MediaStore.Audio.Playlists.Members.ALBUM_ID,
                     MediaStore.Audio.Playlists.Members.ALBUM,
+                    MediaStore.Audio.Playlists.Members.ARTIST_ID,
                     MediaStore.Audio.Playlists.Members.ARTIST,
                     MediaStore.Audio.Playlists.Members._ID,
                     MediaStore.Audio.Playlists.Members.AUDIO_ID,

@@ -37,6 +37,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.TracksRecyclerViewAdapter;
@@ -54,12 +60,6 @@ import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.TrackViewModel;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
 
 public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, GenericViewItemHolder> implements CoverBitmapLoader.CoverBitmapReceiver, ArtworkManager.onNewAlbumImageListener, OdysseyRecyclerView.OnItemClickListener {
     private static final String TAG = AlbumTracksFragment.class.getSimpleName();
@@ -149,7 +149,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumKey())).get(TrackViewModel.class);
+        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumId())).get(TrackViewModel.class);
     }
 
     /**
@@ -353,10 +353,10 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         TrackModel clickedTrack = mRecyclerAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
-        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
+        long artistId = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistId), null);
     }
 
     /**
@@ -404,7 +404,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumKey(), trackOrderKey);
+            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumId(), trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -425,7 +425,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumKey(), trackOrderKey, position);
+            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumId(), trackOrderKey, position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

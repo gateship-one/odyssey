@@ -219,10 +219,10 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
         TrackModel clickedTrack = mAdapter.getItem(position);
         String artistTitle = clickedTrack.getTrackArtistName();
 
-        long artistID = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
+        long artistId = MusicLibraryHelper.getArtistIDFromName(artistTitle, getActivity());
 
         // Send the event to the host activity
-        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistID), null);
+        mArtistSelectedCallback.onArtistSelected(new ArtistModel(artistTitle, artistId), null);
     }
 
     /**

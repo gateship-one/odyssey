@@ -25,13 +25,13 @@ package org.gateshipone.odyssey.artwork;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.collection.LruCache;
+
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.collection.LruCache;
 
 /**
  * Simple LRU-based caching for album & artist images. This could reduce CPU usage
@@ -125,11 +125,11 @@ public class BitmapCache {
      */
     private String getAlbumHash(AlbumModel album) {
         String hashString = ALBUM_PREFIX;
-        final long albumID = album.getAlbumID();
+        final long albumId = album.getAlbumId();
 
-        // Use albumID as key if available
-        if (albumID != -1) {
-            hashString += String.valueOf(albumID);
+        // Use albumId as key if available
+        if (albumId != -1) {
+            hashString += String.valueOf(albumId);
             return hashString;
         }
 
@@ -185,11 +185,11 @@ public class BitmapCache {
     private String getArtistHash(ArtistModel artist) {
         String hashString = ARTIST_PREFIX;
 
-        final long artistID = artist.getArtistID();
+        final long artistId = artist.getArtistID();
 
-        // Use albumID as key if available
-        if (artistID != -1) {
-            hashString += String.valueOf(artistID);
+        // Use albumId as key if available
+        if (artistId != -1) {
+            hashString += String.valueOf(artistId);
             return hashString;
         }
 

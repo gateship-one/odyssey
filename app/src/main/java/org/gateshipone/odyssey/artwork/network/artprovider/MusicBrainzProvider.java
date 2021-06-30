@@ -78,7 +78,7 @@ public class MusicBrainzProvider extends ArtProvider {
     public void fetchImage(final ArtworkRequestModel model, final Response.Listener<ImageResponse> listener, final ArtFetchError errorListener) {
         switch (model.getType()) {
             case ALBUM:
-                getAlbumMBID(model,
+                getAlbumMBId(model,
                         response -> parseMusicBrainzReleaseJSON(model, 0, response, listener, errorListener),
                         error -> errorListener.fetchVolleyError(model, error));
                 break;
@@ -95,7 +95,7 @@ public class MusicBrainzProvider extends ArtProvider {
      * @param listener      Response listener
      * @param errorListener Error listener
      */
-    private void getAlbumMBID(final ArtworkRequestModel model, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
+    private void getAlbumMBId(final ArtworkRequestModel model, final Response.Listener<JSONObject> listener, final Response.ErrorListener errorListener) {
         final String albumName = model.getLuceneEscapedEncodedAlbumName();
         final String artistName = model.getLuceneEscapedEncodedArtistName();
 
@@ -144,7 +144,7 @@ public class MusicBrainzProvider extends ArtProvider {
 
                 if (isMatching) {
                     final String mbid = releases.getJSONObject(releaseIndex).getString("id");
-                    model.setMBID(mbid);
+                    model.setMBId(mbid);
 
                     final String url = COVERART_ARCHIVE_API_URL + "/" + "release/" + mbid + "/front-500";
 

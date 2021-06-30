@@ -51,6 +51,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.customview.widget.ViewDragHelper;
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
@@ -71,15 +80,6 @@ import org.gateshipone.odyssey.utils.ThemeUtils;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.TooltipCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.ViewCompat;
-import androidx.customview.widget.ViewDragHelper;
-import androidx.preference.PreferenceManager;
 
 public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
         ArtworkManager.onNewArtistImageListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -507,7 +507,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        if (!mHideArtwork && mLastTrack.getTrackAlbumKey().equals(album.getAlbumKey())) {
+        if (!mHideArtwork && mLastTrack.getTrackAlbumId() == album.getAlbumId()) {
             mCoverLoader.getAlbumImage(album, mCoverImage.getWidth(), mCoverImage.getHeight());
         }
     }
@@ -1129,7 +1129,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
 
 
         // Check if the album title changed. If true, start the cover generator thread.
-        if (!currentTrack.getTrackAlbumKey().equals(mLastTrack.getTrackAlbumKey())) {
+        if (currentTrack.getTrackAlbumId() != mLastTrack.getTrackAlbumId()) {
             // Show placeholder until image is loaded
             showPlaceholderImage();
 
