@@ -21,15 +21,15 @@
   -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
-    android:layout_marginBottom="4dp"
-    android:layout_marginTop="4dp"
+    android:layout_height="@dimen/odyssey_widget_height"
+    android:layout_marginTop="@dimen/odyssey_widget_margin_size"
+    android:layout_marginBottom="@dimen/odyssey_widget_margin_size"
     android:background="@color/colorWidgetBackground">
 
     <ImageView
         android:id="@+id/widget_cover"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="@dimen/odyssey_widget_image_size"
+        android:layout_height="@dimen/odyssey_widget_image_size"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
@@ -38,18 +38,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="@dimen/odyssey_widget_height"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="@dimen/odyssey_widget_margin_size"
         android:layout_toEndOf="@+id/widget_cover"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/widget_trackName"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="@dimen/odyssey_widget_textview_height"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
             android:textColor="@android:color/primary_text_dark"
@@ -58,7 +58,7 @@
         <TextView
             android:id="@+id/widget_artistAlbum"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="@dimen/odyssey_widget_textview_height"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
             android:textColor="@android:color/secondary_text_dark"
@@ -66,7 +66,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/odyssey_widget_half_height"
             android:layout_gravity="center_vertical">
 
             <ImageButton

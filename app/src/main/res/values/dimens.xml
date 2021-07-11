@@ -74,4 +74,11 @@
     <!-- about icon dimensions -->
     <dimen name="about_odyssey_icon_size">256dp</dimen>
     <dimen name="about_artwork_provider_icon_size">64dp</dimen>
+
+    <!-- widget dimensions -->
+    <dimen name="odyssey_widget_height">96dp</dimen>
+    <dimen name="odyssey_widget_half_height">48dp</dimen>
+    <dimen name="odyssey_widget_image_size">96dp</dimen>
+    <dimen name="odyssey_widget_textview_height">24dp</dimen>
+    <dimen name="odyssey_widget_margin_size">4dp</dimen>
 </resources>
