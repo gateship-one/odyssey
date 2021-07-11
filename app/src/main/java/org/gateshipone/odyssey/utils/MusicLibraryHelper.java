@@ -29,6 +29,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
@@ -60,19 +61,6 @@ public class MusicLibraryHelper {
      * Date limit used for recent album list generation (4 weeks)
      */
     private static final int recentDateLimit = (4 * 7 * 24 * 3600);
-
-    /**
-     * Threshold how many items should be inserted in the MediaStore at once.
-     * The threshold is needed to not exceed the size of the binder IPC transaction buffer.
-     */
-    private static final int chunkSize = 1000;
-
-    /**
-     * Workaround to insert images for albums that are not part of the system media library and
-     * therefore do not have an album id. The offset needs to be bigger then the count of
-     * available albums in the system library.
-     */
-    private static final long ALBUMID_HASH_OFFSET = 5000000;
 
     /**
      * Return the artistId for the given artistname
@@ -140,10 +128,10 @@ public class MusicLibraryHelper {
      * Retrieves the album ID for the given album key
      *
      * @param albumId    The id to identify the album in the MediaStore.
-     * @param albumName  The name of the album.
-     * @param artistName The name of the artist
+     * @param albumName  The name of the album, used as a fall back mechanism to retrieve the album id.
+     * @param artistName The name of the artist, used as a fall back mechanism to retrieve the album id.
      * @param context    The application context to access the content resolver.
-     * @return albumId if found or derived id based on the hash code of albumName + artistName
+     * @return albumId if found or -1
      */
     public static long verifyAlbumId(final long albumId, final String albumName, final String artistName, final Context context) {
         long retrievedAlbumId = -1;
@@ -163,13 +151,25 @@ public class MusicLibraryHelper {
 
                 cursor.close();
             }
-        }
+        } else if (!TextUtils.isEmpty(albumName) && !TextUtils.isEmpty(artistName)){
+            // if no valid album id is given try a fall back mechanism
+            // use album name and artist name to retrieve the album id
+            // this method might not return a unique result
 
-        // no album id found -> album not in MediaStore; generate fake id
-        // TODO think about this, maybe this is not valid anymore
-        // it seems the id scheme starting with API 29 changed!
-        if (retrievedAlbumId == -1) {
-            retrievedAlbumId = ((albumName == null ? "" : albumName) + (artistName == null ? "" : artistName)).hashCode() + ALBUMID_HASH_OFFSET;
+            final String[] whereVal = {albumName, artistName};
+
+            final String where = ProjectionAlbums.ALBUM + "=? AND " + ProjectionAlbums.ARTIST;
+
+            final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, ProjectionAlbums.PROJECTION, where, whereVal, null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+
+                    retrievedAlbumId = cursor.getLong(cursor.getColumnIndex(ProjectionAlbums.ID));
+                }
+
+                cursor.close();
+            }
         }
 
         return retrievedAlbumId;

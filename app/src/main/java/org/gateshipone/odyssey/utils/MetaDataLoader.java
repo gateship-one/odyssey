@@ -137,8 +137,7 @@ public class MetaDataLoader {
             return new TrackModel(title, artist, -1, album, albumId, duration, no, trackUri, -1);
         } catch (Exception e) {
             // something went wrong so just create a dummy track with the given title
-            final long albumId = MusicLibraryHelper.verifyAlbumId(-1, trackTitle, "", context);
-            return new TrackModel(trackTitle, null, -1, null, albumId, 0, -1, trackUri, -1);
+            return new TrackModel(trackTitle, null, -1, null, -1, 0, -1, trackUri, -1);
         }
     }
 
