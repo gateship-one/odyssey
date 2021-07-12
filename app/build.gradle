@@ -114,7 +114,7 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.4.0'
 
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.0'
 
     implementation 'info.debatty:java-string-similarity:2.0.0'
 }
