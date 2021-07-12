@@ -89,7 +89,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
 
             try {
-                getActivity().startActivityForResult(startEqualizerIntent, 0);
+                getActivity().startActivity(startEqualizerIntent);
             } catch (ActivityNotFoundException e) {
                 ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
                 equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");

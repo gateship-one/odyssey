@@ -40,7 +40,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestFinishedListener<Request<?>> {
+import static com.android.volley.RequestQueue.RequestEvent.REQUEST_FINISHED;
+
+public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestEventListener {
+
     private static final String TAG = LimitingRequestQueue.class.getSimpleName();
 
     private Timer mLimiterTimer;
@@ -58,7 +61,7 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
         super(cache, network, 1);
         mLimitingRequestQueue = new LinkedBlockingQueue<>();
         mLimiterTimer = null;
-        super.addRequestFinishedListener(this);
+        addRequestEventListener(this);
     }
 
     public synchronized static LimitingRequestQueue getInstance(Context context) {
@@ -71,13 +74,6 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
             mInstance.start();
         }
         return mInstance;
-    }
-
-    @Override
-    public void onRequestFinished(Request request) {
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "Request finished");
-        }
     }
 
     @Override
@@ -103,6 +99,16 @@ public class LimitingRequestQueue extends RequestQueue implements RequestQueue.R
     private <T> void realAddRequest(Request<T> request) {
         super.add(request);
     }
+
+    @Override
+    public void onRequestEvent(Request<?> request, int event) {
+        if (BuildConfig.DEBUG) {
+            if (event == REQUEST_FINISHED) {
+                Log.v(TAG, "Request finished");
+            }
+        }
+    }
+
 
     private class LimiterTask extends TimerTask {
         @Override
