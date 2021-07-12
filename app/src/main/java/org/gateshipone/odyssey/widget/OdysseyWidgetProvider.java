@@ -241,7 +241,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     }
 
     private class CoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
-        private Context mContext;
+        private final Context mContext;
 
         CoverReceiver(Context context) {
             mContext = context;

@@ -23,8 +23,8 @@
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="256dp"
-    android:minHeight="104dp"
-    android:resizeMode="horizontal"
+    android:minHeight="96dp"
+    android:resizeMode="horizontal|vertical"
     android:previewImage="@drawable/widget_preview_image"
     android:initialLayout="@layout/widget_odyssey">
 </appwidget-provider>
