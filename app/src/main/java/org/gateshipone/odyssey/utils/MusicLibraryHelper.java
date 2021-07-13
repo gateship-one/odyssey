@@ -337,11 +337,11 @@ public class MusicLibraryHelper {
                 final int artistTitleColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ARTIST);
                 final int numberOfSongsColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.NUMER_OF_SONGS);
 
-                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.ID);
+                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.ALBUM_ID);
                 final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.DATE_ADDED);
 
                 do {
-                    if (albumsCursor.getString(albumIdColumnIndex).equals(recentTracksCursor.getString(recentTracksAlbumIdColumnIndex))) {
+                    if (albumsCursor.getLong(albumIdColumnIndex) == recentTracksCursor.getLong(recentTracksAlbumIdColumnIndex)) {
                         final long albumId = albumsCursor.getLong(albumIdColumnIndex);
                         final String albumTitle = albumsCursor.getString(albumTitleColumnIndex);
                         final String imagePath = albumsCursor.getString(imagePathColumnIndex);
