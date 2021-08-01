@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.utils;
 
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -158,7 +157,7 @@ public class MusicLibraryHelper {
 
             final String[] whereVal = {albumName, artistName};
 
-            final String where = ProjectionAlbums.ALBUM + "=? AND " + ProjectionAlbums.ARTIST;
+            final String where = ProjectionAlbums.ALBUM + "=? AND " + ProjectionAlbums.ARTIST + "=?";
 
             final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, ProjectionAlbums.PROJECTION, where, whereVal, null);
 
