@@ -143,11 +143,11 @@ OdysseyWidgetProvider extends AppWidgetProvider {
     private synchronized void setWidgetContent(@NonNull NowPlayingInformation info, Context context) {
         boolean nowPlaying = false;
         // Create a new RemoteViews object containing the default widget layout
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey_big);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_odyssey);
 
         TrackModel item = info.getCurrentTrack();
-        views.setTextViewText(R.id.widget_big_trackName, item.getTrackDisplayedName());
-        views.setTextViewText(R.id.widget_big_ArtistAlbum, item.getTrackArtistName());
+        views.setTextViewText(R.id.widget_track_title, item.getTrackDisplayedName());
+        views.setTextViewText(R.id.widget_artist_album, item.getTrackArtistName());
 
         switch (info.getPlayState()) {
             case PLAYING:
@@ -156,7 +156,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     // Check if the tracks album changed
                     if (mLastInfo.getCurrentTrack().getTrackAlbumId() != item.getTrackAlbumId()) {
                         // Album changed, it is necessary to start the image loader
-                        views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                        views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
 
                         mLastCover = null;
 
@@ -164,19 +164,19 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                         coverLoader.getImage(item, -1, -1);
                     } else if (mLastCover != null) {
                         // Reuse the image from last calls because the album is the same
-                        views.setImageViewBitmap(R.id.widget_big_cover, mLastCover);
+                        views.setImageViewBitmap(R.id.widget_covert_artwork, mLastCover);
                     }
                 } else {
                     // Hide artwork requested
                     mLastCover = null;
-                    views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                    views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
                 }
             }
             break;
             case RESUMED:
             case STOPPED:
                 mLastCover = null;
-                views.setImageViewResource(R.id.widget_big_cover, R.drawable.odyssey_notification);
+                views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
                 break;
         }
 
@@ -186,10 +186,10 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         if (playState == PlaybackService.PLAYSTATE.PLAYING) {
             // Show pause icon
             nowPlaying = true;
-            views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_pause_48dp);
+            views.setImageViewResource(R.id.widget_play_btn, R.drawable.ic_pause_48dp);
         } else {
             // Show play icon
-            views.setImageViewResource(R.id.widget_big_play, R.drawable.ic_play_arrow_48dp);
+            views.setImageViewResource(R.id.widget_play_btn, R.drawable.ic_play_arrow_48dp);
         }
 
         // set button actions
@@ -201,7 +201,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
             mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING.ordinal());
         }
         PendingIntent mainPendingIntent = PendingIntent.getActivity(context, INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_big_cover, mainPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_covert_artwork, mainPendingIntent);
 
         // Play/Pause action
         Intent playPauseIntent = new Intent(context, PlaybackService.class);
@@ -212,7 +212,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         } else {
             playPausePendingIntent = PendingIntent.getService(context, INTENT_PLAYPAUSE, playPauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
-        views.setOnClickPendingIntent(R.id.widget_big_play, playPausePendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_play_btn, playPausePendingIntent);
 
         // Previous song action
         Intent prevIntent = new Intent(context, PlaybackService.class);
@@ -223,7 +223,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         } else {
             prevPendingIntent = PendingIntent.getService(context, INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
-        views.setOnClickPendingIntent(R.id.widget_big_previous, prevPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_prev_btn, prevPendingIntent);
 
         // Next song action
         Intent nextIntent = new Intent(context, PlaybackService.class);
@@ -234,7 +234,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         } else {
             nextPendingIntent = PendingIntent.getService(context, INTENT_NEXT, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
-        views.setOnClickPendingIntent(R.id.widget_big_next, nextPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_next_btn, nextPendingIntent);
 
         // Send the widget to the launcher by transferring the remote view
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views);

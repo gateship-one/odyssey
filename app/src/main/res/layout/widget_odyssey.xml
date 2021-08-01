@@ -26,7 +26,7 @@
     android:background="@color/colorWidgetBackground">
 
     <ImageView
-        android:id="@+id/widget_big_cover"
+        android:id="@+id/widget_covert_artwork"
         android:layout_width="96dp"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
@@ -42,12 +42,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="4dp"
-        android:layout_toEndOf="@+id/widget_big_cover"
+        android:layout_toEndOf="@+id/widget_covert_artwork"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/widget_big_trackName"
+            android:id="@+id/widget_track_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
@@ -56,7 +56,7 @@
             android:textSize="@dimen/material_font_style_size_subheading" />
 
         <TextView
-            android:id="@+id/widget_big_ArtistAlbum"
+            android:id="@+id/widget_artist_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
@@ -71,7 +71,7 @@
             android:maxHeight="48dp">
 
             <ImageButton
-                android:id="@+id/widget_big_previous"
+                android:id="@+id/widget_prev_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -81,7 +81,7 @@
                 android:tint="@android:color/primary_text_dark" />
 
             <ImageButton
-                android:id="@+id/widget_big_play"
+                android:id="@+id/widget_play_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -91,7 +91,7 @@
                 android:tint="@android:color/primary_text_dark" />
 
             <ImageButton
-                android:id="@+id/widget_big_next"
+                android:id="@+id/widget_next_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
