@@ -32,15 +32,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 
 public class AlbumArtistView extends ViewSwitcher {

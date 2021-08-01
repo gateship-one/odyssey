@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.artwork.network.requests;
 
+import androidx.annotation.Nullable;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,8 +34,6 @@ import org.gateshipone.odyssey.artwork.network.ImageResponse;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.annotation.Nullable;
 
 public class OdysseyByteRequest extends Request<ImageResponse> {
 

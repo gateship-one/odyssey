@@ -25,6 +25,11 @@ package org.gateshipone.odyssey.fragments;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.GenericRecyclerViewAdapter;
 import org.gateshipone.odyssey.models.GenericModel;
@@ -32,11 +37,6 @@ import org.gateshipone.odyssey.utils.GridItemDecoration;
 import org.gateshipone.odyssey.views.OdysseyRecyclerView;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 abstract public class OdysseyRecyclerFragment<T extends GenericModel, VH extends RecyclerView.ViewHolder> extends OdysseyBaseFragment<T> {
 

@@ -43,7 +43,7 @@ public class ThemeUtils {
     /**
      * returns the resource id for the given theme attribute
      *
-     * @param context the current context to resolve the attribute id
+     * @param context     the current context to resolve the attribute id
      * @param attributeId the requested theme attribute id
      * @return the resolved resource id as an integer
      */

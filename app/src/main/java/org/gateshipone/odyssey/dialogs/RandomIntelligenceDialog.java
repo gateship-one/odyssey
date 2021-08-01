@@ -32,15 +32,15 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.playbackservice.PlaybackServiceConnection;
 
 public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 

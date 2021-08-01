@@ -150,7 +150,7 @@ public class MusicLibraryHelper {
 
                 cursor.close();
             }
-        } else if (!TextUtils.isEmpty(albumName) && !TextUtils.isEmpty(artistName)){
+        } else if (!TextUtils.isEmpty(albumName) && !TextUtils.isEmpty(artistName)) {
             // if no valid album id is given try a fall back mechanism
             // use album name and artist name to retrieve the album id
             // this method might not return a unique result
@@ -733,10 +733,9 @@ public class MusicLibraryHelper {
     /**
      * Return a list of all playlists in the MediaStore.
      *
-     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
-     *
      * @param context The application context to access the content resolver.
      * @return The list of {@link PlaylistModel} of all playlists found in the MediaStore.
+     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
      */
     public static List<PlaylistModel> getAllPlaylists(final Context context) {
         final ArrayList<PlaylistModel> playlists = new ArrayList<>();
@@ -767,11 +766,10 @@ public class MusicLibraryHelper {
     /**
      * Removes a playlist from the MediaStore.
      *
-     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
-     *
      * @param playlistId The id of the playlist that should be removed.
      * @param context    The application context to access the content resolver.
      * @return The result of the operation. True if the playlist was removed else false.
+     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
      */
     public static boolean removePlaylist(final long playlistId, final Context context) {
         final String where = ProjectionPlaylists.ID + "=?";
@@ -785,12 +783,11 @@ public class MusicLibraryHelper {
     /**
      * Removes a track from a playlist from the MediaStore.
      *
-     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
-     *
      * @param playlistId    The id of the playlist that contains the track.
      * @param trackPosition The position of the track that should be removed inside the playlist.
      * @param context       The application context to access the content resolver.
      * @return The result of the operation. True if the track was removed else false.
+     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
      */
     public static boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition, final Context context) {
         final Uri playlistContentUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);

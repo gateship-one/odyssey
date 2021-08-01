@@ -31,8 +31,12 @@
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_indigo</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_indigo</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_indigo</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_indigo</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_indigo</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_indigo
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_indigo
+        </item>
     </style>
 
     <style name="AppTheme.orange" parent="AppTheme">
@@ -43,8 +47,12 @@
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_orange</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_orange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_orange</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_orange</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_orange</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_orange
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_orange
+        </item>
     </style>
 
     <style name="AppTheme.deeporange" parent="AppTheme">
@@ -52,11 +60,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_deepOrange</item>
         <item name="odyssey_color_accent">@color/colorAccent_deepOrange</item>
         <item name="odyssey_color_background">@color/colorBackground_deepOrange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_deepOrange</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_deepOrange
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_deepOrange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_deepOrange</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_deepOrange</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_deepOrange</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_deepOrange
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_deepOrange
+        </item>
     </style>
 
     <style name="AppTheme.blue" parent="AppTheme">
@@ -67,8 +80,11 @@
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_blue</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_blue</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_blue</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_blue</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_blue</item>
+        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_blue
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_blue
+        </item>
     </style>
 
     <style name="AppTheme.darkgrey" parent="AppTheme">
@@ -76,11 +92,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_darkGrey</item>
         <item name="odyssey_color_accent">@color/colorAccent_darkGrey</item>
         <item name="odyssey_color_background">@color/colorBackground_darkGrey</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_darkGrey</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_darkGrey
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_darkGrey</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_darkGrey</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_darkGrey</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_darkGrey</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_darkGrey
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_darkGrey
+        </item>
     </style>
 
     <style name="AppTheme.brown" parent="AppTheme">
@@ -91,8 +112,11 @@
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_brown</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_brown</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_brown</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_brown</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_brown</item>
+        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_brown
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_brown
+        </item>
     </style>
 
     <style name="AppTheme.lightgreen" parent="AppTheme">
@@ -100,11 +124,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_lightGreen</item>
         <item name="odyssey_color_accent">@color/colorAccent_lightGreen</item>
         <item name="odyssey_color_background">@color/colorBackground_lightGreen</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_lightGreen</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_lightGreen
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_lightGreen</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_lightGreen</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_lightGreen</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_lightGreen
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_lightGreen
+        </item>
     </style>
 
     <style name="AppTheme.red" parent="AppTheme">
@@ -115,8 +144,11 @@
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_red</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_red</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_red</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_red</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_red</item>
+        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_red
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_red
+        </item>
     </style>
 
     <style name="AppTheme.indigo_light" parent="AppThemeLight">
@@ -124,11 +156,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_indigo</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_indigo</item>
         <item name="odyssey_color_background">@color/colorBackground_light_indigo</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_indigo</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_indigo
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_indigo</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_indigo</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_indigo</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_indigo</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_indigo
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_indigo
+        </item>
     </style>
 
     <style name="AppTheme.orange_light" parent="AppThemeLight">
@@ -136,11 +173,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_orange</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_orange</item>
         <item name="odyssey_color_background">@color/colorBackground_light_orange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_orange</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_orange
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_orange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_orange</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_orange</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_orange</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_orange
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_orange
+        </item>
     </style>
 
     <style name="AppTheme.deeporange_light" parent="AppThemeLight">
@@ -148,11 +190,17 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_deepOrange</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_deepOrange</item>
         <item name="odyssey_color_background">@color/colorBackground_light_deepOrange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_deepOrange</item>
+        <item name="odyssey_color_background_selected">
+            @color/colorBackgroundSelected_light_deepOrange
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_deepOrange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_deepOrange</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_deepOrange</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_deepOrange</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_deepOrange
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_deepOrange
+        </item>
     </style>
 
     <style name="AppTheme.blue_light" parent="AppThemeLight">
@@ -160,11 +208,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_blue</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_blue</item>
         <item name="odyssey_color_background">@color/colorBackground_light_blue</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_blue</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_blue
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_blue</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_blue</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_blue</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_blue</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_blue
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_blue
+        </item>
     </style>
 
     <style name="AppTheme.darkgrey_light" parent="AppThemeLight">
@@ -172,11 +225,17 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_darkGrey</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_darkGrey</item>
         <item name="odyssey_color_background">@color/colorBackground_light_darkGrey</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_darkGrey</item>
+        <item name="odyssey_color_background_selected">
+            @color/colorBackgroundSelected_light_darkGrey
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_darkGrey</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_darkGrey</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_darkGrey</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_darkGrey</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_darkGrey
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_darkGrey
+        </item>
     </style>
 
     <style name="AppTheme.brown_light" parent="AppThemeLight">
@@ -184,11 +243,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_brown</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_brown</item>
         <item name="odyssey_color_background">@color/colorBackground_light_brown</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_brown</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_brown
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_brown</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_brown</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_brown</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_brown</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_brown
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_brown
+        </item>
     </style>
 
     <style name="AppTheme.lightgreen_light" parent="AppThemeLight">
@@ -196,11 +260,17 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_lightGreen</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_lightGreen</item>
         <item name="odyssey_color_background">@color/colorBackground_light_lightGreen</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_lightGreen</item>
+        <item name="odyssey_color_background_selected">
+            @color/colorBackgroundSelected_light_lightGreen
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_lightGreen</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_lightGreen</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_lightGreen</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_lightGreen
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_lightGreen
+        </item>
     </style>
 
     <style name="AppTheme.red_light" parent="AppThemeLight">
@@ -208,11 +278,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_red</item>
         <item name="odyssey_color_accent">@color/colorAccent_light_red</item>
         <item name="odyssey_color_background">@color/colorBackground_light_red</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_red</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_red
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_red</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_red</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_light_red</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_light_red</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_light_red
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_light_red
+        </item>
     </style>
 
     <style name="AppTheme.oledDark" parent="AppTheme">
@@ -220,11 +295,16 @@
         <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_oledDark</item>
         <item name="odyssey_color_accent">@color/colorAccent_oledDark</item>
         <item name="odyssey_color_background">@color/colorBackground_oledDark</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_oledDark</item>
+        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_oledDark
+        </item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_oledDark</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_oledDark</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_oledDark</item>
-        <item name="odyssey_color_text_background_secondary">@color/colorTextBackgroundSecondary_oledDark</item>
+        <item name="odyssey_color_text_background_primary">
+            @color/colorTextBackgroundPrimary_oledDark
+        </item>
+        <item name="odyssey_color_text_background_secondary">
+            @color/colorTextBackgroundSecondary_oledDark
+        </item>
     </style>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">

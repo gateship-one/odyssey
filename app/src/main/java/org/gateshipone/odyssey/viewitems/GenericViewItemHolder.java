@@ -22,11 +22,11 @@
 
 package org.gateshipone.odyssey.viewitems;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.TrackModel;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 public class GenericViewItemHolder extends RecyclerView.ViewHolder {
 

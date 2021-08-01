@@ -25,6 +25,10 @@ package org.gateshipone.odyssey.viewmodels;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
@@ -34,10 +38,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
 

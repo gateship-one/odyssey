@@ -28,13 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import androidx.preference.PreferenceManager;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
-
-import androidx.preference.PreferenceManager;
 
 public class ArtistsAdapter extends GenericSectionAdapter<ArtistModel> implements ArtworkManager.onNewArtistImageListener {
     private static final String TAG = ArtistsAdapter.class.getSimpleName();

@@ -32,6 +32,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnArtistSelectedListener;
 import org.gateshipone.odyssey.models.AlbumModel;
@@ -40,10 +44,6 @@ import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.AlbumViewModel;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
 import org.gateshipone.odyssey.viewmodels.SearchViewModel;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 public class AlbumsFragment extends GenericAlbumsFragment {
 

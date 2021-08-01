@@ -24,14 +24,14 @@ package org.gateshipone.odyssey.utils;
 
 import android.os.AsyncTask;
 
+import androidx.core.util.Pair;
+
 import org.gateshipone.odyssey.models.GenericModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import androidx.core.util.Pair;
 
 public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, Pair<List<T>, String>> {
 
@@ -87,7 +87,7 @@ public class FilterTask<T extends GenericModel> extends AsyncTask<String, Void, 
         return new Pair<>(resultList, filterString);
     }
 
-    public final AsyncTask<String, Void, Pair<List<T>,String>> execute(String filterString) {
+    public final AsyncTask<String, Void, Pair<List<T>, String>> execute(String filterString) {
         return super.execute(filterString);
     }
 

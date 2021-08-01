@@ -36,15 +36,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.tabs.TabLayout;
-
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.activities.GenericActivity;
-import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
-import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
-import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.viewmodels.SearchViewModel;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -55,6 +46,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.activities.GenericActivity;
+import org.gateshipone.odyssey.listener.OnRecentAlbumsSelectedListener;
+import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.SearchViewModel;
 
 public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelectedListener {
 

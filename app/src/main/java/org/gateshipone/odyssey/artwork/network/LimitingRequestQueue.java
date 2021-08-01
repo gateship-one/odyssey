@@ -22,6 +22,8 @@
 
 package org.gateshipone.odyssey.artwork.network;
 
+import static com.android.volley.RequestQueue.RequestEvent.REQUEST_FINISHED;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -39,8 +41,6 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import static com.android.volley.RequestQueue.RequestEvent.REQUEST_FINISHED;
 
 public class LimitingRequestQueue extends RequestQueue implements RequestQueue.RequestEventListener {
 

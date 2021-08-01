@@ -22,26 +22,26 @@
 
 package org.gateshipone.odyssey.dialogs;
 
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_USE_LOCAL_IMAGES;
+import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.gateshipone.odyssey.R;
-import org.gateshipone.odyssey.artwork.BulkDownloadService;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
-import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ALBUM_PROVIDER;
-import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_ARTIST_PROVIDER;
-import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_USE_LOCAL_IMAGES;
-import static org.gateshipone.odyssey.artwork.BulkDownloadService.BUNDLE_KEY_WIFI_ONLY;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.gateshipone.odyssey.R;
+import org.gateshipone.odyssey.artwork.BulkDownloadService;
 
 public class BulkDownloaderDialog extends DialogFragment {
 

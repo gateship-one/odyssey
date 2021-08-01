@@ -143,7 +143,7 @@
     <string name="pop_menu_action_cancel_sleep_timer">Batalkan pengatur waktu tidur</string>
 
     <!-- templates -->
-    
+
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Hanya tampilkan artis album</string>
     <string name="preference_show_album_artists_only_summary">Hanya tampilkan artis album, bukan semua artis dari database.</string>
@@ -270,7 +270,7 @@
     <string name="license_text">Aplikasi ini berlisensi di bawah lisensi GPLv3.\nIkon material dilisensikan di bawah lisensi CC-BY oleh Google.</string>
     <string name="sources_text">Kode sumber tersedia di GitHub:\nhttps://github.com/gateship-one/odyssey</string>
     <string name="activity_about_version">Versi:</string>
-    
+
     <!-- PBS working message -->
     <string name="playbackservice_working">Tunggu sebentar</string>
 

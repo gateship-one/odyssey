@@ -38,6 +38,10 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 
@@ -57,10 +61,6 @@ import org.json.JSONException;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 public class BulkDownloadService extends Service implements InsertImageTask.ImageSavedCallback, ArtProvider.ArtFetchError {
     private static final String TAG = BulkDownloadService.class.getSimpleName();

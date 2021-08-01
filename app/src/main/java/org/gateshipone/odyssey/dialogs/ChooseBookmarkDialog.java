@@ -27,6 +27,12 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.gateshipone.odyssey.R;
@@ -35,12 +41,6 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 import org.gateshipone.odyssey.models.BookmarkModel;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.BookmarkViewModel;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 
 public class ChooseBookmarkDialog extends DialogFragment {
 

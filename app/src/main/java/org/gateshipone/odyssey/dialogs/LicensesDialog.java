@@ -26,12 +26,12 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.gateshipone.odyssey.R;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 
 public class LicensesDialog extends DialogFragment {
 

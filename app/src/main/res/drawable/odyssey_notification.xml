@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -28,11 +27,11 @@
     android:viewportHeight="783.90997">
 
     <group
-            android:translateX="41.943354"
-            android:translateY="29.787482">
+        android:translateX="41.943354"
+        android:translateY="29.787482">
         <group
-                android:translateX="0.01163315"
-                android:translateY="-170.19468">
+            android:translateX="0.01163315"
+            android:translateY="-170.19468">
             <path
                 android:fillColor="#ffffff"
                 android:strokeColor="#ffffff"

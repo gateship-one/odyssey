@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -26,5 +25,5 @@
         android:startColor="#00000000"
         android:centerColor="#40000000"
         android:endColor="#e0000000"
-        android:angle="270"/>
+        android:angle="270" />
 </shape>

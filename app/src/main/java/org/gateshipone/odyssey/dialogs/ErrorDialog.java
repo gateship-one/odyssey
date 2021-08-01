@@ -25,13 +25,13 @@ package org.gateshipone.odyssey.dialogs;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.gateshipone.odyssey.R;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.gateshipone.odyssey.R;
 
 public class ErrorDialog extends DialogFragment {
 

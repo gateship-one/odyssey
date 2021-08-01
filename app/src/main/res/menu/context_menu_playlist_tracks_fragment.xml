@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
@@ -31,15 +30,15 @@
     <item
         android:id="@+id/fragment_playlist_tracks_action_enqueue"
         app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueue"/>
+        android:title="@string/context_menu_action_enqueue" />
 
     <item
         android:id="@+id/fragment_playlist_tracks_action_enqueueasnext"
         app:showAsAction="never"
-        android:title="@string/context_menu_action_enqueueasnext"/>
+        android:title="@string/context_menu_action_enqueueasnext" />
 
     <item
         android:id="@+id/fragment_playlist_tracks_action_remove"
         app:showAsAction="never"
-        android:title="@string/context_menu_action_removetrack"/>
+        android:title="@string/context_menu_action_removetrack" />
 </menu>
