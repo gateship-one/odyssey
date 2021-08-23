@@ -1,10 +1,18 @@
 # Changelog Odyssey
 
+## Version: 1.2.0 Tag: release-34 (2021-08-23)
+
+* Update polish and french translation
+* Update material components library
+* Fix wrong album grouping for devices running Android 11 ([Issue #220](https://github.com/gateship-one/odyssey/issues/220))
+  * This fix required a database wipe (including the loss of playlists created with odyssey), sorry for the inconvenience
+  * If you detect any issues compared to the prior version please let us know via GitHub or by Email
+
 ## Version: 1.1.21 Tag: release-33 (2021-02-13)
 
 * Add Indonesian translation
 * Update French translation
-* Fix creating a new playlists if mutliple already exists ([Issue #213](https://github.com/gateship-one/odyssey/issues/213))
+* Fix creating a new playlists if multiple already exists ([Issue #213](https://github.com/gateship-one/odyssey/issues/213))
 
 ## Version: 1.1.20 Tag: release-32 (2020-10-11)
 
@@ -20,15 +28,15 @@
 
 ## Version: 1.1.19 Tag: release-31 (2020-03-02)
 
-* further improvements for the artwork retrival
+* further improvements for the artwork retrieval
 * add czech translation
 * update french translation
-* improve widget behaviour
+* improve widget behavior
 
 ## Version: 1.1.18 Tag: release-30 (2019-06-05)
 
 * replace random with smart random feature
-* improve artwork retrival
+* improve artwork retrieval
 * remove Last.fm as artist image provider
 * fix several backnavigation issues
 * add support for local album images ([Issue #99](https://github.com/gateship-one/odyssey/issues/99))
@@ -54,11 +62,11 @@
 
 ## Version: 1.1.15 Tag: release-27 (2018-07-04)
 
-* improved scrolling behaviour for AlbumTracks and ArtistAlbums
+* improved scrolling behavior for AlbumTracks and ArtistAlbums
 * further stability fixes for the playback connection
 * option to show the playlist when open by widget or notification and playback is active
 * improved playlist parsing (.m3u, .pls)
-* remove trailing whitespaces in search ([Issue #153](https://github.com/gateship-one/odyssey/issues/153))
+* remove trailing whitespace in search ([Issue #153](https://github.com/gateship-one/odyssey/issues/153))
 * optional private notification (thanks to Dennis Guse)
 
 ## Version: 1.1.14 Tag: release-26 (2018-04-09)
@@ -134,7 +142,7 @@
 ## Version: 1.1.4 Tag: release-16 (2017-02-24)
 
 * Optionally show artist image alternating to cover image in NowPlayingView
-* Option to reload album / artist image in the corresponing fragments
+* Option to reload album / artist image in the corresponding fragments
 * Fixes in FileBrowser when filtering is active
 * Non music filtering
 * Song sharing in NowPlayingView

@@ -1,0 +1,5 @@
+* Update polish and french translation
+* Update material components library
+* Fix wrong album grouping for devices running Android 11 ([Issue #220](https://github.com/gateship-one/odyssey/issues/220))
+  * This fix required a database wipe (including the loss of playlists created with odyssey), sorry for the inconvenience
+  * If you detect any issues compared to the prior version please let us know via GitHub or by Email
