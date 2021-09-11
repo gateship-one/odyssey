@@ -35,6 +35,7 @@
     <string name="nav_menu_settings">Ustawienia</string>
     <string name="nav_menu_bookmarks">Zakładki</string>
     <string name="nav_menu_files">Pliki</string>
+    <string name="nav_menu_info">Informacje</string>
 
     <!-- activity titles -->
     <string name="share_chooser_title">Udostępnij utwór za pomocą</string>
@@ -44,17 +45,19 @@
     <string name="fragment_title_saved_playlists">Playlisty</string>
     <string name="fragment_title_settings">Ustawienia</string>
     <string name="fragment_title_bookmarks">Zakładki</string>
-    <string name="fragment_title_recent_albums">Niedawno Dodane</string>
+    <string name="fragment_title_recent_albums">Ostatnio Dodane</string>
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">Nie znaleziono żadnych playlist.</string>
+    <string name="playlist_type_global">Globalna</string>
+    <string name="playlist_type_local">Lokalna</string>
 
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Utwory</string>
     <string name="empty_bookmarks_message">Nie znaleziono żadnych zakładek.</string>
 
     <!-- files fragment -->
-    <string name="empty_directory_message">Niewspierane formaty lub znaleziono plik .nomedia.</string>
+    <string name="empty_directory_message">Nie znaleziono obsługiwanych formatów lub pliku .nomedia.</string>
 
     <!-- my music tab titles -->
     <string name="fragment_title_artists">Artyści</string>
@@ -73,7 +76,14 @@
     <string name="dialog_choose_bookmark">Wybierz zakładkę</string>
     <string name="dialog_choose_playlist">Wybierz playlistę</string>
     <string name="dialog_equalizer_not_found_title">Brak dostępnych equalizerów</string>
-    <string name="dialog_equalizer_not_found_message">Na Twoim urządzeniu nie jest obecnie zainstalowany żaden equalizer</string>
+    <string name="dialog_equalizer_not_found_message">Na Twoim urządzeniu nie jest obecnie zainstalowany żaden equalizer.</string>
+    <string name="dialog_sleep_timer">Ustaw czas wyłączenia</string>
+    <string name="dialog_sleep_timer_action_start">Start</string>
+    <string name="dialog_sleep_timer_duration_minutes">Minuty</string>
+    <string name="dialog_sleep_timer_duration_seconds">Sekundy</string>
+    <string name="dialog_sleep_timer_stop_after_current">Zatrzymaj odtwarzanie po skończeniu obecnego utworu</string>
+    <string name="dialog_no_browser_found_title">Brak przeglądarki</string>
+    <string name="dialog_no_browser_found_message">Na urządzeniu nie jest zainstalowana przeglądarka internetu.</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nowa Playlista</string>
@@ -97,6 +107,10 @@
     <string name="action_wikipedia_artist">Otwórz wykonawcę</string>
 
     <string name="action_show_recent_albums">Ostatnie albumy</string>
+
+    <string name="action_npv_show_playlist">Pokaż playlistę</string>
+    <string name="action_npv_show_cover">Pokaż okładkę</string>
+    <string name="action_npv_more_options">Więcej opcji</string>
 
     <!-- context menu titles -->
     <string name="context_menu_action_enqueue">Dodaj do playlisty</string>
@@ -125,15 +139,20 @@
     <string name="popup_menu_action_createbookmark">Utwórz zakładkę</string>
     <string name="popup_menu_action_startequalizer">Otwórz equalizer</string>
     <string name="popup_menu_action_sharetrack">Udostępnij obecnie odtwarzany utwór</string>
+    <string name="pop_menu_action_start_sleep_timer">Uruchom wyłącznik czasowy</string>
+    <string name="pop_menu_action_cancel_sleep_timer">Anuluj wyłącznik czasowy</string>
 
     <!-- preferences -->
     <string name="preference_show_album_artists_only_title">Pokaż tylko albumy wykonawców</string>
-    <string name="preference_show_album_artists_only_summary">Pokazuje albumy wykonawców zamiast wszystkich wykonawców.</string>
+    <string name="preference_show_album_artists_only_summary">Pokaż tylko wykonawców albumów zamiast wszystkich wykonawców z bazy multimediów.</string>
 
-    <string name="preference_launch_about">O Odyssey...</string>
+  <string name="preference_launch_faq">FAQ</string>
+  <string name="preference_launch_faq_text">Informacje jak uzyskać pomoc dla tej aplikacji.</string>
+  <string name="preference_launch_about">O aplikacji</string>
+  <string name="preference_launch_about_text">Informacje o wersji, licencji i współautorach.</string>
 
     <string name="preference_theme_title">Motyw</string>
-    <string name="preference_theme_summary">Ustal motyw aplikacji.</string>
+    <string name="preference_theme_summary">Wybiera inny motyw aplikacji.</string>
     <string name="preference_theme_message">Wybierz motyw</string>
 
     <string name="preference_dark_theme_title">Ciemny motyw</string>
@@ -149,16 +168,22 @@
     <string name="preference_theme_item_oled_dark">Ciemny (OLED)</string>
     <string name="preference_theme_item_red">Czerwony</string>
 
-    <string name="preference_album_sort_order_title">Sortuj albumy wykonawców wg</string>
-    <string name="preference_album_sort_order_message">Sortuj wg</string>
-    <string name="preference_album_sort_order_summary">Wybierz kolejność sortowania albumów wykonawców.</string>
+    <string name="preference_album_sort_order_title">Sortuj albumy wykonawców według</string>
+    <string name="preference_album_sort_order_message">Sortuj według</string>
+    <string name="preference_album_sort_order_summary">Wybiera kolejność sortowania albumów wykonawców.</string>
 
     <string name="preference_album_sort_order_name">Nazwa</string>
     <string name="preference_album_sort_order_year">Rok wydania</string>
 
+    <string name="preference_tracks_sort_order_title">Sposób sortowania utworów albumu</string>
+    <string name="preference_tracks_sort_order_summary">Wybiera sposób sortowania utworów w danym albumie.</string>
+
+    <string name="preference_album_tracks_sort_number">Numer utworu</string>
+    <string name="preference_album_tracks_sort_name">Nazwa (Nazwa pliku)</string>
+
     <string name="preference_default_view_title">Widok domyślny</string>
-    <string name="preference_default_view_message">Wybierz domyślny widok</string>
-    <string name="preference_default_view_summary">Wybierz domyślny widok aplikacji.</string>
+    <string name="preference_default_view_message">Wybierz widok domyślny</string>
+    <string name="preference_default_view_summary">Wybiera domyślny widok aplikacji.</string>
 
     <string name="preference_default_view_my_music_artists">Wykonawcy</string>
     <string name="preference_default_view_my_music_albums">Albumy</string>
@@ -169,18 +194,27 @@
 
     <string name="preference_library_view_title">Wybierz widok biblioteki</string>
     <string name="preference_library_view_message">Wybierz widok biblioteki</string>
-    <string name="preference_library_view_summary">Wybierz rodzaj widoku używany dla albumów i wykonawców.</string>
+    <string name="preference_library_view_summary">Wybiera rodzaj widoku używany dla albumów i wykonawców.</string>
 
     <string name="preference_library_view_grid">Siatka</string>
     <string name="preference_library_view_list">Lista</string>
 
     <string name="preference_show_artist_image_title">Pokaż zdjęcie wykonawcy</string>
-    <string name="preference_show_artist_image_text">Wybór między okładką albumu a zdjęciem wykonawcy w widoku obecnie odtwarzanego utworu.</string>
+    <string name="preference_show_artist_image_text">Wyświetlaj na przemian okładkę albumu i zdjęcie wykonawcy w widoku aktualnie odtwarzanego utworu.</string>
+
+    <string name="preference_npv_show_playlist_title">Rozpocznij w widoku playlisty</string>
+    <string name="preference_npv_show_playlist_text">Pokazuje playlistę, kiedy Odyssey zostanie otwarty po kliknięciu na widżet lub powiadomienie podczas odtwarzania.</string>
+
+    <string name="preference_library_click_action_title">Akcja przy kliknięciu na utwór</string>
+    <string name="preference_library_click_action_summary">Wybierz akcję dla utworów w bibliotece</string>
+    <string name="preference_library_click_action_message">Wybiera domyślną akcję po kliknięciu na utwór w widoku bibliotek.</string>
+
+    <string name="preference_library_click_action_clear_and_play">Zamień i odtwarzaj według pozycji</string>
 
     <string name="artwork_settings">Ustawienia okładek</string>
 
     <string name="preference_clear_default_directory_title">Wyczyść domyślny katalog</string>
-    <string name="preference_clear_default_directory_summary">Przywróc domyśly katalog do dotępnego katalogu głównego tego urządzenia.</string>
+    <string name="preference_clear_default_directory_summary">Przywraca domyśly katalog do dostępnego katalogu głównego urządzenia.</string>
 
     <string name="preference_category_design">Wygląd</string>
     <string name="preference_category_library">Biblioteka</string>
@@ -188,14 +222,14 @@
 
     <!-- artwork preferences -->
     <string name="preference_artwork_album_provider_title">Dostawca okładek albumów</string>
-    <string name="preference_artwork_album_provider_summary">Wybierz dostawcę okładek albumów.</string>
-    <string name="preference_artwork_album_provider_message">Wybierz dostawcę okładek albumów.</string>
+    <string name="preference_artwork_album_provider_summary">Wybór dostawcy okładek albumów.</string>
+    <string name="preference_artwork_album_provider_message">Wybór dostawcy okładek albumów.</string>
 
     <string name="provider_off">Wyłączone</string>
 
     <string name="preference_artwork_artist_provider_title">Dostawca zdjęć wykonawców</string>
-    <string name="preference_artwork_artist_provider_summary">Wybierz dostawcę zdjęć wykonawców.</string>
-    <string name="preference_artwork_artist_provider_message">Wybierz dostawcę zdjęć wykonawców.</string>
+    <string name="preference_artwork_artist_provider_summary">Wybór dostawcy zdjęć wykonawców.</string>
+    <string name="preference_artwork_artist_provider_message">Wybór dostawcy zdjęć wykonawców.</string>
 
     <string name="preference_artwork_clear_artist">Wyczyść zdjęcia wykonawców</string>
     <string name="preference_artwork_clear_artist_summary">Usuwa wszystkie zapisane zdjęcia wykonawców.</string>
@@ -205,7 +239,7 @@
     <string name="preference_artwork_clear_blocked_artist">Wyczyść zablokowane zdjęcia wykonawców</string>
     <string name="preference_artwork_clear_blocked_artist_summary">Usuwa wszystkie zapytania wyszukiwanych wykonawców, którzy nie zostali znalezieni.</string>
     <string name="preference_artwork_clear_blocked_album">Wyczyść zablokowane okładki albumów</string>
-    <string name="preference_artwork_clear_blocked_album_summary">Usuwa wszystkie zapytania wyszukiwanych okładek albumów, którze nie zostały znalezione.</string>
+    <string name="preference_artwork_clear_blocked_album_summary">Usuwa wszystkie zapytania wyszukiwanych okładek albumów, które nie zostały znalezione.</string>
 
     <string name="preference_artwork_bulk_load">Spróbuj załadować wszystkie obrazy dla bazy multimediów</string>
     <string name="preference_artwork_bulk_load_summary">Spowoduje to załadowanie dużej ilości obrazów. Może to zająć dużo czasu. Dostawca okładek może tymczasowo ograniczać ilość zapytań.</string>
@@ -217,7 +251,13 @@
     <string name="preference_artwork_hide_artwork_text">Wyłącza widoczność wszystkich obrazów.</string>
 
     <string name="preference_use_english_wikipedia_title">Użyj angielskiej Wikipedii</string>
-    <string name="preference_use_english_wikipedia_text">Używaj angielskiej Wikipedii, aby wyszukiwać strony.</string>
+    <string name="preference_use_english_wikipedia_text">Używaj angielskiej wersji Wikipedii do wyszukiwania stron.</string>
+
+    <string name="preference_hide_media_on_lockscreen_title">Powiadomienie prywatne</string>
+    <string name="preference_hide_media_on_lockscreen_text">Ukryj informację o odtwarzaniu na ekranie blokady (zależy od systemowych ustawień prywatności ekranu blokady).</string>
+
+    <string name="preference_artwork_use_local_images_title">Użyj lokalnych okładek albumu</string>
+    <string name="preference_artwork_use_local_images_text">Zignoruje okładki albumu znalezione w bazie multimediów Androida i użyje lokalnych. Jeśli lokalne okładki nie zostaną znalezione, zostanie użyty wybrany dostawca okładek.</string>
 
     <string name="preference_category_artwork_settings">Ustawienia obrazów</string>
     <string name="preference_category_artwork_database_cleanup">Wyczyść bazę danych</string>
@@ -230,14 +270,15 @@
     <string name="activity_about_version">Wersja:</string>
 
     <!-- PBS working message -->
-    <string name="playbackservice_working">Proszę czekać</string>
+    <string name="playbackservice_working">Proszę czekać…</string>
 
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Masowe pobieranie włączone</string>
     <string name="downloader_notification_remaining_images">Pobrane obrazy:</string>
+    <string name="downloader_notification_initialize">Rozpocznij pobieranie</string>
 
     <string name="bulk_download_notice_title">Pobranie obrazów</string>
-    <string name="bulk_download_notice_text">Pobieranie dużej liczby obrazów może spowodować ogromne przeciążenie serwerów danego serwisu, który wcześniej wybrałeś. Wynikiem tej operacji może być zablokowanie wykonywanych działań - zostaną one zatrzymane, jeżeli wykryto przeciążenie.\n\nProszę rozważyć złożenie donacji dostawcom usług.</string>
+    <string name="bulk_download_notice_text">Pobieranie dużej ilości obrazów może spowodować ogromne przeciążenie serwerów danego serwisu, który wcześniej wybrałeś. Wynikiem tej operacji może być anulowanie wykonywanych działań.\n\nProszę rozważyć przekazanie darowizny dostawcom usług.</string>
 
     <!-- Media scanner service -->
     <string name="mediascanner_notification_title">Aktualizowanie bazy danych mediów</string>
@@ -248,62 +289,36 @@
     <string name="notification_channel_downloader">Pobieranie</string>
     <string name="notification_channel_library_scanner">Skaner biblioteki</string>
 
+    <!-- Playback notification -->
+    <string name="notification_sensitive_content_replacement">Treść ukryta</string>
+
     <!-- Contributors activity -->
-    <string name="odyssey_contributors_title">Wnieśli wkład</string>
-    <string name="contributor_translator_italian">Włoskie tłumaczenie</string>
-    <string name="contributor_translator_french">Francuskie tłumaczenie</string>
+    <string name="odyssey_contributors_title">Współtwórcy</string>
+    <string name="contributor_translator_italian">Tłumaczenie włoskie </string>
+    <string name="contributor_translator_french">Tłumaczenie francuskie</string>
+    <string name="contributor_translator_polish">Tłumaczenie polskie</string>
+    <string name="contributor_translator_czech">Tłumaczenie czeskie</string>
+    <string name="contributor_translator_dutch">Tłumaczenie holenderskie</string>
+    <string name="contributor_translator_indonesia">Tłumaczenie indonezyjskie</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licencje osób trzecich</string>
-    <string name="playlist_type_global">Globalna</string>
-    <string name="playlist_type_local">Lokalna</string>
-    <string name="dialog_no_browser_found_title">Brak przeglądarki</string>
-    <string name="dialog_no_browser_found_message">Na urządzeniu nie jest zainstalowana przeglądarka internetu</string>
-    <string name="preference_tracks_sort_order_title">Sposób sortowania utworów albumu</string>
-    <string name="preference_tracks_sort_order_summary">Wybierz sposób sortowania utworów w danym albumie.</string>
-    <string name="preference_album_tracks_sort_number">Numer utworu</string>
-    <string name="preference_album_tracks_sort_name">Nazwa (Nazwa pliku)</string>
-    <string name="contributor_translator_indonesia">Indonezyjskie tłumaczenie</string>
-    <string name="preference_resume_step_size_text">Ilość sekund o które utwór zostanie przewinięty po wznowieniu ostatniego odtwarzania.</string>
-    <string name="pop_menu_action_cancel_sleep_timer">Anuluj wyłączenie odtwarzania po upływie czasu</string>
-    <string name="preference_resume_step_size_title">Automatyczne przewijanie</string>
-    <string name="downloader_notification_initialize">Rozpocznij pobieranie</string>
-    <string name="preference_launch_faq">F.A.Q</string>
-    <string name="preference_artwork_use_local_images_title">Użyj lokalnych okladek albumu</string>
-    <string name="snackbar_uri_not_supported_message">Wybrana ścieżka %1$s nie jest wspierana.</string>
-    <string name="preference_launch_faq_text">Informacje jak uzyskać pomoc w obsłudze aplikacji</string>
-    <string name="preference_smart_random_title">Inteligentne odtwarzanie losowe</string>
-    <string name="nav_menu_info">Informacje</string>
-    <string name="preference_library_click_action_title">Akcja przy kliknięciu na utwór</string>
-    <string name="action_npv_more_options">Więcej opcji</string>
-    <string name="dialog_sleep_timer_duration_minutes">Minuty</string>
-    <string name="contributor_translator_dutch">Holenderskie tłumaczenie</string>
-    <string name="preference_artwork_use_local_images_text">Zignoruj okładki albumu znalezione w bazie multimediów Androida i użyj lokalnych. Jeśli lokalne okładki nie zostaną znalezione, użyty zostanie wybrany dostawca okładek.</string>
-    <string name="contributor_translator_polish">Polskie tłumaczenie</string>
-    <string name="preference_hide_media_on_lockscreen_title">Prywatne powiadomienie</string>
-    <string name="dialog_sleep_timer_duration_seconds">Sekundy</string>
-    <string name="preference_library_click_action_summary">Wybierz akcję dla utworów w bibliotece</string>
-    <string name="preference_library_click_action_message">Wybierz domyślną akcję po kliknięciu na utwór w widoku bibliotek.</string>
-    <string name="preference_smart_random_text">Wybierz losową kolejność utworów. Opcja ta pozwala na bardziej równomierne odtworzenie utworów (względem artystów). Jest to przydatne w przypadku list odtwarzania z wieloma utworami jednego artysty i kilkoma innych artystów.</string>
-    <string name="dialog_sleep_timer">Ustaw czas wyłączenia</string>
+
+    <!-- Snackbar -->
     <string name="snackbar_sleep_timer_confirmation_message">Włączono zatrzymanie odtwarzania po upływie danego czasu</string>
+    <string name="snackbar_uri_not_supported_message">Wybrana ścieżka %1$s nie jest obsługiwana.</string>
+
+    <string name="preference_resume_step_size_title">Automatyczne przewijanie</string>
+    <string name="preference_resume_step_size_text">Ilość sekund, przez które odtwarzanie jest przewijane po wznowieniu.</string>
+
     <string name="preference_resume_step_size_dialog_title">Wielkość kroku: %d sekund</string>
-    <string name="dialog_sleep_timer_action_start">Start</string>
-    <string name="preference_npv_show_playlist_title">Rozpocznij w widoku playlisty</string>
-    <string name="pop_menu_action_start_sleep_timer">Włącz zatrzymanie odtwarzania po upływie danego czasu</string>
-    <string name="dialog_sleep_timer_stop_after_current">Zatrzymaj odtwarzanie po skończeniu obecnego utworu</string>
-    <string name="contributor_translator_czech">Czeskie tłumaczenie</string>
-    <string name="action_npv_show_playlist">Pokaż playlistę</string>
-    <string name="action_npv_show_cover">Pokaż okładkę</string>
-    <string name="preference_npv_show_playlist_text">Pokaż playlistę, jeśli Odyssey zostanie otwarte po kliknięciu na widżet lub powiadomienie gdy trwa odtwarzanie.</string>
-    <string name="preference_hide_media_on_lockscreen_text">Ukryj informację o odtwarzaniu na ekranie blokady (zależy od systemowych ustawień prywatności ekranu blokady).</string>
-    <string name="notification_sensitive_content_replacement">Treść ukryta</string>
-    <string name="preference_launch_about_text">Wersja, licencje oraz współtwórcy</string>
-    <string name="preference_library_click_action_clear_and_play">Zamień i odtwarzaj wedle pozycji</string>
     <string name="preference_random_intelligence_dialog_title">Losowa inteligencja: %d %%</string>
-    <string name="preference_random_intelligence_balanced">Losowo wybiera utwory zrównoważone między wykonawcami oraz na podstawie samego utworu</string>
-    <string name="preference_random_intelligence_more_intelligent">Losowo wybiera utwory tylko na podstawie artysty</string>
-    <string name="preference_random_intelligence_dumber">Losowo wybiera utwory bez względu na artystę</string>
-    <string name="preference_random_intelligence_intelligent">Losowo wybiera utwory w większości podstawie artysty</string>
-    <string name="preference_random_intelligence_dumb">Losowo wybiera utwory z małym względem na artystę</string>
+    <string name="preference_random_intelligence_dumber">Losowo wybiera utwory bez względu na wykonawców.</string>
+    <string name="preference_random_intelligence_dumb">Losowo wybiera utwory z małym względem na wykonawców.</string>
+    <string name="preference_random_intelligence_balanced">Losowo wybiera utwory zrównoważone między wykonawcami oraz na podstawie samego utworu.</string>
+    <string name="preference_random_intelligence_intelligent">Losowo wybiera utwory w większości na podstawie wykonawcy.</string>
+    <string name="preference_random_intelligence_more_intelligent">Losowo wybiera utwory tylko na podstawie wykonawcy.</string>
+
+    <string name="preference_smart_random_title">Inteligentne odtwarzanie losowe</string>
+    <string name="preference_smart_random_text">Wybiera losową kolejność utworów. Opcja ta pozwala na bardziej równomierne odtwarzanie utworów (względem wykonawców). Jest to przydatne w przypadku list odtwarzania zawierających wiele utworów jednego wykonawcy i kilkoma utworów innych wykonawców.</string>
 </resources>
