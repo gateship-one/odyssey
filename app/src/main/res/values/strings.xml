@@ -294,7 +294,7 @@
     <string name="url_faq" translatable="false">https://github.com/gateship-one/odyssey/wiki/FAQ</string>
 
     <!-- PBS working message -->
-    <string name="playbackservice_working">Please wait…</string>
+    <string name="playbackservice_working">Please wait …</string>
 
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Bulk download running</string>
