@@ -78,7 +78,7 @@
     <string name="dialog_choose_bookmark">Choose bookmark</string>
     <string name="dialog_choose_playlist">Choose playlist</string>
     <string name="dialog_equalizer_not_found_title">No equalizer available</string>
-    <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer</string>
+    <string name="dialog_equalizer_not_found_message">Your device is missing an equalizer.</string>
     <string name="error_dialog_ok_action" translatable="false">@android:string/ok</string>
     <string name="dialog_sleep_timer">Set sleep time</string>
     <string name="dialog_sleep_timer_separator" translatable="false">:</string>
@@ -87,7 +87,7 @@
     <string name="dialog_sleep_timer_duration_seconds">Seconds</string>
     <string name="dialog_sleep_timer_stop_after_current">Stop playback after currently playing song</string>
     <string name="dialog_no_browser_found_title">No Browser available</string>
-    <string name="dialog_no_browser_found_message">Your device is missing a browser</string>
+    <string name="dialog_no_browser_found_message">Your device is missing a browser.</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
@@ -157,10 +157,10 @@
     <string name="preference_show_album_artists_only_title">Only show album artists</string>
     <string name="preference_show_album_artists_only_summary">Only show album artists instead of all artists from database.</string>
 
-    <string name="preference_launch_faq">F.A.Q.</string>
-    <string name="preference_launch_faq_text">Information how to get help for this application</string>
+    <string name="preference_launch_faq">FAQ</string>
+    <string name="preference_launch_faq_text">Information how to get help for this application.</string>
     <string name="preference_launch_about">About</string>
-    <string name="preference_launch_about_text">Version, license and contributors information</string>
+    <string name="preference_launch_about_text">Version, license and contributors information.</string>
 
     <string name="preference_theme_title">Theme</string>
     <string name="preference_theme_summary">Select a different design for the application.</string>
@@ -211,14 +211,14 @@
     <string name="preference_library_view_list">List</string>
 
     <string name="preference_show_artist_image_title">Show artist image</string>
-    <string name="preference_show_artist_image_text">Alternate between the album cover and an image of the artist in the view for the currently playing song</string>
+    <string name="preference_show_artist_image_text">Alternate between the album cover and an image of the artist in the view for the currently playing song.</string>
 
     <string name="preference_npv_show_playlist_title">Start with playlist view</string>
-    <string name="preference_npv_show_playlist_text">Show the playlist if odyssey is opened via widget or notification while playback is active</string>
+    <string name="preference_npv_show_playlist_text">Show the playlist if odyssey is opened via widget or notification while playback is active.</string>
 
     <string name="preference_library_click_action_title">Track click action</string>
     <string name="preference_library_click_action_summary">Select action for tracks in library</string>
-    <string name="preference_library_click_action_message">Select the default action to take if you click on a track in the library views</string>
+    <string name="preference_library_click_action_message">Select the default action to take if you click on a track in the library views.</string>
 
     <string name="preference_library_click_action_add" translatable="false">@string/context_menu_action_enqueue</string>
     <string name="preference_library_click_action_play" translatable="false">@string/context_menu_action_playsong</string>
@@ -268,10 +268,10 @@
     <string name="preference_artwork_hide_artwork_text">Disables the whole artwork visibility.</string>
 
     <string name="preference_use_english_wikipedia_title">Use English Wikipedia</string>
-    <string name="preference_use_english_wikipedia_text">Use the English Wikipedia version to lookup pages</string>
+    <string name="preference_use_english_wikipedia_text">Use the English Wikipedia version to lookup pages.</string>
 
     <string name="preference_hide_media_on_lockscreen_title">Private notification</string>
-    <string name="preference_hide_media_on_lockscreen_text">Hide media information on the lockscreen (depends on your system lock screen privacy settings)</string>
+    <string name="preference_hide_media_on_lockscreen_text">Hide media information on the lockscreen (depends on your system lock screen privacy settings).</string>
 
     <string name="preference_artwork_use_local_images_title">Use local album images</string>
     <string name="preference_artwork_use_local_images_text">Ignore album artworks found in the Android Media Database and use local images instead. If no local image is found the selected album artwork provider will be used.</string>
@@ -294,7 +294,7 @@
     <string name="url_faq" translatable="false">https://github.com/gateship-one/odyssey/wiki/FAQ</string>
 
     <!-- PBS working message -->
-    <string name="playbackservice_working">Please wait</string>
+    <string name="playbackservice_working">Please wait …</string>
 
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Bulk download running</string>
@@ -338,11 +338,11 @@
 
     <string name="preference_resume_step_size_dialog_title">Step size: %d seconds</string>
     <string name="preference_random_intelligence_dialog_title">Random intelligence: %d %%</string>
-    <string name="preference_random_intelligence_dumber">Random selects tracks completely random with no regard to the artists</string>
-    <string name="preference_random_intelligence_dumb">Random mostly selects tracks completely random with almost no regard to the artists</string>
-    <string name="preference_random_intelligence_balanced">Random selects tracks balanced between artists- and track-based selection</string>
-    <string name="preference_random_intelligence_intelligent">Random mostly selects tracks based on the artist</string>
-    <string name="preference_random_intelligence_more_intelligent">Random completely selects tracks based on the artist</string>
+    <string name="preference_random_intelligence_dumber">Random selects tracks completely random with no regard to the artists.</string>
+    <string name="preference_random_intelligence_dumb">Random mostly selects tracks completely random with almost no regard to the artists.</string>
+    <string name="preference_random_intelligence_balanced">Random selects tracks balanced between artists - and track-based selection.</string>
+    <string name="preference_random_intelligence_intelligent">Random mostly selects tracks based on the artist.</string>
+    <string name="preference_random_intelligence_more_intelligent">Random completely selects tracks based on the artist.</string>
 
     <string name="preference_smart_random_title">Smart random</string>
     <string name="preference_smart_random_text">Select a random selection preference. This option allows random playback to be more uniformly distributed (for artists). This is useful for playlists with a lot of tracks of one artist and few tracks of other artists.</string>
