@@ -100,11 +100,17 @@ public class TimeDurationDialog extends DialogFragment {
 
         builder.setPositiveButton(R.string.dialog_sleep_timer_action_start, (dialog, which) -> {
             final long durationMS = getDuration();
-            final boolean stopAfterCurrent = getStopAfterCurrent();
 
-            mOnStartSleepTimerCallback.onStartSleepTimer(durationMS, stopAfterCurrent);
+            if (durationMS == 0) {
+                // cancel the dialog if duration is still zero
+                dialog.cancel();
+            } else {
+                final boolean stopAfterCurrent = getStopAfterCurrent();
+
+                mOnStartSleepTimerCallback.onStartSleepTimer(durationMS, stopAfterCurrent);
+            }
         });
-        builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> getDialog().cancel());
+        builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> dialog.cancel());
 
         return builder.create();
     }
