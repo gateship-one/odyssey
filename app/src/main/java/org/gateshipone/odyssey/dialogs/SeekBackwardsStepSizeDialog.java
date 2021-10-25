@@ -111,6 +111,6 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
     }
 
     private void updateLabels() {
-        mDialogLabel.setText(getString(R.string.preference_resume_step_size_dialog_title, mStepSize));
+        mDialogLabel.setText(getResources().getQuantityString(R.plurals.preference_resume_step_size_dialog_title, mStepSize, mStepSize));
     }
 }

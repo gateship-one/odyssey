@@ -300,7 +300,11 @@
     <string name="preference_resume_step_size_title">Automatisch terugspoelen</string>
     <string name="preference_resume_step_size_text">Aantal seconden dat terugespoeld wordt bij hervatting.</string>
 
-    <string name="preference_resume_step_size_dialog_title">Stap grootte: %d seconden</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Stap grootte: %d seconden</item>
+        <item quantity="other">Stap grootte: %d seconden</item>
+    </plurals>
+
     <string name="preference_random_intelligence_dialog_title">Willekeurige intelligentie: %d %%</string>
     <string name="preference_random_intelligence_dumber">Willekeurig selecteert nummers volkomen willekeurig zonder te kijken naar artiest</string>
     <string name="preference_random_intelligence_dumb">Willekeurig selecteert nummers volkomen willekeurig waarbij nauwelijks gekeken wordt naar artiest</string>

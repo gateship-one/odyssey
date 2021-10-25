@@ -336,7 +336,11 @@
     <string name="preference_resume_step_size_title">Automatic rewind</string>
     <string name="preference_resume_step_size_text">Number of seconds the playback is rewound after resume.</string>
 
-    <string name="preference_resume_step_size_dialog_title">Step size: %d seconds</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Step size: %d second</item>
+        <item quantity="other">Step size: %d seconds</item>
+    </plurals>
+
     <string name="preference_random_intelligence_dialog_title">Random intelligence: %d %%</string>
     <string name="preference_random_intelligence_dumber">Random selects tracks completely random with no regard to the artists.</string>
     <string name="preference_random_intelligence_dumb">Random mostly selects tracks completely random with almost no regard to the artists.</string>

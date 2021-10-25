@@ -207,7 +207,6 @@
     <string name="dialog_sleep_timer_duration_minutes">Minuten</string>
     <string name="dialog_sleep_timer_duration_seconds">Sekunden</string>
     <string name="snackbar_uri_not_supported_message">Der ausgewählte Pfad %1$s wird nicht unterstützt.</string>
-    <string name="preference_resume_step_size_dialog_title">Schrittweite: %d Sekunden</string>
     <string name="preference_resume_step_size_text">Anzahl an Sekunden die das Lied bei der Fortsetzung der letzten Wiedergabe zurückgespult wird.</string>
     <string name="preference_resume_step_size_title">Automatisches Zurückspulen</string>
     <string name="dialog_sleep_timer_stop_after_current">Wiedergabe erst nach dem aktuellem Lied beenden</string>
@@ -233,4 +232,8 @@
     <string name="playlist_type_global">Global</string>
     <string name="playlist_type_local">Lokal</string>
     <string name="contributor_translator_indonesia">Indonesische Übersetzung</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Schrittweite: %d Sekunde</item>
+        <item quantity="other">Schrittweite: %d Sekunden</item>
+    </plurals>
 </resources>

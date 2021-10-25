@@ -300,7 +300,12 @@
     <string name="preference_resume_step_size_title">Automaticky přetočit</string>
     <string name="preference_resume_step_size_text">Počet vteřin přetočení playbacku před pokračováním.</string>
 
-    <string name="preference_resume_step_size_dialog_title">Délka kroku: %d vteřin</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Délka kroku: %d vteřin</item>
+        <item quantity="few">Délka kroku: %d vteřin</item>
+        <item quantity="other">Délka kroku: %d vteřin</item>
+    </plurals>
+
     <string name="preference_random_intelligence_dialog_title">Nahodilá inteligence: %d %%</string>
     <string name="preference_random_intelligence_dumber">Nahodilost vybere stopy zcela nahodile bez ohledu na umělce</string>
     <string name="preference_random_intelligence_dumb">Nahodilost většinou vybere stopy zcela nahodile téměř s žádným ohledem na umělce</string>

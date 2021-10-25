@@ -317,7 +317,11 @@
     <string name="preference_resume_step_size_title">Rembobiner à la reprise</string>
     <string name="preference_resume_step_size_text">Durée en secondes à rembobiner lors de la reprise de la lecture</string>
 
-    <string name="preference_resume_step_size_dialog_title">Rembobiner de : %d secondes</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Rembobiner de : %d secondes</item>
+        <item quantity="other">Rembobiner de : %d secondes</item>
+    </plurals>
+
     <string name="preference_random_intelligence_dialog_title">Lecture aléatoire intelligente : %d %%</string>
     <string name="preference_random_intelligence_dumber">Artiste non pris en compte</string>
     <string name="preference_random_intelligence_dumb">Artiste pris partiellement en compte</string>

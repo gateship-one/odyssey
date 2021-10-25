@@ -311,7 +311,13 @@
     <string name="preference_resume_step_size_title">Automatyczne przewijanie</string>
     <string name="preference_resume_step_size_text">Ilość sekund, przez które odtwarzanie jest przewijane po wznowieniu.</string>
 
-    <string name="preference_resume_step_size_dialog_title">Wielkość kroku: %d sekund</string>
+    <plurals name="preference_resume_step_size_dialog_title">
+        <item quantity="one">Wielkość kroku: %d sekund</item>
+        <item quantity="few">Wielkość kroku: %d sekund</item>
+        <item quantity="many">Wielkość kroku: %d sekund</item>
+        <item quantity="other">Wielkość kroku: %d sekund</item>
+    </plurals>
+
     <string name="preference_random_intelligence_dialog_title">Losowa inteligencja: %d %%</string>
     <string name="preference_random_intelligence_dumber">Losowo wybiera utwory bez względu na wykonawców.</string>
     <string name="preference_random_intelligence_dumb">Losowo wybiera utwory z małym względem na wykonawców.</string>
