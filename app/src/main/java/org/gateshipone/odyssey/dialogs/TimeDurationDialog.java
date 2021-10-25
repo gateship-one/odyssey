@@ -134,12 +134,12 @@ public class TimeDurationDialog extends DialogFragment {
         seconds = seconds % 60;
 
         mMinutesPicker.setMinValue(0);
-        mMinutesPicker.setMaxValue(60);
+        mMinutesPicker.setMaxValue(59);
         mMinutesPicker.setValue(minutes);
         mMinutesPicker.setWrapSelectorWheel(true);
 
         mSecondsPicker.setMinValue(0);
-        mSecondsPicker.setMaxValue(60);
+        mSecondsPicker.setMaxValue(59);
         mSecondsPicker.setValue(seconds);
         mSecondsPicker.setWrapSelectorWheel(true);
     }
