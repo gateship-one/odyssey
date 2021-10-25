@@ -89,6 +89,11 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     private String mSearchString;
 
     /**
+     * Save a searchview reference for later usage
+     */
+    private SearchView mSearchView;
+
+    /**
      * Constant for state saving
      */
     public final static String MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "MyMusicFragment.SearchString";
@@ -217,6 +222,17 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
+
+        if(mSearchView != null) {
+            mSearchView.setOnQueryTextListener(new SearchTextObserver());
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        mSearchView.setOnQueryTextListener(null);
     }
 
     /**
@@ -343,18 +359,18 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         DrawableCompat.setTint(drawable, tintColor);
         mOptionMenu.findItem(R.id.action_search).setIcon(drawable);
 
-        final SearchView searchView = (SearchView) mOptionMenu.findItem(R.id.action_search).getActionView();
+        mSearchView = (SearchView) mOptionMenu.findItem(R.id.action_search).getActionView();
 
         // Check if a search string is saved from before
         if (mSearchString != null) {
             // Expand the view
-            searchView.setIconified(false);
+            mSearchView.setIconified(false);
             mOptionMenu.findItem(R.id.action_search).expandActionView();
             // Set the query string
-            searchView.setQuery(mSearchString, true);
+            mSearchView.setQuery(mSearchString, true);
         }
 
-        searchView.setOnQueryTextListener(new SearchTextObserver());
+        mSearchView.setOnQueryTextListener(new SearchTextObserver());
 
         // show recents options only for the albums fragment
         mOptionMenu.findItem(R.id.action_show_recent_albums).setVisible(mMyMusicViewPager.getCurrentItem() == 1);

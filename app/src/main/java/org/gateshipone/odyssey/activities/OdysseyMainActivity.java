@@ -52,6 +52,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -91,6 +92,7 @@ import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
+import org.gateshipone.odyssey.viewmodels.SearchViewModel;
 import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
@@ -530,17 +532,21 @@ public class OdysseyMainActivity extends GenericActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        final int id = item.getItemId();
 
-        View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
+        final View coordinatorLayout = findViewById(R.id.main_coordinator_layout);
         coordinatorLayout.setVisibility(View.VISIBLE);
 
-        NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
+        final NowPlayingView nowPlayingView = findViewById(R.id.now_playing_layout);
         if (nowPlayingView != null) {
             nowPlayingView.minimize();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        // clear the searchmodel
+        final SearchViewModel searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        searchViewModel.clearSearchString();
+
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
         // clear backstack
         fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -555,7 +561,7 @@ public class OdysseyMainActivity extends GenericActivity
             fragment = BookmarksFragment.newInstance();
         } else if (id == R.id.nav_files) {
             // open the default directory
-            List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
+            final List<String> storageVolumesList = mFileExplorerHelper.getStorageVolumes(getApplicationContext());
 
             String defaultDirectory = "/";
 
@@ -572,12 +578,12 @@ public class OdysseyMainActivity extends GenericActivity
             fragment = InformationSettingsFragment.newInstance();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null) {
             drawer.closeDrawer(GravityCompat.START);
         }
 
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
 
