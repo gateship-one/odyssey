@@ -48,7 +48,6 @@ import org.gateshipone.odyssey.adapter.TracksAdapter;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
@@ -352,13 +351,8 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void removeTrackFromPlaylist(int position) {
         boolean reloadData = false;
 
-        switch (mPlaylistModel.getPlaylistType()) {
-            case MEDIASTORE:
-                reloadData = MusicLibraryHelper.removeTrackFromPlaylist(mPlaylistModel.getPlaylistId(), position, getContext().getApplicationContext());
-                break;
-            case ODYSSEY_LOCAL:
-                reloadData = OdysseyDatabaseManager.getInstance(getContext()).removeTrackFromPlaylist(mPlaylistModel.getPlaylistId(), position);
-                break;
+        if (mPlaylistModel.getPlaylistType() == PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL) {
+            reloadData = OdysseyDatabaseManager.getInstance(getContext()).removeTrackFromPlaylist(mPlaylistModel.getPlaylistId(), position);
         }
 
         if (reloadData) {

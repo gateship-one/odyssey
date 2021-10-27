@@ -73,62 +73,6 @@ public class PermissionHelper {
     }
 
     /**
-     * Permission safe call of the delete method of the content resolver.
-     *
-     * @param context       The application context for the permission check and the access of the content resolver.
-     * @param uri           The URL of the row to delete.
-     * @param where         A filter to apply to rows before deleting, formatted as an SQL WHERE clause
-     *                      (excluding the WHERE itself).
-     * @param selectionArgs Additional values for the where clause.
-     * @return The number of deleted rows.
-     */
-    public static int delete(final Context context, final Uri uri, final String where, final String[] selectionArgs) {
-        int rows = -1;
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            rows = context.getContentResolver().delete(uri, where, selectionArgs);
-        }
-
-        return rows;
-    }
-
-    /**
-     * Permission safe call of the insert method of the content resolver.
-     *
-     * @param context       The application context for the permission check and the access of the content resolver.
-     * @param uri           The {@link Uri} of the table to insert into.
-     * @param contentValues The values for the row.
-     * @return The Url of the created row or null if the user not granted the necessary permissions.
-     */
-    public static Uri insert(final Context context, final Uri uri, final ContentValues contentValues) {
-        Uri row = null;
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            row = context.getContentResolver().insert(uri, contentValues);
-        }
-
-        return row;
-    }
-
-    /**
-     * Permission safe call of the bulkInsert method of the content resolver.
-     *
-     * @param context The application context for the permission check and the access of the content resolver.
-     * @param uri     The {@link Uri} of the table to insert into.
-     * @param values  The values for the rows.
-     * @return The number of created rows.
-     */
-    public static int bulkInsert(final Context context, final Uri uri, final ContentValues[] values) {
-        int rows = -1;
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            rows = context.getContentResolver().bulkInsert(uri, values);
-        }
-
-        return rows;
-    }
-
-    /**
      * Permission safe call to get all music files in a given directory.
      *
      * @param context   The application context for the permission check.

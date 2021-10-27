@@ -764,53 +764,6 @@ public class MusicLibraryHelper {
     }
 
     /**
-     * Removes a playlist from the MediaStore.
-     *
-     * @param playlistId The id of the playlist that should be removed.
-     * @param context    The application context to access the content resolver.
-     * @return The result of the operation. True if the playlist was removed else false.
-     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
-     */
-    public static boolean removePlaylist(final long playlistId, final Context context) {
-        final String where = ProjectionPlaylists.ID + "=?";
-        final String[] whereVal = {"" + playlistId};
-
-        final int removedRows = PermissionHelper.delete(context, MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, where, whereVal);
-
-        return removedRows > 0;
-    }
-
-    /**
-     * Removes a track from a playlist from the MediaStore.
-     *
-     * @param playlistId    The id of the playlist that contains the track.
-     * @param trackPosition The position of the track that should be removed inside the playlist.
-     * @param context       The application context to access the content resolver.
-     * @return The result of the operation. True if the track was removed else false.
-     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
-     */
-    public static boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition, final Context context) {
-        final Uri playlistContentUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-
-        final Cursor trackCursor = PermissionHelper.query(context, playlistContentUri, ProjectionPlaylistTracks.PROJECTION, "", null, "");
-
-        int removedRows = -1;
-
-        if (trackCursor != null) {
-            if (trackCursor.moveToPosition(trackPosition)) {
-                final String where = ProjectionPlaylistTracks.ID + "=?";
-                final String[] whereVal = {trackCursor.getString(trackCursor.getColumnIndex(ProjectionPlaylistTracks.ID))};
-
-                removedRows = PermissionHelper.delete(context, playlistContentUri, where, whereVal);
-            }
-
-            trackCursor.close();
-        }
-
-        return removedRows > 0;
-    }
-
-    /**
      * This method returns the storage location for each track that is connected to the provided album key.
      *
      * @param albumId The album id that will be used to get all tracks for this key.

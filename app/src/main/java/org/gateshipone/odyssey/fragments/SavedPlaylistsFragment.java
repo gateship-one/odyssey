@@ -46,9 +46,7 @@ import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
 import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
-import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
-import org.gateshipone.odyssey.viewmodels.PlaylistTrackViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
@@ -243,14 +241,8 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         // delete current playlist
         boolean reloadData = false;
 
-        switch (clickedPlaylist.getPlaylistType()) {
-            case MEDIASTORE:
-                // TODO add dialog or toast
-                reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistId(), getActivity().getApplicationContext());
-                break;
-            case ODYSSEY_LOCAL:
-                reloadData = OdysseyDatabaseManager.getInstance(getContext()).removePlaylist(clickedPlaylist.getPlaylistId());
-                break;
+        if (clickedPlaylist.getPlaylistType() == PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL) {
+            reloadData = OdysseyDatabaseManager.getInstance(getContext()).removePlaylist(clickedPlaylist.getPlaylistId());
         }
 
         if (reloadData) {
