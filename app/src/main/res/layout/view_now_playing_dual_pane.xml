@@ -176,7 +176,7 @@
                 <View
                     android:layout_width="@dimen/list_divider_size"
                     android:layout_height="match_parent"
-                    android:background="?attr/odyssey_color_background_selected" />
+                    android:background="?attr/odyssey_color_divider" />
 
                 <org.gateshipone.odyssey.views.CurrentPlaylistView
                     android:id="@+id/now_playing_playlist"

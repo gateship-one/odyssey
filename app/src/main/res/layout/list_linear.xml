@@ -30,7 +30,7 @@
         android:id="@+id/list_linear_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="?attr/odyssey_color_background_selected"
+        android:divider="?attr/odyssey_color_divider"
         android:dividerHeight="@dimen/list_divider_size"
         android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"

@@ -30,6 +30,7 @@
     <color name="colorBackgroundSelected_indigo">#424242</color>
     <color name="colorTextBackgroundPrimary_indigo">#E3E3E3</color>
     <color name="colorNavheaderIcon_indigo">#000000</color>
+    <color name="colorDivider_indigo">#424242</color>
 
     <color name="colorPrimary_orange">#f57c00</color>
     <color name="colorPrimaryDark_orange">#e65100</color>
@@ -40,6 +41,7 @@
     <color name="colorBackgroundSelected_orange">#424242</color>
     <color name="colorTextBackgroundPrimary_orange">#E3E3E3</color>
     <color name="colorNavheaderIcon_orange">#000000</color>
+    <color name="colorDivider_orange">#424242</color>
 
     <color name="colorPrimary_deepOrange">#e64a19</color>
     <color name="colorPrimaryDark_deepOrange">#bf360c</color>
@@ -50,6 +52,7 @@
     <color name="colorBackgroundSelected_deepOrange">#424242</color>
     <color name="colorTextBackgroundPrimary_deepOrange">#E3E3E3</color>
     <color name="colorNavheaderIcon_deepOrange">#000000</color>
+    <color name="colorDivider_deepOrange">#424242</color>
 
     <color name="colorPrimary_blue">#1976d2</color>
     <color name="colorPrimaryDark_blue">#0d47a1</color>
@@ -60,6 +63,7 @@
     <color name="colorBackgroundSelected_blue">#424242</color>
     <color name="colorTextBackgroundPrimary_blue">#E3E3E3</color>
     <color name="colorNavheaderIcon_blue">#000000</color>
+    <color name="colorDivider_blue">#424242</color>
 
     <color name="colorPrimary_darkGrey">#323232</color>
     <color name="colorPrimaryDark_darkGrey">#212121</color>
@@ -70,6 +74,7 @@
     <color name="colorBackgroundSelected_darkGrey">#424242</color>
     <color name="colorTextBackgroundPrimary_darkGrey">#E3E3E3</color>
     <color name="colorNavheaderIcon_darkGrey">#000000</color>
+    <color name="colorDivider_darkGrey">#424242</color>
 
     <color name="colorPrimary_brown">#795548</color>
     <color name="colorPrimaryDark_brown">#5d4037</color>
@@ -80,6 +85,7 @@
     <color name="colorBackgroundSelected_brown">#424242</color>
     <color name="colorTextBackgroundPrimary_brown">#E3E3E3</color>
     <color name="colorNavheaderIcon_brown">#000000</color>
+    <color name="colorDivider_brown">#424242</color>
 
     <color name="colorPrimary_lightGreen">#689f38</color>
     <color name="colorPrimaryDark_lightGreen">#33691e</color>
@@ -90,6 +96,7 @@
     <color name="colorBackgroundSelected_lightGreen">#424242</color>
     <color name="colorTextBackgroundPrimary_lightGreen">#E3E3E3</color>
     <color name="colorNavheaderIcon_lightGreen">#000000</color>
+    <color name="colorDivider_lightGreen">#424242</color>
 
     <color name="colorPrimary_red">#d32f2f</color>
     <color name="colorPrimaryDark_red">#b71c1c</color>
@@ -100,16 +107,18 @@
     <color name="colorBackgroundSelected_red">#424242</color>
     <color name="colorTextBackgroundPrimary_red">#E3E3E3</color>
     <color name="colorNavheaderIcon_red">#000000</color>
+    <color name="colorDivider_red">#424242</color>
 
     <color name="colorPrimary_oledDark">#000000</color>
     <color name="colorPrimaryDark_oledDark">#000000</color>
     <color name="colorAccent_oledDark">#00CC00</color>
     <color name="colorTextAccent_oledDark">#FFFFFF</color>
     <color name="colorTextBackgroundSecondary_oledDark">#DDDDDD</color>
-    <color name="colorBackground_oledDark">#111111</color>
+    <color name="colorBackground_oledDark">#000000</color>
     <color name="colorBackgroundSelected_oledDark">#282828</color>
     <color name="colorTextBackgroundPrimary_oledDark">#E3E3E3</color>
     <color name="colorNavheaderIcon_oledDark">#FFFFFF</color>
+    <color name="colorDivider_oledDark">#282828</color>
 
     <color name="colorPrimary_light_indigo">#3F51B5</color>
     <color name="colorPrimaryDark_light_indigo">#303F9F</color>
@@ -120,6 +129,7 @@
     <color name="colorBackgroundSelected_light_indigo">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_indigo">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_indigo">#000000</color>
+    <color name="colorDivider_light_indigo">#e0e0e0</color>
 
     <color name="colorPrimary_light_orange">#f57c00</color>
     <color name="colorPrimaryDark_light_orange">#e65100</color>
@@ -130,6 +140,7 @@
     <color name="colorBackgroundSelected_light_orange">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_orange">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_orange">#000000</color>
+    <color name="colorDivider_light_orange">#e0e0e0</color>
 
     <color name="colorPrimary_light_deepOrange">#e64a19</color>
     <color name="colorPrimaryDark_light_deepOrange">#bf360c</color>
@@ -140,6 +151,7 @@
     <color name="colorBackgroundSelected_light_deepOrange">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_deepOrange">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_deepOrange">#000000</color>
+    <color name="colorDivider_light_deepOrange">#e0e0e0</color>
 
     <color name="colorPrimary_light_blue">#1976d2</color>
     <color name="colorPrimaryDark_light_blue">#0d47a1</color>
@@ -150,6 +162,7 @@
     <color name="colorBackgroundSelected_light_blue">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_blue">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_blue">#000000</color>
+    <color name="colorDivider_light_blue">#e0e0e0</color>
 
     <color name="colorPrimary_light_darkGrey">#323232</color>
     <color name="colorPrimaryDark_light_darkGrey">#212121</color>
@@ -160,6 +173,7 @@
     <color name="colorBackgroundSelected_light_darkGrey">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_darkGrey">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_darkGrey">#000000</color>
+    <color name="colorDivider_light_darkGrey">#e0e0e0</color>
 
     <color name="colorPrimary_light_brown">#795548</color>
     <color name="colorPrimaryDark_light_brown">#5d4037</color>
@@ -170,6 +184,7 @@
     <color name="colorBackgroundSelected_light_brown">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_brown">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_brown">#000000</color>
+    <color name="colorDivider_light_brown">#e0e0e0</color>
 
     <color name="colorPrimary_light_lightGreen">#689f38</color>
     <color name="colorPrimaryDark_light_lightGreen">#33691e</color>
@@ -180,6 +195,7 @@
     <color name="colorBackgroundSelected_light_lightGreen">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_lightGreen">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_lightGreen">#000000</color>
+    <color name="colorDivider_light_lightGreen">#e0e0e0</color>
 
     <color name="colorPrimary_light_red">#d32f2f</color>
     <color name="colorPrimaryDark_light_red">#b71c1c</color>
@@ -190,7 +206,7 @@
     <color name="colorBackgroundSelected_light_red">#e0e0e0</color>
     <color name="colorTextBackgroundPrimary_light_red">#1D1D1D</color>
     <color name="colorNavheaderIcon_light_red">#000000</color>
-
+    <color name="colorDivider_light_red">#e0e0e0</color>
 
     <!-- Fixed colors -->
     <color name="colorWidgetBackground">#424242</color>

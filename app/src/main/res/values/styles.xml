@@ -29,6 +29,7 @@
         <item name="odyssey_color_accent">@color/colorAccent_indigo</item>
         <item name="odyssey_color_background">@color/colorBackground_indigo</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_indigo</item>
+        <item name="odyssey_color_divider">@color/colorDivider_indigo</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_indigo</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_indigo</item>
         <item name="odyssey_color_text_background_primary">
@@ -45,6 +46,7 @@
         <item name="odyssey_color_accent">@color/colorAccent_orange</item>
         <item name="odyssey_color_background">@color/colorBackground_orange</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_orange</item>
+        <item name="odyssey_color_divider">@color/colorDivider_orange</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_orange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_orange</item>
         <item name="odyssey_color_text_background_primary">
@@ -62,6 +64,7 @@
         <item name="odyssey_color_background">@color/colorBackground_deepOrange</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_deepOrange
         </item>
+        <item name="odyssey_color_divider">@color/colorBackgroundSelected_deepOrange</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_deepOrange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_deepOrange</item>
         <item name="odyssey_color_text_background_primary">
@@ -78,6 +81,7 @@
         <item name="odyssey_color_accent">@color/colorAccent_blue</item>
         <item name="odyssey_color_background">@color/colorBackground_blue</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_blue</item>
+        <item name="odyssey_color_divider">@color/colorDivider_blue</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_blue</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_blue</item>
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_blue
@@ -94,6 +98,7 @@
         <item name="odyssey_color_background">@color/colorBackground_darkGrey</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_darkGrey
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_darkGrey</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_darkGrey</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_darkGrey</item>
         <item name="odyssey_color_text_background_primary">
@@ -110,6 +115,7 @@
         <item name="odyssey_color_accent">@color/colorAccent_brown</item>
         <item name="odyssey_color_background">@color/colorBackground_brown</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_brown</item>
+        <item name="odyssey_color_divider">@color/colorDivider_brown</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_brown</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_brown</item>
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_brown
@@ -126,6 +132,7 @@
         <item name="odyssey_color_background">@color/colorBackground_lightGreen</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_lightGreen
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_lightGreen</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_lightGreen</item>
         <item name="odyssey_color_text_background_primary">
@@ -142,6 +149,7 @@
         <item name="odyssey_color_accent">@color/colorAccent_light_red</item>
         <item name="odyssey_color_background">@color/colorBackground_red</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_red</item>
+        <item name="odyssey_color_divider">@color/colorDivider_red</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_red</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_red</item>
         <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_red
@@ -158,6 +166,7 @@
         <item name="odyssey_color_background">@color/colorBackground_light_indigo</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_indigo
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_indigo</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_indigo</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_indigo</item>
         <item name="odyssey_color_text_background_primary">
@@ -175,6 +184,7 @@
         <item name="odyssey_color_background">@color/colorBackground_light_orange</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_orange
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_orange</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_orange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_orange</item>
         <item name="odyssey_color_text_background_primary">
@@ -193,6 +203,7 @@
         <item name="odyssey_color_background_selected">
             @color/colorBackgroundSelected_light_deepOrange
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_deepOrange</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_deepOrange</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_deepOrange</item>
         <item name="odyssey_color_text_background_primary">
@@ -210,6 +221,7 @@
         <item name="odyssey_color_background">@color/colorBackground_light_blue</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_blue
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_blue</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_blue</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_blue</item>
         <item name="odyssey_color_text_background_primary">
@@ -228,6 +240,7 @@
         <item name="odyssey_color_background_selected">
             @color/colorBackgroundSelected_light_darkGrey
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_darkGrey</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_darkGrey</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_darkGrey</item>
         <item name="odyssey_color_text_background_primary">
@@ -245,6 +258,7 @@
         <item name="odyssey_color_background">@color/colorBackground_light_brown</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_brown
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_brown</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_brown</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_brown</item>
         <item name="odyssey_color_text_background_primary">
@@ -263,6 +277,7 @@
         <item name="odyssey_color_background_selected">
             @color/colorBackgroundSelected_light_lightGreen
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_lightGreen</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_lightGreen</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_lightGreen</item>
         <item name="odyssey_color_text_background_primary">
@@ -280,6 +295,7 @@
         <item name="odyssey_color_background">@color/colorBackground_light_red</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_red
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_light_red</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_red</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_light_red</item>
         <item name="odyssey_color_text_background_primary">
@@ -297,6 +313,7 @@
         <item name="odyssey_color_background">@color/colorBackground_oledDark</item>
         <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_oledDark
         </item>
+        <item name="odyssey_color_divider">@color/colorDivider_oledDark</item>
         <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_oledDark</item>
         <item name="odyssey_color_text_accent">@color/colorTextAccent_oledDark</item>
         <item name="odyssey_color_text_background_primary">
@@ -309,8 +326,8 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
-        <!--        <item name="materialAlertDialogTheme">@style/AppTheme.Dialog</item>-->
         <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
+        <item name="android:listDivider">@drawable/recyclerview_divider</item>
         <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
         <item name="dialogTheme">@style/AppTheme.Dialog</item>
         <item name="materialAlertDialogTheme">@style/AppTheme.Dialog</item>
@@ -379,6 +396,7 @@
     <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.Bridge">
         <item name="android:alertDialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="android:dialogTheme">@style/AppThemeLight.Dialog</item>
+        <item name="android:listDivider">@drawable/recyclerview_divider</item>
         <item name="alertDialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="dialogTheme">@style/AppThemeLight.Dialog</item>
         <item name="materialAlertDialogTheme">@style/AppThemeLight.Dialog</item>
