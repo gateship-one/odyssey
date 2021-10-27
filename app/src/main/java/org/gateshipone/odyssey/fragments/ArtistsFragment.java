@@ -71,7 +71,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
-        boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
+        final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
 
         if (useList) {
             return inflater.inflate(R.layout.list_refresh, container, false);
@@ -123,7 +123,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
 
-        SearchViewModel searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+        final SearchViewModel searchViewModel = new ViewModelProvider(requireParentFragment()).get(SearchViewModel.class);
         searchViewModel.getSearchString().observe(getViewLifecycleOwner(), searchString -> {
             if (searchString != null) {
                 applyFilter(searchString);

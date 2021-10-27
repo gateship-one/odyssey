@@ -542,10 +542,6 @@ public class OdysseyMainActivity extends GenericActivity
             nowPlayingView.minimize();
         }
 
-        // clear the searchmodel
-        final SearchViewModel searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        searchViewModel.clearSearchString();
-
         final FragmentManager fragmentManager = getSupportFragmentManager();
 
         // clear backstack
@@ -791,6 +787,8 @@ public class OdysseyMainActivity extends GenericActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0

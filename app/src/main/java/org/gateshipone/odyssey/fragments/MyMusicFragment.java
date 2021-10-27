@@ -223,7 +223,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
             throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
         }
 
-        if(mSearchView != null) {
+        if (mSearchView != null) {
             mSearchView.setOnQueryTextListener(new SearchTextObserver());
         }
     }
@@ -394,6 +394,10 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         return super.onOptionsItemSelected(item);
     }
 
+    private SearchViewModel getViewModel() {
+        return new ViewModelProvider(this).get(SearchViewModel.class);
+    }
+
     /**
      * Custom pager adapter to retrieve already registered fragments.
      */
@@ -474,7 +478,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         private void applyFilter(String filter) {
 
-            SearchViewModel searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+            SearchViewModel searchViewModel = getViewModel();
 
             if (filter.isEmpty()) {
                 mSearchString = null;
