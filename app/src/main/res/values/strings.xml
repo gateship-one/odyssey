@@ -99,7 +99,7 @@
     <string name="action_add_album">Add Album</string>
     <string name="action_add_artist_albums">Add Albums</string>
     <string name="action_switch_storage_volume">Switch storage volume</string>
-    <string name="action_add_directory">Add directory to playlist</string>
+    <string name="action_add_directory">Add directory to queue</string>
     <string name="action_search">Search</string>
     <string name="action_add_playlist">Add playlist</string>
     <string name="action_set_default_directory">Set as default directory</string>
@@ -118,7 +118,7 @@
     <string name="action_npv_more_options">More options</string>
 
     <!-- context menu titles -->
-    <string name="context_menu_action_enqueue">Add to playlist</string>
+    <string name="context_menu_action_enqueue">Add to queue</string>
     <string name="context_menu_action_enqueueasnext">Play after current song</string>
     <string name="context_menu_action_playsong">Play song</string>
     <string name="context_menu_action_playalbum">Play album</string>
@@ -132,9 +132,9 @@
     <string name="context_menu_action_deleteplaylist">Delete playlist</string>
     <string name="context_menu_action_resumebookmark">Resume Bookmark</string>
     <string name="context_menu_action_deletebookmark">Delete Bookmark</string>
-    <string name="context_menu_action_enqueue_folder">Add folder to playlist</string>
+    <string name="context_menu_action_enqueue_folder">Add folder to queue</string>
     <string name="context_menu_action_play_folder">Play folder</string>
-    <string name="context_menu_action_enqueue_file">Add file to playlist</string>
+    <string name="context_menu_action_enqueue_file">Add file to queue</string>
     <string name="context_menu_action_play_file">Play file</string>
 
     <!-- popup menu titles -->

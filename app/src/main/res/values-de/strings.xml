@@ -22,7 +22,7 @@
 
 <resources>
     <string name="context_menu_action_deleteplaylist">Playlist löschen</string>
-    <string name="context_menu_action_enqueue">Zur Playlist hinzufügen</string>
+    <string name="context_menu_action_enqueue">Zur Wiedergabeliste hinzufügen</string>
     <string name="context_menu_action_enqueueasnext">Nach aktuellem Song spielen</string>
     <string name="context_menu_action_playalbum">Album abspielen</string>
     <string name="context_menu_action_playalbums">Alben abspielen</string>
@@ -79,8 +79,8 @@
     <string name="default_bookmark_title">Neues Lesezeichen</string>
     <string name="dialog_create_bookmark">Lesezeichen erstellen</string>
     <string name="popup_menu_action_createbookmark">Lesezeichen erstellen</string>
-    <string name="context_menu_action_enqueue_file">Datei zur Playlist hinzufügen</string>
-    <string name="context_menu_action_enqueue_folder">Ordner zur Playlist hinzufügen</string>
+    <string name="context_menu_action_enqueue_file">Datei zur Wiedergabeliste hinzufügen</string>
+    <string name="context_menu_action_enqueue_folder">Ordner zur Wiedergabeliste hinzufügen</string>
     <string name="context_menu_action_play_file">Datei abspielen</string>
     <string name="context_menu_action_play_folder">Ordner abspielen</string>
     <string name="nav_menu_files">Dateien</string>
@@ -88,7 +88,7 @@
     <string name="dialog_choose_storage_volume_title">Wähle Speichermedium</string>
     <string name="playbackservice_working">Bitte warten</string>
     <string name="preference_theme_item_light_green">Helles Grün</string>
-    <string name="action_add_directory">Verzeichnis zur Playlist hinzufügen</string>
+    <string name="action_add_directory">Verzeichnis zur Wiedergabeliste hinzufügen</string>
     <string name="popup_menu_action_startequalizer">Öffne Equalizer</string>
     <string name="create_new_bookmark">Erstelle neues Lesezeichen</string>
     <string name="dialog_choose_bookmark">Wähle Lesezeichen</string>
