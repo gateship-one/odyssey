@@ -49,7 +49,6 @@
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">Tidak ada playlist yang ditemukan.</string>
-    <string name="playlist_type_global">Global</string>
     <string name="playlist_type_local">Lokal</string>
 
     <!-- bookmark fragment -->
