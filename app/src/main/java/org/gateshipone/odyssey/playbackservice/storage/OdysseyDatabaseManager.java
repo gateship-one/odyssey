@@ -557,23 +557,14 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         );
 
         if (cursor.moveToFirst()) {
+            // delete old songs
             final long playlistId = cursor.getLong(cursor.getColumnIndex(PlaylistsTable.COLUMN_ID));
 
-            // delete playlist
-            int result = odysseyDB.delete(
-                    PlaylistsTable.TABLE_NAME,
-                    PlaylistsTable.COLUMN_ID + "=?",
+            odysseyDB.delete(
+                    PlaylistsTracksTable.TABLE_NAME,
+                    PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
                     new String[]{Long.toString(playlistId)}
             );
-
-            if (result > 0) {
-                // delete tracks only if playlist was removed
-                odysseyDB.delete(
-                        PlaylistsTracksTable.TABLE_NAME,
-                        PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
-                        new String[]{Long.toString(playlistId)}
-                );
-            }
         }
 
         cursor.close();
@@ -585,7 +576,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         values.put(PlaylistsTable.COLUMN_TITLE, playlistName);
         values.put(PlaylistsTable.COLUMN_TRACKS, tracks.size());
 
-        final long playlistId = odysseyDB.insert(PlaylistsTable.TABLE_NAME, null, values);
+        final long playlistId = odysseyDB.replace(PlaylistsTable.TABLE_NAME, null, values);
 
         odysseyDB.setTransactionSuccessful();
         odysseyDB.endTransaction();
@@ -713,9 +704,81 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
     public List<TrackModel> getTracksForPlaylist(final long playlistId) {
         final SQLiteDatabase odysseyDB = getReadableDatabase();
 
+        final List<TrackModel> tracks = getTracksForPlaylist(playlistId, odysseyDB);
+
+        odysseyDB.close();
+
+        return tracks;
+    }
+
+    /**
+     * Method to remove a track from an already existing playlist
+     *
+     * @param playlistId The id of the playlist
+     * @param trackPosition The position in the playlist of the track that should be removed
+     * @return true if a track was removed, false otherwise
+     */
+    public boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition) {
+        int result;
+
+        final SQLiteDatabase odysseyDB = getWritableDatabase();
+
+        final String where = PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=? AND " + PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION + "=?";
+        final String[] whereVal = {Long.toString(playlistId), Integer.toString(trackPosition + 1)};
+
+        odysseyDB.beginTransaction();
+
+        // remove track
+        result = odysseyDB.delete(
+                PlaylistsTracksTable.TABLE_NAME,
+                where,
+                whereVal
+        );
+
+        if (result > 0) {
+            // update track positions
+            final ContentValues values = new ContentValues();
+            final List<TrackModel> tracks = getTracksForPlaylist(playlistId, odysseyDB);
+
+            int index = 1;
+
+            for (TrackModel track : tracks) {
+                values.clear();
+
+                // set TrackModel parameters
+                values.put(PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION, index);
+
+                odysseyDB.update(PlaylistsTracksTable.TABLE_NAME, values, PlaylistsTracksTable.COLUMN_TRACK_ID + "=?", new String[]{Long.toString(track.getTrackId())});
+
+                index++;
+            }
+
+            // update number of tracks
+            values.clear();
+            values.put(PlaylistsTable.COLUMN_TRACKS, tracks.size());
+
+            odysseyDB.update(PlaylistsTable.TABLE_NAME, values, PlaylistsTable.COLUMN_ID + "=?", new String[]{Long.toString(playlistId)});
+        }
+
+        odysseyDB.setTransactionSuccessful();
+        odysseyDB.endTransaction();
+
+        odysseyDB.close();
+
+        return result > 0;
+    }
+
+    /**
+     * Private method to return all tracks of the playlist for the given id
+     *
+     * @param playlistId The id of the playlist
+     * @param database A reference to the already opened @{@link SQLiteDatabase} instance
+     * @return A list of @{@link TrackModel} for all tracks of the playlist
+     */
+    private List<TrackModel> getTracksForPlaylist(final long playlistId, final SQLiteDatabase database) {
         final List<TrackModel> tracks = new ArrayList<>();
 
-        final Cursor cursor = odysseyDB.query(
+        final Cursor cursor = database.query(
                 PlaylistsTracksTable.TABLE_NAME,
                 projectionPlaylistTracks,
                 PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=?",
@@ -745,40 +808,6 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         cursor.close();
 
-        odysseyDB.close();
-
         return tracks;
-    }
-
-    /**
-     * Method to remove a single track from a playlist.
-     *
-     * @param playlistId    The id of the playlist.
-     * @param trackPosition The position of the track in the playlist.
-     * @return True if the track was removed otherwise false.
-     */
-    public boolean removeTrackFromPlaylist(final long playlistId, final int trackPosition) {
-        final SQLiteDatabase odysseyDB = getWritableDatabase();
-
-        int result = -1;
-
-        final String where = PlaylistsTracksTable.COLUMN_PLAYLIST_ID + "=? AND " + PlaylistsTracksTable.COLUMN_PLAYLIST_POSITION + "=?";
-        final String[] whereVal = {Long.toString(playlistId), Integer.toString(trackPosition)};
-
-        odysseyDB.beginTransaction();
-
-        // delete tracks
-        result = odysseyDB.delete(
-                PlaylistsTracksTable.TABLE_NAME,
-                where,
-                whereVal
-        );
-
-        odysseyDB.setTransactionSuccessful();
-        odysseyDB.endTransaction();
-
-        odysseyDB.close();
-
-        return result > 0;
     }
 }

@@ -58,6 +58,10 @@ import java.util.List;
 
 public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
+    public final static String TRACK_REMOVED_KEY = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedKey";
+    public final static String TRACK_REMOVED_PLAYLIST_ID = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedPlaylistId";
+    public final static String TRACK_REMOVED_TRACK_POSITION = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedTrackPosition";
+
     /**
      * Key values for arguments of the fragment
      */
@@ -197,8 +201,8 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
 
-        if (mPlaylistModel.getPlaylistType() == PlaylistModel.PLAYLIST_TYPES.FILE) {
-            // Hide remove track for playlist files as it is unsupported
+        if (mPlaylistModel.getPlaylistType() != PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL) {
+            // Hide remove track for all non odyssey playlists as it is unsupported
             menu.findItem(R.id.fragment_playlist_tracks_action_remove).setVisible(false);
         }
     }
@@ -360,6 +364,12 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         if (reloadData) {
             // reload data
             refreshContent();
+
+            Bundle result = new Bundle();
+            result.putLong(TRACK_REMOVED_PLAYLIST_ID, mPlaylistModel.getPlaylistId());
+            result.putInt(TRACK_REMOVED_TRACK_POSITION, position);
+
+            getParentFragmentManager().setFragmentResult(TRACK_REMOVED_KEY, result);
         }
     }
 }

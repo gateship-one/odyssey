@@ -25,6 +25,7 @@ package org.gateshipone.odyssey.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
 import org.gateshipone.odyssey.adapter.SavedPlaylistsAdapter;
@@ -46,9 +48,12 @@ import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.playbackservice.storage.OdysseyDatabaseManager;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.viewmodels.GenericViewModel;
+import org.gateshipone.odyssey.viewmodels.PlaylistTrackViewModel;
 import org.gateshipone.odyssey.viewmodels.PlaylistViewModel;
 
 public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> implements AdapterView.OnItemClickListener {
+
+    private static final String TAG = SavedPlaylistsFragment.class.getSimpleName();
 
     /**
      * Listener to open a playlist
@@ -87,6 +92,18 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
+
+        getParentFragmentManager().setFragmentResultListener(PlaylistTracksFragment.TRACK_REMOVED_KEY, this, (requestKey, result) -> {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "result received for key: " + requestKey);
+                Log.d(TAG, "result (playlist_id, track_position): " +
+                        result.getLong(PlaylistTracksFragment.TRACK_REMOVED_PLAYLIST_ID) +
+                        ", " +
+                        result.getInt(PlaylistTracksFragment.TRACK_REMOVED_TRACK_POSITION));
+            }
+
+            refreshContent();
+        });
     }
 
     @Override
@@ -228,6 +245,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         switch (clickedPlaylist.getPlaylistType()) {
             case MEDIASTORE:
+                // TODO add dialog or toast
                 reloadData = MusicLibraryHelper.removePlaylist(clickedPlaylist.getPlaylistId(), getActivity().getApplicationContext());
                 break;
             case ODYSSEY_LOCAL:
