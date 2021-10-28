@@ -122,11 +122,11 @@ public class OdysseyMainActivity extends GenericActivity
 
     private FileExplorerHelper mFileExplorerHelper = null;
 
-    public final static String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.gateshipone.odyssey.requestedview";
+    public static final String MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW = "org.gateshipone.odyssey.requestedview";
 
-    public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
+    public static final String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_DRAG_STATUS = "OdysseyMainActivity.NowPlayingDragStatus";
 
-    public final static String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
+    public static final String MAINACTIVITY_SAVED_INSTANCE_NOW_PLAYING_VIEW_SWITCHER_CURRENT_VIEW = "OdysseyMainActivity.NowPlayingViewSwitcherCurrentView";
 
     private Uri mSentUri;
 
@@ -767,7 +767,7 @@ public class OdysseyMainActivity extends GenericActivity
                 if (layout != null) {
                     Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
                     sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE));
                     // style the snackbar text
                     TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
@@ -779,7 +779,7 @@ public class OdysseyMainActivity extends GenericActivity
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             }
         }

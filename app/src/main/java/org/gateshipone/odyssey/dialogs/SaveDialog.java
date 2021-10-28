@@ -37,7 +37,7 @@ import org.gateshipone.odyssey.listener.OnSaveDialogListener;
 
 public class SaveDialog extends DialogFragment {
 
-    private final static String ARG_OBJECTTYPE = "objecttype";
+    private static final String ARG_OBJECTTYPE = "objecttype";
 
     /**
      * ENUM to determine the object type

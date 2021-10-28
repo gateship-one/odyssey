@@ -72,9 +72,9 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     /**
      * key values for arguments of the fragment
      */
-    private final static String ARG_ARTISTMODEL = "artistmodel";
+    private static final String ARG_ARTISTMODEL = "artistmodel";
 
-    private final static String ARG_BITMAP = "bitmap";
+    private static final String ARG_BITMAP = "bitmap";
 
     private CoverBitmapLoader mBitmapLoader;
 

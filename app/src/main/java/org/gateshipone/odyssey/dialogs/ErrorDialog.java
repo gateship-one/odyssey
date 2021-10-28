@@ -35,9 +35,9 @@ import org.gateshipone.odyssey.R;
 
 public class ErrorDialog extends DialogFragment {
 
-    private final static String ARG_ERRORDIALOGTITLE = "errordialogtitle";
+    private static final String ARG_ERRORDIALOGTITLE = "errordialogtitle";
 
-    private final static String ARG_ERRORDIALOGMESSAGE = "errordialogmessage";
+    private static final String ARG_ERRORDIALOGMESSAGE = "errordialogmessage";
 
     /**
      * Returns a new ErrorDialog with title and message id as arguments

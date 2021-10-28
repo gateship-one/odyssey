@@ -144,7 +144,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Timeout time that the PlaybackService waits until it stops itself in milliseconds. (5 Minutes)
      */
-    private final static int SERVICE_CANCEL_TIME = 5 * 60 * 1000;
+    private static final int SERVICE_CANCEL_TIME = 5 * 60 * 1000;
+
+    private static final int PENDING_INTENT_UPDATE_CURRENT_FLAG =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
 
     /**
      * Handler that executes action requested by a message
@@ -456,7 +459,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Request the alarm manager and quit the alert with the given TIMEOUT_INTENT_QUIT_REQUEST_CODE
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent quitIntent = new Intent(ACTION_QUIT);
-        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
         am.cancel(quitPI);
     }
 
@@ -495,7 +498,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
-        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
         am.set(AlarmManager.RTC, System.currentTimeMillis() + durationMS, sleepPI);
         mStopAfterCurrent = stopAfterCurrent;
     }
@@ -508,7 +511,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         final AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         final Intent quitIntent = new Intent(ACTION_SLEEPSTOP);
-        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent sleepPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_SLEEP_REQUEST_CODE, quitIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
         am.cancel(sleepPI);
     }
 
@@ -531,7 +534,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             // Start an alert within the AlarmManager to quit this service after a timeout (defined in SERVICE_CANCEL_TIME)
             AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             Intent quitIntent = new Intent(ACTION_QUIT);
-            PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent quitPI = PendingIntent.getBroadcast(this, TIMEOUT_INTENT_QUIT_REQUEST_CODE, quitIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
             am.set(AlarmManager.RTC, System.currentTimeMillis() + SERVICE_CANCEL_TIME, quitPI);
 
             // Broadcast simple.last.fm.scrobble broadcast to inform about pause state

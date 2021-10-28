@@ -47,12 +47,12 @@ import java.util.concurrent.Semaphore;
  * because of hardware decoders that don't handle transitions gapless.
  */
 public class GaplessPlayer {
-    private final static String TAG = "OdysseyGaplessPlayer";
+    private static final String TAG = "OdysseyGaplessPlayer";
 
     /**
      * Timeout after which the {@link MediaPlayer} is released (ms)
      */
-    private final static int RELEASE_PLAYER_TIMEOUT = 30 * 1000;
+    private static final int RELEASE_PLAYER_TIMEOUT = 30 * 1000;
 
     public enum REASON {
         IOError, SecurityError, StateError, ArgumentError

@@ -25,7 +25,6 @@
     package="org.gateshipone.odyssey">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -44,6 +43,7 @@
 
         <activity
             android:name=".activities.OdysseySplashActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -141,12 +141,16 @@
             android:exported="false"
             android:process=":mediascanProcess" />
 
-        <receiver android:name=".playbackservice.RemoteControlReceiver">
+        <receiver
+            android:name=".playbackservice.RemoteControlReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".widget.OdysseyWidgetProvider">
+        <receiver
+            android:name=".widget.OdysseyWidgetProvider"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="org.gateshipone.odyssey.newtrackinfo" />

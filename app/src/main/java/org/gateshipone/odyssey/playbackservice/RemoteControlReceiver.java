@@ -31,7 +31,7 @@ import android.view.KeyEvent;
 import org.gateshipone.odyssey.BuildConfig;
 
 public class RemoteControlReceiver extends BroadcastReceiver {
-    private final static String TAG = "OdysseyRemoteReceiver";
+    private static final String TAG = "OdysseyRemoteReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

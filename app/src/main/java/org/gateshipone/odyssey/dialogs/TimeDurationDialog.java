@@ -40,9 +40,9 @@ import org.gateshipone.odyssey.listener.OnStartSleepTimerListener;
 
 public class TimeDurationDialog extends DialogFragment {
 
-    private final static String ARG_PRESET_DURATION = "objecttype";
+    private static final String ARG_PRESET_DURATION = "objecttype";
 
-    private final static String ARG_PRESET_STOP_AFTER_CURRENT = "stopaftercurrent";
+    private static final String ARG_PRESET_STOP_AFTER_CURRENT = "stopaftercurrent";
 
     private OnStartSleepTimerListener mOnStartSleepTimerCallback;
 

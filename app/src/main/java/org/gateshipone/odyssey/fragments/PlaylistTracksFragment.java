@@ -57,14 +57,14 @@ import java.util.List;
 
 public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implements AdapterView.OnItemClickListener {
 
-    public final static String TRACK_REMOVED_KEY = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedKey";
-    public final static String TRACK_REMOVED_PLAYLIST_ID = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedPlaylistId";
-    public final static String TRACK_REMOVED_TRACK_POSITION = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedTrackPosition";
+    public static final String TRACK_REMOVED_KEY = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedKey";
+    public static final String TRACK_REMOVED_PLAYLIST_ID = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedPlaylistId";
+    public static final String TRACK_REMOVED_TRACK_POSITION = PlaylistTracksFragment.class.getSimpleName() + "::" + "trackRemovedTrackPosition";
 
     /**
      * Key values for arguments of the fragment
      */
-    private final static String ARG_PLAYLISTMODEL = "playlistmodel";
+    private static final String ARG_PLAYLISTMODEL = "playlistmodel";
 
     /**
      * The information of the displayed playlist

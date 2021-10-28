@@ -55,6 +55,9 @@ public class OdysseyNotificationManager {
     private static final int NOTIFICATION_INTENT_QUIT = 3;
     private static final int NOTIFICATION_INTENT_OPENGUI = 4;
 
+    private static final int PENDING_INTENT_UPDATE_CURRENT_FLAG =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
     // Just a constant
     private static final int NOTIFICATION_ID = 42;
 
@@ -101,13 +104,13 @@ public class OdysseyNotificationManager {
             Intent mainIntent = new Intent(mContext, OdysseySplashActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING.ordinal());
-            PendingIntent contentPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent contentPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, mainIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
             mNotificationBuilder.setContentIntent(contentPendingIntent);
 
             // Set pendingintents
             // Previous song action
             Intent prevIntent = new Intent(PlaybackService.ACTION_PREVIOUS);
-            PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent prevPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PREVIOUS, prevIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
             NotificationCompat.Action prevAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_previous_48dp, "Previous", prevPendingIntent).build();
 
             // Pause/Play action
@@ -115,23 +118,23 @@ public class OdysseyNotificationManager {
             int playPauseIcon;
             if (state == PlaybackService.PLAYSTATE.PLAYING) {
                 Intent pauseIntent = new Intent(PlaybackService.ACTION_PAUSE);
-                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
                 playPauseIcon = R.drawable.ic_pause_48dp;
             } else {
                 Intent playIntent = new Intent(PlaybackService.ACTION_PLAY);
-                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, playIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
                 playPauseIcon = R.drawable.ic_play_arrow_48dp;
             }
             NotificationCompat.Action playPauseAction = new NotificationCompat.Action.Builder(playPauseIcon, "PlayPause", playPauseIntent).build();
 
             // Next song action
             Intent nextIntent = new Intent(PlaybackService.ACTION_NEXT);
-            PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent nextPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_NEXT, nextIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
             NotificationCompat.Action nextAction = new NotificationCompat.Action.Builder(R.drawable.ic_skip_next_48dp, "Next", nextPendingIntent).build();
 
             // Quit action
             Intent quitIntent = new Intent(PlaybackService.ACTION_QUIT);
-            PendingIntent quitPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_QUIT, quitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent quitPendingIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_QUIT, quitIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
             mNotificationBuilder.setDeleteIntent(quitPendingIntent);
 
             mNotificationBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);

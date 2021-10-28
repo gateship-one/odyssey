@@ -96,12 +96,12 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     /**
      * Constant for state saving
      */
-    public final static String MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "MyMusicFragment.SearchString";
+    public static final String MYMUSICFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "MyMusicFragment.SearchString";
 
     /**
      * key value for arguments of the fragment
      */
-    private final static String ARG_REQUESTED_TAB = "requested_tab";
+    private static final String ARG_REQUESTED_TAB = "requested_tab";
 
     /**
      * enum for the default tab

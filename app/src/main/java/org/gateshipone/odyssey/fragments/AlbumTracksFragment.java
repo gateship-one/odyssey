@@ -71,9 +71,9 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     /**
      * Key values for arguments of the fragment
      */
-    private final static String ARG_ALBUMMODEL = "albummodel";
+    private static final String ARG_ALBUMMODEL = "albummodel";
 
-    private final static String ARG_BITMAP = "bitmap";
+    private static final String ARG_BITMAP = "bitmap";
 
     /**
      * The information of the displayed album

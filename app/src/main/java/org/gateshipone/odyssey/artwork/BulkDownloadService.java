@@ -81,6 +81,9 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     public static final String BUNDLE_KEY_USE_LOCAL_IMAGES = "org.gateshipone.odyssey.use_local_images";
 
+    private static final int PENDING_INTENT_UPDATE_CURRENT_FLAG =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
     private NotificationManager mNotificationManager;
 
     private NotificationCompat.Builder mBuilder;
@@ -261,7 +264,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
         // Cancel action
         Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, nextIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
         androidx.core.app.NotificationCompat.Action cancelAction = new androidx.core.app.NotificationCompat.Action.Builder(R.drawable.ic_close_24dp, getString(R.string.dialog_action_cancel), nextPendingIntent).build();
 
         mBuilder.addAction(cancelAction);
@@ -468,4 +471,3 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
         }
     }
 }
-

@@ -89,14 +89,14 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * key values for arguments of the fragment
      */
-    private final static String ARG_DIRECTORYPATH = "directory_path";
+    private static final String ARG_DIRECTORYPATH = "directory_path";
 
-    private final static String ARG_ISROOTDIRECTORY = "is_root_directory";
+    private static final String ARG_ISROOTDIRECTORY = "is_root_directory";
 
     /**
      * Constant for state saving
      */
-    private final static String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
+    private static final String FILESFRAGMENT_SAVED_INSTANCE_SEARCH_STRING = "FilesFragment.SearchString";
 
     /**
      * Action to execute when the user selects an item in the list

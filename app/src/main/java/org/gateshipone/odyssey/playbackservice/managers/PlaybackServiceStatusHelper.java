@@ -26,6 +26,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -57,13 +58,16 @@ public class PlaybackServiceStatusHelper {
 
     public static final String MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE = "org.gateshipone.odyssey.hideartwork.changed.value";
 
-    private PlaybackService mPlaybackService;
+    private static final int PENDING_INTENT_UPDATE_CURRENT_FLAG =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+
+    private final PlaybackService mPlaybackService;
 
     // MediaSession objects
-    private MediaSessionCompat mMediaSession;
+    private final MediaSessionCompat mMediaSession;
 
     // Asynchronous cover fetcher
-    private CoverBitmapLoader mCoverLoader;
+    private final CoverBitmapLoader mCoverLoader;
 
     // Save last track to update cover art only if needed
     private TrackModel mLastTrack = null;
@@ -73,7 +77,7 @@ public class PlaybackServiceStatusHelper {
     private boolean mHideMediaOnLockscreen;
 
     // Notification manager
-    private OdysseyNotificationManager mNotificationManager;
+    private final OdysseyNotificationManager mNotificationManager;
 
     public PlaybackServiceStatusHelper(PlaybackService playbackService) {
         mPlaybackService = playbackService;
@@ -87,9 +91,8 @@ public class PlaybackServiceStatusHelper {
         mCoverLoader = new CoverBitmapLoader(mPlaybackService, new BitmapCoverReceiver());
 
         // Register the button receiver
-        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService, 0, new Intent(mPlaybackService, RemoteControlReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent mediaButtonPendingIntent = PendingIntent.getBroadcast(mPlaybackService, 0, new Intent(mPlaybackService, RemoteControlReceiver.class), PENDING_INTENT_UPDATE_CURRENT_FLAG);
         mMediaSession.setMediaButtonReceiver(mediaButtonPendingIntent);
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS + MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         // Initialize the notification manager
         mNotificationManager = new OdysseyNotificationManager(mPlaybackService);

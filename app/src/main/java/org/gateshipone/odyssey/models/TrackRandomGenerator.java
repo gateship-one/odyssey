@@ -184,7 +184,7 @@ public class TrackRandomGenerator {
         /**
          * Timeout in ns (1 second)
          */
-        private final static long TIMEOUT_NS = 10000000000L;
+        private static final long TIMEOUT_NS = 10000000000L;
         private Random mJavaGenerator;
 
         private static final int RAND_MAX = Integer.MAX_VALUE;

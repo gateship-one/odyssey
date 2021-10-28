@@ -45,11 +45,11 @@ import org.gateshipone.odyssey.artwork.BulkDownloadService;
 
 public class BulkDownloaderDialog extends DialogFragment {
 
-    private final static String ARG_DIALOGTITLE = "dialogtitle";
+    private static final String ARG_DIALOGTITLE = "dialogtitle";
 
-    private final static String ARG_DIALOGMESSAGE = "dialogmessage";
+    private static final String ARG_DIALOGMESSAGE = "dialogmessage";
 
-    private final static String ARG_POSITIVEMESSAGE = "positivemessage";
+    private static final String ARG_POSITIVEMESSAGE = "positivemessage";
 
     /**
      * Create a new BulkDownloaderDialog instance and set the given arguments
