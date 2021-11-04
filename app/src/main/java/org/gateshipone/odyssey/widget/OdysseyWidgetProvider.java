@@ -44,6 +44,8 @@ import org.gateshipone.odyssey.playbackservice.PlaybackService;
 import org.gateshipone.odyssey.playbackservice.managers.PlaybackServiceStatusHelper;
 import org.gateshipone.odyssey.utils.CoverBitmapLoader;
 
+import java.lang.ref.WeakReference;
+
 
 public class
 OdysseyWidgetProvider extends AppWidgetProvider {
@@ -160,7 +162,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
                         mLastCover = null;
 
-                        CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
+                        CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context, this));
                         coverLoader.getImage(item, -1, -1);
                     } else if (mLastCover != null) {
                         // Reuse the image from last calls because the album is the same
@@ -240,11 +242,13 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, OdysseyWidgetProvider.class), views);
     }
 
-    private class CoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
-        private Context mContext;
+    private static class CoverReceiver implements CoverBitmapLoader.CoverBitmapReceiver {
+        private final WeakReference<Context> mContext;
+        private final WeakReference<OdysseyWidgetProvider> mProvider;
 
-        CoverReceiver(Context context) {
-            mContext = context;
+        CoverReceiver(final Context context, final OdysseyWidgetProvider provider) {
+            mContext = new WeakReference<>(context);
+            mProvider = new WeakReference<>(provider);
         }
 
         /**
@@ -255,13 +259,18 @@ OdysseyWidgetProvider extends AppWidgetProvider {
          */
         @Override
         public void receiveAlbumBitmap(Bitmap bm) {
-            // Check if a valid image was found.
-            if (bm != null) {
-                // Set the globally used variable
-                mLastCover = bm;
+            final Context context = mContext.get();
+            final OdysseyWidgetProvider provider = mProvider.get();
 
-                // Call the update method to refresh the view
-                setWidgetContent(mLastInfo, mContext);
+            if (provider != null && context != null) {
+                // Check if a valid image was found.
+                if (bm != null) {
+                    // Set the globally used variable
+                    mLastCover = bm;
+
+                    // Call the update method to refresh the view
+                    provider.setWidgetContent(mLastInfo, context);
+                }
             }
         }
 
