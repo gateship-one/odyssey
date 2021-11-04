@@ -82,7 +82,7 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
 
-                artistId = cursor.getLong(cursor.getColumnIndex(ProjectionArtists.ID));
+                artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionArtists.ID));
             }
 
             cursor.close();
@@ -110,9 +110,9 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
 
-                final String albumTitle = cursor.getString(cursor.getColumnIndex(ProjectionAlbums.ALBUM));
-                final String albumArt = cursor.getString(cursor.getColumnIndex(ProjectionAlbums.ALBUM_ART));
-                final String artistTitle = cursor.getString(cursor.getColumnIndex(ProjectionAlbums.ARTIST));
+                final String albumTitle = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM));
+                final String albumArt = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM_ART));
+                final String artistTitle = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST));
 
                 albumModel = new AlbumModel(albumTitle, albumArt, artistTitle, albumId);
             }
@@ -145,7 +145,7 @@ public class MusicLibraryHelper {
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
 
-                    retrievedAlbumId = cursor.getLong(cursor.getColumnIndex(ProjectionAlbums.ID));
+                    retrievedAlbumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionAlbums.ID));
                 }
 
                 cursor.close();
@@ -164,7 +164,7 @@ public class MusicLibraryHelper {
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
 
-                    retrievedAlbumId = cursor.getLong(cursor.getColumnIndex(ProjectionAlbums.ID));
+                    retrievedAlbumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionAlbums.ID));
                 }
 
                 cursor.close();
@@ -205,13 +205,13 @@ public class MusicLibraryHelper {
             // get all tracks on the current album
             if (cursor.moveToFirst()) {
                 do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.TITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.DURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final long artistId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ARTIST_ID));
-                    final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
+                    final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.TITLE));
+                    final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.DURATION));
+                    final int number = cursor.getInt(cursor.getColumnIndexOrThrow(ProjectionTracks.TRACK));
+                    final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST));
+                    final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM));
+                    final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST_ID));
+                    final long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ID));
 
                     final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 
@@ -255,7 +255,7 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    long albumId = cursor.getLong(cursor.getColumnIndex(ProjectionAlbums.ID));
+                    long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionAlbums.ID));
                     artistTracks.addAll(getTracksForAlbum(albumId, trackOrderKey, context));
                 } while (cursor.moveToNext());
             }
@@ -282,14 +282,14 @@ public class MusicLibraryHelper {
             // get all tracks of the playlist
             if (cursor.moveToFirst()) {
                 do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.TITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(ProjectionPlaylistTracks.DURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(ProjectionPlaylistTracks.TRACK));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.ARTIST));
-                    final long artistId = cursor.getLong(cursor.getColumnIndex(ProjectionPlaylistTracks.ARTIST_ID));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionPlaylistTracks.ALBUM));
-                    final long albumId = cursor.getLong(cursor.getColumnIndex(ProjectionPlaylistTracks.ALBUM_ID));
-                    final long id = cursor.getLong(cursor.getColumnIndex(ProjectionPlaylistTracks.AUDIO_ID));
+                    final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.TITLE));
+                    final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.DURATION));
+                    final int number = cursor.getInt(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.TRACK));
+                    final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.ARTIST));
+                    final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.ARTIST_ID));
+                    final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.ALBUM));
+                    final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.ALBUM_ID));
+                    final long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionPlaylistTracks.AUDIO_ID));
 
                     final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 
@@ -330,14 +330,14 @@ public class MusicLibraryHelper {
         if (recentTracksCursor != null && albumsCursor != null) {
             if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
 
-                final int albumIdColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ID);
-                final int albumTitleColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ALBUM);
-                final int imagePathColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ALBUM_ART);
-                final int artistTitleColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ARTIST);
-                final int numberOfSongsColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.NUMER_OF_SONGS);
+                final int albumIdColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.ID);
+                final int albumTitleColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM);
+                final int imagePathColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM_ART);
+                final int artistTitleColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST);
+                final int numberOfSongsColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.NUMER_OF_SONGS);
 
-                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.ALBUM_ID);
-                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.DATE_ADDED);
+                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM_ID);
+                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndexOrThrow(ProjectionTracks.DATE_ADDED);
 
                 do {
                     if (albumsCursor.getLong(albumIdColumnIndex) == recentTracksCursor.getLong(recentTracksAlbumIdColumnIndex)) {
@@ -412,11 +412,11 @@ public class MusicLibraryHelper {
         if (recentTracksCursor != null && albumsCursor != null) {
             if (recentTracksCursor.moveToFirst() && albumsCursor.moveToFirst()) {
 
-                final int albumIdColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.ID);
-                final int numberOfSongsColumnIndex = albumsCursor.getColumnIndex(ProjectionAlbums.NUMER_OF_SONGS);
+                final int albumIdColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.ID);
+                final int numberOfSongsColumnIndex = albumsCursor.getColumnIndexOrThrow(ProjectionAlbums.NUMER_OF_SONGS);
 
-                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.ALBUM_ID);
-                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndex(ProjectionTracks.DATE_ADDED);
+                final int recentTracksAlbumIdColumnIndex = recentTracksCursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM_ID);
+                final int recentTracksDateAddedColumnIndex = recentTracksCursor.getColumnIndexOrThrow(ProjectionTracks.DATE_ADDED);
 
                 do {
                     if (albumsCursor.getLong(albumIdColumnIndex) == recentTracksCursor.getLong(recentTracksAlbumIdColumnIndex)) {
@@ -475,14 +475,14 @@ public class MusicLibraryHelper {
             if (cursor.moveToFirst()) {
 
                 do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.TITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.DURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
-                    final long artistId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ARTIST_ID));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final long albumId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ALBUM_ID));
-                    final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
+                    final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.TITLE));
+                    final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.DURATION));
+                    final int number = cursor.getInt(cursor.getColumnIndexOrThrow(ProjectionTracks.TRACK));
+                    final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST));
+                    final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST_ID));
+                    final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM));
+                    final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM_ID));
+                    final long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ID));
                     final int dateAdded = albumDateMap.containsKey(albumId) ? albumDateMap.get(albumId) : -1;
 
                     final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
@@ -531,14 +531,14 @@ public class MusicLibraryHelper {
             if (cursor.moveToFirst()) {
 
                 do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.TITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.DURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
-                    final long artistId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ARTIST_ID));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                    final long albumId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ALBUM_ID));
-                    final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
+                    final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.TITLE));
+                    final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.DURATION));
+                    final int number = cursor.getInt(cursor.getColumnIndexOrThrow(ProjectionTracks.TRACK));
+                    final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST));
+                    final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST_ID));
+                    final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM));
+                    final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM_ID));
+                    final long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ID));
 
                     final Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 
@@ -569,10 +569,10 @@ public class MusicLibraryHelper {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                final int albumTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ALBUM);
-                final int imagePathColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ALBUM_ART);
-                final int artistTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST);
-                final int albumIdColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ID);
+                final int albumTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM);
+                final int imagePathColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM_ART);
+                final int artistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST);
+                final int albumIdColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ID);
 
                 do {
                     final String albumTitle = cursor.getString(albumTitleColumnIndex);
@@ -616,10 +616,10 @@ public class MusicLibraryHelper {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                final int albumTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ALBUM);
-                final int imagePathColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ALBUM_ART);
-                final int artistTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST);
-                final int albumIdColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ID);
+                final int albumTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM);
+                final int imagePathColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ALBUM_ART);
+                final int artistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST);
+                final int albumIdColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ID);
 
                 do {
                     final String albumTitle = cursor.getString(albumTitleColumnIndex);
@@ -657,8 +657,8 @@ public class MusicLibraryHelper {
             if (cursor != null) {
 
                 if (cursor.moveToFirst()) {
-                    final int artistTitleColumnIndex = cursor.getColumnIndex(ProjectionArtists.ARTIST);
-                    final int artistIdColumnIndex = cursor.getColumnIndex(ProjectionArtists.ID);
+                    final int artistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionArtists.ARTIST);
+                    final int artistIdColumnIndex = cursor.getColumnIndexOrThrow(ProjectionArtists.ID);
 
                     do {
                         final String artist = cursor.getString(artistTitleColumnIndex);
@@ -683,8 +683,8 @@ public class MusicLibraryHelper {
 
                     if (cursor.moveToFirst()) {
 
-                        final int albumArtistTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST);
-                        final int albumIdColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST_ID);
+                        final int albumArtistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST);
+                        final int albumIdColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST_ID);
 
                         // workaround because no group command is allowed in ContentResolver query
                         Set<Long> artistIds = new HashSet<>();
@@ -712,7 +712,7 @@ public class MusicLibraryHelper {
 
                     if (cursor.moveToFirst()) {
 
-                        int albumArtistTitleColumnIndex = cursor.getColumnIndex(ProjectionAlbums.ARTIST);
+                        int albumArtistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionAlbums.ARTIST);
 
                         do {
                             String artist = cursor.getString(albumArtistTitleColumnIndex);
@@ -745,8 +745,8 @@ public class MusicLibraryHelper {
         if (cursor != null) {
 
             if (cursor.moveToFirst()) {
-                final int playlistTitleColumnIndex = cursor.getColumnIndex(ProjectionPlaylists.NAME);
-                final int playlistIdColumnIndex = cursor.getColumnIndex(ProjectionPlaylists.ID);
+                final int playlistTitleColumnIndex = cursor.getColumnIndexOrThrow(ProjectionPlaylists.NAME);
+                final int playlistIdColumnIndex = cursor.getColumnIndexOrThrow(ProjectionPlaylists.ID);
 
                 do {
                     final String playlistTitle = cursor.getString(playlistTitleColumnIndex);
@@ -785,7 +785,7 @@ public class MusicLibraryHelper {
             // get all tracks on the current album
             if (cursor.moveToFirst()) {
                 do {
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
+                    final String url = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.DATA));
 
                     final File file = new File(url);
                     if (file.exists()) {
@@ -847,14 +847,14 @@ public class MusicLibraryHelper {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                final String title = cursor.getString(cursor.getColumnIndex(ProjectionTracks.TITLE));
-                final long duration = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.DURATION));
-                final int no = cursor.getInt(cursor.getColumnIndex(ProjectionTracks.TRACK));
-                final String artist = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ARTIST));
-                final long artistId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ARTIST_ID));
-                final String album = cursor.getString(cursor.getColumnIndex(ProjectionTracks.ALBUM));
-                final long albumId = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ALBUM_ID));
-                final long id = cursor.getLong(cursor.getColumnIndex(ProjectionTracks.ID));
+                final String title = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.TITLE));
+                final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.DURATION));
+                final int no = cursor.getInt(cursor.getColumnIndexOrThrow(ProjectionTracks.TRACK));
+                final String artist = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST));
+                final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ARTIST_ID));
+                final String album = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM));
+                final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ALBUM_ID));
+                final long id = cursor.getLong(cursor.getColumnIndexOrThrow(ProjectionTracks.ID));
 
                 final Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 
@@ -886,7 +886,7 @@ public class MusicLibraryHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    final String url = cursor.getString(cursor.getColumnIndex(ProjectionTracks.DATA));
+                    final String url = cursor.getString(cursor.getColumnIndexOrThrow(ProjectionTracks.DATA));
 
                     files.add(new FileModel(url));
                 } while (cursor.moveToNext());

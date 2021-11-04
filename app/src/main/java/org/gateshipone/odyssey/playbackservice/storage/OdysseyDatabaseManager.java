@@ -192,7 +192,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             if (stateCursor.moveToFirst()) {
                 do {
-                    final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+                    final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndexOrThrow(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                     // delete playlist
                     odysseyDB.delete(
@@ -224,7 +224,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
             );
 
             if (stateCursor.moveToFirst()) {
-                final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+                final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndexOrThrow(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
                 // delete playlist
                 odysseyDB.delete(
@@ -309,15 +309,15 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                final String trackName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_TITLE));
-                final long duration = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_DURATION));
-                final int number = cursor.getInt(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_NUMBER));
-                final String artistName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ARTIST));
-                final String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ALBUM));
-                final String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_URL));
-                final long albumId = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ALBUM_ID));
-                final long artistId = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ARTIST_ID));
-                final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ID));
+                final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_TITLE));
+                final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_DURATION));
+                final int number = cursor.getInt(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_NUMBER));
+                final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ARTIST));
+                final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ALBUM));
+                final String url = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_URL));
+                final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ALBUM_ID));
+                final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ARTIST_ID));
+                final long id = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ID));
 
                 TrackModel item = new TrackModel(trackName, artistName, artistId, albumName, albumId, duration, number, Uri.parse(url), id);
 
@@ -356,7 +356,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 "1");
 
         if (stateCursor.moveToFirst()) {
-            final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+            final long timeStamp = stateCursor.getLong(stateCursor.getColumnIndexOrThrow(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
 
             // get the playlist tracks for the queried timestamp
             final Cursor cursor = odysseyDB.query(
@@ -370,15 +370,15 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             if (cursor.moveToFirst()) {
                 do {
-                    final String trackName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_TITLE));
-                    final long duration = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_DURATION));
-                    final int number = cursor.getInt(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_NUMBER));
-                    final String artistName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ARTIST));
-                    final String albumName = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ALBUM));
-                    final String url = cursor.getString(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_URL));
-                    final long albumId = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ALBUM_ID));
-                    final long artistId = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ARTIST_ID));
-                    final long id = cursor.getLong(cursor.getColumnIndex(StateTracksTable.COLUMN_TRACK_ID));
+                    final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_TITLE));
+                    final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_DURATION));
+                    final int number = cursor.getInt(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_NUMBER));
+                    final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ARTIST));
+                    final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ALBUM));
+                    final String url = cursor.getString(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_URL));
+                    final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ALBUM_ID));
+                    final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ARTIST_ID));
+                    final long id = cursor.getLong(cursor.getColumnIndexOrThrow(StateTracksTable.COLUMN_TRACK_ID));
 
                     TrackModel item = new TrackModel(trackName, artistName, artistId, albumName, albumId, duration, number, Uri.parse(url), id);
 
@@ -418,10 +418,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
 
-            state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
-            state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE))];
-            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE))];
+            state.mTrackNumber = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKNUMBER));
+            state.mTrackPosition = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKPOSITION));
+            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();
@@ -452,10 +452,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
 
-            state.mTrackNumber = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKNUMBER));
-            state.mTrackPosition = cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_RANDOM_STATE))];
-            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndex(StateTable.COLUMN_REPEAT_STATE))];
+            state.mTrackNumber = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKNUMBER));
+            state.mTrackPosition = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKPOSITION));
+            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();
@@ -491,9 +491,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             if (bookmarkCursor.moveToFirst()) {
                 do {
-                    long timeStamp = bookmarkCursor.getLong(bookmarkCursor.getColumnIndex(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
-                    String title = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(StateTable.COLUMN_TITLE));
-                    int numberOfTracks = bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(StateTable.COLUMN_TRACKS));
+                    long timeStamp = bookmarkCursor.getLong(bookmarkCursor.getColumnIndexOrThrow(StateTable.COLUMN_BOOKMARK_TIMESTAMP));
+                    String title = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(StateTable.COLUMN_TITLE));
+                    int numberOfTracks = bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKS));
 
                     bookmarks.add(new BookmarkModel(timeStamp, title, numberOfTracks));
 
@@ -558,7 +558,7 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             // delete old songs
-            final long playlistId = cursor.getLong(cursor.getColumnIndex(PlaylistsTable.COLUMN_ID));
+            final long playlistId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_ID));
 
             odysseyDB.delete(
                     PlaylistsTracksTable.TABLE_NAME,
@@ -674,9 +674,9 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         if (cursor != null) {
 
             if (cursor.moveToFirst()) {
-                final int playlistTitleColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_TITLE);
-                final int playlistIdColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_ID);
-                final int playlistTracksColumnIndex = cursor.getColumnIndex(PlaylistsTable.COLUMN_TRACKS);
+                final int playlistTitleColumnIndex = cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_TITLE);
+                final int playlistIdColumnIndex = cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_ID);
+                final int playlistTracksColumnIndex = cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_TRACKS);
 
                 do {
                     final String playlistTitle = cursor.getString(playlistTitleColumnIndex);
@@ -790,15 +790,15 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                final String trackName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_TITLE));
-                final long duration = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_DURATION));
-                final int number = cursor.getInt(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_NUMBER));
-                final String artistName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ARTIST));
-                final String albumName = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ALBUM));
-                final String url = cursor.getString(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_URL));
-                final long albumId = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ALBUM_ID));
-                final long artistId = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ARTIST_ID));
-                final long id = cursor.getLong(cursor.getColumnIndex(PlaylistsTracksTable.COLUMN_TRACK_ID));
+                final String trackName = cursor.getString(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_TITLE));
+                final long duration = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_DURATION));
+                final int number = cursor.getInt(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_NUMBER));
+                final String artistName = cursor.getString(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_ARTIST));
+                final String albumName = cursor.getString(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_ALBUM));
+                final String url = cursor.getString(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_URL));
+                final long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_ALBUM_ID));
+                final long artistId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_ARTIST_ID));
+                final long id = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTracksTable.COLUMN_TRACK_ID));
 
                 TrackModel item = new TrackModel(trackName, artistName, artistId, albumName, albumId, duration, number, Uri.parse(url), id);
 

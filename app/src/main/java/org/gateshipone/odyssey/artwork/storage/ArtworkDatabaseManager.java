@@ -132,14 +132,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if (requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
+            if (requestCursor.getInt(requestCursor.getColumnIndexOrThrow(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 requestCursor.close();
                 database.close();
                 return null;
             }
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndexOrThrow(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
-            final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
+            final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndexOrThrow(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
 
             requestCursor.close();
             database.close();
@@ -187,14 +187,14 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         // Check if an image was found
         if (requestCursor.moveToFirst()) {
             // If the not_found flag is set then return null here, to indicate that the image is not here but was searched for before.
-            if (requestCursor.getInt(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
+            if (requestCursor.getInt(requestCursor.getColumnIndexOrThrow(ArtistArtTable.COLUMN_IMAGE_NOT_FOUND)) == 1) {
                 requestCursor.close();
                 database.close();
                 return null;
             }
 
             // get the filename for the image
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndexOrThrow(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             requestCursor.close();
             database.close();
@@ -379,7 +379,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         if (requestCursor.moveToFirst()) {
 
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndexOrThrow(ArtistArtTable.COLUMN_IMAGE_FILE_PATH));
 
             FileUtils.removeArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ARTIST_IMAGES);
         }
@@ -422,9 +422,9 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
 
         if (requestCursor.moveToFirst()) {
 
-            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
+            final String artworkFilename = requestCursor.getString(requestCursor.getColumnIndexOrThrow(AlbumArtTable.COLUMN_IMAGE_FILE_PATH));
 
-            final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndex(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
+            final boolean hasFullImagePath = requestCursor.getInt(requestCursor.getColumnIndexOrThrow(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH)) == 1;
 
             if (!hasFullImagePath) {
                 FileUtils.removeArtworkFile(mApplicationContext, artworkFilename, DIRECTORY_ALBUM_IMAGES);
