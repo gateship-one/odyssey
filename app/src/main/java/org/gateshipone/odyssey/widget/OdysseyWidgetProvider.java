@@ -126,7 +126,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                 // Check if the new artwork matches the currently playing track. If so reload the artwork because it is now available.
                 long albumId = intent.getLongExtra(ArtworkManager.INTENT_EXTRA_KEY_ALBUM_ID, -1);
                 if (!mHideArtwork && mLastInfo.getCurrentTrack().getTrackAlbumId() == albumId) {
-                    CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context));
+                    CoverBitmapLoader coverLoader = new CoverBitmapLoader(context, new CoverReceiver(context, this));
                     coverLoader.getImage(mLastInfo.getCurrentTrack(), -1, -1);
                     mLastCover = null;
                 }
