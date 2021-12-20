@@ -175,4 +175,6 @@
         <item>@string/pref_library_click_action_play_next_key</item>
         <item>@string/pref_library_click_action_clear_and_play</item>
     </string-array>
+
+    <string name="pref_battery_opt_dialog_key" translatable="false">pref_battery_opt_dialog_key</string>
 </resources>

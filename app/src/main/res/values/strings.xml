@@ -88,6 +88,13 @@
     <string name="dialog_sleep_timer_stop_after_current">Stop playback after currently playing song</string>
     <string name="dialog_no_browser_found_title">No Browser available</string>
     <string name="dialog_no_browser_found_message">Your device is missing a browser.</string>
+    <string name="dialog_battery_opt_title">Battery optimization active</string>
+    <string name="dialog_battery_opt_message">
+        Battery optimization for Odyssey is active.
+        \n\nThis will prevent Odyssey from automatically resuming playback after background playback was paused.
+        \n\nPlease consider to deactivate this option in order to ensure Odyssey works correctly.
+    </string>
+    <string name="dialog_battery_opt_action_open_settings">Open settings</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>

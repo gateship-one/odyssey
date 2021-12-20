@@ -28,8 +28,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.transition.Slide;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -43,6 +46,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -52,11 +56,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -92,7 +96,6 @@ import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
-import org.gateshipone.odyssey.viewmodels.SearchViewModel;
 import org.gateshipone.odyssey.views.CurrentPlaylistView;
 import org.gateshipone.odyssey.views.NowPlayingView;
 
@@ -247,6 +250,9 @@ public class OdysseyMainActivity extends GenericActivity
 
         // ask for permissions
         requestPermissionExternalStorage();
+
+        // check if battery optimization is active
+        checkBatteryOptimization();
     }
 
     @Override
@@ -1015,5 +1021,58 @@ public class OdysseyMainActivity extends GenericActivity
 
             mSentUri = null;
         }
+    }
+
+    /**
+     * Check if battery optimization is disabled for odyssey.
+     * Otherwise a dialog will show up to ask the user to change the setting but only on
+     * the first start of odyssey.
+     */
+    private void checkBatteryOptimization() {
+        // battery optimization is only available with Android M or above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            final boolean showBatteryOptDialog = sharedPref.getBoolean(getString(R.string.pref_battery_opt_dialog_key), true);
+
+            // check battery optimization only if the dialog wasn't shown before
+            if (showBatteryOptDialog) {
+                final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+
+                if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
+                    // ask for permission
+                    final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                    builder.setTitle(getResources().getString(R.string.dialog_battery_opt_title));
+                    builder.setMessage(getResources().getString(R.string.dialog_battery_opt_message));
+                    builder.setPositiveButton(R.string.dialog_battery_opt_action_open_settings, (dialog, id) -> {
+                        disableBatteryOptimizationDialog();
+                        final Intent intent = new Intent();
+                        /*
+                         * We are not allowed to request the permission directly or to open
+                         * the app battery settings. Therefore we will just open the general
+                         * settings screen where the user can disable the battery optimization
+                         * for every app and has to search for Odyssey manually in it.
+                         */
+                        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+
+                        startActivity(intent);
+                    });
+                    builder.setNegativeButton(R.string.dialog_action_cancel,(dialog, which) -> disableBatteryOptimizationDialog());
+                    // make sure to disable the dialog in each cancel event
+                    builder.setOnCancelListener(dialog -> disableBatteryOptimizationDialog());
+
+                    final AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+        }
+    }
+
+    /**
+     * Helper method to disable the battery optimization check and dialog
+     */
+    private void disableBatteryOptimizationDialog() {
+        SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        sharedPrefEditor.putBoolean(getString(R.string.pref_battery_opt_dialog_key), false);
+        sharedPrefEditor.apply();
     }
 }

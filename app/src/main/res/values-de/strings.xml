@@ -236,4 +236,11 @@
         <item quantity="one">Schrittweite: %d Sekunde</item>
         <item quantity="other">Schrittweite: %d Sekunden</item>
     </plurals>
+    <string name="dialog_battery_opt_action_open_settings">Öffne Einstellungen</string>
+    <string name="dialog_battery_opt_title">Energiespareinstellungen aktiv</string>
+    <string name="dialog_battery_opt_message">
+        Energiespareinstellungen für Odyssey sind aktiv.
+        \n\nDiese Einstellung wird verhindern, dass Odyssey die Wiedergabe aus dem Hintergrund automatisch fortsetzen kann.
+        \n\nFalls Sie dieses Feature nutzen wollen, deaktivieren Sie bitte die Energiespareinstellungen für Odyssey.
+    </string>
 </resources>
