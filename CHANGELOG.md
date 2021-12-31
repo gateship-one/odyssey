@@ -1,5 +1,13 @@
 # Changelog Odyssey
 
+## Version: 1.2.1 Tag: release-35 (2021-12-31)
+
+* Update polish translation
+* Fix crash related to changing views with a pending search query
+* Fix remove track from saved playlist (should now work as intended)
+* Migrate to android 12
+* Add battery optimization dialog (ask user to opt out from battery optimization)
+
 ## Version: 1.2.0 Tag: release-34 (2021-08-23)
 
 * Update polish and french translation

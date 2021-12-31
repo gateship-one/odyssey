@@ -1,0 +1,5 @@
+* Update polish translation
+* Fix crash related to changing views with a pending search query
+* Fix remove track from saved playlist (should now work as intended)
+* Migrate to android 12
+* Add battery optimization dialog (ask user to opt out from battery optimization)
