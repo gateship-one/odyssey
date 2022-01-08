@@ -232,7 +232,9 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
     public void onDetach() {
         super.onDetach();
 
-        mSearchView.setOnQueryTextListener(null);
+        if (mSearchView != null) {
+            mSearchView.setOnQueryTextListener(null);
+        }
     }
 
     /**
