@@ -84,6 +84,13 @@
     <string name="dialog_sleep_timer_stop_after_current">Zatrzymaj odtwarzanie po skończeniu obecnego utworu</string>
     <string name="dialog_no_browser_found_title">Brak przeglądarki</string>
     <string name="dialog_no_browser_found_message">Na urządzeniu nie jest zainstalowana przeglądarka internetu.</string>
+    <string name="dialog_battery_opt_title">Aktywna optymalizacja baterii</string>
+    <string name="dialog_battery_opt_message">
+        Optymalizacja baterii dla Odyssey jest aktywna.
+        \n\nZapobiegnie to automatycznemu wznowieniu odtwarzania przez Odyssey po wstrzymaniu odtwarzania w tle.
+        \n\nRozważ wyłączenie tej opcji, aby zapewnić prawidłowe działanie Odyssey.
+    </string>
+    <string name="dialog_battery_opt_action_open_settings">Otwórz ustawienia</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nowa Playlista</string>
@@ -95,7 +102,7 @@
     <string name="action_add_album">Dodaj Album</string>
     <string name="action_add_artist_albums">Dodaj Albumy</string>
     <string name="action_switch_storage_volume">Przełącz wolumin przechowywania</string>
-    <string name="action_add_directory">Dodaj katalog do playlisty</string>
+    <string name="action_add_directory">Dodaj katalog do kolejki</string>
     <string name="action_search">Szukaj</string>
     <string name="action_add_playlist">Dodaj playlistę</string>
     <string name="action_set_default_directory">Ustaw jako domyślny katalog</string>
@@ -113,7 +120,7 @@
     <string name="action_npv_more_options">Więcej opcji</string>
 
     <!-- context menu titles -->
-    <string name="context_menu_action_enqueue">Dodaj do playlisty</string>
+    <string name="context_menu_action_enqueue">Dodaj do kolejki</string>
     <string name="context_menu_action_enqueueasnext">Odtwórz po obecnym utworze</string>
     <string name="context_menu_action_playsong">Odtwórz utwór</string>
     <string name="context_menu_action_playalbum">Odtwórz album</string>
@@ -127,9 +134,9 @@
     <string name="context_menu_action_deleteplaylist">Usuń playlistę</string>
     <string name="context_menu_action_resumebookmark">Przywróć Zakładkę</string>
     <string name="context_menu_action_deletebookmark">Usuń Zakładkę</string>
-    <string name="context_menu_action_enqueue_folder">Dodaj folder do playlisty</string>
-    <string name="context_menu_action_play_folder">Odtwarzaj folder</string>
-    <string name="context_menu_action_enqueue_file">Dodaj plik do playlisty</string>
+    <string name="context_menu_action_enqueue_folder">Dodaj katalog do kolejki</string>
+    <string name="context_menu_action_play_folder">Odtwarzaj katalog</string>
+    <string name="context_menu_action_enqueue_file">Dodaj plik do kolejki</string>
     <string name="context_menu_action_play_file">Odtwarzaj plik</string>
 
     <!-- popup menu titles -->
