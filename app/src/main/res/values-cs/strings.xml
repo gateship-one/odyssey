@@ -48,6 +48,8 @@
 
     <!-- saved playlists fragment -->
     <string name="empty_saved_playlists_message">Žádný playlist nenalezen.</string>
+    <string name="playlist_type_global">Globální</string>
+    <string name="playlist_type_local">Lokální</string>
 
     <!-- bookmark fragment -->
     <string name="fragment_bookmarks_tracks">Skladby</string>
@@ -73,26 +75,35 @@
     <string name="dialog_choose_bookmark">Vybrat záložku</string>
     <string name="dialog_choose_playlist">Vybrat playlist</string>
     <string name="dialog_equalizer_not_found_title">Ekvalizér není dostupný</string>
-    <string name="dialog_equalizer_not_found_message">Vašemu zařízení chybí ekvalizér</string>
+    <string name="dialog_equalizer_not_found_message">Vašemu zařízení chybí ekvalizér.</string>
     <string name="dialog_sleep_timer">Nastavit trvání spánku</string>
     <string name="dialog_sleep_timer_action_start">Start</string>
     <string name="dialog_sleep_timer_duration_minutes">Minuty</string>
     <string name="dialog_sleep_timer_duration_seconds">Vteřiny</string>
     <string name="dialog_sleep_timer_stop_after_current">Po hrané skladbě zastavit playback</string>
+    <string name="dialog_no_browser_found_title">Prohlížeč není k dispozici</string>
+    <string name="dialog_no_browser_found_message">Vašemu zařízení chybí prohlížeč.</string>
+    <string name="dialog_battery_opt_title">Optimalizace baterie je aktivní</string>
+    <string name="dialog_battery_opt_message">
+        Optimalizace baterie pro Odyssey je aktivní.
+        \n\nTato volba zamezí Odyssey pokračovat automaticky v playbacku v případě, že byl playback v pozadí pozastaven.
+        \n\nProsím, zvažte vypnutí této volby za účelem zajištění správného chodu Odyssey.
+    </string>
+    <string name="dialog_battery_opt_action_open_settings">Otevřít nastavení</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nový playlist</string>
     <string name="default_bookmark_title">Nová záložka</string>
-    <string name="create_new_bookmark">Vytvořit novou záložku</string>
-    <string name="create_new_playlist">Vytvořit nový playlist</string>
+    <string name="create_new_bookmark">Zadat novou záložku</string>
+    <string name="create_new_playlist">Zadat nový playlist</string>
 
     <!-- actions -->
-    <string name="action_add_album">Přidej album</string>
-    <string name="action_add_artist_albums">Přidej alba</string>
+    <string name="action_add_album">Přidat album</string>
+    <string name="action_add_artist_albums">Přidat alba</string>
     <string name="action_switch_storage_volume">Přepnout svazek</string>
-    <string name="action_add_directory">Přidej adresář do playlistu</string>
+    <string name="action_add_directory">Přidat adresář do fronty</string>
     <string name="action_search">Hledat</string>
-    <string name="action_add_playlist">Přidej playlist</string>
+    <string name="action_add_playlist">Přidat playlist</string>
     <string name="action_set_default_directory">Nastavit jako výchozí adresář</string>
     <string name="action_start_mediascanner">Aktualizovat databázi medií</string>
 
@@ -108,8 +119,8 @@
     <string name="action_npv_more_options">Další možnosti</string>
 
     <!-- context menu titles -->
-    <string name="context_menu_action_enqueue">Přidat do playlistu</string>
-    <string name="context_menu_action_enqueueasnext">Přehraj po hrané skladbě</string>
+    <string name="context_menu_action_enqueue">Přidat do fronty</string>
+    <string name="context_menu_action_enqueueasnext">Přehrát po hrané skladbě</string>
     <string name="context_menu_action_playsong">Hrát skladbu</string>
     <string name="context_menu_action_playalbum">Hrát album</string>
     <string name="context_menu_action_playalbums">Hrát alba</string>
@@ -122,16 +133,16 @@
     <string name="context_menu_action_deleteplaylist">Smazat playlist</string>
     <string name="context_menu_action_resumebookmark">Pokračovat v záložce</string>
     <string name="context_menu_action_deletebookmark">Smazat záložku</string>
-    <string name="context_menu_action_enqueue_folder">Přidat adresář do playlistu</string>
-    <string name="context_menu_action_play_folder">Hrát adresář</string>
-    <string name="context_menu_action_enqueue_file">Přidat soubor do playlistu</string>
+    <string name="context_menu_action_enqueue_folder">Přidat adresář do fronty</string>
+    <string name="context_menu_action_play_folder">Hrát z adresáře</string>
+    <string name="context_menu_action_enqueue_file">Přidat soubor do fronty</string>
     <string name="context_menu_action_play_file">Hrát soubor</string>
 
     <!-- popup menu titles -->
     <string name="popup_menu_action_shuffleplaylist">Promíchat playlist</string>
     <string name="popup_menu_action_clearplaylist">Vyprázdnit playlist</string>
     <string name="popup_menu_action_saveplaylist">Uložit playlist</string>
-    <string name="popup_menu_action_createbookmark">Vytvořit záložku</string>
+    <string name="popup_menu_action_createbookmark">Zadat záložku</string>
     <string name="popup_menu_action_startequalizer">Otevřít ekvalizér</string>
     <string name="popup_menu_action_sharetrack">Sdílet hranou stopu</string>
     <string name="pop_menu_action_start_sleep_timer">Zahájit časovač uspání</string>
@@ -143,10 +154,10 @@
     <string name="preference_show_album_artists_only_title">Ukázat jen umělce z alba</string>
     <string name="preference_show_album_artists_only_summary">Ukázat jen umělce z alba místo všech umělců z databáze.</string>
 
-    <string name="preference_launch_faq">F.A.Q.</string>
-    <string name="preference_launch_faq_text">Informace, jak najít pomoc s touto aplikací</string>
+    <string name="preference_launch_faq">FAQ</string>
+    <string name="preference_launch_faq_text">Informace, jak najít pomoc s touto aplikací.</string>
     <string name="preference_launch_about">O aplikaci</string>
-    <string name="preference_launch_about_text">Verze, licence a přispěvovatelé</string>
+    <string name="preference_launch_about_text">Informace o verzi, licenci a přispěvovatelích.</string>
 
     <string name="preference_theme_title">Vzhled</string>
     <string name="preference_theme_summary">Zvolit pro aplikaci jiný vzhled.</string>
@@ -172,6 +183,12 @@
     <string name="preference_album_sort_order_name">Jméno</string>
     <string name="preference_album_sort_order_year">Rok</string>
 
+    <string name="preference_tracks_sort_order_title">Řazení stop na albu</string>
+    <string name="preference_tracks_sort_order_summary">Zvolit řazení stop na albu.</string>
+
+    <string name="preference_album_tracks_sort_number">Číslo stopy</string>
+    <string name="preference_album_tracks_sort_name">Jméno (jméno souboru)</string>
+
     <string name="preference_default_view_title">Výchozí náhled</string>
     <string name="preference_default_view_message">Vybrat výchozí náhled</string>
     <string name="preference_default_view_summary">Vybrat výchozí náhled v aplikaci.</string>
@@ -191,15 +208,14 @@
     <string name="preference_library_view_list">Seznam</string>
 
     <string name="preference_show_artist_image_title">Ukázat obrázek umělce</string>
-    <string name="preference_show_artist_image_text">Střídej mezi obrázkem alba a obrázkem umělce v náhledu hrané skladby</string>
+    <string name="preference_show_artist_image_text">Střídat mezi obrázkem alba a obrázkem umělce v náhledu hrané skladby.</string>
 
     <string name="preference_npv_show_playlist_title">Spustit s náhledem playlistu</string>
-    <string name="preference_npv_show_playlist_text">Ukázat playlist, byla-li odyssey otevřena skrze widget nebo oznámení, zatímco se hrálo</string>
+    <string name="preference_npv_show_playlist_text">Ukázat playlist, byla-li odyssey otevřena skrze widget nebo oznámení, zatímco se hrálo.</string>
 
     <string name="preference_library_click_action_title">Akce po kliknutí na stopu</string>
     <string name="preference_library_click_action_summary">Vybrat akci pro stopy v knihovně</string>
-    <string name="preference_library_click_action_message">Vybrat výchozí akci po kliknutí na stopu v náhledu knihovny</string>
-
+    <string name="preference_library_click_action_message">Vybrat výchozí akci po kliknutí na stopu v náhledu knihovny.</string>
     <string name="preference_library_click_action_clear_and_play">Nahradit a hrát ze seznamu</string>
 
     <string name="artwork_settings">Nastavení vzhledu</string>
@@ -242,10 +258,10 @@
     <string name="preference_artwork_hide_artwork_text">Vypne viditelnost veškeré grafiky.</string>
 
     <string name="preference_use_english_wikipedia_title">Použít anglickou Wikipedii</string>
-    <string name="preference_use_english_wikipedia_text">Použít anglickou verzi Wikipedie k vyhledávání stránek</string>
+    <string name="preference_use_english_wikipedia_text">Použít anglickou verzi Wikipedie k vyhledávání stránek.</string>
 
     <string name="preference_hide_media_on_lockscreen_title">Soukromé oznámení</string>
-    <string name="preference_hide_media_on_lockscreen_text">Skrýt informaci o mediu na zamčené obrazovce (záleží na systémovém nastavení soukromí zamčené obrazovky)</string>
+    <string name="preference_hide_media_on_lockscreen_text">Skrýt informaci o mediu na zamčené obrazovce (záleží na systémovém nastavení soukromí zamčené obrazovky).</string>
 
     <string name="preference_artwork_use_local_images_title">Použít lokální obrázky alb</string>
     <string name="preference_artwork_use_local_images_text">Ignorovat obrázky alb nalezené v mediální databázi Androidu a použít lokální. Není-li lokální obrázek alba nalezen, použít zvoleného dodavatele obrázků.</string>
@@ -261,7 +277,7 @@
     <string name="activity_about_version">Verze:</string>
 
     <!-- PBS working message -->
-    <string name="playbackservice_working">Prosím, čekejte</string>
+    <string name="playbackservice_working">Prosím, čekejte...</string>
 
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Běží hromadné stahování</string>
@@ -289,6 +305,8 @@
     <string name="contributor_translator_french">Francouzský překlad</string>
     <string name="contributor_translator_polish">Polský překlad</string>
     <string name="contributor_translator_czech">Český překlad</string>
+    <string name="contributor_translator_dutch">Holandský překlad</string>
+    <string name="contributor_translator_indonesia">Indonéský překlad</string>
 
     <!-- Thirdparty Licenses dialog -->
     <string name="odyssey_thirdparty_licenses_dialog_title">Licence třetích stran</string>
@@ -302,16 +320,15 @@
 
     <plurals name="preference_resume_step_size_dialog_title">
         <item quantity="one">Délka kroku: %d vteřin</item>
-        <item quantity="few">Délka kroku: %d vteřin</item>
         <item quantity="other">Délka kroku: %d vteřin</item>
     </plurals>
 
     <string name="preference_random_intelligence_dialog_title">Nahodilá inteligence: %d %%</string>
-    <string name="preference_random_intelligence_dumber">Nahodilost vybere stopy zcela nahodile bez ohledu na umělce</string>
-    <string name="preference_random_intelligence_dumb">Nahodilost většinou vybere stopy zcela nahodile téměř s žádným ohledem na umělce</string>
-    <string name="preference_random_intelligence_balanced">Nahodilost vybere stopy vyváženě ve volbě podle stopy a podle umělce</string>
-    <string name="preference_random_intelligence_intelligent">Nahodilost většinou vybere stopy podle umělce</string>
-    <string name="preference_random_intelligence_more_intelligent">Nahodilost vybere stopy zcela podle umělce</string>
+    <string name="preference_random_intelligence_dumber">Nahodilost vybere stopy zcela nahodile bez ohledu na umělce.</string>
+    <string name="preference_random_intelligence_dumb">Nahodilost většinou vybere stopy zcela nahodile téměř s žádným ohledem na umělce.</string>
+    <string name="preference_random_intelligence_balanced">Nahodilost vybere stopy vyváženě ve volbě podle stopy a podle umělce.</string>
+    <string name="preference_random_intelligence_intelligent">Nahodilost většinou vybere stopy podle umělce.</string>
+    <string name="preference_random_intelligence_more_intelligent">Nahodilost vybere stopy zcela podle umělce.</string>
 
     <string name="preference_smart_random_title">Chytrá nahodilost</string>
     <string name="preference_smart_random_text">Vybrat volbu nahodilého výběru. Tato volba umožňuje nahodilý, uniformě rozložený playback (na umělce). Užitečné s playlisty s mnoha položkami jednoho umělce a několika stopami jiných umělců.</string>
