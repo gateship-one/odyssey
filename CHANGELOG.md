@@ -1,5 +1,11 @@
 # Changelog Odyssey
 
+## Version: 1.2.2 Tag: release-36 (2022-01-09)
+
+* Update polish translation
+* Update czech translation
+* Fix crash on device rotation
+
 ## Version: 1.2.1 Tag: release-35 (2021-12-31)
 
 * Update polish translation

@@ -1,0 +1,3 @@
+* Update polish translation
+* Update czech translation
+* Fix crash on device rotation
