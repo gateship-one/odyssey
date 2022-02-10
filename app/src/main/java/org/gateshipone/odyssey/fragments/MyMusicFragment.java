@@ -121,7 +121,13 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_music, container, false);
+        View view =  inflater.inflate(R.layout.fragment_my_music, container, false);
+
+        // inflating this here is not a good idea AFAIK
+        mMyMusicViewPager = view.findViewById(R.id.my_music_viewpager);
+        mMyMusicViewPager.setOffscreenPageLimit(2);
+
+        return view;
     }
 
     @Override
@@ -135,7 +141,6 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mMyMusicViewPager = view.findViewById(R.id.my_music_viewpager);
         mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
-        mMyMusicViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mMyMusicViewPager, false);
         tabLayout.addOnTabSelectedListener(this);
 
