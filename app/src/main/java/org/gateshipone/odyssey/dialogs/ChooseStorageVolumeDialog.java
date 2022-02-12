@@ -59,7 +59,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
         try {
             mDirectorySelectedCallback = (OnDirectorySelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnDirectorySelectedListener");
+            throw new ClassCastException(context + " must implement OnDirectorySelectedListener");
         }
     }
 
@@ -73,7 +73,7 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
         List<String> storageVolumes = FileExplorerHelper.getInstance().getStorageVolumes(getContext());
 
         // Use the Builder class for convenient dialog construction
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
         builder.setTitle(R.string.dialog_choose_storage_volume_title);
         mStorageVolumesAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, storageVolumes);

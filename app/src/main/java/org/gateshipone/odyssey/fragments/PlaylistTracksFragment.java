@@ -100,8 +100,8 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         // get swipe layout
         mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
-                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(requireContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(requireContext(), R.attr.colorPrimary));
         // set swipe refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
@@ -125,12 +125,12 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         // activate options menu in toolbar
         setHasOptionsMenu(true);
 
-        Bundle args = getArguments();
+        Bundle args = requireArguments();
 
         mPlaylistModel = args.getParcelable(ARG_PLAYLISTMODEL);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, requireContext());
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
@@ -138,7 +138,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return new ViewModelProvider(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(getActivity().getApplication(), mPlaylistModel)).get(PlaylistTrackViewModel.class);
+        return new ViewModelProvider(this, new PlaylistTrackViewModel.PlaylistTrackViewModelFactory(requireActivity().getApplication(), mPlaylistModel)).get(PlaylistTrackViewModel.class);
     }
 
     /**
@@ -197,7 +197,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_playlist_tracks_fragment, menu);
 
         if (mPlaylistModel.getPlaylistType() != PlaylistModel.PLAYLIST_TYPES.ODYSSEY_LOCAL) {
@@ -252,7 +252,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
         drawable = DrawableCompat.wrap(drawable);
@@ -285,7 +285,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void enqueuePlaylist() {
         try {
             // add the playlist
-            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(mPlaylistModel);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueuePlaylist(mPlaylistModel);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -302,7 +302,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
     private void playPlaylist(int position) {
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(mPlaylistModel, position);
+            ((GenericActivity) requireActivity()).getPlaybackService().playPlaylist(mPlaylistModel, position);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -318,7 +318,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
+            ((GenericActivity) requireActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -335,7 +335,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         TrackModel track = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

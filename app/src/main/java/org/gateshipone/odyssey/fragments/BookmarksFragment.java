@@ -83,7 +83,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
     @Override
     GenericViewModel<BookmarkModel> getViewModel() {
-        return new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), false)).get(BookmarkViewModel.class);
+        return new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(requireActivity().getApplication(), false)).get(BookmarkViewModel.class);
     }
 
     /**
@@ -116,7 +116,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_bookmarks_fragment, menu);
     }
 
@@ -159,7 +159,7 @@ public class BookmarksFragment extends OdysseyFragment<BookmarkModel> implements
 
         // resume state
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().resumeBookmark(bookmark.getId());
+            ((GenericActivity) requireActivity()).getPlaybackService().resumeBookmark(bookmark.getId());
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

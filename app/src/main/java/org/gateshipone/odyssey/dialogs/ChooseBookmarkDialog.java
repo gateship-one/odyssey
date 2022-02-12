@@ -63,7 +63,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
         try {
             mSaveCallback = (OnSaveDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnSaveDialogListener");
+            throw new ClassCastException(context + " must implement OnSaveDialogListener");
         }
     }
 
@@ -74,7 +74,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
         mBookmarksAdapter = new BookmarksAdapter(getActivity());
 
@@ -85,7 +85,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
                     if (which == 0) {
                         // open save dialog to create a new bookmark
                         SaveDialog saveDialog = SaveDialog.newInstance(SaveDialog.OBJECTTYPE.BOOKMARK);
-                        saveDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "SaveDialog");
+                        saveDialog.show(requireActivity().getSupportFragmentManager(), "SaveDialog");
                     } else {
                         // override existing bookmark
                         BookmarkModel bookmark = mBookmarksAdapter.getItem(which);
@@ -95,11 +95,11 @@ public class ChooseBookmarkDialog extends DialogFragment {
                 })
                 .setNegativeButton(R.string.dialog_action_cancel, (dialog, id) -> {
                     // User cancelled the dialog dont save object
-                    getDialog().cancel();
+                    requireDialog().cancel();
                 });
 
         // setup bookmark ViewModel
-        final BookmarkViewModel model = new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(getActivity().getApplication(), true))
+        final BookmarkViewModel model = new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(requireActivity().getApplication(), true))
                 .get(BookmarkViewModel.class);
         model.getData()
                 .observe(this, data -> mBookmarksAdapter.swapModel(data));
@@ -107,7 +107,7 @@ public class ChooseBookmarkDialog extends DialogFragment {
 
         // set divider
         AlertDialog dlg = builder.create();
-        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_divider)));
+        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_divider)));
         dlg.getListView().setDividerHeight(getResources().getDimensionPixelSize(R.dimen.list_divider_size));
 
         return dlg;

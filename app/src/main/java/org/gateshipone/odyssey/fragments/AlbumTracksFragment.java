@@ -130,18 +130,18 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_tracks_message);
 
         // set up toolbar
-        Bundle args = getArguments();
+        Bundle args = requireArguments();
 
         mAlbum = args.getParcelable(ARG_ALBUMMODEL);
         mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
 
-        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+        mBitmapLoader = new CoverBitmapLoader(requireContext(), this);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
-        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        mHideArtwork = sharedPreferences.getBoolean(requireContext().getString(R.string.pref_hide_artwork_key), requireContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, requireContext());
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
@@ -149,7 +149,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(getActivity().getApplication(), mAlbum.getAlbumId())).get(TrackViewModel.class);
+        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(requireActivity().getApplication(), mAlbum.getAlbumId())).get(TrackViewModel.class);
     }
 
     /**
@@ -164,13 +164,13 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         try {
             mArtistSelectedCallback = (OnArtistSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
+            throw new ClassCastException(context + " must implement OnArtistSelectedListener");
         }
 
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
     }
 
@@ -187,33 +187,33 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
             // set toolbar behaviour and title
             // set up play button
             mToolbarAndFABCallback.setupFAB(v -> playAlbum(0));
-        }
 
-        if (!mHideArtwork && mBitmap == null) {
-            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getMeasuredWidth();
-                    mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                });
-            }
-        } else if (!mHideArtwork) {
-            // Reuse image
-            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
-            mToolbarAndFABCallback.setupToolbarImage(mBitmap);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getMeasuredWidth();
-                    // Image too small
-                    if (mBitmap.getWidth() < width) {
+            if (!mHideArtwork && mBitmap == null) {
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
+                final View rootView = getView();
+                if (rootView != null) {
+                    getView().post(() -> {
+                        int width = rootView.getMeasuredWidth();
                         mBitmapLoader.getAlbumImage(mAlbum, width, width);
-                    }
-                });
+                    });
+                }
+            } else if (!mHideArtwork) {
+                // Reuse image
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
+                mToolbarAndFABCallback.setupToolbarImage(mBitmap);
+                final View rootView = getView();
+                if (rootView != null) {
+                    getView().post(() -> {
+                        int width = rootView.getMeasuredWidth();
+                        // Image too small
+                        if (mBitmap.getWidth() < width) {
+                            mBitmapLoader.getAlbumImage(mAlbum, width, width);
+                        }
+                    });
+                }
+            } else {
+                mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
             }
-        } else {
-            mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, false);
         }
 
         ArtworkManager.getInstance(getContext()).registerOnNewAlbumImageListener(this);
@@ -253,7 +253,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_album_tracks_fragment, menu);
     }
 
@@ -304,7 +304,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         menuInflater.inflate(R.menu.options_menu_album_tracks_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_album).getIcon();
         drawable = DrawableCompat.wrap(drawable);
@@ -338,7 +338,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        getArguments().remove(ARG_BITMAP);
+        requireArguments().remove(ARG_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -370,7 +370,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         TrackModel track = mRecyclerAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueTrack(track, asNext);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueTrack(track, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -386,7 +386,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         TrackModel track = mRecyclerAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playTrack(track, false);
+            ((GenericActivity) requireActivity()).getPlaybackService().playTrack(track, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -400,11 +400,11 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         // Enqueue complete album
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumId(), trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumId(), trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -421,11 +421,11 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         // clear playlist and play current album
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumId(), trackOrderKey, position);
+            ((GenericActivity) requireActivity()).getPlaybackService().playAlbum(mAlbum.getAlbumId(), trackOrderKey, position);
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -435,12 +435,12 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     @Override
     public void receiveAlbumBitmap(final Bitmap bm) {
         if (bm != null && mToolbarAndFABCallback != null) {
-            getActivity().runOnUiThread(() -> {
+            requireActivity().runOnUiThread(() -> {
                 // set toolbar behaviour and title
                 mToolbarAndFABCallback.setupToolbar(mAlbum.getAlbumName(), false, false, true);
                 // set toolbar image
                 mToolbarAndFABCallback.setupToolbarImage(bm);
-                getArguments().putParcelable(ARG_BITMAP, bm);
+                requireArguments().putParcelable(ARG_BITMAP, bm);
             });
         }
     }
@@ -454,7 +454,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
     public void newAlbumImage(AlbumModel album) {
         if (album.equals(mAlbum)) {
             if (!mHideArtwork) {
-                int width = getView().getMeasuredWidth();
+                int width = requireView().getMeasuredWidth();
                 mBitmapLoader.getAlbumImage(mAlbum, width, width);
             }
         }

@@ -142,8 +142,9 @@ public class FileUtils {
     public static void removeArtworkDirectory(final Context context, final String dirName) {
         final File artworkDir = new File(context.getFilesDir() + "/" + ARTWORK_DIR + "/" + dirName + "/");
 
-        if (artworkDir.listFiles() != null) {
-            for (File child : artworkDir.listFiles()) {
+        final File[] files = artworkDir.listFiles();
+        if (files != null) {
+            for (File child : files) {
                 child.delete();
             }
             artworkDir.delete();

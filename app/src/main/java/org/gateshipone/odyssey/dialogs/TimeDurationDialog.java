@@ -71,7 +71,7 @@ public class TimeDurationDialog extends DialogFragment {
         try {
             mOnStartSleepTimerCallback = (OnStartSleepTimerListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnDirectorySelectedListener");
+            throw new ClassCastException(context + " must implement OnDirectorySelectedListener");
         }
     }
 
@@ -79,9 +79,9 @@ public class TimeDurationDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = requireActivity().getLayoutInflater();
         final View durationView = inflater.inflate(R.layout.duration_picker, null);
 
         mMinutesPicker = durationView.findViewById(R.id.duration_minutes_picker);
@@ -90,7 +90,7 @@ public class TimeDurationDialog extends DialogFragment {
 
         mStopAfterCurrentCheckBox = durationView.findViewById(R.id.duration_stop_after_current_checkbox);
 
-        final Bundle arguments = getArguments();
+        final Bundle arguments = requireArguments();
         setupPicker(arguments.getLong(ARG_PRESET_DURATION, 0));
         mStopAfterCurrentCheckBox.setChecked(arguments.getBoolean(ARG_PRESET_STOP_AFTER_CURRENT, false));
 

@@ -105,8 +105,10 @@ public final class NowPlayingInformation implements Parcelable {
         return mPlayState;
     }
 
+    @NonNull
+    @Override
     public String toString() {
-        return "Playstate: " + mPlayState.name() + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom + "playlistlength: " + mPlaylistLength + "track: " + mCurrentTrack.toString();
+        return "Playstate: " + mPlayState.name() + " index: " + mPlayingIndex + "repeat: " + mRepeat + "random: " + mRandom + "playlistlength: " + mPlaylistLength + "track: " + mCurrentTrack;
     }
 
     public int getPlayingIndex() {

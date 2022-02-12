@@ -128,8 +128,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         // get swipe layout
         mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
-                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(requireContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(requireContext(), R.attr.colorPrimary));
         // set swipe refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
@@ -162,8 +162,8 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             }
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        mClickAction = PreferenceHelper.getClickAction(sharedPreferences, requireContext());
 
         // try to resume the saved search string
         if (savedInstanceState != null) {
@@ -176,7 +176,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
 
     @Override
     GenericViewModel<FileModel> getViewModel() {
-        return new ViewModelProvider(this, new FileViewModel.FileViewModelFactory(getActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
+        return new ViewModelProvider(this, new FileViewModel.FileViewModelFactory(requireActivity().getApplication(), mCurrentDirectory)).get(FileViewModel.class);
     }
 
 
@@ -200,13 +200,13 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         try {
             mOnDirectorySelectedCallback = (OnDirectorySelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnDirectorySelectedListener");
+            throw new ClassCastException(context + " must implement OnDirectorySelectedListener");
         }
 
         try {
             mOnPlaylistSelectedCallback = (OnPlaylistSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnPlaylistFileSelectedListener");
+            throw new ClassCastException(context + " must implement OnPlaylistFileSelectedListener");
         }
     }
 
@@ -284,7 +284,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         FileModel currentFile = mAdapter.getItem(info.position);
@@ -350,7 +350,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         menuInflater.inflate(R.menu.options_menu_files_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_search).getIcon();
         drawable = DrawableCompat.wrap(drawable);
@@ -390,10 +390,10 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             return true;
         } else if (itemId == R.id.action_switch_storage_volume) {
             ChooseStorageVolumeDialog chooseDialog = new ChooseStorageVolumeDialog();
-            chooseDialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ChooseVolumeDialog");
+            chooseDialog.show(requireActivity().getSupportFragmentManager(), "ChooseVolumeDialog");
             return true;
         } else if (itemId == R.id.action_set_default_directory) {
-            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(requireContext()).edit();
             sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), mCurrentDirectory.getPath());
             sharedPrefEditor.apply();
             return true;
@@ -424,7 +424,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFile = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playFile(currentFile.getPath(), clearPlaylist);
+            ((GenericActivity) requireActivity()).getPlaybackService().playFile(currentFile.getPath(), clearPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -442,7 +442,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFile = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueFile(currentFile.getPath(), asNext);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueFile(currentFile.getPath(), asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -459,7 +459,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         try {
             // compute position
             int index = position - mCurrentDirectory.getNumberOfSubFolders();
-            ((GenericActivity) getActivity()).getPlaybackService().playDirectory(mCurrentDirectory.getPath(), index);
+            ((GenericActivity) requireActivity()).getPlaybackService().playDirectory(mCurrentDirectory.getPath(), index);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -477,7 +477,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
+            ((GenericActivity) requireActivity()).getPlaybackService().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -494,7 +494,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -508,7 +508,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void playCurrentFolderAndSubFolders() {
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
+            ((GenericActivity) requireActivity()).getPlaybackService().playDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -525,9 +525,9 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         serviceIntent.putExtra(MediaScannerService.BUNDLE_KEY_DIRECTORY, mCurrentDirectory.getPath());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getActivity().startForegroundService(serviceIntent);
+            requireActivity().startForegroundService(serviceIntent);
         } else {
-            getActivity().startService(serviceIntent);
+            requireActivity().startService(serviceIntent);
         }
     }
 
@@ -537,7 +537,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     private void enqueueCurrentFolderAndSubFolders() {
 
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(mCurrentDirectory.getPath(), mSearchString);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -60,7 +60,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         // Inflate the layout for this fragment
         View rootView;
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
@@ -78,7 +78,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         final String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
 
         final boolean useList = viewAppearance.equals(getString(R.string.pref_library_view_list_key));
@@ -94,8 +94,8 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         // get swipe layout
         mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
-                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(requireContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(requireContext(), R.attr.colorPrimary));
         // set swipe refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
@@ -141,13 +141,13 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         try {
             mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnAlbumSelectedListener");
+            throw new ClassCastException(context + " must implement OnAlbumSelectedListener");
         }
 
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
     }
 
@@ -181,12 +181,12 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         long albumId = clickedAlbum.getAlbumId();
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -205,12 +205,12 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
         long albumId = clickedAlbum.getAlbumId();
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // play album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumId, trackOrderKey, 0);
+            ((GenericActivity) requireActivity()).getPlaybackService().playAlbum(albumId, trackOrderKey, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

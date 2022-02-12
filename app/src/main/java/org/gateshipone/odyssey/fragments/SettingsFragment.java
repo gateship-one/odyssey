@@ -79,11 +79,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         openEqualizer.setOnPreferenceClickListener(preference -> {
             // Start the equalizer
             Intent startEqualizerIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-            startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+            startEqualizerIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireContext().getPackageName());
             startEqualizerIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
 
             try {
-                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, ((GenericActivity) getActivity()).getPlaybackService().getAudioSessionID());
+                startEqualizerIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, ((GenericActivity) requireActivity()).getPlaybackService().getAudioSessionID());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -92,7 +92,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 getActivity().startActivity(startEqualizerIntent);
             } catch (ActivityNotFoundException e) {
                 ErrorDialog equalizerNotFoundDlg = ErrorDialog.newInstance(R.string.dialog_equalizer_not_found_title, R.string.dialog_equalizer_not_found_message);
-                equalizerNotFoundDlg.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "EqualizerNotFoundDialog");
+                equalizerNotFoundDlg.show(requireActivity().getSupportFragmentManager(), "EqualizerNotFoundDialog");
             }
 
             return true;
@@ -108,7 +108,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // add listener to clear the default directory
         Preference clearDefaultDirectory = findPreference(getString(R.string.pref_clear_default_directory_key));
         clearDefaultDirectory.setOnPreferenceClickListener(preference -> {
-            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
+            SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(requireContext()).edit();
             sharedPrefEditor.putString(getString(R.string.pref_file_browser_root_dir_key), FileExplorerHelper.getInstance().getStorageVolumes(getContext()).get(0));
             sharedPrefEditor.apply();
             return true;
@@ -117,14 +117,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         Preference backwardsSeek = findPreference(getString(R.string.pref_seek_backwards_key));
         backwardsSeek.setOnPreferenceClickListener(preference -> {
             SeekBackwardsStepSizeDialog dialog = new SeekBackwardsStepSizeDialog();
-            dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "Volume steps");
+            dialog.show(requireActivity().getSupportFragmentManager(), "Volume steps");
             return true;
         });
 
         Preference randomIntelligencePreference = findPreference(getString(R.string.pref_smart_random_key_int));
         randomIntelligencePreference.setOnPreferenceClickListener(preference -> {
             RandomIntelligenceDialog dialog = new RandomIntelligenceDialog();
-            dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "Random Intelligence dialog");
+            dialog.show(requireActivity().getSupportFragmentManager(), "Random Intelligence dialog");
             return true;
         });
     }
@@ -141,13 +141,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         try {
             mArtworkCallback = (OnArtworkSettingsRequestedCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnArtworkSettingsRequestedCallback");
+            throw new ClassCastException(context + " must implement OnArtworkSettingsRequestedCallback");
         }
 
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
     }
 
@@ -187,14 +187,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.odyssey_main_settings);
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.odyssey_main_settings, false);
+        PreferenceManager.setDefaultValues(requireActivity(), R.xml.odyssey_main_settings, false);
     }
 
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         // we have to set the background color at this point otherwise we loose the ripple effect
-        view.setBackgroundColor(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_background));
+        view.setBackgroundColor(ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_background));
 
         return view;
     }
@@ -207,19 +208,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_theme_key)) || key.equals(getString(R.string.pref_dark_theme_key))) {
-            Intent intent = getActivity().getIntent();
+            Intent intent = requireActivity().getIntent();
             intent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.SETTINGS.ordinal());
-            getActivity().finish();
+            requireActivity().finish();
             startActivity(intent);
         } else if (key.equals(getString(R.string.pref_hide_media_on_lockscreen_key))) {
             try {
                 boolean hideMediaOnLockscreen = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default));
-                ((GenericActivity) getActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
+                ((GenericActivity) requireActivity()).getPlaybackService().hideMediaOnLockscreenChanged(hideMediaOnLockscreen);
             } catch (RemoteException e) {
             }
         } else if (key.equals(getString(R.string.pref_smart_random_key_int))) {
             try {
-                ((GenericActivity) getActivity()).getPlaybackService().setSmartRandom(sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_random_default)));
+                ((GenericActivity) requireActivity()).getPlaybackService().setSmartRandom(sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_random_default)));
             } catch (RemoteException e) {
             }
         }

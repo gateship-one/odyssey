@@ -83,7 +83,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
     }
 
@@ -92,7 +92,7 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
         super.onDetach();
 
         // Unregister the memory trim callback with the system.
-        getActivity().getApplicationContext().unregisterComponentCallbacks(mComponentCallback);
+        requireActivity().getApplicationContext().unregisterComponentCallbacks(mComponentCallback);
     }
 
     /**

@@ -59,7 +59,7 @@ public class ErrorDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
         // read arguments to identify the error title and message
         Bundle mArgs = requireArguments();

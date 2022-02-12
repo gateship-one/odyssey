@@ -77,10 +77,10 @@ public class BulkDownloaderDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
         // read arguments to identify the error title and message
-        Bundle mArgs = getArguments();
+        Bundle mArgs = requireArguments();
 
         int titleId = mArgs.getInt(ARG_DIALOGTITLE, -1);
         int messageId = mArgs.getInt(ARG_DIALOGMESSAGE, -1);
@@ -92,11 +92,11 @@ public class BulkDownloaderDialog extends DialogFragment {
         builder.setTitle(dialogTitle).setMessage(dialogMessage)
                 .setPositiveButton(positiveButtonId, (dialog, id) -> {
                     // start the bulk download service
-                    Intent serviceIntent = new Intent(getActivity(), BulkDownloadService.class);
+                    Intent serviceIntent = new Intent(requireActivity(), BulkDownloadService.class);
                     serviceIntent.setAction(BulkDownloadService.ACTION_START_BULKDOWNLOAD);
 
                     // get the current settings for the bulk download
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
                     serviceIntent.putExtra(BUNDLE_KEY_ARTIST_PROVIDER, sharedPref.getString(getString(R.string.pref_artist_provider_key),
                             getString(R.string.pref_artwork_provider_artist_default)));
                     serviceIntent.putExtra(BUNDLE_KEY_ALBUM_PROVIDER, sharedPref.getString(getString(R.string.pref_album_provider_key),
@@ -106,9 +106,9 @@ public class BulkDownloaderDialog extends DialogFragment {
                     serviceIntent.putExtra(BUNDLE_KEY_USE_LOCAL_IMAGES, sharedPref.getBoolean(getString(R.string.pref_artwork_use_local_images_key),
                             getResources().getBoolean(R.bool.pref_artwork_use_local_images_default)));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        getActivity().startForegroundService(serviceIntent);
+                        requireActivity().startForegroundService(serviceIntent);
                     } else {
-                        getActivity().startService(serviceIntent);
+                        requireActivity().startService(serviceIntent);
                     }
                 });
 

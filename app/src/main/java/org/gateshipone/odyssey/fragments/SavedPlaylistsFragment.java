@@ -106,7 +106,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
     @Override
     GenericViewModel<PlaylistModel> getViewModel() {
-        return new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(getActivity().getApplication(), false, false)).get(PlaylistViewModel.class);
+        return new ViewModelProvider(this, new PlaylistViewModel.PlaylistViewModelFactory(requireActivity().getApplication(), false, false)).get(PlaylistViewModel.class);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
         try {
             mPlaylistSelectedCallback = (OnPlaylistSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnPlaylistSelectedListener");
+            throw new ClassCastException(context + " must implement OnPlaylistSelectedListener");
         }
     }
 
@@ -159,7 +159,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_saved_playlists_fragment, menu);
     }
 
@@ -204,7 +204,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            ((GenericActivity) getActivity()).getPlaybackService().enqueuePlaylist(clickedPlaylist);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueuePlaylist(clickedPlaylist);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -222,7 +222,7 @@ public class SavedPlaylistsFragment extends OdysseyFragment<PlaylistModel> imple
 
         try {
             // add playlist
-            ((GenericActivity) getActivity()).getPlaybackService().playPlaylist(clickedPlaylist, 0);
+            ((GenericActivity) requireActivity()).getPlaybackService().playPlaylist(clickedPlaylist, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

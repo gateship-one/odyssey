@@ -55,16 +55,16 @@ public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = requireActivity().getLayoutInflater();
         final View seekView = inflater.inflate(R.layout.dumbness_select_dialog, null);
 
         SeekBar seekBar = seekView.findViewById(R.id.volume_seekbar);
         mDialogLabel = seekView.findViewById(R.id.dialog_text);
         mExplanationLabel = seekView.findViewById(R.id.dialog_explanation);
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         mIntelligenceFactor = sharedPreferences.getInt(getString(R.string.pref_smart_random_key_int), getResources().getInteger(R.integer.pref_smart_random_default));
 
@@ -89,7 +89,7 @@ public class RandomIntelligenceDialog extends DialogFragment implements SeekBar.
         }));
         builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> dismiss());
 
-        mPBSConnection = new PlaybackServiceConnection(getContext());
+        mPBSConnection = new PlaybackServiceConnection(requireContext());
         mPBSConnection.openConnection();
 
         return builder.create();

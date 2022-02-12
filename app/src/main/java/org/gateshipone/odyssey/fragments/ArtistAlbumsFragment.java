@@ -113,15 +113,15 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String viewAppearance = sharedPref.getString(getString(R.string.pref_view_library_key), getString(R.string.pref_library_view_default));
-        mHideArtwork = sharedPref.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
+        mHideArtwork = sharedPref.getBoolean(requireContext().getString(R.string.pref_hide_artwork_key), requireContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
 
         // get swipe layout
         mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
         // set swipe colors
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent),
-                ThemeUtils.getThemeColor(getContext(), R.attr.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getThemeColor(requireContext(), R.attr.colorAccent),
+                ThemeUtils.getThemeColor(requireContext(), R.attr.colorPrimary));
         // set swipe refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
@@ -153,13 +153,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         ((TextView) view.findViewById(R.id.empty_view_message)).setText(R.string.empty_albums_message);
 
         // read arguments
-        Bundle args = getArguments();
+        Bundle args = requireArguments();
         mArtist = args.getParcelable(ARG_ARTISTMODEL);
         mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
 
-        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
+        mBitmapLoader = new CoverBitmapLoader(requireContext(), this);
 
         // setup observer for the live data
         getViewModel().getData().observe(getViewLifecycleOwner(), this::onDataReady);
@@ -167,7 +167,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
     }
 
     @Override
@@ -179,35 +179,35 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         if (mToolbarAndFABCallback != null) {
             // set up play button
             mToolbarAndFABCallback.setupFAB(v -> playArtist());
-        }
 
-        // set toolbar behaviour and title
-        if (!mHideArtwork && mBitmap == null) {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getWidth();
-                    mBitmapLoader.getArtistImage(mArtist, width, width);
-                });
-            }
-
-        } else if (!mHideArtwork) {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
-            mToolbarAndFABCallback.setupToolbarImage(mBitmap);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getWidth();
-
-                    // Image too small
-                    if (mBitmap.getWidth() < width) {
+            // set toolbar behaviour and title
+            if (!mHideArtwork && mBitmap == null) {
+                mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
+                final View rootView = getView();
+                if (rootView != null) {
+                    getView().post(() -> {
+                        int width = rootView.getWidth();
                         mBitmapLoader.getArtistImage(mArtist, width, width);
-                    }
-                });
+                    });
+                }
+
+            } else if (!mHideArtwork) {
+                mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
+                mToolbarAndFABCallback.setupToolbarImage(mBitmap);
+                final View rootView = getView();
+                if (rootView != null) {
+                    getView().post(() -> {
+                        int width = rootView.getWidth();
+
+                        // Image too small
+                        if (mBitmap.getWidth() < width) {
+                            mBitmapLoader.getArtistImage(mArtist, width, width);
+                        }
+                    });
+                }
+            } else {
+                mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
             }
-        } else {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
         }
 
         ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener(this);
@@ -234,13 +234,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         try {
             mAlbumSelectedCallback = (OnAlbumSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnAlbumSelectedListener");
+            throw new ClassCastException(context + " must implement OnAlbumSelectedListener");
         }
 
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
     }
 
@@ -297,12 +297,12 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         long albumId = clickedAlbum.getAlbumId();
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -321,12 +321,12 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         long albumId = clickedAlbum.getAlbumId();
 
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // play album
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playAlbum(albumId, trackOrderKey, 0);
+            ((GenericActivity) requireActivity()).getPlaybackService().playAlbum(albumId, trackOrderKey, 0);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -339,7 +339,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_artist_albums_fragment, menu);
     }
 
@@ -384,7 +384,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         menuInflater.inflate(R.menu.options_menu_artist_albums_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_artist_albums).getIcon();
         drawable = DrawableCompat.wrap(drawable);
@@ -418,7 +418,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        getArguments().remove(ARG_BITMAP);
+        requireArguments().remove(ARG_BITMAP);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -427,13 +427,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
      */
     private void enqueueArtist() {
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // enqueue artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -446,13 +446,13 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
      */
     private void playArtist() {
         // Read order preference
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String albumOrderKey = sharedPref.getString(getString(R.string.pref_album_sort_order_key), getString(R.string.pref_artist_albums_sort_default));
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         // play artist
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().playArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -462,12 +462,12 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     @Override
     public void receiveArtistBitmap(final Bitmap bm) {
         if (bm != null && mToolbarAndFABCallback != null) {
-            getActivity().runOnUiThread(() -> {
+            requireActivity().runOnUiThread(() -> {
                 // set toolbar behaviour and title
                 mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
                 // set toolbar image
                 mToolbarAndFABCallback.setupToolbarImage(bm);
-                getArguments().putParcelable(ARG_BITMAP, bm);
+                requireArguments().putParcelable(ARG_BITMAP, bm);
             });
         }
     }
@@ -481,7 +481,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
     public void newArtistImage(ArtistModel artist) {
         if (artist.equals(mArtist)) {
             if (!mHideArtwork) {
-                int width = getView().getWidth();
+                int width = requireView().getWidth();
                 mBitmapLoader.getArtistImage(mArtist, width, width);
             }
         }

@@ -47,7 +47,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
     private final ViewSwitcher mSwitcher;
 
     private AsyncLoader mLoaderTask;
-    private boolean mCoverDone = false;
+    private boolean mCoverDone;
 
     private final AsyncLoader.CoverViewHolder mHolder;
 

@@ -216,13 +216,13 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         try {
             mToolbarAndFABCallback = (ToolbarAndFABCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ToolbarAndFABCallback");
+            throw new ClassCastException(context + " must implement ToolbarAndFABCallback");
         }
 
         try {
             mRecentAlbumsSelectedListener = (OnRecentAlbumsSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnRecentAlbumsSelectedListener");
+            throw new ClassCastException(context + " must implement OnRecentAlbumsSelectedListener");
         }
 
         if (mSearchView != null) {

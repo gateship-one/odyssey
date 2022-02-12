@@ -81,7 +81,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(getActivity().getApplication(), true)).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), true)).get(AlbumViewModel.class);
     }
 
     /**
@@ -113,7 +113,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         try {
             mArtistSelectedCallback = (OnArtistSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnArtistSelectedListener");
+            throw new ClassCastException(context + " must implement OnArtistSelectedListener");
         }
     }
 
@@ -123,7 +123,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu_albums_fragment, menu);
     }
 
@@ -171,7 +171,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
         menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
 
         Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
         drawable = DrawableCompat.wrap(drawable);
@@ -216,7 +216,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void enqueueAllAlbums() {
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().enqueueRecentAlbums();
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -225,7 +225,7 @@ public class RecentAlbumsFragment extends GenericAlbumsFragment {
 
     private void playAllAlbums() {
         try {
-            ((GenericActivity) getActivity()).getPlaybackService().playRecentAlbums();
+            ((GenericActivity) requireActivity()).getPlaybackService().playRecentAlbums();
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

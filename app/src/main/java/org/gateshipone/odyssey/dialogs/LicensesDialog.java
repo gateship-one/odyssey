@@ -47,7 +47,7 @@ public class LicensesDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         WebView view = new WebView(getActivity());
         view.loadUrl("file:///android_asset/thirdparty_licenses.html");
-        return new MaterialAlertDialogBuilder(getActivity())
+        return new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(getString(R.string.odyssey_thirdparty_licenses_dialog_title))
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)

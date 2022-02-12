@@ -138,7 +138,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * Connection to the PBS for requesting information about current song/status.
      */
-    private PlaybackServiceConnection mServiceConnection = null;
+    private PlaybackServiceConnection mServiceConnection;
 
     /**
      * Receiver for NowPlayingInformation items (that include information about state changes, song

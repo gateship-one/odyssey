@@ -55,15 +55,15 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = requireActivity().getLayoutInflater();
         final View seekView = inflater.inflate(R.layout.resume_step_size_dialog, null);
 
         SeekBar seekBar = seekView.findViewById(R.id.volume_seekbar);
         mDialogLabel = seekView.findViewById(R.id.dialog_text);
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         mStepSize = sharedPreferences.getInt(getString(R.string.pref_seek_backwards_key), getResources().getInteger(R.integer.pref_seek_backwards_default));
 
@@ -88,7 +88,7 @@ public class SeekBackwardsStepSizeDialog extends DialogFragment implements SeekB
         }));
         builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> dismiss());
 
-        mPBSConnection = new PlaybackServiceConnection(getContext());
+        mPBSConnection = new PlaybackServiceConnection(requireContext());
         mPBSConnection.openConnection();
 
         return builder.create();
