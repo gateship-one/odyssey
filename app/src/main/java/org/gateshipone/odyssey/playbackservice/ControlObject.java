@@ -22,14 +22,18 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
+import androidx.annotation.NonNull;
+
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
+
+import java.util.ArrayDeque;
+import java.util.Objects;
+import java.util.Queue;
 
 /**
  * Message object which get passed between PlaybackServiceInterface ->
  * PlaybackServiceHandler
- *
- * @author hendrik
  */
 public class ControlObject {
 
@@ -49,131 +53,123 @@ public class ControlObject {
         ODYSSEY_SET_SMARTRANDOM
     }
 
-    private PLAYBACK_ACTION mAction;
-    private boolean mBoolparam;
-    private int mIntparam;
-    private String mStringparam;
-    private String mSecondStringParam;
-    private TrackModel mTrack;
-    private long mLongParam;
-    private PlaylistModel mPlaylist;
+    private final PLAYBACK_ACTION action;
+    private final TrackModel track;
+    private final PlaylistModel playlist;
 
-    public ControlObject(PLAYBACK_ACTION action) {
-        mAction = action;
-    }
+    private final Queue<Integer> intValues;
+    private final Queue<Long> longValues;
+    private final Queue<Boolean> boolValues;
+    private final Queue<String> stringValues;
 
-    public ControlObject(PLAYBACK_ACTION action, int param) {
-        mIntparam = param;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, String param) {
-        mStringparam = param;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, String param, String param2) {
-        mStringparam = param;
-        mSecondStringParam = param2;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, long longParam, String param) {
-        mLongParam = longParam;
-        mStringparam = param;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, long longParam, String param, int intParam) {
-        mLongParam = longParam;
-        mStringparam = param;
-        mIntparam = intParam;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, String param, String param2, int intParam) {
-        mStringparam = param;
-        mSecondStringParam = param2;
-        mIntparam = intParam;
-        mAction = action;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, String param, boolean boolParam) {
-        mAction = action;
-        mStringparam = param;
-        mBoolparam = boolParam;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, TrackModel track, boolean boolParam) {
-        mAction = action;
-        mTrack = track;
-        mBoolparam = boolParam;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, long param) {
-        mAction = action;
-        mLongParam = param;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, long param, boolean boolParam) {
-        mAction = action;
-        mLongParam = param;
-        mBoolparam = boolParam;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, long longParam, String stringParam, String stringParam2) {
-        mAction = action;
-        mLongParam = longParam;
-        mStringparam = stringParam;
-        mSecondStringParam = stringParam2;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, String stringParam, int intParam) {
-        mAction = action;
-        mStringparam = stringParam;
-        mIntparam = intParam;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist) {
-        mAction = action;
-        mPlaylist = playlist;
-    }
-
-    public ControlObject(PLAYBACK_ACTION action, PlaylistModel playlist, int intParam) {
-        mAction = action;
-        mPlaylist = playlist;
-        mIntparam = intParam;
+    private ControlObject(PLAYBACK_ACTION action,
+                          TrackModel track,
+                          PlaylistModel playlist,
+                          Queue<Integer> intValues,
+                          Queue<Long> longValues,
+                          Queue<Boolean> boolValues,
+                          Queue<String> stringValues) {
+        this.action = action;
+        this.track = track;
+        this.playlist = playlist;
+        this.intValues = intValues;
+        this.longValues = longValues;
+        this.boolValues = boolValues;
+        this.stringValues = stringValues;
     }
 
     public PLAYBACK_ACTION getAction() {
-        return mAction;
+        return action;
     }
 
-    public String getStringParam() {
-        return mStringparam;
+    @NonNull
+    public Boolean nextBool() {
+        return Objects.requireNonNull(boolValues.poll());
     }
 
-    public String getSecondStringParam() {
-        return mSecondStringParam;
+    @NonNull
+    public Integer nextInt() {
+        return Objects.requireNonNull(intValues.poll());
     }
 
-    public int getIntParam() {
-        return mIntparam;
+    @NonNull
+    public Long nextLong() {
+        return Objects.requireNonNull(longValues.poll());
     }
 
-    public boolean getBoolParam() {
-        return mBoolparam;
-    }
-
-    public long getLongParam() {
-        return mLongParam;
+    @NonNull
+    public String nextString() {
+        return Objects.requireNonNull(stringValues.poll());
     }
 
     public TrackModel getTrack() {
-        return mTrack;
+        return this.track;
     }
 
     public PlaylistModel getPlaylist() {
-        return mPlaylist;
+        return this.playlist;
+    }
+
+    public static class Builder {
+
+        private final PLAYBACK_ACTION action;
+
+        private final Queue<Integer> intValues;
+        private final Queue<Long> longValues;
+        private final Queue<Boolean> boolValues;
+        private final Queue<String> stringValues;
+
+        private TrackModel track;
+
+        private PlaylistModel playlist;
+
+        public Builder(PLAYBACK_ACTION action) {
+            this.action = action;
+            intValues = new ArrayDeque<>();
+            longValues = new ArrayDeque<>();
+            boolValues = new ArrayDeque<>();
+            stringValues = new ArrayDeque<>();
+        }
+
+        public Builder addInt(int value) {
+            intValues.offer(value);
+            return this;
+        }
+
+        public Builder addLong(long value) {
+            longValues.offer(value);
+            return this;
+        }
+
+        public Builder addBool(boolean value) {
+            boolValues.offer(value);
+            return this;
+        }
+
+        public Builder addString(String value) {
+            stringValues.offer(value);
+            return this;
+        }
+
+        public Builder addTrack(TrackModel track) {
+            this.track = track;
+            return this;
+        }
+
+        public Builder addPlaylist(PlaylistModel playlist) {
+            this.playlist = playlist;
+            return this;
+        }
+
+        public ControlObject build() {
+            return new ControlObject(
+                    this.action,
+                    this.track,
+                    this.playlist,
+                    this.intValues,
+                    this.longValues,
+                    this.boolValues,
+                    this.stringValues);
+        }
     }
 }

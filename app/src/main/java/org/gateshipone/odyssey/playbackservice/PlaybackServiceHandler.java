@@ -55,7 +55,7 @@ public class PlaybackServiceHandler extends Handler {
             // Parse message
             switch (msgObj.getAction()) {
                 case ODYSSEY_PLAY:
-                    mService.get().playURI(msgObj.getStringParam());
+                    mService.get().playURI(msgObj.nextString());
                     break;
                 case ODYSSEY_TOGGLEPAUSE:
                     mService.get().togglePause();
@@ -67,10 +67,10 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().setPreviousTrack();
                     break;
                 case ODYSSEY_SEEKTO:
-                    mService.get().seekTo(msgObj.getIntParam());
+                    mService.get().seekTo(msgObj.nextInt());
                     break;
                 case ODYSSEY_JUMPTO:
-                    mService.get().jumpToIndex(msgObj.getIntParam());
+                    mService.get().jumpToIndex(msgObj.nextInt());
                     break;
                 case ODYSSEY_REPEAT:
                     mService.get().toggleRepeat();
@@ -79,16 +79,16 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().toggleRandom();
                     break;
                 case ODYSSEY_ENQUEUETRACK:
-                    mService.get().enqueueTrack(msgObj.getTrack(), msgObj.getBoolParam());
+                    mService.get().enqueueTrack(msgObj.getTrack(), msgObj.nextBool());
                     break;
                 case ODYSSEY_PLAYTRACK:
-                    mService.get().playTrack(msgObj.getTrack(), msgObj.getBoolParam());
+                    mService.get().playTrack(msgObj.getTrack(), msgObj.nextBool());
                     break;
                 case ODYSSEY_DEQUEUETRACK:
-                    mService.get().dequeueTrack(msgObj.getIntParam());
+                    mService.get().dequeueTrack(msgObj.nextInt());
                     break;
                 case ODYSSEY_DEQUEUETRACKS:
-                    mService.get().dequeueTracks(msgObj.getIntParam());
+                    mService.get().dequeueTracks(msgObj.nextInt());
                     break;
                 case ODYSSEY_CLEARPLAYLIST:
                     mService.get().clearPlaylist();
@@ -97,52 +97,52 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().shufflePlaylist();
                     break;
                 case ODYSSEY_PLAYALLTRACKS:
-                    mService.get().playAllTracks(msgObj.getStringParam());
+                    mService.get().playAllTracks(msgObj.nextString());
                     break;
                 case ODYSSEY_SAVEPLAYLIST:
-                    mService.get().savePlaylist(msgObj.getStringParam());
+                    mService.get().savePlaylist(msgObj.nextString());
                     break;
                 case ODYSSEY_ENQUEUEPLAYLIST:
                     mService.get().enqueuePlaylist(msgObj.getPlaylist());
                     break;
                 case ODYSSEY_PLAYPLAYLIST:
-                    mService.get().playPlaylist(msgObj.getPlaylist(), msgObj.getIntParam());
+                    mService.get().playPlaylist(msgObj.getPlaylist(), msgObj.nextInt());
                     break;
                 case ODYSSEY_RESUMEBOOKMARK:
-                    mService.get().resumeBookmark(msgObj.getLongParam());
+                    mService.get().resumeBookmark(msgObj.nextLong());
                     break;
                 case ODYSSEY_DELETEBOOKMARK:
-                    mService.get().deleteBookmark(msgObj.getLongParam());
+                    mService.get().deleteBookmark(msgObj.nextLong());
                     break;
                 case ODYSSEY_CREATEBOOKMARK:
-                    mService.get().createBookmark(msgObj.getStringParam());
+                    mService.get().createBookmark(msgObj.nextString());
                     break;
                 case ODYSSEY_ENQUEUEFILE:
-                    mService.get().enqueueFile(msgObj.getStringParam(), msgObj.getBoolParam());
+                    mService.get().enqueueFile(msgObj.nextString(), msgObj.nextBool());
                     break;
                 case ODYSSEY_PLAYFILE:
-                    mService.get().playFile(msgObj.getStringParam(), msgObj.getBoolParam());
+                    mService.get().playFile(msgObj.nextString(), msgObj.nextBool());
                     break;
                 case ODYSSEY_PLAYDIRECTORY:
-                    mService.get().playDirectory(msgObj.getStringParam(), msgObj.getIntParam());
+                    mService.get().playDirectory(msgObj.nextString(), msgObj.nextInt());
                     break;
                 case ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES:
-                    mService.get().enqueueDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().enqueueDirectoryAndSubDirectories(msgObj.nextString(), msgObj.nextString());
                     break;
                 case ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES:
-                    mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().playDirectoryAndSubDirectories(msgObj.nextString(), msgObj.nextString());
                     break;
                 case ODYSSEY_ENQUEUEALBUM:
-                    mService.get().enqueueAlbum(msgObj.getLongParam(), msgObj.getStringParam());
+                    mService.get().enqueueAlbum(msgObj.nextLong(), msgObj.nextString());
                     break;
                 case ODYSSEY_PLAYALBUM:
-                    mService.get().playAlbum(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getIntParam());
+                    mService.get().playAlbum(msgObj.nextLong(), msgObj.nextString(), msgObj.nextInt());
                     break;
                 case ODYSSEY_ENQUEUEARTIST:
-                    mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().enqueueArtist(msgObj.nextLong(), msgObj.nextString(), msgObj.nextString());
                     break;
                 case ODYSSEY_PLAYARTIST:
-                    mService.get().playArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().playArtist(msgObj.nextLong(), msgObj.nextString(), msgObj.nextString());
                     break;
                 case ODYSSEY_ENQUEUERECENTALBUMS:
                     mService.get().enqueueRecentAlbums();
@@ -151,13 +151,13 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playRecentAlbums();
                     break;
                 case ODYSSEY_START_SLEEPTIMER:
-                    mService.get().startSleepTimer(msgObj.getLongParam(), msgObj.getBoolParam());
+                    mService.get().startSleepTimer(msgObj.nextLong(), msgObj.nextBool());
                     break;
                 case ODYSSEY_CANCEL_SLEEPTIMER:
                     mService.get().cancelSleepTimer();
                     break;
                 case ODYSSEY_SET_SMARTRANDOM:
-                    mService.get().setSmartRandom(msgObj.getIntParam());
+                    mService.get().setSmartRandom(msgObj.nextInt());
                     break;
             }
 
