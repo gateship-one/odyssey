@@ -125,7 +125,7 @@ public class PlaylistViewModel extends GenericViewModel<PlaylistModel> {
         }
     }
 
-    public static class PlaylistViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class PlaylistViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

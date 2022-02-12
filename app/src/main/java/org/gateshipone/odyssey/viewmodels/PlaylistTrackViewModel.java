@@ -102,7 +102,7 @@ public class PlaylistTrackViewModel extends GenericViewModel<TrackModel> {
         }
     }
 
-    public static class PlaylistTrackViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class PlaylistTrackViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

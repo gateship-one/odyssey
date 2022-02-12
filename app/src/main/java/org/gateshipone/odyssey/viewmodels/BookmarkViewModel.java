@@ -95,7 +95,7 @@ public class BookmarkViewModel extends GenericViewModel<BookmarkModel> {
         }
     }
 
-    public static class BookmarkViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class BookmarkViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

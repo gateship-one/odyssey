@@ -109,7 +109,7 @@ public class AlbumViewModel extends GenericViewModel<AlbumModel> {
         }
     }
 
-    public static class AlbumViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class AlbumViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

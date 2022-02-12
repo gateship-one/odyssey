@@ -99,7 +99,7 @@ public class TrackViewModel extends GenericViewModel<TrackModel> {
     }
 
 
-    public static class TrackViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class TrackViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

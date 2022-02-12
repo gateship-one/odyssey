@@ -82,7 +82,7 @@ public class FileViewModel extends GenericViewModel<FileModel> {
         }
     }
 
-    public static class FileViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class FileViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 

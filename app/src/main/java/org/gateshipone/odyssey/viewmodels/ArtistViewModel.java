@@ -83,7 +83,7 @@ public class ArtistViewModel extends GenericViewModel<ArtistModel> {
         }
     }
 
-    public static class ArtistViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    public static class ArtistViewModelFactory implements ViewModelProvider.Factory {
 
         private final Application mApplication;
 
