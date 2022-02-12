@@ -133,9 +133,11 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
 
         // setup viewpager
         mMyMusicViewPager = view.findViewById(R.id.my_music_viewpager);
+        // make sure to set the offscreen page limit before an adapter is set
+        // otherwise there will be unwanted updates of the fragments inside the pager adapter
+        mMyMusicViewPager.setOffscreenPageLimit(2);
         mMyMusicPagerAdapter = new MyMusicPagerAdapter(getChildFragmentManager());
         mMyMusicViewPager.setAdapter(mMyMusicPagerAdapter);
-        mMyMusicViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mMyMusicViewPager, false);
         tabLayout.addOnTabSelectedListener(this);
 
