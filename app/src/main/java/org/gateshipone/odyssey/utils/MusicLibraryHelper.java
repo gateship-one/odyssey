@@ -272,6 +272,7 @@ public class MusicLibraryHelper {
      * @param playlistId The id to identify the playlist in the MediaStore
      * @param context    The application context to access the content resolver.
      * @return The list of {@link TrackModel} of all tracks for the specified playlist.
+     * @deprecated Starting with API Level 30 the support for playlists in the mediastore will end.
      */
     public static List<TrackModel> getTracksForPlaylist(final long playlistId, final Context context) {
         final List<TrackModel> playlistTracks = new ArrayList<>();

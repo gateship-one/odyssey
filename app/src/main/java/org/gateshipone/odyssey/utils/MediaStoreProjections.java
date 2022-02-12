@@ -94,6 +94,7 @@ class MediaStoreProjections {
         String IS_MUSIC = MediaStore.Audio.Media.IS_MUSIC;
     }
 
+    @Deprecated
     interface ProjectionPlaylists {
         /**
          * projection array
@@ -110,6 +111,7 @@ class MediaStoreProjections {
         String DATE_MODIFIED = MediaStore.Audio.Playlists.DATE_MODIFIED;
     }
 
+    @Deprecated
     interface ProjectionPlaylistTracks {
         /**
          * projection array
@@ -199,6 +201,7 @@ class MediaStoreProjections {
         }
     }
 
+    @Deprecated
     private static String[] getProjectionPlaylists() {
         return new String[]{
                 MediaStore.Audio.Playlists.NAME,
@@ -206,6 +209,7 @@ class MediaStoreProjections {
         };
     }
 
+    @Deprecated
     private static String[] getProjectionPlaylistTracks() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return new String[]{
