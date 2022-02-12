@@ -36,7 +36,6 @@ import androidx.annotation.NonNull;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
-import org.gateshipone.odyssey.activities.OdysseySplashActivity;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.NowPlayingInformation;
@@ -202,7 +201,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
         // set button actions
         // Main action
-        Intent mainIntent = new Intent(context, OdysseySplashActivity.class);
+        Intent mainIntent = new Intent(context, OdysseyMainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         if (nowPlaying) {
             // add intent only if playing is active

@@ -1056,7 +1056,7 @@ public class OdysseyMainActivity extends GenericActivity
 
                         startActivity(intent);
                     });
-                    builder.setNegativeButton(R.string.dialog_action_cancel,(dialog, which) -> disableBatteryOptimizationDialog());
+                    builder.setNegativeButton(R.string.dialog_action_cancel, (dialog, which) -> disableBatteryOptimizationDialog());
                     // make sure to disable the dialog in each cancel event
                     builder.setOnCancelListener(dialog -> disableBatteryOptimizationDialog());
 

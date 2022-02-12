@@ -37,7 +37,6 @@ import androidx.core.app.NotificationCompat;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.OdysseyMainActivity;
-import org.gateshipone.odyssey.activities.OdysseySplashActivity;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.playbackservice.PlaybackService;
 
@@ -101,7 +100,7 @@ public class OdysseyNotificationManager {
             mNotificationBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
 
             // Open application intent
-            Intent mainIntent = new Intent(mContext, OdysseySplashActivity.class);
+            Intent mainIntent = new Intent(mContext, OdysseyMainActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             mainIntent.putExtra(OdysseyMainActivity.MAINACTIVITY_INTENT_EXTRA_REQUESTEDVIEW, OdysseyMainActivity.REQUESTEDVIEW.NOWPLAYING.ordinal());
             PendingIntent contentPendingIntent = PendingIntent.getActivity(mContext, NOTIFICATION_INTENT_OPENGUI, mainIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);

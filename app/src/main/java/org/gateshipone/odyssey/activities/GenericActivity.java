@@ -52,8 +52,6 @@ public abstract class GenericActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String themePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
@@ -65,6 +63,8 @@ public abstract class GenericActivity extends AppCompatActivity {
             setTheme(getResources().getIdentifier(name, "style", getPackageName()));
         }
 
+        super.onCreate(savedInstanceState);
+
         // setup progressdialog
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(getString(R.string.playbackservice_working));
@@ -73,10 +73,8 @@ public abstract class GenericActivity extends AppCompatActivity {
 
         mServiceConnection = new PlaybackServiceConnection(getApplicationContext());
 
-
         // Create service connection
         mServiceConnection.setNotifier(new ServiceConnectionListener());
-
 
         // suggest that we want to change the music audio stream by hardware volume controls even
         // if no music is currently played

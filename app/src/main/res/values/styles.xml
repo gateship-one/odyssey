@@ -456,7 +456,12 @@
 
     <style name="AppThemeLight.NumberPicker" parent="AppThemeLight">
         <item name="colorControlNormal">?attr/odyssey_color_accent</item>
-        <item name="android:colorControlNormal">?odyssey_color_accent</item>
+        <item name="android:colorControlNormal">?attr/odyssey_color_accent</item>
         <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorIconBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon_inner</item>
     </style>
 </resources>
