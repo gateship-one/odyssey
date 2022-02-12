@@ -53,17 +53,17 @@ public class ListViewItem extends GenericImageViewItem {
     /**
      * TextView for the title of the item.
      */
-    private TextView mTitleView;
+    private final TextView mTitleView;
 
     /**
      * TextView for the subtitle of the item.
      */
-    private TextView mSubtitleView;
+    private final TextView mSubtitleView;
 
     /**
      * TextView for the additional subtitle of the item.
      */
-    private TextView mAdditionalSubtitleView;
+    private final TextView mAdditionalSubtitleView;
 
     /**
      * ImageView for the icon of the item.

@@ -60,7 +60,7 @@ public class BitmapCache {
     /**
      * Private cache instance
      */
-    private LruCache<String, Bitmap> mCache;
+    private final LruCache<String, Bitmap> mCache;
 
     /**
      * Singleton instance

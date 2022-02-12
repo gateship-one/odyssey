@@ -41,7 +41,7 @@ public class PlaybackServiceConnection implements ServiceConnection {
     /**
      * Application context used for binding to the service
      */
-    private Context mApplicationContext;
+    private final Context mApplicationContext;
 
     /**
      * Callback handler for connection state changes

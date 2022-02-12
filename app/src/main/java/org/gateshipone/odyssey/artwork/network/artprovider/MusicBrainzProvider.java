@@ -56,7 +56,7 @@ public class MusicBrainzProvider extends ArtProvider {
     /**
      * {@link RequestQueue} used to handle the requests of this class.
      */
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
 
     /**
      * Singleton instance

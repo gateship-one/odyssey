@@ -44,7 +44,7 @@ public class TrackRandomGenerator {
     /**
      * Underlying data structure for artist-track buckets
      */
-    private ArrayList<List<Integer>> mData;
+    private final ArrayList<List<Integer>> mData;
 
     /**
      * Creates an empty data structure
@@ -53,7 +53,7 @@ public class TrackRandomGenerator {
         mData = new ArrayList<>();
     }
 
-    private BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
+    private final BetterPseudoRandomGenerator mRandomGenerator = new BetterPseudoRandomGenerator();
 
     private List<TrackModel> mOriginalList;
 
@@ -185,7 +185,7 @@ public class TrackRandomGenerator {
          * Timeout in ns (1 second)
          */
         private static final long TIMEOUT_NS = 10000000000L;
-        private Random mJavaGenerator;
+        private final Random mJavaGenerator;
 
         private static final int RAND_MAX = Integer.MAX_VALUE;
 

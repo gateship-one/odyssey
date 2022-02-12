@@ -68,7 +68,7 @@ public abstract class GenericSectionAdapter<T extends GenericModel> extends Base
      */
     private FilterTask<T> mFilterTask;
 
-    private ReentrantReadWriteLock mLock;
+    private final ReentrantReadWriteLock mLock;
 
     private final SectionCreator<T> mSectionCreator;
 

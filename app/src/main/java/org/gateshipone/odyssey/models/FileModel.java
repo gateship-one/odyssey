@@ -258,7 +258,7 @@ public class FileModel implements GenericModel, Comparable<FileModel> {
      */
     private static class FileExtensionFilter implements FilenameFilter {
 
-        private List<String> mExtensions;
+        private final List<String> mExtensions;
 
         FileExtensionFilter(List<String> extensions) {
             mExtensions = extensions;

@@ -39,7 +39,7 @@ public class OdysseyByteRequest extends Request<ImageResponse> {
 
     private final Response.Listener<ImageResponse> mListener;
 
-    private ArtworkRequestModel mModel;
+    private final ArtworkRequestModel mModel;
 
     public OdysseyByteRequest(ArtworkRequestModel model, String url, Response.Listener<ImageResponse> listener, @Nullable Response.ErrorListener errorListener) {
         super(Method.GET, url, errorListener);

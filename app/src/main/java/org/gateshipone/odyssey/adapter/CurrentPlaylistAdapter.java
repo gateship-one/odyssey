@@ -76,12 +76,12 @@ public class CurrentPlaylistAdapter extends BaseAdapter implements ScrollSpeedAd
 
     private boolean mHideArtwork;
 
-    private int mListItemHeight;
+    private final int mListItemHeight;
 
     /**
      * {@link LruCache} to reduce load on the IPC between GUI and PBS.
      */
-    private LruCache<Integer, TrackModel> mTrackCache;
+    private final LruCache<Integer, TrackModel> mTrackCache;
 
     public CurrentPlaylistAdapter(Context context, PlaybackServiceConnection playbackServiceConnection) {
         super();

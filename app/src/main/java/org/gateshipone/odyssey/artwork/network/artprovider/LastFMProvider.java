@@ -68,7 +68,7 @@ public class LastFMProvider extends ArtProvider {
     /**
      * Private {@link RequestQueue} to use for internet requests.
      */
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
 
     /**
      * Singleton instance

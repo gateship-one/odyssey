@@ -36,9 +36,9 @@ public class ArtworkRequestModel {
         ARTIST
     }
 
-    private GenericModel mModel;
+    private final GenericModel mModel;
 
-    private ArtworkRequestType mType;
+    private final ArtworkRequestType mType;
 
     public ArtworkRequestModel(ArtistModel artistModel) {
         this(artistModel, ArtworkRequestType.ARTIST);

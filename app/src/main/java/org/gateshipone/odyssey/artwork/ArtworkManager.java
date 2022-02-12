@@ -134,7 +134,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     /**
      * Manager for the SQLite database handling
      */
-    private ArtworkDatabaseManager mDBManager;
+    private final ArtworkDatabaseManager mDBManager;
 
     /**
      * List of observers that needs updating if a new ArtistImage is downloaded.

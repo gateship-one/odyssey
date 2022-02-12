@@ -102,12 +102,12 @@ public class GaplessPlayer {
     /**
      * PlaybackService using this class. This required as a context for wakelocks, callbacks,...
      */
-    private PlaybackService mPlaybackService;
+    private final PlaybackService mPlaybackService;
 
     /**
      * Lock to synchronize access to the boolean variable mSecondPreparing
      */
-    private Semaphore mSecondPreparingLock;
+    private final Semaphore mSecondPreparingLock;
 
     /**
      * Registered listeners for track finish callbacks
@@ -437,7 +437,7 @@ public class GaplessPlayer {
         }
     }
 
-    private OnPreparedListener mPrimaryPreparedListener = new MediaPlayer.OnPreparedListener() {
+    private final OnPreparedListener mPrimaryPreparedListener = new MediaPlayer.OnPreparedListener() {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
@@ -500,7 +500,7 @@ public class GaplessPlayer {
         }
     };
 
-    private OnPreparedListener mSecondaryPreparedListener = new MediaPlayer.OnPreparedListener() {
+    private final OnPreparedListener mSecondaryPreparedListener = new MediaPlayer.OnPreparedListener() {
 
         @Override
         public void onPrepared(MediaPlayer mp) {

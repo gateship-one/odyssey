@@ -40,13 +40,13 @@ public class AlbumsAdapter extends GenericSectionAdapter<AlbumModel> implements 
 
     private final Context mContext;
 
-    private ArtworkManager mArtworkManager;
+    private final ArtworkManager mArtworkManager;
 
-    private boolean mUseList;
+    private final boolean mUseList;
 
     private int mListItemHeight;
 
-    private boolean mHideArtwork;
+    private final boolean mHideArtwork;
 
     public AlbumsAdapter(final Context context, final boolean useList) {
         super();
