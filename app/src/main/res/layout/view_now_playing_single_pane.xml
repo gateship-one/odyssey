@@ -47,7 +47,8 @@
                 android:layout_alignParentEnd="false"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:src="@drawable/cover_placeholder" />
+                android:src="@drawable/cover_placeholder"
+                android:contentDescription="@null" />
 
             <LinearLayout
                 android:id="@+id/now_playing_header_textLayout"
@@ -108,7 +109,8 @@
                     android:baselineAlignBottom="false"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_queue_music_24dp"
-                    android:tint="?attr/odyssey_color_text_accent" />
+                    android:tint="?attr/odyssey_color_text_accent"
+                    android:contentDescription="@null" />
 
                 <ImageButton
                     android:id="@+id/now_playing_topMenuButton"
@@ -118,7 +120,8 @@
                     android:background="?attr/actionBarItemBackground"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_more_vert_24dp"
-                    android:tint="?attr/odyssey_color_text_accent" />
+                    android:tint="?attr/odyssey_color_text_accent"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
             <LinearLayout
@@ -136,7 +139,8 @@
                     android:baselineAlignBottom="false"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_play_arrow_48dp"
-                    android:tint="?attr/odyssey_color_text_accent" />
+                    android:tint="?attr/odyssey_color_text_accent"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -229,7 +233,8 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="center"
                         android:src="@drawable/ic_repeat_24dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@null" />
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomPreviousButton"
@@ -239,7 +244,8 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_skip_previous_48dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@null" />
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomPlayPauseButton"
@@ -249,7 +255,8 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_play_circle_fill_48dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@null" />
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomNextButton"
@@ -259,7 +266,8 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_skip_next_48dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@null" />
 
                     <ImageButton
                         android:id="@+id/now_playing_bottomRandomButton"
@@ -269,7 +277,8 @@
                         android:background="?android:selectableItemBackground"
                         android:scaleType="center"
                         android:src="@drawable/ic_shuffle_24dp"
-                        android:tint="?attr/odyssey_color_text_accent" />
+                        android:tint="?attr/odyssey_color_text_accent"
+                        android:contentDescription="@null" />
 
                 </LinearLayout>
             </LinearLayout>

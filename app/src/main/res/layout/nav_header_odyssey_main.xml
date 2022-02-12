@@ -36,7 +36,8 @@
         android:alpha="0.1"
         android:scaleType="centerCrop"
         android:src="@drawable/odyssey_256dp"
-        app:tint="?attr/odyssey_color_navheader_icon" />
+        app:tint="?attr/odyssey_color_navheader_icon"
+        android:contentDescription="@null" />
 
     <TextView
         android:layout_width="match_parent"

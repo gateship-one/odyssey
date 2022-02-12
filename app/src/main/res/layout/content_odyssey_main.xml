@@ -81,7 +81,8 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:src="@drawable/ic_play_arrow_48dp"
             app:backgroundTint="?attr/colorAccent"
-            app:tint="?attr/odyssey_color_text_accent" />
+            app:tint="?attr/odyssey_color_text_accent"
+            android:contentDescription="@null" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

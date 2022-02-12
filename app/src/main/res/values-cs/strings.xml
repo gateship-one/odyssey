@@ -277,7 +277,7 @@
     <string name="activity_about_version">Verze:</string>
 
     <!-- PBS working message -->
-    <string name="playbackservice_working">Prosím, čekejte...</string>
+    <string name="playbackservice_working">Prosím, čekejte…</string>
 
     <!-- Bulk downloader service -->
     <string name="downloader_notification_title">Běží hromadné stahování</string>

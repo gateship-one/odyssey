@@ -30,5 +30,5 @@
         android:id="@+id/action_add_artist_albums"
         android:icon="@drawable/ic_queue_24dp"
         android:title="@string/action_add_artist_albums"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

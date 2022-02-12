@@ -41,13 +41,15 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:src="@drawable/cover_placeholder_96dp"
-            app:tint="?attr/odyssey_color_text_background_primary" />
+            app:tint="?attr/odyssey_color_text_background_primary"
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
     </ViewSwitcher>
 
     <include

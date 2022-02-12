@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/material_standard_horizontal_spacing"
-        tools:text="@string/preference_resume_step_size_dialog_title"
+        tools:text="Step size: 42 seconds"
         android:textSize="@dimen/material_font_style_size_subheading" />
 
     <SeekBar
