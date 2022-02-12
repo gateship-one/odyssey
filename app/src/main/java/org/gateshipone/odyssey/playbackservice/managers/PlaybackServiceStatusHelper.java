@@ -141,7 +141,7 @@ public class PlaybackServiceStatusHelper {
             currentTrack.setTrackDuration(mPlaybackService.getTrackDuration());
         }
 
-        PlaybackService.PLAYSTATE currentState = info.getPlayState();
+        PlaybackService.PLAY_STATE currentState = info.getPlayState();
 
         // Ask playback service for its state
         switch (currentState) {
@@ -197,9 +197,9 @@ public class PlaybackServiceStatusHelper {
      * @param track         Current track.
      * @param playbackState State of the PlaybackService.
      */
-    private void updateMetadata(TrackModel track, PlaybackService.PLAYSTATE playbackState) {
+    private void updateMetadata(TrackModel track, PlaybackService.PLAY_STATE playbackState) {
         if (track != null) {
-            if (playbackState == PlaybackService.PLAYSTATE.PLAYING) {
+            if (playbackState == PlaybackService.PLAY_STATE.PLAYING) {
                 mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder().setState(PlaybackStateCompat.STATE_PLAYING, mPlaybackService.getTrackPosition(), 1.0f)
                         .setActions(PlaybackStateCompat.ACTION_SKIP_TO_NEXT + PlaybackStateCompat.ACTION_PAUSE +
                                 PlaybackStateCompat.ACTION_PLAY + PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS +
@@ -259,15 +259,15 @@ public class PlaybackServiceStatusHelper {
      *
      * @param state State of the PlaybackService
      */
-    public void broadcastPlaybackServiceState(PlaybackService.PLAYBACKSERVICESTATE state) {
-        if (state == PlaybackService.PLAYBACKSERVICESTATE.WORKING) {
+    public void broadcastPlaybackServiceState(PlaybackService.PLAYBACK_SERVICE_STATE state) {
+        if (state == PlaybackService.PLAYBACK_SERVICE_STATE.WORKING) {
             // Create the broadcast intent
             Intent broadcastIntent = new Intent(MESSAGE_WORKING);
             broadcastIntent.setPackage(mPlaybackService.getPackageName());
 
             // We're good to go, send it away
             mPlaybackService.sendBroadcast(broadcastIntent);
-        } else if (state == PlaybackService.PLAYBACKSERVICESTATE.IDLE) {
+        } else if (state == PlaybackService.PLAYBACK_SERVICE_STATE.IDLE) {
             // Create the broadcast intent
             Intent broadcastIntent = new Intent(MESSAGE_IDLE);
             broadcastIntent.setPackage(mPlaybackService.getPackageName());

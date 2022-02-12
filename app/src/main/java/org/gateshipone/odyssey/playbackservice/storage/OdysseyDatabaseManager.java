@@ -420,8 +420,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             state.mTrackNumber = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKNUMBER));
             state.mTrackPosition = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
-            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
+            state.mRandomState = PlaybackService.RANDOM_STATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEAT_STATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();
@@ -454,8 +454,8 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
 
             state.mTrackNumber = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKNUMBER));
             state.mTrackPosition = cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_TRACKPOSITION));
-            state.mRandomState = PlaybackService.RANDOMSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
-            state.mRepeatState = PlaybackService.REPEATSTATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
+            state.mRandomState = PlaybackService.RANDOM_STATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_RANDOM_STATE))];
+            state.mRepeatState = PlaybackService.REPEAT_STATE.values()[cursor.getInt(cursor.getColumnIndexOrThrow(StateTable.COLUMN_REPEAT_STATE))];
         }
 
         cursor.close();

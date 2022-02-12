@@ -101,14 +101,14 @@ OdysseyWidgetProvider extends AppWidgetProvider {
 
                 // Check if a payload was sent
                 if (null != info) {
-                    PlaybackService.PLAYSTATE state = info.getPlayState();
-                    if (state == PlaybackService.PLAYSTATE.STOPPED || state == PlaybackService.PLAYSTATE.RESUMED) {
+                    PlaybackService.PLAY_STATE state = info.getPlayState();
+                    if (state == PlaybackService.PLAY_STATE.STOPPED || state == PlaybackService.PLAY_STATE.RESUMED) {
                         mLastInfo = new NowPlayingInformation();
                         mLastCover = null;
 
                         setWidgetContent(mLastInfo, context);
 
-                    } else if (state == PlaybackService.PLAYSTATE.PLAYING || state == PlaybackService.PLAYSTATE.PAUSE) {
+                    } else if (state == PlaybackService.PLAY_STATE.PLAYING || state == PlaybackService.PLAY_STATE.PAUSE) {
                         // Refresh the widget with the new information
                         setWidgetContent(info, context);
 
@@ -188,9 +188,9 @@ OdysseyWidgetProvider extends AppWidgetProvider {
         }
 
         // Set the images of the play button dependent on the playback state.
-        PlaybackService.PLAYSTATE playState = info.getPlayState();
+        PlaybackService.PLAY_STATE playState = info.getPlayState();
 
-        if (playState == PlaybackService.PLAYSTATE.PLAYING) {
+        if (playState == PlaybackService.PLAY_STATE.PLAYING) {
             // Show pause icon
             nowPlaying = true;
             views.setImageViewResource(R.id.widget_play_btn, R.drawable.ic_pause_48dp);

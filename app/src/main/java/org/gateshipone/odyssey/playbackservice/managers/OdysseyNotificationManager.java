@@ -76,7 +76,7 @@ public class OdysseyNotificationManager {
     private Bitmap mLastBitmap = null;
     private TrackModel mLastTrack = null;
 
-    private PlaybackService.PLAYSTATE mLastState;
+    private PlaybackService.PLAY_STATE mLastState;
 
     private MediaSessionCompat.Token mLastToken;
 
@@ -92,7 +92,7 @@ public class OdysseyNotificationManager {
      * for the normal layout and one for the big one. Sets the different
      * attributes of the remoteViews and starts a thread for Cover generation.
      */
-    public synchronized void updateNotification(TrackModel track, PlaybackService.PLAYSTATE state, MediaSessionCompat.Token mediaSessionToken) {
+    public synchronized void updateNotification(TrackModel track, PlaybackService.PLAY_STATE state, MediaSessionCompat.Token mediaSessionToken) {
         mLastState = state;
         mLastToken = mediaSessionToken;
         if (track != null) {
@@ -115,7 +115,7 @@ public class OdysseyNotificationManager {
             // Pause/Play action
             PendingIntent playPauseIntent;
             int playPauseIcon;
-            if (state == PlaybackService.PLAYSTATE.PLAYING) {
+            if (state == PlaybackService.PLAY_STATE.PLAYING) {
                 Intent pauseIntent = new Intent(PlaybackService.ACTION_PAUSE);
                 playPauseIntent = PendingIntent.getBroadcast(mContext, NOTIFICATION_INTENT_PLAYPAUSE, pauseIntent, PENDING_INTENT_UPDATE_CURRENT_FLAG);
                 playPauseIcon = R.drawable.ic_pause_48dp;
@@ -178,7 +178,7 @@ public class OdysseyNotificationManager {
             // Check if run from service and check if playing or pause.
             // Pause notification should be dismissible.
             if (mContext instanceof Service) {
-                if (state == PlaybackService.PLAYSTATE.PLAYING) {
+                if (state == PlaybackService.PLAY_STATE.PLAYING) {
                     ((Service) mContext).startForeground(NOTIFICATION_ID, mNotification);
                 } else {
                     ((Service) mContext).stopForeground(false);

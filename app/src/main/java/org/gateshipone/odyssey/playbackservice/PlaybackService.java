@@ -71,14 +71,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * enums for random, repeat state
      */
-    public enum RANDOMSTATE {
+    public enum RANDOM_STATE {
         // If random mode is off
         RANDOM_OFF,
         // If random mode is on
         RANDOM_ON
     }
 
-    public enum REPEATSTATE {
+    public enum REPEAT_STATE {
         // If repeat mode is off
         REPEAT_OFF,
         // If the playlist should be repeated
@@ -90,7 +90,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * PlaybackState enum for the PlaybackService
      */
-    public enum PLAYSTATE {
+    public enum PLAY_STATE {
         // If a song is actual playing
         PLAYING,
         // If a song was playing before but is now paused (but the GaplessPlayer is prepared and ready to resume).
@@ -103,9 +103,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     }
 
     /**
-     * Idle state of this service. Used for notifying the user in the GUI about long running activites
+     * Idle state of this service. Used for notifying the user in the GUI about long running activities
      */
-    public enum PLAYBACKSERVICESTATE {
+    public enum PLAYBACK_SERVICE_STATE {
         // If the service is performing an operation
         WORKING,
         // If the service is finished with the operation
@@ -200,12 +200,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Saves if random playback is active
      */
-    private RANDOMSTATE mRandom = RANDOMSTATE.RANDOM_OFF;
+    private RANDOM_STATE mRandom = RANDOM_STATE.RANDOM_OFF;
 
     /**
      * Saves if repeat is active
      */
-    private REPEATSTATE mRepeat = REPEATSTATE.REPEAT_OFF;
+    private REPEAT_STATE mRepeat = REPEAT_STATE.REPEAT_OFF;
 
     /**
      * MediaControls manager
@@ -631,7 +631,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void playAllTracks(String filterString) {
         // Notify the user about the possible long running operation
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // clear the playlist before adding all tracks
@@ -647,7 +647,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         jumpToIndex(0);
 
         // Notify the user that the operation is now finished
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -655,7 +655,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Shuffles the current playlist
      */
     public void shufflePlaylist() {
-        final PLAYSTATE state = getPlaybackState();
+        final PLAY_STATE state = getPlaybackState();
 
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // get the current TrackModel and remove it from playlist
@@ -672,7 +672,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             mPlaybackServiceStatusHelper.updateStatus();
 
             // set next track for the GaplessPlayer which has now changed
-            if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
+            if (state == PLAY_STATE.PLAYING || state == PLAY_STATE.PAUSE) {
                 try {
                     if (mCurrentPlayingIndex + 1 < mCurrentList.size()) {
                         mPlayer.setNextTrack(mCurrentList.get(mCurrentPlayingIndex + 1).getTrackUri());
@@ -718,7 +718,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         if (getTrackPosition() > 2000) {
             // Check if current song should be restarted
             jumpToIndex(mCurrentPlayingIndex);
-        } else if (mRandom == RANDOMSTATE.RANDOM_ON) {
+        } else if (mRandom == RANDOM_STATE.RANDOM_ON) {
             // handle random mode
             if (mLastPlayingIndex == -1) {
                 // if no mLastPlayingIndex reuse mCurrentPlayingIndex and restart the song
@@ -729,7 +729,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
         } else {
             // Check if the repeat track mode is activated which means that the user is stuck to the current song
-            if (mRepeat == REPEATSTATE.REPEAT_TRACK) {
+            if (mRepeat == REPEAT_STATE.REPEAT_TRACK) {
                 // repeat the current track again
                 jumpToIndex(mCurrentPlayingIndex);
             } else {
@@ -737,7 +737,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 if ((mCurrentPlayingIndex - 1 >= 0) && mCurrentPlayingIndex < mCurrentList.size() && mCurrentPlayingIndex >= 0) {
                     // Jump to the previous song (sequential back jump)
                     jumpToIndex(mCurrentPlayingIndex - 1);
-                } else if (mRepeat == REPEATSTATE.REPEAT_ALL) {
+                } else if (mRepeat == REPEAT_STATE.REPEAT_ALL) {
                     // In repeat mode next track is last track of playlist
                     jumpToIndex(mCurrentList.size() - 1);
                 } else {
@@ -788,8 +788,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         updateTrackRandomGenerator();
 
         // reset random and repeat state
-        mRandom = RANDOMSTATE.RANDOM_OFF;
-        mRepeat = REPEATSTATE.REPEAT_OFF;
+        mRandom = RANDOM_STATE.RANDOM_OFF;
+        mRepeat = REPEAT_STATE.REPEAT_OFF;
 
         // No track remains
         mCurrentPlayingIndex = -1;
@@ -958,7 +958,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param orderKey String to specify the order of the tracks
      */
     public void enqueueAlbum(long albumId, String orderKey) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current albumId from mediastore
@@ -967,7 +967,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -991,14 +991,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Enqueue all recent albums from the mediastore.
      */
     public void enqueueRecentAlbums() {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         List<TrackModel> tracks = MusicLibraryHelper.getRecentTracks(getApplicationContext());
 
         enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1022,7 +1022,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param trackOrderKey String to specify the order of the tracks
      */
     public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // get all tracks for the current artistId from mediastore
@@ -1031,7 +1031,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1147,14 +1147,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index Position of the track to remove
      */
     public void dequeueTrack(int index) {
-        PLAYSTATE state = getPlaybackState();
+        PLAY_STATE state = getPlaybackState();
         // Check if track is currently playing, if so stop it
         if (mCurrentPlayingIndex == index) {
             // Delete song at index
             mCurrentList.remove(index);
 
             // Check if a next track exists and jump to it if player was playing before
-            if (state == PLAYSTATE.PLAYING && index < mCurrentList.size()) {
+            if (state == PLAY_STATE.PLAYING && index < mCurrentList.size()) {
                 jumpToIndex(index);
             } else {
                 stop();
@@ -1193,10 +1193,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index start position of the section to remove
      */
     public void dequeueTracks(int index) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
-        PLAYSTATE state = getPlaybackState();
+        PLAY_STATE state = getPlaybackState();
 
         int endIndex = index + 1;
 
@@ -1226,7 +1226,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
             }
             // Check if a next track exists and jump to it if player was playing before
-            if (state == PLAYSTATE.PLAYING && endIndex < mCurrentList.size()) {
+            if (state == PLAY_STATE.PLAYING && endIndex < mCurrentList.size()) {
                 jumpToIndex(endIndex);
             } else {
                 stop();
@@ -1280,7 +1280,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // Send new NowPlaying because playlist changed
         mPlaybackServiceStatusHelper.updateStatus();
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
 
         // update trackRandomGenerator
@@ -1300,8 +1300,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mLastPosition = getTrackPosition();
 
         // If it is still running stop playback.
-        PLAYSTATE state = getPlaybackState();
-        if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
+        PLAY_STATE state = getPlaybackState();
+        if (state == PLAY_STATE.PLAYING || state == PLAY_STATE.PAUSE) {
             mPlayer.stop();
         }
 
@@ -1332,10 +1332,10 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void toggleRepeat() {
 
         // get all repeat states
-        REPEATSTATE[] repeatstates = REPEATSTATE.values();
+        REPEAT_STATE[] repeatStates = REPEAT_STATE.values();
 
         // toggle the repeat state
-        mRepeat = repeatstates[(mRepeat.ordinal() + 1) % repeatstates.length];
+        mRepeat = repeatStates[(mRepeat.ordinal() + 1) % repeatStates.length];
 
         // update the status
         mPlaybackServiceStatusHelper.updateStatus();
@@ -1375,14 +1375,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void toggleRandom() {
 
         // get all random states
-        RANDOMSTATE[] randomstates = RANDOMSTATE.values();
+        RANDOM_STATE[] randomStates = RANDOM_STATE.values();
 
         // toggle the random state
-        mRandom = randomstates[(mRandom.ordinal() + 1) % randomstates.length];
+        mRandom = randomStates[(mRandom.ordinal() + 1) % randomStates.length];
 
         // update the status
         mPlaybackServiceStatusHelper.updateStatus();
-        if (mRandom == RANDOMSTATE.RANDOM_ON) {
+        if (mRandom == RANDOM_STATE.RANDOM_ON) {
             updateTrackRandomGenerator();
             randomizeNextTrack();
         } else {
@@ -1420,9 +1420,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public NowPlayingInformation getNowPlayingInformation() {
 
-        PLAYSTATE state = getPlaybackState();
+        PLAY_STATE state = getPlaybackState();
 
-        if (state == PLAYSTATE.STOPPED) {
+        if (state == PLAY_STATE.STOPPED) {
             return new NowPlayingInformation();
         } else {
             TrackModel currentTrack = mCurrentList.get(mCurrentPlayingIndex);
@@ -1435,12 +1435,12 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Save the current playlist in odyssey internal database
      */
     public void savePlaylist(String name) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         mDatabaseManager.savePlaylist(name, mCurrentList);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1450,7 +1450,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param playlist the {@link PlaylistModel} that represents the playlist
      */
     public void enqueuePlaylist(PlaylistModel playlist) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         final List<TrackModel> playlistTracks = new ArrayList<>();
@@ -1474,7 +1474,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // add tracks to current playlist
         enqueueTracks(playlistTracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1497,7 +1497,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Resume the bookmark with the given timestamp
      */
     public void resumeBookmark(long timestamp) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // clear current playlist
@@ -1528,7 +1528,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // call resume and start playback
         resume();
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1536,14 +1536,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Delete the bookmark with the given timestamp from the database.
      */
     public void deleteBookmark(long timestamp) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // delete wont affect current playback
         // so just delete the state and the playlist from the database
         mDatabaseManager.removeState(timestamp);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1551,7 +1551,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Create a bookmark with the given title and save it in the database.
      */
     public void createBookmark(String bookmarkTitle) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         // grab the current state and playlist and save this as a new bookmark with the given title
@@ -1565,7 +1565,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         mDatabaseManager.saveState(mCurrentList, serviceState, bookmarkTitle, false);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1576,14 +1576,14 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param asNext   flag if the file should be enqueued as next
      */
     public void enqueueFile(final String filePath, final boolean asNext) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         final FileModel currentFile = new FileModel(filePath);
 
         enqueueFile(currentFile, asNext);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1593,7 +1593,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param filePath the path to the selected file
      */
     public void playFile(final String filePath, final boolean clearPlaylist) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         if (clearPlaylist) {
@@ -1608,7 +1608,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             jumpToIndex(mCurrentList.size() - enqueuedFiles);
         }
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1657,7 +1657,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void playDirectory(String directoryPath, int position) {
         clearPlaylist();
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         final FileModel currentDirectory = new FileModel(directoryPath);
@@ -1672,7 +1672,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         jumpToIndex(position);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1683,7 +1683,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param filterString  A filter that is used to exclude folders/files that didn't contain this String.
      */
     public void enqueueDirectoryAndSubDirectories(String directoryPath, String filterString) {
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.WORKING);
         mBusy = true;
 
         final FileModel currentDirectory = new FileModel(directoryPath);
@@ -1696,7 +1696,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         // start meta data extraction for new tracks
         mMetaDataLoader.getTrackListMetaData(getApplicationContext(), tracks);
 
-        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
+        mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACK_SERVICE_STATE.IDLE);
         mBusy = false;
     }
 
@@ -1718,29 +1718,29 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     /**
      * Returns the playback state of the service
      */
-    public PLAYSTATE getPlaybackState() {
+    public PLAY_STATE getPlaybackState() {
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0) {
             // Check current playback state. If playing inform all listeners and
             // check if notification is set, and set if not.
             if (mPlayer.isRunning() && (mCurrentPlayingIndex < mCurrentList.size())) {
                 // Player is running and current index seems to be valid
-                return PLAYSTATE.PLAYING;
+                return PLAY_STATE.PLAYING;
             } else if (!mPlayer.isPrepared()) {
                 // If a position is set but the player is not prepared yet it is clear, that the user has not played the song yet
-                return PLAYSTATE.RESUMED;
+                return PLAY_STATE.RESUMED;
             } else {
                 // Only case left is that the player is paused, because a track is set AND PREPARED so it was played already
-                return PLAYSTATE.PAUSE;
+                return PLAY_STATE.PAUSE;
             }
         } else {
             // No playback because list is empty
-            return PLAYSTATE.STOPPED;
+            return PLAY_STATE.STOPPED;
         }
     }
 
     private void updateTrackRandomGenerator() {
         // Redo smart random list
-        if (mRandom == RANDOMSTATE.RANDOM_ON) {
+        if (mRandom == RANDOM_STATE.RANDOM_ON) {
             mTrackRandomGenerator.fillFromList(mCurrentList);
         } else {
             mTrackRandomGenerator.fillFromList(null);
@@ -1872,7 +1872,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             }
             // Notify all the things
             mPlaybackServiceStatusHelper.updateStatus();
-            if (mRandom == RANDOMSTATE.RANDOM_OFF) {
+            if (mRandom == RANDOM_STATE.RANDOM_OFF) {
                 // Check the repeat state
 
                 switch (mRepeat) {
@@ -2088,7 +2088,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         @Override
         public void onTrimMemory(int level) {
-            if (level == TRIM_MEMORY_COMPLETE && getPlaybackState() != PLAYSTATE.PLAYING) {
+            if (level == TRIM_MEMORY_COMPLETE && getPlaybackState() != PLAY_STATE.PLAYING) {
                 stopService();
             }
         }

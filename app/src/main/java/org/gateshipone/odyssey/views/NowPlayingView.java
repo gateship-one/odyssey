@@ -215,7 +215,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     /**
      * The state of the playbackservice.
      */
-    private PlaybackService.PLAYSTATE mPlaybackServiceState;
+    private PlaybackService.PLAY_STATE mPlaybackServiceState;
 
     /**
      * Saves the setting if the english or regional wikipedia is requested
@@ -233,7 +233,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     public NowPlayingView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDragHelper = ViewDragHelper.create(this, 1f, new BottomDragCallbackHelper());
-        mPlaybackServiceState = PlaybackService.PLAYSTATE.STOPPED;
+        mPlaybackServiceState = PlaybackService.PLAY_STATE.STOPPED;
 
         mLastTrack = new TrackModel();
 
@@ -569,7 +569,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         public boolean tryCaptureView(@NonNull View child, int pointerId) {
             if (child == mHeaderView) {
                 // start the refresh task if state is playing
-                if (mPlaybackServiceState == PlaybackService.PLAYSTATE.PLAYING) {
+                if (mPlaybackServiceState == PlaybackService.PLAY_STATE.PLAYING) {
                     startRefreshTask();
                 }
                 // report the change of the view

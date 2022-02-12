@@ -26,13 +26,13 @@ public class OdysseyServiceState {
 
     public int mTrackNumber;
     public int mTrackPosition;
-    public PlaybackService.RANDOMSTATE mRandomState;
-    public PlaybackService.REPEATSTATE mRepeatState;
+    public PlaybackService.RANDOM_STATE mRandomState;
+    public PlaybackService.REPEAT_STATE mRepeatState;
 
     public OdysseyServiceState() {
         mTrackNumber = -1;
         mTrackPosition = -1;
-        mRandomState = PlaybackService.RANDOMSTATE.RANDOM_OFF;
-        mRepeatState = PlaybackService.REPEATSTATE.REPEAT_OFF;
+        mRandomState = PlaybackService.RANDOM_STATE.RANDOM_OFF;
+        mRepeatState = PlaybackService.REPEAT_STATE.REPEAT_OFF;
     }
 }
