@@ -23,7 +23,6 @@
 package org.gateshipone.odyssey.playbackservice;
 
 import android.os.Message;
-import android.os.RemoteException;
 
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -46,7 +45,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void playURI(String uri) {
         // Create play control object
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAY)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY)
                 .addString(uri)
                 .build();
 
@@ -58,7 +57,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void enqueueTrack(TrackModel track, boolean asNext) {
         // Create enqueuetrack control object
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUETRACK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_TRACK)
                 .addTrack(track)
                 .addBool(asNext)
                 .build();
@@ -69,7 +68,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     public void playTrack(TrackModel track, boolean clearPlaylist) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYTRACK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_TRACK)
                 .addTrack(track)
                 .addBool(clearPlaylist)
                 .build();
@@ -82,7 +81,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void toggleRandom() {
         // Create random control object
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_RANDOM)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.RANDOM)
                 .build();
 
         final Message msg = mService.get().getHandler().obtainMessage();
@@ -93,7 +92,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void toggleRepeat() {
         // Create repeat control object
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_REPEAT)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.REPEAT)
                 .build();
 
         final Message msg = mService.get().getHandler().obtainMessage();
@@ -124,7 +123,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void setSmartRandom(int intelligenceFactor) {
         // Create repeat control object
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_SET_SMARTRANDOM)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.SET_SMART_RANDOM)
                 .addInt(intelligenceFactor)
                 .build();
 
@@ -135,7 +134,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void startSleepTimer(long durationMS, boolean stopAfterCurrent) {
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_START_SLEEPTIMER)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.START_SLEEP_TIMER)
                 .addLong(durationMS)
                 .addBool(stopAfterCurrent)
                 .build();
@@ -147,7 +146,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void cancelSleepTimer() {
-        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_CANCEL_SLEEPTIMER)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.CANCEL_SLEEP_TIMER)
                 .build();
 
         final Message msg = mService.get().getHandler().obtainMessage();
@@ -167,62 +166,62 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void seekTo(int position) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_SEEKTO)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.SEEK_TO)
                 .addInt(position)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void jumpTo(int position) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_JUMPTO)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.JUMP_TO)
                 .addInt(position)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void clearPlaylist() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_CLEARPLAYLIST)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.CLEAR_PLAYLIST)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void next() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_NEXT)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.NEXT)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void previous() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PREVIOUS)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PREVIOUS)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void togglePause() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_TOGGLEPAUSE)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.TOGGLE_PAUSE)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -243,22 +242,22 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void dequeueTrack(int index) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.DEQUEUE_TRACK)
                 .addInt(index)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void dequeueTracks(int index) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_DEQUEUETRACKS)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.DEQUEUE_TRACKS)
                 .addInt(index)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -275,21 +274,21 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void shufflePlaylist() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_SHUFFLEPLAYLIST)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.SHUFFLE_PLAYLIST)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playAllTracks(String filterString) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALLTRACKS)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_ALL_TRACKS)
                 .addString(filterString)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -301,105 +300,105 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     @Override
     public void savePlaylist(String name) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_SAVEPLAYLIST)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.SAVE_PLAYLIST)
                 .addString(name)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void enqueuePlaylist(PlaylistModel playlist) throws RemoteException {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEPLAYLIST)
+    public void enqueuePlaylist(PlaylistModel playlist) {
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_PLAYLIST)
                 .addPlaylist(playlist)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
-    public void playPlaylist(PlaylistModel playlist, int position) throws RemoteException {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYPLAYLIST)
+    public void playPlaylist(PlaylistModel playlist, int position) {
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_PLAYLIST)
                 .addPlaylist(playlist)
                 .addInt(position)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void enqueueAlbum(long albumId, String orderKey) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_ALBUM)
                 .addLong(albumId)
                 .addString(orderKey)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playAlbum(long albumId, String orderKey, int position) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYALBUM)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_ALBUM)
                 .addLong(albumId)
                 .addString(orderKey)
                 .addInt(position)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void enqueueRecentAlbums() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUERECENTALBUMS)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_RECENT_ALBUMS)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playRecentAlbums() {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYRECENTALBUMS)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_RECENT_ALBUMS)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_ARTIST)
                 .addLong(artistId)
                 .addString(albumOrderKey)
                 .addString(trackOrderKey)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playArtist(long artistId, String albumOrderKey, String trackOrderKey) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYARTIST)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_ARTIST)
                 .addLong(artistId)
                 .addString(albumOrderKey)
                 .addString(trackOrderKey)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -407,11 +406,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void resumeBookmark(long timestamp) {
         // create resume bookmark control object
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_RESUMEBOOKMARK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.RESUME_BOOKMARK)
                 .addLong(timestamp)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -419,11 +418,11 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void deleteBookmark(long timestamp) {
         // create delete bookmark control object
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_DELETEBOOKMARK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.DELETE_BOOKMARK)
                 .addLong(timestamp)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
@@ -431,71 +430,71 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     @Override
     public void createBookmark(String bookmarkTitle) {
         // create create bookmark control object
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_CREATEBOOKMARK)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.CREATE_BOOKMARK)
                 .addString(bookmarkTitle)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void enqueueFile(String filePath, boolean asNext) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEFILE)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_FILE)
                 .addString(filePath)
                 .addBool(asNext)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playFile(String filePath, boolean clearPlaylist) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYFILE)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_FILE)
                 .addString(filePath)
                 .addBool(clearPlaylist)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playDirectory(String directoryPath, int position) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYDIRECTORY)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_DIRECTORY)
                 .addString(directoryPath)
                 .addInt(position)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void enqueueDirectoryAndSubDirectories(String directoryPath, String filterString) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ENQUEUE_DIRECTORY_AND_SUBDIRECTORIES)
                 .addString(directoryPath)
                 .addString(filterString)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }
 
     @Override
     public void playDirectoryAndSubDirectories(String directoryPath, String filterString) {
-        ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES)
+        final ControlObject obj = new ControlObject.Builder(ControlObject.PLAYBACK_ACTION.PLAY_DIRECTORY_AND_SUBDIRECTORIES)
                 .addString(directoryPath)
                 .addString(filterString)
                 .build();
 
-        Message msg = mService.get().getHandler().obtainMessage();
+        final Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
     }

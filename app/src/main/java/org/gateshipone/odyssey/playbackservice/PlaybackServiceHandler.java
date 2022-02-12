@@ -54,109 +54,109 @@ public class PlaybackServiceHandler extends Handler {
         if (msgObj != null && mLock.tryAcquire()) {
             // Parse message
             switch (msgObj.getAction()) {
-                case ODYSSEY_PLAY:
+                case PLAY:
                     mService.get().playURI(msgObj.nextString());
                     break;
-                case ODYSSEY_TOGGLEPAUSE:
+                case TOGGLE_PAUSE:
                     mService.get().togglePause();
                     break;
-                case ODYSSEY_NEXT:
+                case NEXT:
                     mService.get().setNextTrack();
                     break;
-                case ODYSSEY_PREVIOUS:
+                case PREVIOUS:
                     mService.get().setPreviousTrack();
                     break;
-                case ODYSSEY_SEEKTO:
+                case SEEK_TO:
                     mService.get().seekTo(msgObj.nextInt());
                     break;
-                case ODYSSEY_JUMPTO:
+                case JUMP_TO:
                     mService.get().jumpToIndex(msgObj.nextInt());
                     break;
-                case ODYSSEY_REPEAT:
+                case REPEAT:
                     mService.get().toggleRepeat();
                     break;
-                case ODYSSEY_RANDOM:
+                case RANDOM:
                     mService.get().toggleRandom();
                     break;
-                case ODYSSEY_ENQUEUETRACK:
+                case ENQUEUE_TRACK:
                     mService.get().enqueueTrack(msgObj.getTrack(), msgObj.nextBool());
                     break;
-                case ODYSSEY_PLAYTRACK:
+                case PLAY_TRACK:
                     mService.get().playTrack(msgObj.getTrack(), msgObj.nextBool());
                     break;
-                case ODYSSEY_DEQUEUETRACK:
+                case DEQUEUE_TRACK:
                     mService.get().dequeueTrack(msgObj.nextInt());
                     break;
-                case ODYSSEY_DEQUEUETRACKS:
+                case DEQUEUE_TRACKS:
                     mService.get().dequeueTracks(msgObj.nextInt());
                     break;
-                case ODYSSEY_CLEARPLAYLIST:
+                case CLEAR_PLAYLIST:
                     mService.get().clearPlaylist();
                     break;
-                case ODYSSEY_SHUFFLEPLAYLIST:
+                case SHUFFLE_PLAYLIST:
                     mService.get().shufflePlaylist();
                     break;
-                case ODYSSEY_PLAYALLTRACKS:
+                case PLAY_ALL_TRACKS:
                     mService.get().playAllTracks(msgObj.nextString());
                     break;
-                case ODYSSEY_SAVEPLAYLIST:
+                case SAVE_PLAYLIST:
                     mService.get().savePlaylist(msgObj.nextString());
                     break;
-                case ODYSSEY_ENQUEUEPLAYLIST:
+                case ENQUEUE_PLAYLIST:
                     mService.get().enqueuePlaylist(msgObj.getPlaylist());
                     break;
-                case ODYSSEY_PLAYPLAYLIST:
+                case PLAY_PLAYLIST:
                     mService.get().playPlaylist(msgObj.getPlaylist(), msgObj.nextInt());
                     break;
-                case ODYSSEY_RESUMEBOOKMARK:
+                case RESUME_BOOKMARK:
                     mService.get().resumeBookmark(msgObj.nextLong());
                     break;
-                case ODYSSEY_DELETEBOOKMARK:
+                case DELETE_BOOKMARK:
                     mService.get().deleteBookmark(msgObj.nextLong());
                     break;
-                case ODYSSEY_CREATEBOOKMARK:
+                case CREATE_BOOKMARK:
                     mService.get().createBookmark(msgObj.nextString());
                     break;
-                case ODYSSEY_ENQUEUEFILE:
+                case ENQUEUE_FILE:
                     mService.get().enqueueFile(msgObj.nextString(), msgObj.nextBool());
                     break;
-                case ODYSSEY_PLAYFILE:
+                case PLAY_FILE:
                     mService.get().playFile(msgObj.nextString(), msgObj.nextBool());
                     break;
-                case ODYSSEY_PLAYDIRECTORY:
+                case PLAY_DIRECTORY:
                     mService.get().playDirectory(msgObj.nextString(), msgObj.nextInt());
                     break;
-                case ODYSSEY_ENQUEUEDIRECTORYANDSUBDIRECTORIES:
+                case ENQUEUE_DIRECTORY_AND_SUBDIRECTORIES:
                     mService.get().enqueueDirectoryAndSubDirectories(msgObj.nextString(), msgObj.nextString());
                     break;
-                case ODYSSEY_PLAYDIRECTORYANDSUBDIRECTORIES:
+                case PLAY_DIRECTORY_AND_SUBDIRECTORIES:
                     mService.get().playDirectoryAndSubDirectories(msgObj.nextString(), msgObj.nextString());
                     break;
-                case ODYSSEY_ENQUEUEALBUM:
+                case ENQUEUE_ALBUM:
                     mService.get().enqueueAlbum(msgObj.nextLong(), msgObj.nextString());
                     break;
-                case ODYSSEY_PLAYALBUM:
+                case PLAY_ALBUM:
                     mService.get().playAlbum(msgObj.nextLong(), msgObj.nextString(), msgObj.nextInt());
                     break;
-                case ODYSSEY_ENQUEUEARTIST:
+                case ENQUEUE_ARTIST:
                     mService.get().enqueueArtist(msgObj.nextLong(), msgObj.nextString(), msgObj.nextString());
                     break;
-                case ODYSSEY_PLAYARTIST:
+                case PLAY_ARTIST:
                     mService.get().playArtist(msgObj.nextLong(), msgObj.nextString(), msgObj.nextString());
                     break;
-                case ODYSSEY_ENQUEUERECENTALBUMS:
+                case ENQUEUE_RECENT_ALBUMS:
                     mService.get().enqueueRecentAlbums();
                     break;
-                case ODYSSEY_PLAYRECENTALBUMS:
+                case PLAY_RECENT_ALBUMS:
                     mService.get().playRecentAlbums();
                     break;
-                case ODYSSEY_START_SLEEPTIMER:
+                case START_SLEEP_TIMER:
                     mService.get().startSleepTimer(msgObj.nextLong(), msgObj.nextBool());
                     break;
-                case ODYSSEY_CANCEL_SLEEPTIMER:
+                case CANCEL_SLEEP_TIMER:
                     mService.get().cancelSleepTimer();
                     break;
-                case ODYSSEY_SET_SMARTRANDOM:
+                case SET_SMART_RANDOM:
                     mService.get().setSmartRandom(msgObj.nextInt());
                     break;
             }
