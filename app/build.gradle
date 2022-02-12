@@ -98,7 +98,7 @@ android {
             buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
         }
     }
-    lintOptions {
+    lint {
         abortOnError false
     }
 }
