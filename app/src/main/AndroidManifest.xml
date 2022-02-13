@@ -40,7 +40,8 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.indigo">
+        android:theme="@style/AppTheme.indigo"
+        tools:targetApi="s">
 
         <activity
             android:name=".activities.OdysseyMainActivity"
