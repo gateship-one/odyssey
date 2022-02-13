@@ -84,7 +84,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * Saved search string when user rotates devices
      */
-    private String mSearchString = "";
+    private String mSearchString;
 
     /**
      * key values for arguments of the fragment
@@ -477,7 +477,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().playDirectoryAndSubDirectories(currentFolder.getPath(), "");
+            ((GenericActivity) requireActivity()).getPlaybackService().playDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -494,7 +494,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         FileModel currentFolder = mAdapter.getItem(position);
 
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), "");
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueDirectoryAndSubDirectories(currentFolder.getPath(), null);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -553,7 +553,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         public boolean onQueryTextSubmit(String query) {
 
             if (query.isEmpty()) {
-                mSearchString = "";
+                mSearchString = null;
                 removeFilter();
             } else {
                 mSearchString = query;
@@ -566,7 +566,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
         @Override
         public boolean onQueryTextChange(String newText) {
             if (newText.isEmpty()) {
-                mSearchString = "";
+                mSearchString = null;
                 removeFilter();
             } else {
                 mSearchString = newText;

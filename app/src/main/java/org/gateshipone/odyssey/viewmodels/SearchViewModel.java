@@ -43,6 +43,6 @@ public class SearchViewModel extends ViewModel {
     }
 
     public void clearSearchString() {
-        mSearchString.setValue("");
+        mSearchString.setValue(null);
     }
 }
