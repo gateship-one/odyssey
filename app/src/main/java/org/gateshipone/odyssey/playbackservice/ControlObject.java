@@ -22,14 +22,12 @@
 
 package org.gateshipone.odyssey.playbackservice;
 
-import androidx.annotation.NonNull;
-
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
-import java.util.ArrayDeque;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Message object which get passed between PlaybackServiceInterface ->
@@ -79,49 +77,46 @@ public class ControlObject {
     private final TrackModel track;
     private final PlaylistModel playlist;
 
-    private final Queue<Integer> intValues;
-    private final Queue<Long> longValues;
-    private final Queue<Boolean> boolValues;
-    private final Queue<String> stringValues;
+    private final Iterator<Integer> intValuesIter;
+    private final Iterator<Long> longValuesIter;
+    private final Iterator<Boolean> boolValuesIter;
+    private final Iterator<String> stringValuesIter;
 
     private ControlObject(PLAYBACK_ACTION action,
                           TrackModel track,
                           PlaylistModel playlist,
-                          Queue<Integer> intValues,
-                          Queue<Long> longValues,
-                          Queue<Boolean> boolValues,
-                          Queue<String> stringValues) {
+                          List<Integer> intValues,
+                          List<Long> longValues,
+                          List<Boolean> boolValues,
+                          List<String> stringValues) {
         this.action = action;
         this.track = track;
         this.playlist = playlist;
-        this.intValues = intValues;
-        this.longValues = longValues;
-        this.boolValues = boolValues;
-        this.stringValues = stringValues;
+
+        this.intValuesIter = intValues.iterator();
+        this.longValuesIter = longValues.iterator();
+        this.boolValuesIter = boolValues.iterator();
+        this.stringValuesIter = stringValues.iterator();
     }
 
     public PLAYBACK_ACTION getAction() {
-        return action;
+        return this.action;
     }
 
-    @NonNull
     public Boolean nextBool() {
-        return Objects.requireNonNull(boolValues.poll());
+        return this.boolValuesIter.next();
     }
 
-    @NonNull
     public Integer nextInt() {
-        return Objects.requireNonNull(intValues.poll());
+        return this.intValuesIter.next();
     }
 
-    @NonNull
     public Long nextLong() {
-        return Objects.requireNonNull(longValues.poll());
+        return this.longValuesIter.next();
     }
 
-    @NonNull
     public String nextString() {
-        return Objects.requireNonNull(stringValues.poll());
+        return this.stringValuesIter.next();
     }
 
     public TrackModel getTrack() {
@@ -136,10 +131,10 @@ public class ControlObject {
 
         private final PLAYBACK_ACTION action;
 
-        private final Queue<Integer> intValues;
-        private final Queue<Long> longValues;
-        private final Queue<Boolean> boolValues;
-        private final Queue<String> stringValues;
+        private final List<Integer> intValues;
+        private final List<Long> longValues;
+        private final List<Boolean> boolValues;
+        private final List<String> stringValues;
 
         private TrackModel track;
 
@@ -147,29 +142,29 @@ public class ControlObject {
 
         public Builder(PLAYBACK_ACTION action) {
             this.action = action;
-            intValues = new ArrayDeque<>();
-            longValues = new ArrayDeque<>();
-            boolValues = new ArrayDeque<>();
-            stringValues = new ArrayDeque<>();
+            intValues = new ArrayList<>();
+            longValues = new ArrayList<>();
+            boolValues = new ArrayList<>();
+            stringValues = new ArrayList<>();
         }
 
         public Builder addInt(int value) {
-            intValues.offer(value);
+            intValues.add(value);
             return this;
         }
 
         public Builder addLong(long value) {
-            longValues.offer(value);
+            longValues.add(value);
             return this;
         }
 
         public Builder addBool(boolean value) {
-            boolValues.offer(value);
+            boolValues.add(value);
             return this;
         }
 
         public Builder addString(String value) {
-            stringValues.offer(value);
+            stringValues.add(value);
             return this;
         }
 

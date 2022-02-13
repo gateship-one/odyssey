@@ -39,7 +39,7 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
 
     /**
      * Following are methods which call the handler thread (which runs at
-     * audio priority) so that handling of playback is done in a seperate
+     * audio priority) so that handling of playback is done in a separate
      * thread for performance reasons.
      */
     @Override
