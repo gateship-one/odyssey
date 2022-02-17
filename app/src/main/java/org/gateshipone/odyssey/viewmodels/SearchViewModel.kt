@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Team Gateship-One
+ * Copyright (C) 2022 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
@@ -20,29 +20,25 @@
  *
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package org.gateshipone.odyssey.viewmodels
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+
+class SearchViewModel() : ViewModel() {
+
+    private val searchString: MutableLiveData<String?> = MutableLiveData()
+
+    fun getSearchString() : LiveData<String?> {
+        return searchString
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.1'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    fun setSearchString(searchString: String) {
+        this.searchString.value = searchString
     }
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+    fun clearSearchString() {
+        searchString.value = null
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

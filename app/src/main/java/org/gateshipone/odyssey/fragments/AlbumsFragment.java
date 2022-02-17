@@ -85,7 +85,7 @@ public class AlbumsFragment extends GenericAlbumsFragment {
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), false)).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), -1, false)).get(AlbumViewModel.class);
     }
 
     /**

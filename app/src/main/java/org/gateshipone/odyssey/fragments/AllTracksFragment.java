@@ -125,7 +125,7 @@ public class AllTracksFragment extends OdysseyFragment<TrackModel> implements Ad
 
     @Override
     GenericViewModel<TrackModel> getViewModel() {
-        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(requireActivity().getApplication())).get(TrackViewModel.class);
+        return new ViewModelProvider(this, new TrackViewModel.TrackViewModelFactory(requireActivity().getApplication(), -1)).get(TrackViewModel.class);
     }
 
     /**

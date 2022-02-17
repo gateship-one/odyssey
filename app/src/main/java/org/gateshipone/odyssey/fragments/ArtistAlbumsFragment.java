@@ -167,7 +167,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     @Override
     GenericViewModel<AlbumModel> getViewModel() {
-        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), mArtist.getArtistID())).get(AlbumViewModel.class);
+        return new ViewModelProvider(this, new AlbumViewModel.AlbumViewModelFactory(requireActivity().getApplication(), mArtist.getArtistID(), false)).get(AlbumViewModel.class);
     }
 
     @Override
