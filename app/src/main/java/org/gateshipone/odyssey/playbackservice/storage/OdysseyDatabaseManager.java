@@ -556,9 +556,10 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
                 ""
         );
 
+        long playlistId = -1;
         if (cursor.moveToFirst()) {
             // delete old songs
-            final long playlistId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_ID));
+            playlistId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistsTable.COLUMN_ID));
 
             odysseyDB.delete(
                     PlaylistsTracksTable.TABLE_NAME,
@@ -575,8 +576,11 @@ public class OdysseyDatabaseManager extends SQLiteOpenHelper {
         final ContentValues values = new ContentValues();
         values.put(PlaylistsTable.COLUMN_TITLE, playlistName);
         values.put(PlaylistsTable.COLUMN_TRACKS, tracks.size());
+        if (playlistId != -1) {
+            values.put(PlaylistsTable.COLUMN_ID, playlistId);
+        }
 
-        final long playlistId = odysseyDB.replace(PlaylistsTable.TABLE_NAME, null, values);
+        playlistId = odysseyDB.replace(PlaylistsTable.TABLE_NAME, null, values);
 
         odysseyDB.setTransactionSuccessful();
         odysseyDB.endTransaction();
