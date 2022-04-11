@@ -214,13 +214,13 @@ public class FanartTVProvider extends ArtProvider {
      */
     private void getArtistImage(final String url, final ArtworkRequestModel model,
                                 final Response.Listener<ImageResponse> listener, final Response.ErrorListener errorListener) {
-        Log.v(FanartTVProvider.class.getSimpleName(), url);
+        final String httpsUrl = url.replace("http://", "https://");
 
         if (BuildConfig.DEBUG) {
-            Log.v(TAG, "Request artist image for: " + url);
+            Log.v(TAG, "Request artist image for: " + httpsUrl);
         }
 
-        Request<ImageResponse> byteResponse = new OdysseyByteRequest(model, url, listener, errorListener);
+        Request<ImageResponse> byteResponse = new OdysseyByteRequest(model, httpsUrl, listener, errorListener);
 
         mRequestQueue.add(byteResponse);
     }
