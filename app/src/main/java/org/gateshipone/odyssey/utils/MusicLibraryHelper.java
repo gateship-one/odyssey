@@ -185,9 +185,9 @@ public class MusicLibraryHelper {
     public static List<TrackModel> getTracksForAlbum(final long albumId, final String orderKey, final Context context) {
         final List<TrackModel> albumTracks = new ArrayList<>();
 
-        final String[] whereVal = {String.valueOf(albumId)};
+        final String[] whereVal = {String.valueOf(albumId), "1"};
 
-        final String where = ProjectionTracks.ALBUM_ID + "=?";
+        final String where = ProjectionTracks.ALBUM_ID + "=? AND " + ProjectionTracks.IS_MUSIC + "=?";
 
         String orderBy;
 
@@ -774,9 +774,9 @@ public class MusicLibraryHelper {
     public static Set<String> getTrackStorageLocationsForAlbum(final long albumId, final Context context) {
         final Set<String> trackStorageLocations = new HashSet<>();
 
-        final String[] whereVal = {String.valueOf(albumId)};
+        final String[] whereVal = {String.valueOf(albumId), "1"};
 
-        final String where = ProjectionTracks.ID + "=?";
+        final String where = ProjectionTracks.ALBUM_ID + "=? AND " + ProjectionTracks.IS_MUSIC + "=?";
 
         final String orderBy = ProjectionTracks.TRACK;
 
