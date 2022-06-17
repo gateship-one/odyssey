@@ -84,6 +84,9 @@
     <string name="dialog_sleep_timer_stop_after_current">Arrêter après la piste en cours de lecture</string>
     <string name="dialog_no_browser_found_title">Aucun navigateur disponible</string>
     <string name="dialog_no_browser_found_message">Votre appareil n\'a pas de navigateur</string>
+    <string name="dialog_battery_opt_title">Optimisation de la batterie active</string>
+    <string name="dialog_battery_opt_message">L\'optimisation de la batterie pour Odyssey est active.\n\nCe qui empêche Odyssey de reprendre automatiquement la lecture après sa mise en pause par l\'optimisation de la batterie.\n\nDésactivez cette option afin d\'assurer le bon fonctionnement d\'Odyssey.</string>
+    <string name="dialog_battery_opt_action_open_settings">Paramètres</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">Nouvelle liste de lecture</string>
