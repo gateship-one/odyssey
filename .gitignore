@@ -14,5 +14,6 @@
 Thumbs.db
 /app/*.apk
 /app/release
+/app/debug
 .project
 /.settings
