@@ -178,6 +178,7 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
         if (key.equals(albumProviderKey) || key.equals(artistProviderKey) || key.equals(downloadWifiOnlyKey)) {
             Intent nextIntent = new Intent(BulkDownloadService.ACTION_CANCEL_BULKDOWNLOAD);
+            nextIntent.setPackage(requireActivity().getApplicationContext().getPackageName());
             requireActivity().getApplicationContext().sendBroadcast(nextIntent);
 
             ArtworkManager artworkManager = ArtworkManager.getInstance(getContext());

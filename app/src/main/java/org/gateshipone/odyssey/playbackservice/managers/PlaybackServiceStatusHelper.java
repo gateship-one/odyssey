@@ -104,6 +104,7 @@ public class PlaybackServiceStatusHelper {
         hideMediaOnLockscreen(sharedPref.getBoolean(playbackService.getString(R.string.pref_hide_media_on_lockscreen_key), playbackService.getResources().getBoolean(R.bool.pref_hide_media_on_lockscreen_default)));
 
         Intent settingChangedIntent = new Intent(MESSAGE_HIDE_ARTWORK_CHANGED);
+        settingChangedIntent.setPackage(mPlaybackService.getPackageName());
         settingChangedIntent.putExtra(MESSAGE_EXTRA_HIDE_ARTWORK_CHANGED_VALUE, mHideArtwork);
         mPlaybackService.sendBroadcast(settingChangedIntent);
     }

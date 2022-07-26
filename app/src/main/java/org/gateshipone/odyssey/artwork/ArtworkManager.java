@@ -590,6 +590,7 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
      */
     private void broadcastNewArtwokInfo(ArtworkRequestModel model) {
         Intent newImageIntent = new Intent(ACTION_NEW_ARTWORK_READY);
+        newImageIntent.setPackage(mApplicationContext.getPackageName());
 
         switch (model.getType()) {
             case ALBUM:
