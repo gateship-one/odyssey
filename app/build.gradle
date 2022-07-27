@@ -54,8 +54,8 @@ android {
         applicationId "org.gateshipone.odyssey"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 36
-        versionName "1.2.2"
+        versionCode 37
+        versionName "1.2.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {

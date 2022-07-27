@@ -1,5 +1,14 @@
 # Changelog Odyssey
 
+## Version: 1.2.3 Tag: release-37 (2022-07-27)
+
+* Update french translation
+* Fix artist cover download via Fanart.tv
+* Fix music filtering (only show tracks which are marked as music)
+* Adapt to new Splashscreen API
+* Remember library position correctly ([Issue #232](https://github.com/gateship-one/odyssey/issues/232))
+* Adapt backups für Android 12
+
 ## Version: 1.2.2 Tag: release-36 (2022-01-09)
 
 * Update polish translation

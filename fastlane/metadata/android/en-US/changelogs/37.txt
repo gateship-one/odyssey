@@ -1,0 +1,6 @@
+* Update french translation
+* Fix artist cover download via Fanart.tv
+* Fix music filtering (only show tracks which are marked as music)
+* Adapt to new Splashscreen API
+* Remember library position correctly ([Issue #232](https://github.com/gateship-one/odyssey/issues/232))
+* Adapt backups für Android 12
