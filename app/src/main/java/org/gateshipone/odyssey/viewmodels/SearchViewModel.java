@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Team Gateship-One
+ * Copyright (C) 2023 Team Gateship-One
  * (Hendrik Borghorst & Frederik Luetkes)
  *
  * The AUTHORS.md file contains a detailed contributors list:
