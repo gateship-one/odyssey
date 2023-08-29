@@ -101,6 +101,10 @@ android {
     lint {
         abortOnError false
     }
+    buildFeatures {
+        aidl true
+    }
+    namespace 'org.gateshipone.odyssey'
 }
 
 dependencies {
