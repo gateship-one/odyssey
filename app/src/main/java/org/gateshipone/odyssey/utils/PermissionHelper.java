@@ -23,13 +23,17 @@
 package org.gateshipone.odyssey.utils;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.models.FileModel;
 
 import java.io.File;
@@ -40,7 +44,97 @@ import java.util.List;
 
 public class PermissionHelper {
 
-    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
+    /**
+     * Result code for the audio permission request.
+     */
+    public static final int MY_PERMISSIONS_REQUEST_MEDIA_AUDIO = 0;
+
+    /**
+     * Result code for the image permission request.
+     */
+    public static final int MY_PERMISSIONS_REQUEST_MEDIA_IMAGE = 1;
+
+    /**
+     * Result code for the notifications permission request.
+     */
+    public static final int MY_PERMISSIONS_REQUEST_NOTIFICATIONS = 2;
+
+    /**
+     * Permission to access audio files. Depends on the android version.
+     */
+    public static final String AUDIO_PERMISSION = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? Manifest.permission.READ_MEDIA_AUDIO : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+    /**
+     * Permission to access image files. Depends on the android version.
+     */
+    public static final String IMAGE_PERMISSION = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? Manifest.permission.READ_MEDIA_IMAGES : Manifest.permission.READ_EXTERNAL_STORAGE;
+
+    /**
+     * Permission to show notifications. Empty if android version is below 13.
+     */
+    public static final String NOTIFICATION_PERMISSION = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? Manifest.permission.POST_NOTIFICATIONS : "";
+
+    /**
+     * Resource id for the image permission rationale text.
+     */
+    @StringRes
+    public static final int AUDIO_PERMISSION_RATIONALE_TEXT = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? R.string.permission_request_audio_snackbar_explanation : R.string.permission_request_storage_snackbar_explanation;
+
+    /**
+     * Resource id for the image permission rationale text.
+     */
+    @StringRes
+    public static final int IMAGE_PERMISSION_RATIONALE_TEXT = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? R.string.permission_request_image_snackbar_explanation : R.string.permission_request_storage_snackbar_explanation;
+
+    /**
+     * Resource id for the notifications permission rationale text.
+     */
+    @StringRes
+    public static final int NOTIFICATION_PERMISSION_RATIONALE_TEXT = R.string.permission_request_notifications_snackbar_explanation;
+
+    /**
+     * Method to check if odyssey is allowed to access audio files.
+     *
+     * @param context The application context for the permission check.
+     * @return True if access has been granted, false otherwise.
+     */
+    public static boolean isAudioFilesAccessAllowed(final Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    /**
+     * Method to check if odyssey is allowed to access image files.
+     * This is used to show local cover images.
+     *
+     * @param context The application context for the permission check.
+     * @return True if access has been granted, false otherwise.
+     */
+    public static boolean isImageFilesAccessAllowed(final Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    /**
+     * Method to check if odyssey is allowed to show notifications (besides the media notification).
+     *
+     * @param context The application context for the permission check.
+     * @return True if notifications are allowed or device is running below API level 33.
+     */
+    public static boolean areNotificationsAllowed(final Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            return notificationManager.areNotificationsEnabled();
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Permission safe call of the query method of the content resolver.
@@ -64,7 +158,7 @@ public class PermissionHelper {
     public static Cursor query(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (isAudioFilesAccessAllowed(context)) {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         }
 
@@ -81,7 +175,7 @@ public class PermissionHelper {
     public static List<FileModel> getFilesForDirectory(final Context context, final FileModel directory) {
         List<FileModel> files = new ArrayList<>();
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (isAudioFilesAccessAllowed(context)) {
             files = directory.listFilesSorted();
         }
 
@@ -101,7 +195,7 @@ public class PermissionHelper {
 
         final File directory = new File(directoryPath);
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (isAudioFilesAccessAllowed(context)) {
             File[] files = directory.listFiles(filter);
 
             if (files != null) {

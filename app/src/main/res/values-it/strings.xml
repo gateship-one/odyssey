@@ -23,7 +23,7 @@
 <resources>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Per caricare i file musicali è necessario il permesso di Archiviazione.</string>
+    <string name="permission_request_storage_snackbar_explanation">Per caricare i file musicali è necessario il permesso di Archiviazione.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Apri il navigation drawer</string>

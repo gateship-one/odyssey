@@ -32,18 +32,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
+import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.artwork.BulkDownloadService;
 import org.gateshipone.odyssey.artwork.storage.ArtworkDatabaseManager;
 import org.gateshipone.odyssey.dialogs.BulkDownloaderDialog;
 import org.gateshipone.odyssey.listener.ToolbarAndFABCallback;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
 public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -96,9 +97,11 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
 
         Preference bulkLoad = findPreference(getString(R.string.pref_bulk_load_key));
         bulkLoad.setOnPreferenceClickListener(preference -> {
-            BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
-            bulkDownloaderDialog.show(requireActivity().getSupportFragmentManager(), "BulkDownloaderDialog");
-
+            if (PermissionHelper.areNotificationsAllowed(requireActivity())) {
+                startBulkdownload();
+            } else {
+                ((OdysseyMainActivity) requireActivity()).requestPermissionShowNotifications();
+            }
             return true;
         });
     }
@@ -199,7 +202,22 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             } catch (RemoteException e) {
 
             }
+        } else if (key.equals(getString(R.string.pref_artwork_use_local_images_key))) {
+            boolean useLocalImages = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
+
+            if (useLocalImages) {
+                // ask for permission to access image files
+                ((OdysseyMainActivity) requireActivity()).requestPermissionAccessImageFiles();
+            }
         }
+    }
+
+    /**
+     * Method to start the Bulkdownloader dialog which will then start the Bulkdownloader.
+     */
+    public void startBulkdownload() {
+        BulkDownloaderDialog bulkDownloaderDialog = BulkDownloaderDialog.newInstance(R.string.bulk_download_notice_title, R.string.bulk_download_notice_text, R.string.error_dialog_ok_action);
+        bulkDownloaderDialog.show(requireActivity().getSupportFragmentManager(), "BulkDownloaderDialog");
     }
 
 }

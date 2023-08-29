@@ -25,7 +25,10 @@
 
     <!-- permission request -->
     <string name="permission_request_snackbar_button" translatable="false">@android:string/ok</string>
-    <string name="permission_request_snackbar_explanation">Storage Permission is needed to load music files.</string>
+    <string name="permission_request_storage_snackbar_explanation">Storage Permission is needed to load music files.</string>
+    <string name="permission_request_audio_snackbar_explanation">Read Media Audio Permission is needed to load music files.</string>
+    <string name="permission_request_image_snackbar_explanation">Read Media Images Permission is needed to show local cover images.</string>
+    <string name="permission_request_notifications_snackbar_explanation">Show Notifications Permission is required for Mediascanner and Bulkdownloader.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -41,7 +41,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,6 +48,7 @@ import androidx.preference.PreferenceManager;
 
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.activities.GenericActivity;
+import org.gateshipone.odyssey.activities.OdysseyMainActivity;
 import org.gateshipone.odyssey.adapter.FilesAdapter;
 import org.gateshipone.odyssey.dialogs.ChooseStorageVolumeDialog;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
@@ -56,6 +56,7 @@ import org.gateshipone.odyssey.listener.OnPlaylistSelectedListener;
 import org.gateshipone.odyssey.mediascanner.MediaScannerService;
 import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.gateshipone.odyssey.utils.PreferenceHelper;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 import org.gateshipone.odyssey.viewmodels.FileViewModel;
@@ -398,7 +399,11 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
             sharedPrefEditor.apply();
             return true;
         } else if (itemId == R.id.action_start_mediascanner) {
-            startMediaScanning();
+            if (PermissionHelper.areNotificationsAllowed(requireActivity())) {
+                startMediaScanning();
+            } else {
+                ((OdysseyMainActivity) requireActivity()).requestPermissionShowNotifications();
+            }
             return true;
         }
 
@@ -518,7 +523,7 @@ public class FilesFragment extends OdysseyFragment<FileModel> implements Adapter
     /**
      * Start the media scan service for the current directory
      */
-    private void startMediaScanning() {
+    public void startMediaScanning() {
         Intent serviceIntent = new Intent(getActivity(), MediaScannerService.class);
         serviceIntent.setAction(MediaScannerService.ACTION_START_MEDIASCANNING);
 

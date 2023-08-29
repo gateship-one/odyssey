@@ -23,7 +23,7 @@
 <resources>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Autorisation \"Stockage\" nécessaire pour pouvoir charger les fichiers de musique</string>
+    <string name="permission_request_storage_snackbar_explanation">Autorisation \"Stockage\" nécessaire pour pouvoir charger les fichiers de musique</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>

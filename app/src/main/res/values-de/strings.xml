@@ -68,7 +68,7 @@
     <string name="preference_album_sort_order_year">Jahr</string>
     <string name="preference_album_sort_order_title">Albensortierung</string>
     <string name="preference_album_sort_order_message">Sortiere nach</string>
-    <string name="permission_request_snackbar_explanation">Zugriff auf den Speicher erforderlich um Musik zu laden.</string>
+    <string name="permission_request_storage_snackbar_explanation">Zugriff auf den Speicher erforderlich um Musik zu laden.</string>
     <string name="action_add_album">Album hinzufügen</string>
     <string name="action_add_artist_albums">Alben hinzufügen</string>
     <string name="fragment_bookmarks_tracks">Lieder</string>
@@ -243,4 +243,7 @@
         \n\nDiese Einstellung wird verhindern, dass Odyssey die Wiedergabe aus dem Hintergrund automatisch fortsetzen kann.
         \n\nFalls Sie dieses Feature nutzen wollen, deaktivieren Sie bitte die Energiespareinstellungen für Odyssey.
     </string>
+    <string name="permission_request_audio_snackbar_explanation">Zugriff auf Audio Dateien erforderlich, um Musik anzuzeigen.</string>
+    <string name="permission_request_image_snackbar_explanation">Zugriff auf Bild Dateien erforderlich, um lokale Albencover anzuzeigen.</string>
+    <string name="permission_request_notifications_snackbar_explanation">Benachrichtigungen erforderlich für den Mediascanner und den Bulkdownloader.</string>
 </resources>

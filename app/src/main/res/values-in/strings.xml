@@ -23,7 +23,7 @@
 <resources>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Izin Penyimpanan diperlukan untuk memuat file musik.</string>
+    <string name="permission_request_storage_snackbar_explanation">Izin Penyimpanan diperlukan untuk memuat file musik.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Buka panel navigasi</string>

@@ -22,7 +22,7 @@
 
 <resources>
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Právo přístupu k úložišti je nutné k načtení hudebních souborů.</string>
+    <string name="permission_request_storage_snackbar_explanation">Právo přístupu k úložišti je nutné k načtení hudebních souborů.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Otevřít navigační zásuvku</string>

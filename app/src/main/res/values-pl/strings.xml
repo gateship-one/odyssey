@@ -23,7 +23,7 @@
 <resources>
 
     <!-- permission request -->
-    <string name="permission_request_snackbar_explanation">Uprawnienia Pamięci są wymagane, aby załadować pliki.</string>
+    <string name="permission_request_storage_snackbar_explanation">Uprawnienia Pamięci są wymagane, aby załadować pliki.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Otwórz panel</string>

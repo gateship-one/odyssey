@@ -22,7 +22,6 @@
 
 package org.gateshipone.odyssey.activities;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -34,6 +33,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -49,7 +49,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -65,6 +64,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.CurrentPlaylistAdapter;
 import org.gateshipone.odyssey.dialogs.SaveDialog;
@@ -106,6 +106,8 @@ public class OdysseyMainActivity extends GenericActivity
         OnSaveDialogListener, NowPlayingView.NowPlayingDragStatusReceiver, SettingsFragment.OnArtworkSettingsRequestedCallback,
         OnArtistSelectedListener, OnAlbumSelectedListener, OnRecentAlbumsSelectedListener,
         OnPlaylistSelectedListener, OnDirectorySelectedListener, OnStartSleepTimerListener {
+
+    private static final String TAG = OdysseyMainActivity.class.getSimpleName();
 
     public enum REQUESTEDVIEW {
         NONE,
@@ -248,8 +250,8 @@ public class OdysseyMainActivity extends GenericActivity
             transaction.commit();
         }
 
-        // ask for permissions
-        requestPermissionExternalStorage();
+        // ask for permission to access audio files
+        requestPermissionAccessAudioFiles();
 
         // check if battery optimization is active
         checkBatteryOptimization();
@@ -264,8 +266,8 @@ public class OdysseyMainActivity extends GenericActivity
         if (nowPlayingView != null) {
             nowPlayingView.registerDragStatusReceiver(this);
 
-            // ask for permissions
-            requestPermissionExternalStorage();
+            // ask for permission to access audio files
+            requestPermissionAccessAudioFiles();
 
             /*
              * Check if the activity got an extra in its intend to show the nowplayingview directly.
@@ -758,35 +760,98 @@ public class OdysseyMainActivity extends GenericActivity
         transaction.commit();
     }
 
-    private void requestPermissionExternalStorage() {
+    /**
+     * This method asks for permission to access image files if permission isn't granted yet.
+     * The permission will be determined by the used android version.
+     */
+    private void requestPermissionAccessAudioFiles() {
         // ask for permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (!PermissionHelper.isAudioFilesAccessAllowed(this)) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, PermissionHelper.AUDIO_PERMISSION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 View layout = findViewById(R.id.drawer_layout);
                 if (layout != null) {
-                    Snackbar sb = Snackbar.make(layout, R.string.permission_request_snackbar_explanation, Snackbar.LENGTH_INDEFINITE);
-                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(OdysseyMainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE));
+                    Snackbar sb = Snackbar.make(layout, PermissionHelper.AUDIO_PERMISSION_RATIONALE_TEXT, Snackbar.LENGTH_INDEFINITE);
+                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
+                            new String[]{PermissionHelper.AUDIO_PERMISSION},
+                            PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_AUDIO));
                     // style the snackbar text
                     TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
                     sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                        new String[]{PermissionHelper.AUDIO_PERMISSION},
+                        PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_AUDIO);
+            }
+        }
+    }
+
+    /**
+     * This method asks for permission to access image files if permission isn't granted yet.
+     * The permission will be determined by the used android version.
+     */
+    public void requestPermissionAccessImageFiles() {
+        if (!PermissionHelper.isImageFilesAccessAllowed(this)) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, PermissionHelper.IMAGE_PERMISSION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                View layout = findViewById(R.id.drawer_layout);
+                if (layout != null) {
+                    Snackbar sb = Snackbar.make(layout, PermissionHelper.IMAGE_PERMISSION_RATIONALE_TEXT, Snackbar.LENGTH_INDEFINITE);
+                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
+                            new String[]{PermissionHelper.IMAGE_PERMISSION},
+                            PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE));
+                    // style the snackbar text
+                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                    sb.show();
+                }
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{PermissionHelper.IMAGE_PERMISSION},
+                        PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE);
+            }
+        }
+    }
+
+    /**
+     * This method asks for permission to show notifications.
+     * A permission request will only executed if the device is using android 13 or newer.
+     */
+    public void requestPermissionShowNotifications() {
+        // request only works for android 13 or newer
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, PermissionHelper.NOTIFICATION_PERMISSION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                View layout = findViewById(R.id.drawer_layout);
+                if (layout != null) {
+                    Snackbar sb = Snackbar.make(layout, PermissionHelper.NOTIFICATION_PERMISSION_RATIONALE_TEXT, Snackbar.LENGTH_INDEFINITE);
+                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
+                            new String[]{PermissionHelper.NOTIFICATION_PERMISSION},
+                            PermissionHelper.MY_PERMISSIONS_REQUEST_NOTIFICATIONS));
+                    // style the snackbar text
+                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
+                    sb.show();
+                }
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{PermissionHelper.NOTIFICATION_PERMISSION},
+                        PermissionHelper.MY_PERMISSIONS_REQUEST_NOTIFICATIONS);
             }
         }
     }
@@ -795,11 +860,9 @@ public class OdysseyMainActivity extends GenericActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+        if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_AUDIO) {
             // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
@@ -807,6 +870,32 @@ public class OdysseyMainActivity extends GenericActivity
                     ((MyMusicFragment) fragment).refresh();
                 } else if (fragment instanceof OdysseyFragment) {
                     ((OdysseyFragment<?>) fragment).refreshContent();
+                }
+            }
+        } else if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay!
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "onRequestPermissionsResult: permission granted to access image files");
+                }
+            } else {
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "onRequestPermissionsResult: permission denied to access image files");
+                }
+            }
+        } else if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_NOTIFICATIONS) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay!
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+                if (fragment instanceof FilesFragment) {
+                    // notification was requested for the Mediascanner
+                    ((FilesFragment) fragment).startMediaScanning();
+                } else if (fragment instanceof ArtworkSettingsFragment) {
+                    // notification was requested for the Bulkdownloader
+                    ((ArtworkSettingsFragment) fragment).startBulkdownload();
                 }
             }
         }
