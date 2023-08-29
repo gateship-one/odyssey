@@ -370,6 +370,9 @@ public class MusicLibraryHelper {
 
                 } while (albumsCursor.moveToNext());
             }
+
+            albumsCursor.close();
+            recentTracksCursor.close();
         }
 
         // sort the recent albums
@@ -446,6 +449,9 @@ public class MusicLibraryHelper {
 
                 } while (albumsCursor.moveToNext());
             }
+
+            albumsCursor.close();
+            recentTracksCursor.close();
         }
 
         return recentDates;
