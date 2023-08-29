@@ -160,7 +160,8 @@ abstract public class OdysseyBaseFragment<T extends GenericModel> extends Fragme
 
         @Override
         public void onTrimMemory(int level) {
-            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW) {
+            // clear data only if the current fragment is attached to the activity
+            if (mTrimmingEnabled && level >= TRIM_MEMORY_RUNNING_LOW && isAdded()) {
                 getViewModel().clearData();
 
                 mDataReady = false;
