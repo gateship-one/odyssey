@@ -1,5 +1,11 @@
 # Changelog Odyssey
 
+## Version: 1.2.4 Tag: release-38 (2023-08-30)
+
+* Migrate to android 13
+* Update material components and AndroidX libraries
+  * If you detect any issues (i.e. graphic glitches) please let us know via GitHub or by Email
+
 ## Version: 1.2.3 Tag: release-37 (2022-07-27)
 
 * Update french translation

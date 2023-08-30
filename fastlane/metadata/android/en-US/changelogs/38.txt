@@ -1,0 +1,3 @@
+* Migrate to android 13
+* Update material components and AndroidX libraries
+  * If you detect any issues (i.e. graphic glitches) please let us know via GitHub or by Email
