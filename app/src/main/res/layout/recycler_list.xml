@@ -22,7 +22,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground"
+    android:background="?attr/app_color_content"
     android:orientation="vertical">
 
     <org.gateshipone.odyssey.views.OdysseyRecyclerView
@@ -41,7 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/material_standard_horizontal_spacing"
             android:fontFamily="sans-serif-regular"
-            android:textColor="?attr/odyssey_color_text_background_primary"
             android:textSize="@dimen/material_font_style_size_subheading" />
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

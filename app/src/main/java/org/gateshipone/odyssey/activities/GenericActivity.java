@@ -54,13 +54,55 @@ public abstract class GenericActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Read theme preference
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String themePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
+        String legacyThemePref = sharedPref.getString(getString(R.string.pref_theme_key), getString(R.string.pref_theme_default));
+        String themeMaterialPref = sharedPref.getString(getString(R.string.pref_materialyou_theme_selector_key), getString(R.string.pref_theme_materialyou_default));
         boolean darkTheme = sharedPref.getBoolean(getString(R.string.pref_dark_theme_key), getResources().getBoolean(R.bool.pref_theme_dark_default));
-        if (themePref.equals(getString(R.string.pref_oleddark_key))) {
-            setTheme(R.style.AppTheme_oledDark);
+        boolean legacyTheme = sharedPref.getBoolean(getString(R.string.pref_legacy_theme_key), getResources().getBoolean(R.bool.pref_theme_legacy_default));
+        if (legacyTheme) {
+            if (legacyThemePref.equals(getString(R.string.pref_oleddark_key))) {
+                setTheme(R.style.AppTheme_oledDark);
+            } else {
+                String name = darkTheme ? String.format("AppTheme.%s", legacyThemePref) : String.format("AppTheme.light_%s", legacyThemePref);
+                setTheme(getResources().getIdentifier(name, "style", getPackageName()));
+            }
         } else {
-            String name = darkTheme ? String.format("AppTheme.%s", themePref) : String.format("AppTheme.%s_light", themePref);
-            setTheme(getResources().getIdentifier(name, "style", getPackageName()));
+            if (darkTheme) {
+                if (themeMaterialPref.equals(getString(R.string.pref_indigo_key))) {
+                    setTheme(R.style.AppTheme_materialyou_indigo_dark);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_orange_key))) {
+                    setTheme(R.style.AppTheme_materialyou_orange_dark);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_blue_key))) {
+                    setTheme(R.style.AppTheme_materialyou_blue_dark);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_lightgreen_key))) {
+                    setTheme(R.style.AppTheme_materialyou_green_dark);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_red_key))) {
+                    setTheme(R.style.AppTheme_materialyou_red_dark);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_materialyou_auto_key))) {
+                    setTheme(R.style.AppTheme_materialyou);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_materialyou_key))) {
+                    setTheme(R.style.AppTheme_materialyou_dark);
+                } else {
+                    setTheme(R.style.AppTheme_materialyou);
+                }
+            } else {
+                if (themeMaterialPref.equals(getString(R.string.pref_indigo_key))) {
+                    setTheme(R.style.AppTheme_materialyou_indigo_light);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_orange_key)))  {
+                    setTheme(R.style.AppTheme_materialyou_orange_light);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_blue_key))) {
+                    setTheme(R.style.AppTheme_materialyou_blue_light);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_lightgreen_key))) {
+                    setTheme(R.style.AppTheme_materialyou_green_light);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_red_key))) {
+                    setTheme(R.style.AppTheme_materialyou_red_light);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_materialyou_auto_key))) {
+                    setTheme(R.style.AppTheme_materialyou);
+                } else if (themeMaterialPref.equals(getString(R.string.pref_materialyou_key))) {
+                    setTheme(R.style.AppTheme_materialyou_light);
+                } else {
+                    setTheme(R.style.AppTheme_materialyou);
+                }
+            }
         }
 
         super.onCreate(savedInstanceState);

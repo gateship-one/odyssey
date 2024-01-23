@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.google.android.material.color.MaterialColors;
+
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.utils.ThemeUtils;
 
@@ -45,7 +47,7 @@ public class OdysseyContributorsActivity extends GenericActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_contributors);
 
-        getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_primary_dark));
+        getWindow().setStatusBarColor(MaterialColors.getColor(this, R.attr.app_color_content, 0));
 
         ListView contributors = findViewById(R.id.contributors_listview);
 

@@ -356,7 +356,7 @@ public class MyMusicFragment extends Fragment implements TabLayout.OnTabSelected
         mOptionMenu = menu;
 
         // get tint color
-        final int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
+        final int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.app_color_on_surface);
 
         Drawable drawable = mOptionMenu.findItem(R.id.action_search).getIcon();
         drawable = DrawableCompat.wrap(drawable);

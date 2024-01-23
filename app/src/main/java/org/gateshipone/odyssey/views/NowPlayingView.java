@@ -1211,25 +1211,25 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         switch (info.getRepeat()) {
             case REPEAT_OFF:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface)));
                 break;
             case REPEAT_ALL:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_24dp);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface_highlight)));
                 break;
             case REPEAT_TRACK:
                 mBottomRepeatButton.setImageResource(R.drawable.ic_repeat_one_24dp);
-                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                mBottomRepeatButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface_highlight)));
                 break;
         }
 
         // update random button
         switch (info.getRandom()) {
             case RANDOM_OFF:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent)));
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface)));
                 break;
             case RANDOM_ON:
-                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), android.R.attr.colorAccent)));
+                mBottomRandomButton.setImageTintList(ColorStateList.valueOf(ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface_highlight)));
                 break;
         }
     }
@@ -1320,7 +1320,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mCoverImage) {
                     mViewSwitcher.showNext();
                 }
-                color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface);
                 TooltipCompat.setTooltipText(mTopPlaylistButton, getResources().getString(R.string.action_npv_show_playlist));
                 break;
             case PLAYLIST_VIEW:
@@ -1328,7 +1328,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 if (mViewSwitcher.getCurrentView() != mPlaylistView) {
                     mViewSwitcher.showNext();
                 }
-                color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+                color = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface_highlight);
                 TooltipCompat.setTooltipText(mTopPlaylistButton, getResources().getString(R.string.action_npv_show_cover));
                 break;
         }
@@ -1448,7 +1448,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
         mCoverImage.clearAlbumImage();
 
         // The same for the small header image
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface);
 
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.cover_placeholder_96dp, null);
 

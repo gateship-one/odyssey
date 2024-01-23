@@ -1,22 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2023 Team Gateship-One
-  ~ (Hendrik Borghorst & Frederik Luetkes)
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (C) 2023 Team Gateship-One
+  ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
-  ~ The AUTHORS.md file contains a detailed contributors list:
-  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~  The AUTHORS.md file contains a detailed contributors list:
+  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
   ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
   ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
   ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
 
@@ -34,11 +35,9 @@
         android:id="@+id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-regular"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textColor="?attr/odyssey_color_text_background_primary"
-        android:textSize="@dimen/material_font_style_size_subheading"
+        android:maxLines="1"
+        android:textColor="?attr/app_color_on_content"
+        android:textAppearance="?attr/app_text_list_title"
         tools:text="title" />
 
     <RelativeLayout
@@ -52,10 +51,9 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/item_additional_subtitle"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-regular"
-            android:singleLine="true"
-            android:textColor="?attr/odyssey_color_text_background_secondary"
-            android:textSize="@dimen/material_font_style_size_body_1"
+            android:maxLines="1"
+            android:textColor="?attr/app_color_on_content"
+            android:textAppearance="?attr/app_text_list_subtitle"
             tools:text="subtitle" />
 
         <TextView
@@ -63,10 +61,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:fontFamily="sans-serif-regular"
-            android:singleLine="true"
-            android:textColor="?attr/odyssey_color_text_background_primary"
-            android:textSize="@dimen/material_font_style_size_body_1"
+            android:maxLines="1"
+            android:textColor="?attr/app_color_on_content"
+            android:textAppearance="?attr/app_text_list_subtitle"
             tools:text="additional subtitle" />
     </RelativeLayout>
 

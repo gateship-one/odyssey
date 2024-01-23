@@ -33,8 +33,7 @@
             android:id="@+id/duration_minutes_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/divider"
-            android:theme="@style/AppThemeLight.NumberPicker" />
+            android:layout_toStartOf="@+id/divider" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,8 +62,7 @@
             android:id="@+id/duration_seconds_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/divider"
-            android:theme="@style/AppThemeLight.NumberPicker" />
+            android:layout_toEndOf="@id/divider" />
 
         <TextView
             android:layout_width="wrap_content"

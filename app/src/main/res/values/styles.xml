@@ -1,463 +1,683 @@
 <!--
-  ~ Copyright (C) 2023 Team Gateship-One
-  ~ (Hendrik Borghorst & Frederik Luetkes)
+  ~  Copyright (C) 2023 Team Gateship-One
+  ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
-  ~ The AUTHORS.md file contains a detailed contributors list:
-  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~  The AUTHORS.md file contains a detailed contributors list:
+  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
   ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
   ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
   ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
 
-<resources>
-
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Color themes -->
+    <style name="AppTheme.materialyou.dark" parent="Theme.Material3.DynamicColors.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="app_color_surface">?attr/colorSurface</item>
+        <item name="app_color_on_surface">?attr/colorOnSurface</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_surface_darker">@color/material_dynamic_primary30</item>
+        <item name="app_color_content">?attr/colorSurfaceContainer</item>
+        <item name="app_color_on_content">?attr/colorOnSurface</item>
+        <item name="app_color_secondary">?attr/colorSecondary</item>
+        <item name="app_color_on_secondary">?attr/colorOnSecondary</item>
+        <item name="app_color_cover_background">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="app_toolbar_style">@style/AppTheme.You.Dark.DynamicColors.Toolbar</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
+    <style name="AppTheme.You.Dark.DynamicColors.Toolbar" parent="AppTheme.materialyou.dark"></style>
+
+    <style name="AppTheme.You.Dark.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
+        <item name="toolbarStyle">@style/Widget.Material3.Toolbar.OnSurface</item>
+    </style>
+
+    <style name="AppTheme.materialyou.light" parent="Theme.Material3.DynamicColors.Light">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="app_color_surface">?attr/colorSurface</item>
+        <item name="app_color_on_surface">?attr/colorOnSurface</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_surface_darker">@color/material_dynamic_primary30</item>
+        <item name="app_color_content">?attr/colorSurfaceContainer</item>
+        <item name="app_color_on_content">?attr/colorOnSurface</item>
+        <item name="app_color_secondary">?attr/colorSecondary</item>
+        <item name="app_color_on_secondary">?attr/colorOnSecondary</item>
+        <item name="app_color_cover_background">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="app_toolbar_style">@style/AppTheme.You.Light.DynamicColors.Toolbar</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
+    <style name="AppTheme.You.Light.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
+        <item name="toolbarStyle">@style/Widget.Material3.Toolbar.OnSurface</item>
+    </style>
+
+    <style name="AppTheme.You.Light.DynamicColors.Toolbar" parent="AppTheme.materialyou.light"></style>
+
+    <style name="AppTheme.materialyou" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">?attr/isLightTheme</item>
+        <item name="app_color_surface">?attr/colorSurface</item>
+        <item name="app_color_on_surface">?attr/colorOnSurface</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_surface_darker">@color/material_dynamic_primary30</item>
+        <item name="app_color_content">?attr/colorSurfaceContainer</item>
+        <item name="app_color_on_content">?attr/colorOnSurface</item>
+        <item name="app_color_secondary">?attr/colorSecondary</item>
+        <item name="app_color_on_secondary">?attr/colorOnSecondary</item>
+        <item name="app_color_cover_background">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="app_toolbar_style">@style/AppTheme.You.DynamicColors.Toolbar</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
+    <!-- Reference: https://github.com/material-components/material-components-android/issues/2828 -->
+    <style name="MaterialSwitchPreferenceCompat" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/view_preference_switch</item>
+    </style>
+
+    <style name="AppTheme.You.DynamicColors.Toolbar" parent="AppTheme.materialyou"></style>
+
     <style name="AppTheme.indigo" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_indigo</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_indigo</item>
-        <item name="odyssey_color_accent">@color/colorAccent_indigo</item>
-        <item name="odyssey_color_background">@color/colorBackground_indigo</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_indigo</item>
-        <item name="odyssey_color_divider">@color/colorDivider_indigo</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_indigo</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_indigo</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_indigo
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_indigo
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_indigo</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_indigo</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_indigo</item>
+        <item name="app_color_secondary">@color/app_color_secondary_indigo</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_indigo</item>
+        <item name="app_color_content">@color/app_color_background_content_indigo</item>
     </style>
 
     <style name="AppTheme.orange" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_orange</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_orange</item>
-        <item name="odyssey_color_accent">@color/colorAccent_orange</item>
-        <item name="odyssey_color_background">@color/colorBackground_orange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_orange</item>
-        <item name="odyssey_color_divider">@color/colorDivider_orange</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_orange</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_orange</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_orange
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_orange
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_orange</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_orange</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_orange</item>
+        <item name="app_color_secondary">@color/app_color_secondary_orange</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_orange</item>
+        <item name="app_color_content">@color/app_color_background_content_orange</item>
     </style>
 
-    <style name="AppTheme.deeporange" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_deepOrange</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_deepOrange</item>
-        <item name="odyssey_color_accent">@color/colorAccent_deepOrange</item>
-        <item name="odyssey_color_background">@color/colorBackground_deepOrange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_deepOrange
-        </item>
-        <item name="odyssey_color_divider">@color/colorBackgroundSelected_deepOrange</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_deepOrange</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_deepOrange</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_deepOrange
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_deepOrange
-        </item>
+    <style name="AppTheme.deepOrange" parent="AppTheme">
+        <item name="app_color_surface">@color/app_color_surface_deepOrange</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_deepOrange</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_deepOrange</item>
+        <item name="app_color_secondary">@color/app_color_secondary_deepOrange</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_deepOrange</item>
+        <item name="app_color_content">@color/app_color_background_content_deepOrange</item>
     </style>
 
     <style name="AppTheme.blue" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_blue</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_blue</item>
-        <item name="odyssey_color_accent">@color/colorAccent_blue</item>
-        <item name="odyssey_color_background">@color/colorBackground_blue</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_blue</item>
-        <item name="odyssey_color_divider">@color/colorDivider_blue</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_blue</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_blue</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_blue
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_blue
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_blue</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_blue</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_blue</item>
+        <item name="app_color_secondary">@color/app_color_secondary_blue</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_blue</item>
+        <item name="app_color_content">@color/app_color_background_content_blue</item>
+
     </style>
 
-    <style name="AppTheme.darkgrey" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_darkGrey</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_darkGrey</item>
-        <item name="odyssey_color_accent">@color/colorAccent_darkGrey</item>
-        <item name="odyssey_color_background">@color/colorBackground_darkGrey</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_darkGrey
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_darkGrey</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_darkGrey</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_darkGrey</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_darkGrey
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_darkGrey
-        </item>
+    <style name="AppTheme.darkGrey" parent="AppTheme">
+        <item name="app_color_surface">@color/app_color_surface_darkGrey</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_darkGrey</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_darkGrey</item>
+        <item name="app_color_secondary">@color/app_color_secondary_darkGrey</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_darkGrey</item>
+        <item name="app_color_content">@color/app_color_background_content_darkGrey</item>
     </style>
 
     <style name="AppTheme.brown" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_brown</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_brown</item>
-        <item name="odyssey_color_accent">@color/colorAccent_brown</item>
-        <item name="odyssey_color_background">@color/colorBackground_brown</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_brown</item>
-        <item name="odyssey_color_divider">@color/colorDivider_brown</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_brown</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_brown</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_brown
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_brown
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_brown</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_brown</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_brown</item>
+        <item name="app_color_secondary">@color/app_color_secondary_brown</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_brown</item>
+        <item name="app_color_content">@color/app_color_background_content_brown</item>
     </style>
 
-    <style name="AppTheme.lightgreen" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_lightGreen</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_lightGreen</item>
-        <item name="odyssey_color_accent">@color/colorAccent_lightGreen</item>
-        <item name="odyssey_color_background">@color/colorBackground_lightGreen</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_lightGreen
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_lightGreen</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_lightGreen</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_lightGreen</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_lightGreen
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_lightGreen
-        </item>
+    <style name="AppTheme.lightGreen" parent="AppTheme">
+        <item name="app_color_surface">@color/app_color_surface_lightGreen</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_lightGreen</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_lightGreen</item>
+        <item name="app_color_secondary">@color/app_color_secondary_lightGreen</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_lightGreen</item>
+        <item name="app_color_content">@color/app_color_background_content_lightGreen</item>
     </style>
 
     <style name="AppTheme.red" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_red</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_red</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_red</item>
-        <item name="odyssey_color_background">@color/colorBackground_red</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_red</item>
-        <item name="odyssey_color_divider">@color/colorDivider_red</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_red</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_red</item>
-        <item name="odyssey_color_text_background_primary">@color/colorTextBackgroundPrimary_red
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_red
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_red</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_red</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_red</item>
+        <item name="app_color_secondary">@color/app_color_secondary_red</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_red</item>
+        <item name="app_color_content">@color/app_color_background_content_red</item>
     </style>
 
-    <style name="AppTheme.indigo_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_indigo</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_indigo</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_indigo</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_indigo</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_indigo
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_indigo</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_indigo</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_indigo</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_indigo
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_indigo
-        </item>
+    <style name="AppTheme.light_indigo" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_indigo</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_indigo</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_indigo</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_indigo</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_indigo</item>
+        <item name="app_color_content">@color/app_color_background_content_light_indigo</item>
     </style>
 
-    <style name="AppTheme.orange_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_orange</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_orange</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_orange</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_orange</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_orange
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_orange</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_orange</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_orange</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_orange
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_orange
-        </item>
+    <style name="AppTheme.light_orange" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_orange</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_orange</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_orange</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_orange</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_orange</item>
+        <item name="app_color_content">@color/app_color_background_content_light_orange</item>
     </style>
 
-    <style name="AppTheme.deeporange_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_deepOrange</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_deepOrange</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_deepOrange</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_deepOrange</item>
-        <item name="odyssey_color_background_selected">
-            @color/colorBackgroundSelected_light_deepOrange
+    <style name="AppTheme.light_deepOrange" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_deepOrange</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_deepOrange
         </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_deepOrange</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_deepOrange</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_deepOrange</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_deepOrange
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_deepOrange
-        </item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_deepOrange</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_deepOrange</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_deepOrange</item>
+        <item name="app_color_content">@color/app_color_background_content_light_deepOrange</item>
     </style>
 
-    <style name="AppTheme.blue_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_blue</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_blue</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_blue</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_blue</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_blue
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_blue</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_blue</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_blue</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_blue
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_blue
-        </item>
+    <style name="AppTheme.light_blue" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_blue</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_blue</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_blue</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_blue</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_blue</item>
+        <item name="app_color_content">@color/app_color_background_content_light_blue</item>
     </style>
 
-    <style name="AppTheme.darkgrey_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_darkGrey</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_darkGrey</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_darkGrey</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_darkGrey</item>
-        <item name="odyssey_color_background_selected">
-            @color/colorBackgroundSelected_light_darkGrey
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_darkGrey</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_darkGrey</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_darkGrey</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_darkGrey
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_darkGrey
-        </item>
+    <style name="AppTheme.light_darkGrey" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_darkGrey</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_darkGrey</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_darkGrey</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_darkGrey</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_darkGrey</item>
+        <item name="app_color_content">@color/app_color_background_content_light_darkGrey</item>
     </style>
 
-    <style name="AppTheme.brown_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_brown</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_brown</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_brown</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_brown</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_brown
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_brown</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_brown</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_brown</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_brown
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_brown
-        </item>
+    <style name="AppTheme.light_brown" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_brown</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_brown</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_brown</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_brown</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_brown</item>
+        <item name="app_color_content">@color/app_color_background_content_light_brown</item>
     </style>
 
-    <style name="AppTheme.lightgreen_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_lightGreen</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_lightGreen</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_lightGreen</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_lightGreen</item>
-        <item name="odyssey_color_background_selected">
-            @color/colorBackgroundSelected_light_lightGreen
+    <style name="AppTheme.light_lightGreen" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_lightGreen</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_lightGreen
         </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_lightGreen</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_lightGreen</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_lightGreen</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_lightGreen
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_lightGreen
-        </item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_lightGreen</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_lightGreen</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_lightGreen</item>
+        <item name="app_color_content">@color/app_color_background_content_light_lightGreen</item>
     </style>
 
-    <style name="AppTheme.red_light" parent="AppThemeLight">
-        <item name="odyssey_color_primary">@color/colorPrimary_light_red</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_light_red</item>
-        <item name="odyssey_color_accent">@color/colorAccent_light_red</item>
-        <item name="odyssey_color_background">@color/colorBackground_light_red</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_light_red
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_light_red</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_light_red</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_light_red</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_light_red
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_light_red
-        </item>
+    <style name="AppTheme.light_red" parent="AppThemeLight">
+        <item name="app_color_surface">@color/app_color_surface_light_red</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_light_red</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_light_red</item>
+        <item name="app_color_secondary">@color/app_color_secondary_light_red</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_light_red</item>
+        <item name="app_color_content">@color/app_color_background_content_light_red</item>
     </style>
 
     <style name="AppTheme.oledDark" parent="AppTheme">
-        <item name="odyssey_color_primary">@color/colorPrimary_oledDark</item>
-        <item name="odyssey_color_primary_dark">@color/colorPrimaryDark_oledDark</item>
-        <item name="odyssey_color_accent">@color/colorAccent_oledDark</item>
-        <item name="odyssey_color_background">@color/colorBackground_oledDark</item>
-        <item name="odyssey_color_background_selected">@color/colorBackgroundSelected_oledDark
-        </item>
-        <item name="odyssey_color_divider">@color/colorDivider_oledDark</item>
-        <item name="odyssey_color_navheader_icon">@color/colorNavheaderIcon_oledDark</item>
-        <item name="odyssey_color_text_accent">@color/colorTextAccent_oledDark</item>
-        <item name="odyssey_color_text_background_primary">
-            @color/colorTextBackgroundPrimary_oledDark
-        </item>
-        <item name="odyssey_color_text_background_secondary">
-            @color/colorTextBackgroundSecondary_oledDark
-        </item>
+        <item name="app_color_surface">@color/app_color_surface_oledDark</item>
+        <item name="app_color_surface_darker">@color/app_color_surface_darker_oledDark</item>
+        <item name="app_color_on_surface">@color/app_color_on_surface_oledDark</item>
+        <item name="app_color_secondary">@color/app_color_secondary_oledDark</item>
+        <item name="app_color_on_secondary">@color/app_color_on_secondary_oledDark</item>
+        <item name="app_color_content">@color/app_color_background_content_oledDark</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
-        <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
-        <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
-        <item name="android:listDivider">@drawable/recyclerview_divider</item>
-        <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
-        <item name="dialogTheme">@style/AppTheme.Dialog</item>
-        <item name="materialAlertDialogTheme">@style/AppTheme.Dialog</item>
+    <style name="AppTheme" parent="Theme.Material3.Dark">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/AppTheme.Preference</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- malp color values -->
+        <item name="colorPrimaryDark">?attr/app_color_surface_darker</item>
+        <item name="colorPrimary">?attr/app_color_surface</item>
+        <item name="colorOnPrimary">?attr/app_color_on_surface</item>
+        <item name="colorSurface">?attr/app_color_surface</item>
+        <item name="colorSurfaceContainer">?attr/app_color_content</item>
+        <item name="colorSecondary">?attr/app_color_secondary</item>
+        <item name="colorOnSecondary">?attr/app_color_secondary</item>
+        <item name="app_color_cover_background">#111111</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_on_content">#ffffff</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="app_toolbar_style">@style/AppTheme.Toolbar</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
+    <style name="AppThemeLight" parent="Theme.Material3.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="odyssey_navdrawer_theme">@style/AppTheme.NavDrawer</item>
-        <item name="odyssey_appbaroverlay_theme">@style/AppTheme.AppBarOverlay</item>
-        <!-- Odyssey color values -->
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="colorAccent">?attr/odyssey_color_accent</item>
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="android:colorAccent">?attr/odyssey_color_accent</item>
-        <item name="android:colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="android:colorBackground">?attr/odyssey_color_background</item>
-        <item name="android:colorPressedHighlight">?attr/odyssey_color_background_selected</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="odyssey_cover_background">#111111</item>
-        <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_dark</item>
+        <!-- malp color values -->
+        <item name="colorPrimaryDark">?attr/app_color_surface_darker</item>
+        <item name="colorAccent">?attr/app_color_secondary</item>
+        <item name="colorPrimary">?attr/app_color_surface</item>
+        <item name="colorOnPrimary">?attr/app_color_on_surface</item>
+        <item name="colorSurface">?attr/app_color_surface</item>
+        <item name="colorOnSurface">?attr/app_color_on_surface</item>
+        <item name="colorSurfaceContainer">?attr/app_color_content</item>
+        <item name="colorPrimaryContainer">?attr/app_color_secondary</item>
+        <item name="colorOnPrimaryContainer">?attr/app_color_on_secondary</item>
+        <item name="app_color_cover_background">#FFFFFF</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_light</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_on_content">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="app_toolbar_style">@style/AppTheme.Toolbar</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
+        <!-- Change the dialog theming to prevent unreadable text in light theme -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.Light.MaterialAlertDialog</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+    </style>Dialog
+
+    <style name="ThemeOverlay.App.Light.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/AppTheme.Light.AlertDialogStyle</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AppTheme.Light.MaterialAlertDialogTitle.Text</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="AppTheme">
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
+    <style name="AppTheme.Light.MaterialAlertDialogTitle.Text" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">?attr/app_color_on_content</item>
     </style>
 
-    <style name="AppTheme.NavDrawer" parent="AppTheme">
-        <item name="colorPrimary">?attr/odyssey_color_accent</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-    </style>
-
-    <style name="AppTheme.Preference" parent="@style/PreferenceThemeOverlay">
-        <item name="colorPrimary">?attr/odyssey_color_accent</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
-    </style>
-
-    <style name="AppTheme.NavDrawerHeader" parent="AppTheme">
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
+    <style name="AppTheme.Light.AlertDialogStyle" parent="MaterialAlertDialog.Material3">
+        <item name="backgroundTint">?attr/app_color_content</item>
+        <item name="android:textColor">?attr/app_color_on_content</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/colorIconBackground</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/icon_inner</item>
     </style>
-    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Dialog.Alert">
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="colorAccent">?attr/odyssey_color_accent</item>
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:windowBackground">?attr/odyssey_color_background</item>
-        <item name="buttonBarButtonStyle">@style/AppTheme.Dialog.ButtonBarButtonStyle</item>
-    </style>
 
-    <style name="AppTheme.Dialog.ButtonBarButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">?attr/odyssey_color_accent</item>
-    </style>
+    <style name="AppTheme.Toolbar" parent="AppTheme"></style>
 
-    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.Bridge">
-        <item name="android:alertDialogTheme">@style/AppThemeLight.Dialog</item>
-        <item name="android:dialogTheme">@style/AppThemeLight.Dialog</item>
-        <item name="android:listDivider">@drawable/recyclerview_divider</item>
-        <item name="alertDialogTheme">@style/AppThemeLight.Dialog</item>
-        <item name="dialogTheme">@style/AppThemeLight.Dialog</item>
-        <item name="materialAlertDialogTheme">@style/AppThemeLight.Dialog</item>
+    <style name="AppTheme.materialyou.parent.dark" parent="Theme.Material3.Dark">
         <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/AppThemeLight.Preference</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="odyssey_navdrawer_theme">@style/AppThemeLight.NavDrawer</item>
-        <item name="odyssey_appbaroverlay_theme">@style/AppThemeLight.AppBarOverlay</item>
-        <!-- Odyssey color values -->
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="colorAccent">?attr/odyssey_color_accent</item>
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="android:colorAccent">?attr/odyssey_color_accent</item>
-        <item name="android:colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="android:colorBackground">?attr/odyssey_color_background</item>
-        <item name="android:colorPressedHighlight">?attr/odyssey_color_background_selected</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColorTertiary">?attr/odyssey_color_text_background_secondary</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="odyssey_cover_background">#FFFFFF</item>
-        <item name="odyssey_grid_gradient">@drawable/grid_item_gradient_light</item>
+        <item name="app_color_surface">?attr/colorSurface</item>
+        <item name="app_color_on_surface">?attr/colorOnSurface</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_surface_darker">@color/material_dynamic_primary30</item>
+        <item name="app_color_content">?attr/colorSurfaceContainer</item>
+        <item name="app_color_on_content">?attr/colorOnSurface</item>
+        <item name="app_color_secondary">?attr/colorSecondary</item>
+        <item name="app_color_on_secondary">?attr/colorOnSecondary</item>
+        <item name="app_color_cover_background">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_toolbar_style">@style/AppTheme.You.Dark.Toolbar</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
-    <style name="AppThemeLight.AppBarOverlay" parent="AppThemeLight">
-        <item name="android:textColorSecondary">?attr/odyssey_color_text_accent</item>
+    <style name="AppTheme.materialyou.parent.light" parent="Theme.Material3.Light">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="app_color_surface">?attr/colorSurface</item>
+        <item name="app_color_on_surface">?attr/colorOnSurface</item>
+        <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
+        <item name="app_color_surface_darker">@color/material_dynamic_primary30</item>
+        <item name="app_color_content">?attr/colorSurfaceContainer</item>
+        <item name="app_color_on_content">?attr/colorOnSurface</item>
+        <item name="app_color_secondary">?attr/colorSecondary</item>
+        <item name="app_color_on_secondary">?attr/colorOnSecondary</item>
+        <item name="app_color_cover_background">@android:color/black</item>
+        <item name="app_color_fanart_activity_tint">#ffffff</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitchPreferenceCompat</item>
+        <item name="app_toolbar_style">@style/AppTheme.You.Light.Toolbar</item>
+        <item name="app_text_list_title">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="app_text_list_subtitle">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
-    <style name="AppThemeLight.NavDrawer" parent="AppThemeLight">
-        <item name="colorPrimary">?attr/odyssey_color_accent</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+    <style name="AppTheme.materialyou.indigo.dark" parent="AppTheme.materialyou.parent.dark">
+        <item name="colorPrimary">@color/md_theme_dark_indigo_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_indigo_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_indigo_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_indigo_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_dark_indigo_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_indigo_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_indigo_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_indigo_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_dark_indigo_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_indigo_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_indigo_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_indigo_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_dark_indigo_error</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_indigo_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_indigo_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_indigo_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_dark_indigo_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_indigo_onBackground</item>
+        <item name="colorSurface">@color/md_theme_dark_indigo_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_indigo_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_indigo_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_indigo_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_dark_indigo_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_indigo_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_indigo_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_dark_indigo_inversePrimary</item>
     </style>
 
-    <style name="AppThemeLight.Preference" parent="@style/PreferenceThemeOverlay">
-        <item name="colorPrimary">?attr/odyssey_color_accent</item>
-        <item name="android:textColor">?attr/odyssey_color_text_background_primary</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+    <style name="AppTheme.materialyou.indigo.light" parent="AppTheme.materialyou.parent.light">
+        <item name="colorPrimary">@color/md_theme_light_indigo_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_indigo_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_indigo_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_indigo_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_indigo_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_indigo_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_indigo_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_indigo_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_light_indigo_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_indigo_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_indigo_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_indigo_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_light_indigo_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_indigo_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_indigo_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_indigo_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_indigo_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_indigo_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_indigo_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_indigo_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_indigo_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_indigo_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_indigo_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_indigo_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_indigo_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_indigo_inversePrimary</item>
     </style>
 
-    <style name="AppThemeLight.NavDrawerHeader" parent="AppThemeLight">
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary</item>
+    <style name="AppTheme.materialyou.orange.dark" parent="AppTheme.materialyou.parent.dark">
+        <item name="colorPrimary">@color/md_theme_dark_orange_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_orange_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_orange_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_orange_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_dark_orange_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_orange_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_orange_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_orange_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_dark_orange_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_orange_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_orange_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_orange_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_dark_orange_error</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_orange_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_orange_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_orange_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_dark_orange_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_orange_onBackground</item>
+        <item name="colorSurface">@color/md_theme_dark_orange_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_orange_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_orange_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_orange_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_dark_orange_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_orange_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_orange_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_dark_orange_inversePrimary</item>
     </style>
 
-    <style name="AppThemeLight.Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="colorPrimaryDark">?attr/odyssey_color_primary_dark</item>
-        <item name="colorAccent">?attr/odyssey_color_accent</item>
-        <item name="colorPrimary">?attr/odyssey_color_primary</item>
-        <item name="colorOnPrimary">?attr/odyssey_color_text_accent</item>
-        <item name="android:windowBackground">?attr/odyssey_color_background</item>
-        <item name="buttonBarButtonStyle">@style/AppTheme.Dialog.ButtonBarButtonStyle</item>
+    <style name="AppTheme.materialyou.orange.light" parent="AppTheme.materialyou.parent.light">
+        <item name="colorPrimary">@color/md_theme_light_orange_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_orange_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_orange_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_orange_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_orange_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_orange_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_orange_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_orange_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_light_orange_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_orange_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_orange_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_orange_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_light_orange_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_orange_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_orange_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_orange_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_orange_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_orange_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_orange_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_orange_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_orange_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_orange_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_orange_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_orange_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_orange_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_orange_inversePrimary</item>
     </style>
 
-    <style name="AppThemeLight.NumberPicker" parent="AppThemeLight">
-        <item name="colorControlNormal">?attr/odyssey_color_accent</item>
-        <item name="android:colorControlNormal">?attr/odyssey_color_accent</item>
-        <item name="android:textColorPrimary">?attr/odyssey_color_text_background_primary</item>
+    <style name="AppTheme.materialyou.blue.dark" parent="AppTheme.materialyou.parent.dark">
+        <item name="colorPrimary">@color/md_theme_dark_blue_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_blue_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_blue_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_blue_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_dark_blue_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_blue_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_blue_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_blue_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_dark_blue_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_blue_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_blue_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_blue_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_dark_blue_error</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_blue_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_blue_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_blue_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_dark_blue_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_blue_onBackground</item>
+        <item name="colorSurface">@color/md_theme_dark_blue_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_blue_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_blue_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_blue_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_dark_blue_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_blue_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_blue_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_dark_blue_inversePrimary</item>
     </style>
 
+    <style name="AppTheme.materialyou.blue.light" parent="AppTheme.materialyou.parent.light">
+        <item name="colorPrimary">@color/md_theme_light_blue_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_blue_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_blue_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_blue_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_blue_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_blue_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_blue_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_blue_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_light_blue_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_blue_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_blue_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_blue_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_blue_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_blue_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_blue_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_blue_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_blue_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_blue_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_blue_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_blue_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_blue_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_blue_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_blue_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_blue_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_blue_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_blue_inversePrimary</item>
+    </style>
+
+    <style name="AppTheme.materialyou.green.dark" parent="AppTheme.materialyou.parent.dark">
+        <item name="colorPrimary">@color/md_theme_dark_green_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_green_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_green_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_green_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_dark_green_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_green_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_green_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_green_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_dark_green_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_green_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_green_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_green_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_dark_green_error</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_green_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_green_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_green_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_dark_green_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_green_onBackground</item>
+        <item name="colorSurface">@color/md_theme_dark_green_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_green_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_green_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_green_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_dark_green_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_green_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_green_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_dark_green_inversePrimary</item>
+    </style>
+
+    <style name="AppTheme.materialyou.green.light" parent="AppTheme.materialyou.parent.light">
+        <item name="colorPrimary">@color/md_theme_light_green_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_green_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_green_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_green_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_green_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_green_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_green_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_green_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_light_green_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_green_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_green_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_green_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_green_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_green_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_green_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_green_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_green_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_green_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_green_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_green_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_green_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_green_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_green_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_green_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_green_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_green_inversePrimary</item>
+    </style>
+
+    <style name="AppTheme.materialyou.red.dark" parent="AppTheme.materialyou.parent.dark">
+        <item name="colorPrimary">@color/md_theme_dark_red_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_red_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_red_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_red_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_dark_red_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_red_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_red_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_red_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_dark_red_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_red_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_red_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_red_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_dark_red_error</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_red_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_red_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_dark_red_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_dark_red_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_red_onBackground</item>
+        <item name="colorSurface">@color/md_theme_dark_red_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_red_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_red_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_red_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_dark_red_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_red_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_red_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_dark_red_inversePrimary</item>
+    </style>
+
+    <style name="AppTheme.materialyou.red.light" parent="AppTheme.materialyou.parent.light">
+        <item name="colorPrimary">@color/md_theme_light_red_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_red_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_red_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_red_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_red_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_red_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_red_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_red_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_light_red_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_red_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_red_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_red_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_red_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_red_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_red_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_red_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_red_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_red_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_red_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_red_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_red_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_red_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_red_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_red_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_red_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_red_inversePrimary</item>
+    </style>
 </resources>

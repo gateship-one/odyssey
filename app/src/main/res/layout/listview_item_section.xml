@@ -1,95 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2023 Team Gateship-One
-  ~ (Hendrik Borghorst & Frederik Luetkes)
+  ~  Copyright (C) 2023 Team Gateship-One
+  ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
-  ~ The AUTHORS.md file contains a detailed contributors list:
-  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~  The AUTHORS.md file contains a detailed contributors list:
+  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
   ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
   ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
   ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minHeight="@dimen/material_list_item_height"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/section_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/material_list_item_height"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/section_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/material_list_item_height_section"
-            android:orientation="horizontal"
-            android:paddingEnd="@dimen/material_screen_edge_spacing">
+            android:orientation="vertical">
 
-            <ViewSwitcher
-                android:id="@+id/section_header_image_switcher"
-                android:layout_width="@dimen/material_list_item_height_section"
-                android:layout_height="@dimen/material_list_item_height_section"
-                android:animateFirstView="true"
-                android:inAnimation="@anim/fadein"
-                android:outAnimation="@anim/fadeout">
-
-                <ImageView
-                    android:id="@+id/section_header_image_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/cover_placeholder_96dp"
-                    app:tint="?attr/odyssey_color_text_background_primary"
-                    android:contentDescription="@null" />
-
-                <ImageView
-                    android:id="@+id/section_header_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:contentDescription="@null" />
-            </ViewSwitcher>
-
-            <TextView
-                android:id="@+id/section_header_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="sans-serif-regular"
-                android:paddingStart="@dimen/material_standard_horizontal_spacing"
-                android:singleLine="true"
-                android:textSize="@dimen/material_font_style_size_title"
-                tools:text="section header" />
+                android:minHeight="@dimen/material_list_item_height_section"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/material_screen_edge_spacing">
+
+                <ViewSwitcher
+                    android:id="@+id/section_header_image_switcher"
+                    android:layout_width="@dimen/material_list_item_height_section"
+                    android:layout_height="@dimen/material_list_item_height_section"
+                    android:animateFirstView="true"
+                    android:inAnimation="@anim/fade_in"
+                    android:outAnimation="@anim/fade_out">
+
+                    <ImageView
+                        android:id="@+id/section_header_image_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/cover_placeholder_128dp"
+                        app:tint="?attr/app_color_on_content" />
+
+                    <ImageView
+                        android:id="@+id/section_header_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter" />
+                </ViewSwitcher>
+
+                <TextView
+                    android:id="@+id/section_header_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/material_standard_horizontal_spacing"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_divider_size"
+                android:layout_marginStart="@dimen/material_screen_edge_spacing"
+                android:layout_marginEnd="@dimen/material_screen_edge_spacing"
+                app:dividerColor="?attr/colorSurfaceVariant"/>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_divider_size"
-            android:layout_marginStart="@dimen/material_screen_edge_spacing"
-            android:layout_marginEnd="@dimen/material_screen_edge_spacing"
-            android:background="?attr/odyssey_color_divider" />
+        <include layout="@layout/listview_item" />
     </LinearLayout>
 
-    <include
-        android:id="@+id/basic_listview_item"
-        layout="@layout/listview_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_header" />
 </RelativeLayout>

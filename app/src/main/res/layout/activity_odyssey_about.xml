@@ -22,6 +22,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/app_color_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -49,11 +50,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/app_name"
-                android:textColor="?attr/odyssey_color_accent"
-                android:textSize="@dimen/material_font_style_size_headline" />
+                android:textColor="?attr/app_color_secondary"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -65,20 +65,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/standard_padding_small"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="@string/activity_about_version"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading" />
+                    android:textColor="?attr/app_color_secondary"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
 
                 <TextView
                     android:id="@+id/activity_about_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading"
+                    android:textColor="?attr/app_color_secondary"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     tools:text="1.1.19" />
             </LinearLayout>
 
@@ -93,20 +91,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/standard_padding_small"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="@string/activity_about_git_hash"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading" />
+                    android:textColor="?attr/app_color_on_content"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
 
                 <TextView
                     android:id="@+id/activity_about_git_hash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
-                    android:textColor="?attr/odyssey_color_text_background_secondary"
-                    android:textSize="@dimen/material_font_style_size_subheading"
+                    android:textColor="?attr/app_color_on_content"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                     tools:text="e662b285" />
             </LinearLayout>
 
@@ -117,19 +113,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/material_content_spacing"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/odyssey_contributors_title"
-                android:textColor="?attr/odyssey_color_text_background_primary"
                 android:textSize="@dimen/material_font_style_size_subheading"
-                app:backgroundTint="?attr/odyssey_color_background_selected"
-                app:rippleColor="?attr/odyssey_color_text_background_secondary" />
+                app:rippleColor="?attr/app_color_secondary" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_content_spacing"
                 android:gravity="center_horizontal"
-                android:text="@string/artwork_provided_by" />
+                android:text="@string/artwork_provided_by"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,19 +168,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/material_content_spacing"
                 android:autoLink="all"
-                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:linksClickable="true"
                 android:text="@string/sources_text"
-                android:textSize="@dimen/material_font_style_size_caption" />
+                android:textSize="@dimen/material_font_style_size_caption"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/license_text"
-                android:textSize="@dimen/material_font_style_size_caption" />
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/odyssey_thirdparty_licenses"
@@ -195,11 +188,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/material_content_spacing"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/odyssey_thirdparty_licenses_dialog_title"
-                android:textColor="?attr/odyssey_color_text_background_primary"
                 android:textSize="@dimen/material_font_style_size_caption"
-                app:rippleColor="?attr/odyssey_color_text_background_secondary" />
+                app:rippleColor="?attr/app_color_secondary" />
         </LinearLayout>
 
     </LinearLayout>

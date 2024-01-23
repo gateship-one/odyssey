@@ -31,120 +31,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/now_playing_headerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentTop="true"
-            android:background="?attr/colorPrimary"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/now_playing_topCover"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:src="@drawable/cover_placeholder"
-                android:contentDescription="@null" />
-
-            <LinearLayout
-                android:id="@+id/now_playing_header_textLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_toEndOf="@+id/now_playing_topCover"
-                android:layout_toStartOf="@+id/now_playing_layout_dragged_down"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:paddingEnd="@dimen/material_content_spacing"
-                android:paddingStart="@dimen/material_content_spacing">
-
-                <TextView
-                    android:id="@+id/now_playing_track_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:focusable="true"
-                    android:fontFamily="sans-serif-medium"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:textColor="?attr/odyssey_color_text_accent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/now_playing_track_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="marquee"
-                        android:focusable="true"
-                        android:fontFamily="sans-serif-regular"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:textColor="?attr/odyssey_color_text_accent" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/now_playing_layout_dragged_up"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentEnd="true">
-
-                <ImageButton
-                    android:id="@+id/now_playing_topPlaylistButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?attr/actionBarItemBackground"
-                    android:baselineAlignBottom="false"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_queue_music_24dp"
-                    android:tint="?attr/odyssey_color_text_accent"
-                    android:visibility="gone"
-                    android:contentDescription="@null" />
-
-                <ImageButton
-                    android:id="@+id/now_playing_topMenuButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?attr/actionBarItemBackground"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_more_vert_24dp"
-                    android:tint="?attr/odyssey_color_text_accent"
-                    android:contentDescription="@null" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/now_playing_layout_dragged_down"
-                android:layout_width="48dp"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignEnd="@+id/now_playing_layout_dragged_up">
-
-                <ImageButton
-                    android:id="@+id/now_playing_topPlayPauseButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?android:selectableItemBackground"
-                    android:baselineAlignBottom="false"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_play_arrow_48dp"
-                    android:tint="?attr/odyssey_color_text_accent"
-                    android:contentDescription="@null" />
-            </LinearLayout>
-
-        </RelativeLayout>
+        <include layout="@layout/view_now_playing_header"/>
 
         <RelativeLayout
             android:id="@+id/now_playing_bodyLayout"
@@ -158,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/now_playing_control_layout"
-                android:background="?android:colorBackground"
+                android:background="?attr/app_color_content"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -166,8 +53,8 @@
                     android:id="@+id/now_playing_view_switcher"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inAnimation="@anim/fadein"
-                    android:outAnimation="@anim/fadeout"
+                    android:inAnimation="@android:anim/fade_in"
+                    android:outAnimation="@android:anim/fade_out"
                     android:visibility="gone" />
 
                 <org.gateshipone.odyssey.views.AlbumArtistView
@@ -180,7 +67,7 @@
                 <View
                     android:layout_width="@dimen/list_divider_size"
                     android:layout_height="match_parent"
-                    android:background="?attr/odyssey_color_divider" />
+                    android:background="?attr/colorSurfaceVariant" />
 
                 <org.gateshipone.odyssey.views.CurrentPlaylistView
                     android:id="@+id/now_playing_playlist"
@@ -198,98 +85,9 @@
                 android:orientation="vertical"
                 android:paddingBottom="?attr/actionBarSize">
 
-                <RelativeLayout
-                    android:id="@+id/now_playing_seekBarLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary"
-                    android:paddingLeft="@dimen/material_standard_horizontal_spacing"
-                    android:paddingRight="@dimen/material_standard_horizontal_spacing"
-                    android:paddingTop="@dimen/standard_padding_medium">
+                <include layout="@layout/view_now_playing_seekbar"/>
 
-                    <TextView
-                        android:id="@+id/now_playing_elapsedTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:gravity="center"
-                        android:textColor="?attr/odyssey_color_text_accent" />
-
-                    <TextView
-                        android:id="@+id/now_playing_duration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:textColor="?attr/odyssey_color_text_accent" />
-
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/now_playing_buttonLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary"
-                    android:gravity="center_vertical"
-                    android:paddingBottom="@dimen/standard_padding_medium">
-
-                    <ImageButton
-                        android:id="@+id/now_playing_bottomRepeatButton"
-                        android:layout_width="0px"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_repeat_24dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:contentDescription="@null" />
-
-                    <ImageButton
-                        android:id="@+id/now_playing_bottomPreviousButton"
-                        android:layout_width="0px"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_skip_previous_48dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:contentDescription="@null" />
-
-                    <ImageButton
-                        android:id="@+id/now_playing_bottomPlayPauseButton"
-                        android:layout_width="0px"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_play_circle_fill_48dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:contentDescription="@null" />
-
-                    <ImageButton
-                        android:id="@+id/now_playing_bottomNextButton"
-                        android:layout_width="0px"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_skip_next_48dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:contentDescription="@null" />
-
-                    <ImageButton
-                        android:id="@+id/now_playing_bottomRandomButton"
-                        android:layout_width="0px"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:background="?android:selectableItemBackground"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_shuffle_24dp"
-                        android:tint="?attr/odyssey_color_text_accent"
-                        android:contentDescription="@null" />
-
-                </LinearLayout>
+                <include layout="@layout/view_now_playing_control_buttons"/>
             </LinearLayout>
 
             <!-- Layout is overlapping the cover_layout and the control_Layout, therefore

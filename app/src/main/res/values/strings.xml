@@ -179,6 +179,9 @@
     <string name="preference_dark_theme_title">Dark theme</string>
     <string name="preference_dark_theme_message">Use a dark theme</string>
 
+    <string name="preference_legacy_theme_title">Legacy theme</string>
+    <string name="preference_legacy_theme_message">Use the intense color legacy theming used in previous versions. These color schemes are not following the most recent Material design guidelines and are only kept for long-time users. The new themes are generated with Material Theme Builder.</string>
+
     <string name="preference_theme_item_indigo">Indigo</string>
     <string name="preference_theme_item_orange">Orange</string>
     <string name="preference_theme_item_deep_orange">Deep Orange</string>
@@ -188,6 +191,9 @@
     <string name="preference_theme_item_light_green">Light Green</string>
     <string name="preference_theme_item_oled_dark">OLED Dark</string>
     <string name="preference_theme_item_red">Red</string>
+    <string name="preference_theme_item_materialyou_auto">System-based (Automatic dark/light)</string>
+    <string name="preference_theme_item_materialyou">System-based (Manual dark/light)</string>
+
 
     <string name="preference_album_sort_order_title">Artist Albums sort order</string>
     <string name="preference_album_sort_order_message">Sort by</string>
@@ -236,6 +242,9 @@
     <string name="preference_library_click_action_clear_and_play">Replace and play from index</string>
 
     <string name="artwork_settings">Artwork settings</string>
+
+    <!-- seperator -->
+    <string name="track_item_separator" translatable="false">" - "</string>
 
     <string name="preference_clear_default_directory_title">Clear default directory</string>
     <string name="preference_clear_default_directory_summary">Reset the default directory to an available root directory of the device.</string>

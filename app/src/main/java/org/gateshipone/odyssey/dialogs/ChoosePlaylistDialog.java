@@ -107,7 +107,7 @@ public class ChoosePlaylistDialog extends DialogFragment {
 
         // set divider
         AlertDialog dlg = builder.create();
-        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_divider)));
+        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(requireContext(), R.attr.colorSurfaceVariant)));
         dlg.getListView().setDividerHeight(getResources().getDimensionPixelSize(R.dimen.list_divider_size));
 
         return dlg;

@@ -25,7 +25,7 @@
     <!--android:centerColor="#4CAF50"-->
     <gradient
         android:angle="135"
-        android:endColor="?attr/odyssey_color_primary"
-        android:startColor="?attr/odyssey_color_primary_dark"
+        android:endColor="?attr/colorSurfaceVariant"
+        android:startColor="?attr/colorSurface"
         android:type="linear" />
 </shape>

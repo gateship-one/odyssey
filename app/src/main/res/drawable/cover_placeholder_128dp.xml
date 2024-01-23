@@ -20,9 +20,15 @@
   ~
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_activated="true" android:drawable="?attr/odyssey_color_text_accent" />
-    <item android:state_selected="true" android:drawable="?attr/odyssey_color_text_accent" />
-    <item android:state_pressed="true" android:drawable="?attr/odyssey_color_text_accent" />
-    <item android:drawable="@android:color/transparent" />
-</selector>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportHeight="53.0"
+    android:viewportWidth="53.0">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m41.7,6.49c-0.1,0.01 -0.2,0.02 -0.3,0.05L33.96,8.5 22.38,11.56c-0.84,0.22 -1.52,1.11 -1.52,1.98v22.19c-1.77,-0.47 -4.04,-0.25 -6.22,0.8 -3.71,1.79 -5.69,5.24 -4.43,7.7 1.26,2.46 5.28,3.01 8.99,1.21 2.95,-1.43 4.81,-3.9 4.81,-6.1l-0,-19.04 15.76,-4.17v17.02c-1.77,-0.47 -4.04,-0.25 -6.22,0.8 -3.71,1.79 -5.69,5.24 -4.42,7.7 1.26,2.46 5.28,3.01 8.99,1.21 2.95,-1.43 4.81,-3.9 4.81,-6.1V7.71C42.92,6.95 42.39,6.45 41.7,6.49Z"
+        android:strokeAlpha="0.76470588"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="0.5" />
+</vector>

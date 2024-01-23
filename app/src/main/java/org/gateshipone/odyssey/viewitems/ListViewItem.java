@@ -80,7 +80,7 @@ public class ListViewItem extends GenericImageViewItem {
                 context,
                 R.layout.listview_item_image,
                 R.id.item_image,
-                R.id.item_image_switcher,
+                R.id.item_image_viewswitcher,
                 false,
                 false,
                 true,
@@ -93,7 +93,7 @@ public class ListViewItem extends GenericImageViewItem {
                 context,
                 R.layout.listview_item_image,
                 R.id.item_image,
-                R.id.item_image_switcher,
+                R.id.item_image_viewswitcher,
                 false,
                 false,
                 true,
@@ -322,7 +322,7 @@ public class ListViewItem extends GenericImageViewItem {
 
         if (icon != null) {
             // get tint color
-            int tintColor = ThemeUtils.getThemeColor(context, R.attr.odyssey_color_text_background_secondary);
+            int tintColor = ThemeUtils.getThemeColor(context, R.attr.app_color_on_content);
             // tint the icon
             DrawableCompat.setTint(icon, tintColor);
         }
@@ -349,7 +349,7 @@ public class ListViewItem extends GenericImageViewItem {
 
         if (icon != null) {
             // get tint color
-            int tintColor = ThemeUtils.getThemeColor(context, R.attr.odyssey_color_text_background_secondary);
+            int tintColor = ThemeUtils.getThemeColor(context, R.attr.app_color_on_content);
             // tint the icon
             DrawableCompat.setTint(icon, tintColor);
         }
@@ -405,7 +405,7 @@ public class ListViewItem extends GenericImageViewItem {
 
         if (icon != null) {
             // get tint color
-            int tintColor = ThemeUtils.getThemeColor(context, R.attr.odyssey_color_text_background_secondary);
+            int tintColor = ThemeUtils.getThemeColor(context, R.attr.app_color_on_content);
             // tint the icon
             DrawableCompat.setTint(icon, tintColor);
         }
@@ -471,10 +471,10 @@ public class ListViewItem extends GenericImageViewItem {
      */
     private void setPlaying(final boolean state) {
         if (state) {
-            int color = ThemeUtils.getThemeColor(getContext(), R.attr.colorAccent);
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_surface_highlight);
             mTitleView.setTextColor(color);
         } else {
-            int color = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+            int color = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_content);
             mTitleView.setTextColor(color);
         }
     }

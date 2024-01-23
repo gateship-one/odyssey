@@ -22,6 +22,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/app_color_content"
     android:orientation="vertical">
 
     <ImageView
@@ -38,7 +39,7 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:text="@string/odyssey_contributors_title"
-        android:textColor="?attr/odyssey_color_accent"
+        android:textColor="?attr/app_color_secondary"
         android:textSize="@dimen/material_font_style_size_headline" />
 
     <ListView

@@ -155,7 +155,7 @@ public class AlbumArtistView extends ViewSwitcher {
      */
     public void clearAlbumImage() {
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.odyssey_color_text_background_primary);
+        int tintColor = ThemeUtils.getThemeColor(getContext(), R.attr.app_color_on_content);
 
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.cover_placeholder, null);
 

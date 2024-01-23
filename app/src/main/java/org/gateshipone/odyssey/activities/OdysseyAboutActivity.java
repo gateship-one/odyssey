@@ -28,6 +28,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.android.material.color.MaterialColors;
+
 import org.gateshipone.odyssey.BuildConfig;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
@@ -40,7 +42,7 @@ public class OdysseyAboutActivity extends GenericActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_odyssey_about);
 
-        getWindow().setStatusBarColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_primary_dark));
+        getWindow().setStatusBarColor(MaterialColors.getColor(this, R.attr.app_color_content, 0));
 
         String versionName = BuildConfig.VERSION_NAME;
         ((TextView) findViewById(R.id.activity_about_version)).setText(versionName);

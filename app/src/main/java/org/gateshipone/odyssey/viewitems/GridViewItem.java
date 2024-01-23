@@ -50,9 +50,9 @@ public class GridViewItem extends GenericImageViewItem {
      * @param adapter The scroll speed adapter for cover loading.
      */
     private GridViewItem(final Context context, final ScrollSpeedAdapter adapter) {
-        super(context, R.layout.gridview_item, R.id.grid_item_cover_image, R.id.grid_item_view_switcher, adapter);
+        super(context, R.layout.gridview_item, R.id.item_artists_cover_image, R.id.item_grid_viewswitcher, adapter);
 
-        mTitleView = findViewById(R.id.grid_item_title);
+        mTitleView = findViewById(R.id.item_grid_text);
     }
 
     /**

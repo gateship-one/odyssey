@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2023 Team Gateship-One
+  ~ Copyright (C) 2024 Team Gateship-One
   ~ (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~ The AUTHORS.md file contains a detailed contributors list:
@@ -22,29 +22,29 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    android:background="@drawable/side_nav_bar"
-    android:gravity="bottom"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.1"
-        android:scaleType="centerCrop"
-        android:src="@drawable/odyssey_256dp"
-        android:contentDescription="@null" />
+    android:id="@+id/now_playing_seekBarLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/app_color_surface"
+    android:paddingLeft="@dimen/material_standard_horizontal_spacing"
+    android:paddingTop="@dimen/standard_padding_medium"
+    android:paddingRight="@dimen/material_standard_horizontal_spacing">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/now_playing_elapsedTime"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:fontFamily="sans-serif-thin"
-        android:padding="@dimen/standard_padding_outside"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="@dimen/notification_font_size_big" />
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:textColor="?attr/app_color_on_surface" />
+
+    <TextView
+        android:id="@+id/now_playing_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textColor="?attr/app_color_on_surface" />
+
 
 </RelativeLayout>

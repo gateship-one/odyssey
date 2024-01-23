@@ -61,7 +61,11 @@
     <string name="pref_red_key" translatable="false">red</string>
     <string name="pref_oleddark_key" translatable="false">oleddark</string>
     <string name="pref_theme_default" translatable="false">@string/pref_indigo_key</string>
+    <string name="pref_materialyou_auto_key" translatable="false">materialyou_auto</string>
+    <string name="pref_materialyou_key" translatable="false">materialyou</string>
+    <string name="pref_theme_materialyou_default" translatable="false">@string/pref_indigo_key</string>
     <bool name="pref_theme_dark_default">true</bool>
+    <bool name="pref_theme_legacy_default">false</bool>
 
     <string name="pref_artist_albums_sort_name_key" translatable="false">name</string>
     <string name="pref_artist_albums_sort_year_key" translatable="false">year</string>
@@ -91,7 +95,9 @@
     <string name="pref_artwork_provider_artist_default" translatable="false">@string/pref_artwork_provider_fanarttv_key</string>
 
     <string name="pref_theme_key" translatable="false">pref_theme</string>
+    <string name="pref_materialyou_theme_selector_key" translatable="false">pref_theme_materialyou_selector</string>
     <string name="pref_dark_theme_key" translatable="false">pref_dark_theme</string>
+    <string name="pref_legacy_theme_key" translatable="false">pref_legacy_theme</string>
     <string name="pref_album_artists_only_key" translatable="false">pref_album_artists_only</string>
     <bool name="pref_album_artists_only_default">true</bool>
     <string name="pref_album_sort_order_key" translatable="false">pref_album_sort_order</string>
@@ -125,6 +131,16 @@
         <item>@string/pref_lightgreen_key</item>
         <item>@string/pref_red_key</item>
         <item>@string/pref_oleddark_key</item>
+    </string-array>
+
+    <string-array name="preference_materialyou_style_values" translatable="false">
+        <item>@string/pref_indigo_key</item>
+        <item>@string/pref_orange_key</item>
+        <item>@string/pref_blue_key</item>
+        <item>@string/pref_lightgreen_key</item>
+        <item>@string/pref_red_key</item>
+        <item>@string/pref_materialyou_auto_key</item>
+        <item>@string/pref_materialyou_key</item>
     </string-array>
 
     <string-array name="preference_album_sort_orders_values" translatable="false">

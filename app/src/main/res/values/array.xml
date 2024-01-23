@@ -90,6 +90,16 @@
         <item>@string/preference_theme_item_oled_dark</item>
     </string-array>
 
+    <string-array name="preference_material_you_styles">
+        <item>@string/preference_theme_item_indigo</item>
+        <item>@string/preference_theme_item_orange</item>
+        <item>@string/preference_theme_item_blue</item>
+        <item>@string/preference_theme_item_light_green</item>
+        <item>@string/preference_theme_item_red</item>
+        <item>@string/preference_theme_item_materialyou_auto</item>
+        <item>@string/preference_theme_item_materialyou</item>
+    </string-array>
+
     <string-array name="preference_library_click">
         <item>@string/preference_library_click_action_add</item>
         <item>@string/preference_library_click_action_play</item>

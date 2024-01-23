@@ -1,61 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2023 Team Gateship-One
-  ~ (Hendrik Borghorst & Frederik Luetkes)
+  ~  Copyright (C) 2023 Team Gateship-One
+  ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
-  ~ The AUTHORS.md file contains a detailed contributors list:
-  ~ <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
+  ~  The AUTHORS.md file contains a detailed contributors list:
+  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
   ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
   ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
   ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <ViewSwitcher
-        android:id="@+id/grid_item_view_switcher"
+        android:id="@+id/item_grid_viewswitcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:animateFirstView="true"
-        android:inAnimation="@anim/fadein"
-        android:outAnimation="@anim/fadeout">
+        android:inAnimation="@anim/fade_in"
+        android:outAnimation="@anim/fade_out">
 
         <ImageView
-            android:id="@+id/grid_item_cover_placeholder"
+            android:id="@+id/item_artists_cover_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/odyssey_cover_background"
+            android:background="?attr/colorSurfaceVariant"
             android:padding="16dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/cover_placeholder_96dp"
-            app:tint="?attr/odyssey_color_text_background_primary"
-            android:contentDescription="@null" />
+            android:src="@drawable/cover_placeholder_128dp"
+            app:tint="?attr/app_color_on_content" />
 
         <ImageView
-            android:id="@+id/grid_item_cover_image"
+            android:id="@+id/item_artists_cover_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:contentDescription="@null" />
+            android:scaleType="centerCrop" />
     </ViewSwitcher>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:background="?android:selectableItemBackground"
         android:clickable="false" />
@@ -66,23 +64,22 @@
         android:layout_alignParentBottom="true">
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
-            android:background="?attr/odyssey_grid_gradient" />
+            android:background="?attr/malp_grid_gradient" />
 
         <TextView
-            android:id="@+id/grid_item_title"
+            android:id="@+id/item_grid_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:ellipsize="marquee"
             android:fadingEdgeLength="16sp"
-            android:fontFamily="sans-serif-light"
             android:gravity="center_vertical|center_horizontal"
             android:singleLine="true"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textColor="#ffffff"
+            android:textAppearance="@style/TextAppearance.Material3.LabelMedium" />
     </RelativeLayout>
 
 </RelativeLayout>

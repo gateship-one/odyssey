@@ -22,19 +22,36 @@
 
 <resources>
     <declare-styleable name="OdysseyColors">
-        <attr name="odyssey_color_primary" format="reference|color" />
-        <attr name="odyssey_color_primary_dark" format="reference|color" />
-        <attr name="odyssey_color_accent" format="reference|color" />
-        <attr name="odyssey_color_background" format="reference|color" />
-        <attr name="odyssey_color_background_selected" format="reference|color" />
-        <attr name="odyssey_color_text_accent" format="reference|color" />
-        <attr name="odyssey_color_text_background_secondary" format="reference|color" />
-        <attr name="odyssey_color_text_background_primary" format="reference|color" />
-        <attr name="odyssey_color_navheader_icon" format="reference|color" />
-        <attr name="odyssey_color_divider" format="reference|color" />
-        <attr name="odyssey_cover_background" format="reference|color" />
-        <attr name="odyssey_grid_gradient" format="reference" />
-        <attr name="odyssey_navdrawer_theme" format="reference" />
-        <attr name="odyssey_appbaroverlay_theme" format="reference" />
+        <attr name="malp_grid_gradient" format="reference" />u
+
+        <!-- Color used for surface structures like NPV view (e.g. original orange). Mostly used for legacy themes -->
+        <attr name="app_color_surface" format="reference|color" />
+        <!-- Color that is used for text/icons in views above -->
+        <attr name="app_color_on_surface" format="reference|color" />
+        <!-- Color to highlight something, e.g. active repeat on surface above -->
+        <attr name="app_color_on_surface_highlight" format="reference|color" />
+        <!-- Legacy primary darker color -->
+        <attr name="app_color_surface_darker" format="reference|color" />
+        <!-- Color that is used for views like playlist tracks, album lists, grid view, etc -->
+        <attr name="app_color_content" format="reference|color" />
+        <!-- Color that is used for text/icons in views above -->
+        <attr name="app_color_on_content" format="reference|color" />
+        <!-- Secondary color is the accent color used for certain UI elements -->
+        <attr name="app_color_secondary" format="reference|color" />
+        <!-- Color that is used for text/icons in views above -->
+        <attr name="app_color_on_secondary" format="reference|color" />
+        <!-- Color for cover place holder image -->
+        <attr name="app_color_cover_background" format="reference|color" />
+        <!-- Color used for button tinting in fanart activity -->
+        <attr name="app_color_fanart_activity_tint" format="reference|color" />
+
+        <!-- Reference to toolbar style that is unfortunately required to hack the light legacy theme's toolbar to dark colors to have
+        visible icons -->
+        <attr name="app_toolbar_style" format="reference" />
+
+        <!-- Text appearance used for list items (first row) -->
+        <attr name="app_text_list_title" format="reference"/>
+        <!-- Text appearance used for list items (second row) -->
+        <attr name="app_text_list_subtitle" format="reference"/>
     </declare-styleable>
 </resources>

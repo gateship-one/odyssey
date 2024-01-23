@@ -683,9 +683,6 @@ public class OdysseyMainActivity extends GenericActivity
             View layout = findViewById(R.id.drawer_layout);
             if (layout != null) {
                 Snackbar sb = Snackbar.make(layout, R.string.snackbar_sleep_timer_confirmation_message, Snackbar.LENGTH_SHORT);
-                // style the snackbar text
-                TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                 sb.show();
             }
         } catch (RemoteException e) {
@@ -727,7 +724,7 @@ public class OdysseyMainActivity extends GenericActivity
     @Override
     public void onDragPositionChanged(float pos) {
         // Get the primary color of the active theme from the helper.
-        int newColor = ThemeUtils.getThemeColor(this, R.attr.colorPrimary);
+        int newColor = ThemeUtils.getThemeColor(this, R.attr.app_color_surface);
 
         // Calculate the offset depending on the floating point position (0.0-1.0 of the view)
         // Shift by 24 bit to set it as the A from ARGB and set all remaining 24 bits to 1 to
@@ -779,9 +776,6 @@ public class OdysseyMainActivity extends GenericActivity
                     sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
                             new String[]{PermissionHelper.AUDIO_PERMISSION},
                             PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_AUDIO));
-                    // style the snackbar text
-                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
             } else {
@@ -810,9 +804,6 @@ public class OdysseyMainActivity extends GenericActivity
                     sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
                             new String[]{PermissionHelper.IMAGE_PERMISSION},
                             PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE));
-                    // style the snackbar text
-                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
             } else {
@@ -842,9 +833,6 @@ public class OdysseyMainActivity extends GenericActivity
                     sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
                             new String[]{PermissionHelper.NOTIFICATION_PERMISSION},
                             PermissionHelper.MY_PERMISSIONS_REQUEST_NOTIFICATIONS));
-                    // style the snackbar text
-                    TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
             } else {
@@ -1001,12 +989,8 @@ public class OdysseyMainActivity extends GenericActivity
         ImageView collapsingImage = findViewById(R.id.collapsing_image);
         if (collapsingImage != null) {
             collapsingImage.setImageBitmap(bm);
+            collapsingImage.setMinimumHeight(collapsingImage.getMeasuredWidth());
 
-            // FIXME DIRTY HACK: Manually fix the toolbar size to the screen width
-            CollapsingToolbarLayout toolbar = findViewById(R.id.collapsing_toolbar);
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-
-            params.height = getWindow().getDecorView().getMeasuredWidth();
 
             // Always expand the toolbar to show the complete image
             AppBarLayout appbar = findViewById(R.id.appbar);
@@ -1101,9 +1085,6 @@ public class OdysseyMainActivity extends GenericActivity
                 if (layout != null) {
                     final String errorMsg = getString(R.string.snackbar_uri_not_supported_message, mSentUri.toString());
                     final Snackbar sb = Snackbar.make(layout, errorMsg, Snackbar.LENGTH_SHORT);
-                    // style the snackbar text
-                    final TextView sbText = sb.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    sbText.setTextColor(ThemeUtils.getThemeColor(this, R.attr.odyssey_color_text_accent));
                     sb.show();
                 }
             }

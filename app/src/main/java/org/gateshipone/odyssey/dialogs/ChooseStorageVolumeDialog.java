@@ -24,10 +24,12 @@ package org.gateshipone.odyssey.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -35,6 +37,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.listener.OnDirectorySelectedListener;
 import org.gateshipone.odyssey.utils.FileExplorerHelper;
+import org.gateshipone.odyssey.utils.ThemeUtils;
 
 import java.util.List;
 
@@ -80,6 +83,10 @@ public class ChooseStorageVolumeDialog extends DialogFragment {
         builder.setAdapter(mStorageVolumesAdapter, (dialogInterface, item) -> mDirectorySelectedCallback.onDirectorySelected(mStorageVolumesAdapter.getItem(item), true));
 
         // Create the AlertDialog object and return it
-        return builder.create();
+        AlertDialog dlg = builder.create();
+        dlg.getListView().setDivider(new ColorDrawable(ThemeUtils.getThemeColor(requireContext(), R.attr.colorSurfaceVariant)));
+        dlg.getListView().setDividerHeight(getResources().getDimensionPixelSize(R.dimen.list_divider_size));
+
+        return dlg;
     }
 }

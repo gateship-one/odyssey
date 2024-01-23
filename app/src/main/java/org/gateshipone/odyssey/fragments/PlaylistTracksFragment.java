@@ -252,7 +252,7 @@ public class PlaylistTracksFragment extends OdysseyFragment<TrackModel> implemen
         menuInflater.inflate(R.menu.options_menu_playlist_tracks_fragment, menu);
 
         // get tint color
-        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.odyssey_color_text_accent);
+        int tintColor = ThemeUtils.getThemeColor(requireContext(), R.attr.app_color_on_surface);
 
         Drawable drawable = menu.findItem(R.id.action_add_playlist_tracks).getIcon();
         drawable = DrawableCompat.wrap(drawable);
