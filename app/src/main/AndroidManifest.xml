@@ -31,6 +31,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -123,7 +125,8 @@
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"
             android:label="OdysseyPlaybackService"
-            android:process=":serviceProcess">
+            android:process=":serviceProcess"
+            >
             <intent-filter>
                 <action android:name="org.gateshipone.odyssey.playbackservice.IOdysseyPlaybackService" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
@@ -137,11 +140,15 @@
         <service
             android:name=".artwork.BulkDownloadService"
             android:exported="false"
-            android:process=":downloadProcess" />
+            android:process=":downloadProcess"
+            android:foregroundServiceType="dataSync"
+            />
         <service
             android:name=".mediascanner.MediaScannerService"
             android:exported="false"
-            android:process=":mediascanProcess" />
+            android:process=":mediascanProcess"
+            android:foregroundServiceType="dataSync"
+            />
 
         <receiver
             android:name=".playbackservice.RemoteControlReceiver"

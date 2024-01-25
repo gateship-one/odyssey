@@ -141,7 +141,11 @@ public class MediaScannerService extends Service {
 
                 intentFilter.addAction(ACTION_CANCEL_MEDIASCANNING);
 
-                registerReceiver(mBroadcastReceiver, intentFilter);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    registerReceiver(mBroadcastReceiver, intentFilter, RECEIVER_EXPORTED);
+                } else {
+                    registerReceiver(mBroadcastReceiver, intentFilter);
+                }
             }
 
             // create notification

@@ -355,7 +355,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
             intentFilter.addAction(ArtworkManager.ACTION_NEW_ARTWORK_READY);
 
             // Register the receiver within the system
-            registerReceiver(mBroadcastControlReceiver, intentFilter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                registerReceiver(mBroadcastControlReceiver, intentFilter, RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(mBroadcastControlReceiver, intentFilter);
+            }
         }
 
         // Request the powermanager to initialize the transition wakelock

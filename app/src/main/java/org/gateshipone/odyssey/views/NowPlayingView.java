@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -1066,7 +1067,11 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mNowPlayingReceiver = null;
         }
         mNowPlayingReceiver = new NowPlayingReceiver();
-        getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            getContext().getApplicationContext().registerReceiver(mNowPlayingReceiver, new IntentFilter(PlaybackServiceStatusHelper.MESSAGE_NEWTRACKINFORMATION));
+        }
         // get the playbackservice, when the connection is successfully established the timer gets restarted
         mServiceConnection.openConnection();
 
