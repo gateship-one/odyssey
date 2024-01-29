@@ -588,6 +588,7 @@ public class OdysseyMainActivity extends GenericActivity
         }
 
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
 
@@ -602,8 +603,7 @@ public class OdysseyMainActivity extends GenericActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-        newFragment.setExitTransition(new Slide(Gravity.TOP));
+        transaction.setCustomAnimations(R.anim.fragment_slide_in_bottom, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out_bottom);
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -624,8 +624,7 @@ public class OdysseyMainActivity extends GenericActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-        newFragment.setExitTransition(new Slide(Gravity.TOP));
+        transaction.setCustomAnimations(R.anim.fragment_slide_in_bottom, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out_bottom);
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -654,8 +653,7 @@ public class OdysseyMainActivity extends GenericActivity
         if (!isRootDirectory) {
             // no root directory so set a enter / exit transition
             final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
-            newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
-            newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
+            transaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out);
         }
 
         transaction.replace(R.id.fragment_container, newFragment);
@@ -743,8 +741,7 @@ public class OdysseyMainActivity extends GenericActivity
 
         // set enter / exit animation
         final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
+        transaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out);
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
@@ -916,8 +913,7 @@ public class OdysseyMainActivity extends GenericActivity
 
         // set enter / exit animation
         final int layoutDirection = getResources().getConfiguration().getLayoutDirection();
-        newFragment.setEnterTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, layoutDirection)));
-        newFragment.setExitTransition(new Slide(GravityCompat.getAbsoluteGravity(GravityCompat.END, layoutDirection)));
+        transaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out);
 
         transaction.addToBackStack("ArtworkSettingsFragment");
 
@@ -1006,8 +1002,7 @@ public class OdysseyMainActivity extends GenericActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // set enter / exit animation
-        newFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-        newFragment.setExitTransition(new Slide(Gravity.TOP));
+        transaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_fade_out, R.anim.fragment_fade_in, R.anim.fragment_slide_out);
 
         // Replace whatever is in the fragment_container view with this
         // fragment,
