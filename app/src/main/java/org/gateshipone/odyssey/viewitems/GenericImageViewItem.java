@@ -22,8 +22,10 @@
 
 package org.gateshipone.odyssey.viewitems;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.animation.AnimationUtils;
@@ -33,7 +35,11 @@ import android.widget.ViewSwitcher;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
+import androidx.appcompat.content.res.AppCompatResources;
 
+import com.google.android.material.color.MaterialColors;
+
+import org.gateshipone.odyssey.R;
 import org.gateshipone.odyssey.adapter.ScrollSpeedAdapter;
 import org.gateshipone.odyssey.artwork.ArtworkManager;
 import org.gateshipone.odyssey.models.GenericModel;
@@ -50,6 +56,10 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
     private boolean mCoverDone;
 
     private final AsyncLoader.CoverViewHolder mHolder;
+    final private Drawable mPlaceholder;
+
+    final private int mPlaceholderPadding;
+
 
     /**
      * @param context     The current context.
@@ -74,14 +84,17 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
 
 
         mCoverDone = false;
-        if (mImageView != null && mSwitcher != null) {
-            mSwitcher.setOutAnimation(null);
-            mSwitcher.setInAnimation(null);
-            mImageView.setImageDrawable(null);
+        if (mSwitcher != null) {
             mSwitcher.setDisplayedChild(0);
             mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
             mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
         }
+        if (null != mImageView) {
+            mImageView.setBackgroundColor(MaterialColors.getColor(getContext(), R.attr.colorSurfaceVariant,0));
+        }
+
+        mPlaceholder = AppCompatResources.getDrawable(getContext(), R.drawable.cover_placeholder_128dp);
+        mPlaceholderPadding = getContext().getResources().getDimensionPixelSize(R.dimen.material_standard_horizontal_spacing);
     }
 
     /**
@@ -139,6 +152,7 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
         if (image != null) {
             mCoverDone = true;
 
+            mImageView.setPadding(0,0,0,0);
             mImageView.setImageBitmap(image);
             mSwitcher.setDisplayedChild(1);
         } else {
@@ -151,10 +165,14 @@ public abstract class GenericImageViewItem extends RelativeLayout implements Cov
             mCoverDone = false;
             mHolder.modelItem = null;
 
-            mSwitcher.setOutAnimation(null);
-            mSwitcher.setInAnimation(null);
-            mImageView.setImageDrawable(null);
-            mSwitcher.setDisplayedChild(0);
+            mImageView.setPadding(mPlaceholderPadding, mPlaceholderPadding, mPlaceholderPadding, mPlaceholderPadding);
+            mImageView.setImageDrawable(mPlaceholder);
+
+            if (mSwitcher.getDisplayedChild() != 0) {
+                mSwitcher.setOutAnimation(null);
+                mSwitcher.setInAnimation(null);
+                mSwitcher.setDisplayedChild(0);
+            }
             mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
             mSwitcher.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
         }

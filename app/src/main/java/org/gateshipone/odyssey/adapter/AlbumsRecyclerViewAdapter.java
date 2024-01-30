@@ -38,6 +38,8 @@ import org.gateshipone.odyssey.viewitems.GenericViewItemHolder;
 import org.gateshipone.odyssey.viewitems.GridViewItem;
 import org.gateshipone.odyssey.viewitems.ListViewItem;
 
+import java.util.HashMap;
+
 public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumModel, GenericViewItemHolder> implements ArtworkManager.onNewAlbumImageListener {
 
     private final ArtworkManager mArtworkManager;
@@ -45,6 +47,9 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
     private final boolean mHideArtwork;
 
     private final boolean mUseList;
+
+    private final HashMap<AlbumModel, Integer> mAlbumPositionMap;
+
 
     /**
      * the size of the item in pixel
@@ -66,6 +71,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mHideArtwork = sharedPreferences.getBoolean(context.getString(R.string.pref_hide_artwork_key), context.getResources().getBoolean(R.bool.pref_hide_artwork_default));
+        mAlbumPositionMap = new HashMap<>();
     }
 
     @NonNull
@@ -92,6 +98,7 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
     @Override
     public void onBindViewHolder(@NonNull GenericViewItemHolder holder, int position) {
         final AlbumModel album = getItem(position);
+        mAlbumPositionMap.put(album, position);
 
         holder.setAlbum(album);
 
@@ -138,6 +145,10 @@ public class AlbumsRecyclerViewAdapter extends GenericRecyclerViewAdapter<AlbumM
 
     @Override
     public void newAlbumImage(AlbumModel album) {
-        notifyDataSetChanged();
+        Integer position;
+        position = mAlbumPositionMap.get(album);
+        if (position != null) {
+            notifyItemChanged(position);
+        }
     }
 }
