@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.1"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         android:src="@drawable/odyssey_256dp"
         android:contentDescription="@null" />
 
