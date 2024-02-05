@@ -23,7 +23,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWidgetBackground">
+    android:theme="@style/Theme.app.widget"
+    android:background="?android:attr/colorBackground">
 
     <ImageView
         android:id="@+id/widget_covert_artwork"
@@ -53,7 +54,6 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
-            android:textColor="@android:color/primary_text_dark"
             android:textSize="@dimen/material_font_style_size_subheading" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-regular"
             android:singleLine="true"
-            android:textColor="@android:color/secondary_text_dark"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="@dimen/material_font_style_size_body_1" />
 
         <LinearLayout
@@ -79,7 +79,7 @@
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_skip_previous_48dp"
-                android:tint="@android:color/primary_text_dark"
+                android:tint="?android:attr/textColorPrimary"
                 android:contentDescription="@null" />
 
             <ImageButton
@@ -90,7 +90,7 @@
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_play_arrow_48dp"
-                android:tint="@android:color/primary_text_dark"
+                android:tint="?android:attr/textColorPrimary"
                 android:contentDescription="@null" />
 
             <ImageButton
@@ -101,7 +101,7 @@
                 android:background="?android:selectableItemBackground"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_skip_next_48dp"
-                android:tint="@android:color/primary_text_dark"
+                android:tint="?android:attr/textColorPrimary"
                 android:contentDescription="@null" />
         </LinearLayout>
     </LinearLayout>

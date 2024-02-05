@@ -163,7 +163,7 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                     // Check if the tracks album changed
                     if (mLastInfo.getCurrentTrack().getTrackAlbumId() != item.getTrackAlbumId()) {
                         // Album changed, it is necessary to start the image loader
-                        views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
+                        views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.widget_icon);
 
                         mLastCover = null;
 
@@ -176,14 +176,14 @@ OdysseyWidgetProvider extends AppWidgetProvider {
                 } else {
                     // Hide artwork requested
                     mLastCover = null;
-                    views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
+                    views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.widget_icon);
                 }
             }
             break;
             case RESUMED:
             case STOPPED:
                 mLastCover = null;
-                views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.odyssey_notification);
+                views.setImageViewResource(R.id.widget_covert_artwork, R.drawable.widget_icon);
                 break;
         }
 

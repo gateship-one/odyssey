@@ -680,4 +680,5 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_red_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_red_inversePrimary</item>
     </style>
+    <style name="Theme.app.widget" parent="Theme.Material3.DynamicColors.Dark" />
 </resources>
