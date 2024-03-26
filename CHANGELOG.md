@@ -1,5 +1,9 @@
 # Changelog Odyssey
 
+## Version: 1.3.0 Tag: release-39 (2024-03-26)
+* Migrate to Material You design
+* Monochromatic icon
+
 ## Version: 1.2.4 Tag: release-38 (2023-08-30)
 
 * Migrate to android 13
