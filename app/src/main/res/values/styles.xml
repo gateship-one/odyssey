@@ -3,7 +3,7 @@
   ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~  The AUTHORS.md file contains a detailed contributors list:
-  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
+  ~  <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
   ~
   ~  This program is free software: you can redistribute it and/or modify
   ~  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="app_color_surface">?attr/colorSurface</item>
         <item name="app_color_on_surface">?attr/colorOnSurface</item>
@@ -55,7 +55,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="app_color_surface">?attr/colorSurface</item>
         <item name="app_color_on_surface">?attr/colorOnSurface</item>
@@ -83,7 +83,7 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">?attr/isLightTheme</item>
         <item name="app_color_surface">?attr/colorSurface</item>
@@ -269,7 +269,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!-- malp color values -->
+        <!-- odyssey color values -->
         <item name="colorPrimaryDark">?attr/app_color_surface_darker</item>
         <item name="colorPrimary">?attr/app_color_surface</item>
         <item name="colorOnPrimary">?attr/app_color_on_surface</item>
@@ -278,7 +278,7 @@
         <item name="colorSecondary">?attr/app_color_secondary</item>
         <item name="colorOnSecondary">?attr/app_color_secondary</item>
         <item name="app_color_cover_background">#111111</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
         <item name="app_color_on_content">#ffffff</item>
         <item name="app_color_fanart_activity_tint">#ffffff</item>
@@ -293,7 +293,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <!-- malp color values -->
+        <!-- odyssey color values -->
         <item name="colorPrimaryDark">?attr/app_color_surface_darker</item>
         <item name="colorAccent">?attr/app_color_secondary</item>
         <item name="colorPrimary">?attr/app_color_surface</item>
@@ -304,7 +304,7 @@
         <item name="colorPrimaryContainer">?attr/app_color_secondary</item>
         <item name="colorOnPrimaryContainer">?attr/app_color_on_secondary</item>
         <item name="app_color_cover_background">#FFFFFF</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_light</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_light</item>
         <item name="app_color_on_surface_highlight">?attr/app_color_secondary</item>
         <item name="app_color_on_content">@android:color/black</item>
         <item name="app_color_fanart_activity_tint">#ffffff</item>
@@ -341,7 +341,7 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="app_color_surface">?attr/colorSurface</item>
         <item name="app_color_on_surface">?attr/colorOnSurface</item>
@@ -364,7 +364,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="malp_grid_gradient">@drawable/gradient_gridview_item_dark</item>
+        <item name="odyssey_grid_gradient">@drawable/gradient_gridview_item_dark</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="app_color_surface">?attr/colorSurface</item>
         <item name="app_color_on_surface">?attr/colorOnSurface</item>

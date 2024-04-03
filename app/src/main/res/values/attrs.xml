@@ -22,7 +22,7 @@
 
 <resources>
     <declare-styleable name="OdysseyColors">
-        <attr name="malp_grid_gradient" format="reference" />u
+        <attr name="odyssey_grid_gradient" format="reference" />u
 
         <!-- Color used for surface structures like NPV view (e.g. original orange). Mostly used for legacy themes -->
         <attr name="app_color_surface" format="reference|color" />
