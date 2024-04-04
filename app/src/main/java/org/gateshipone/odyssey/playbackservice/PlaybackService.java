@@ -65,6 +65,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PlaybackService extends Service implements AudioManager.OnAudioFocusChangeListener, MetaDataLoader.MetaDataLoaderListener {
 
@@ -487,6 +489,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         mNextPlayingIndex = -1;
         mLastPlayingIndex = -1;
 
+        deferredStateSave();
 
         // Broadcast the new status
         mPlaybackServiceStatusHelper.updateStatus();
@@ -549,6 +552,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Distribute the new status to everything (Notification, widget, ...)
         mPlaybackServiceStatusHelper.updateStatus();
+        deferredStateSave();
     }
 
     /**
@@ -557,6 +561,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      */
     public void resume() {
         cancelQuitAlert();
+
+        cancelDeferredStateSave();
 
         // Check if mediaplayer needs preparing because we are resuming an state from the database or stopped state
         if (!mPlayer.isPrepared() && (mCurrentPlayingIndex != -1) && (mCurrentPlayingIndex < mCurrentList.size())) {
@@ -802,6 +808,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Stop the playback
         stop();
+
+        deferredStateSave();
     }
 
     /**
@@ -927,6 +935,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * Prepare the next track for playback if needed.
      */
     public void enqueueTracks(List<TrackModel> tracklist) {
+        cancelDeferredStateSave();
+
         // Saved to check if we played the last song of the list
         int oldSize = mCurrentList.size();
 
@@ -1090,6 +1100,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueTrack(TrackModel track) {
+        cancelDeferredStateSave();
+
         // Check if the current song is the old last one, if so set the next song to MP for
         // gapless playback
         int oldSize = mCurrentList.size();
@@ -1123,6 +1135,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param track the current trackmodel
      */
     private void enqueueAsNextTrack(TrackModel track) {
+        cancelDeferredStateSave();
 
         // Check if currently playing index is set to a valid value
         if (mCurrentPlayingIndex >= 0) {
@@ -1151,6 +1164,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index Position of the track to remove
      */
     public void dequeueTrack(int index) {
+        cancelDeferredStateSave();
+
         PLAYSTATE state = getPlaybackState();
         // Check if track is currently playing, if so stop it
         if (mCurrentPlayingIndex == index) {
@@ -1197,6 +1212,8 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param index start position of the section to remove
      */
     public void dequeueTracks(int index) {
+        cancelDeferredStateSave();
+
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -1303,6 +1320,39 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
         mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
+    }
+
+    private final Timer mStateSaveTimer = new Timer();
+    private TimerTask mStateSaveTask;
+
+    private final static int STATE_SYNC_TIMEOUT = 5000;
+
+    private void deferredStateSave() {
+        synchronized (mStateSaveTimer) {
+            cancelDeferredStateSave();
+
+            mStateSaveTask = new StateSyncTask();
+            mStateSaveTimer.schedule(mStateSaveTask, STATE_SYNC_TIMEOUT);
+        }
+    }
+
+    private void cancelDeferredStateSave() {
+        synchronized (mStateSaveTimer) {
+            if (mStateSaveTask != null) {
+                mStateSaveTask.cancel();
+                mStateSaveTask = null;
+            }
+        }
+    }
+
+    private class StateSyncTask extends TimerTask {
+        @Override
+        public void run() {
+            synchronized (mStateSaveTimer) {
+                cancelDeferredStateSave();
+                saveState();
+            }
+        }
     }
 
     /**
