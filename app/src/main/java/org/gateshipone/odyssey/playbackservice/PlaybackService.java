@@ -1291,23 +1291,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         updateTrackRandomGenerator();
     }
 
-    /**
-     * Stops the gapless mediaplayer and cancels the foreground service. Removes
-     * any ongoing notification.
-     */
-    private void stopService() {
-        // Cancel possible cancel timers
-        cancelQuitAlert();
-        cancelSleepTimer();
-
+    private void saveState() {
         // Save the current playback position
         mLastPosition = getTrackPosition();
-
-        // If it is still running stop playback.
-        PLAYSTATE state = getPlaybackState();
-        if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
-            mPlayer.stop();
-        }
 
         // Save the state of the PBS at once
         OdysseyServiceState serviceState = new OdysseyServiceState();
@@ -1317,6 +1303,24 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         serviceState.mRandomState = mRandom;
         serviceState.mRepeatState = mRepeat;
         mDatabaseManager.saveState(mCurrentList, serviceState, "auto", true);
+    }
+
+    /**
+     * Stops the gapless mediaplayer and cancels the foreground service. Removes
+     * any ongoing notification.
+     */
+    private void stopService() {
+        // Cancel possible cancel timers
+        cancelQuitAlert();
+        cancelSleepTimer();
+
+        // If it is still running stop playback.
+        PLAYSTATE state = getPlaybackState();
+        if (state == PLAYSTATE.PLAYING || state == PLAYSTATE.PAUSE) {
+            mPlayer.stop();
+        }
+
+        saveState();
 
         if (mCurrentList.size() > 0 && mCurrentPlayingIndex >= 0 && (mCurrentPlayingIndex < mCurrentList.size())) {
             // Notify simple last.fm scrobbler about playback stop
