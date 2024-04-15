@@ -354,7 +354,7 @@ public class PlaybackServiceStatusHelper {
         @Override
         public void onStop() {
             super.onStop();
-            mPlaybackService.stop();
+            mPlaybackService.pause();
         }
 
         @Override

@@ -808,8 +808,6 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
 
         // Stop the playback
         stop();
-
-        deferredStateSave();
     }
 
     /**
