@@ -274,9 +274,10 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
         mService.get().getHandler().sendMessage(msg);
     }
 
+
     @Override
-    public void enqueueAlbum(long albumId, String orderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumId, orderKey);
+    public void enqueueAlbum(long albumId, String orderKey, boolean asNext) {
+        ControlObject obj = new ControlObject(ControlObject .PLAYBACK_ACTION.ODYSSEY_ENQUEUEALBUM, albumId, orderKey, asNext);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);
@@ -307,8 +308,8 @@ public class OdysseyPlaybackServiceInterface extends IOdysseyPlaybackService.Stu
     }
 
     @Override
-    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
-        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId, albumOrderKey, trackOrderKey);
+    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey, boolean asNext) {
+        ControlObject obj = new ControlObject(ControlObject.PLAYBACK_ACTION.ODYSSEY_ENQUEUEARTIST, artistId, albumOrderKey, trackOrderKey, asNext);
         Message msg = mService.get().getHandler().obtainMessage();
         msg.obj = obj;
         mService.get().getHandler().sendMessage(msg);

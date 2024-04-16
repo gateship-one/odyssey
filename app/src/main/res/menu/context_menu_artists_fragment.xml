@@ -26,7 +26,10 @@
         android:id="@+id/fragment_artist_action_enqueue"
         app:showAsAction="never"
         android:title="@string/context_menu_action_enqueue" />
-
+    <item
+        android:id="@+id/fragment_artist_action_enqueueasnext"
+        android:title="@string/context_menu_action_enqueueasnext"
+        app:showAsAction="never" />
     <item
         android:id="@+id/fragment_artist_action_play"
         app:showAsAction="never"

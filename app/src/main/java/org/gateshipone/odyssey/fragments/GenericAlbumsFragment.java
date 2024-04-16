@@ -174,8 +174,9 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
      * Call the PBS to enqueue the selected album.
      *
      * @param position the position of the selected album in the adapter
+     * @param asNext
      */
-    protected void enqueueAlbum(int position) {
+    protected void enqueueAlbum(int position, boolean asNext) {
         // identify current album
         AlbumModel clickedAlbum = mAdapter.getItem(position);
         long albumId = clickedAlbum.getAlbumId();
@@ -186,7 +187,7 @@ public abstract class GenericAlbumsFragment extends OdysseyFragment<AlbumModel> 
 
         // enqueue album
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

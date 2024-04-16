@@ -404,7 +404,7 @@ public class AlbumTracksFragment extends OdysseyRecyclerFragment<TrackModel, Gen
         String trackOrderKey = sharedPref.getString(getString(R.string.pref_album_tracks_sort_order_key), getString(R.string.pref_album_tracks_sort_default));
 
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumId(), trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(mAlbum.getAlbumId(), trackOrderKey, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

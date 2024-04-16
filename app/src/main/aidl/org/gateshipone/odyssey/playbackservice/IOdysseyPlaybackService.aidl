@@ -47,14 +47,14 @@ interface IOdysseyPlaybackService {
     void playPlaylist(in PlaylistModel playlist, int position);
 
     // enqueue all tracks of an album from mediastore
-    void enqueueAlbum(long albumId, String orderKey);
+    void enqueueAlbum(long albumId, String orderKey, boolean asNext);
     void playAlbum(long albumId, String orderKey, int position);
 
     void enqueueRecentAlbums();
     void playRecentAlbums();
 
     // enqueue all tracks of an artist from mediastore
-    void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey);
+    void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey, boolean asNext);
     void playArtist(long artistId, String albumOrderKey, String trackOrderKey);
 
     /**

@@ -131,7 +131,10 @@ public class AlbumsFragment extends GenericAlbumsFragment {
         final int itemId = item.getItemId();
 
         if (itemId == R.id.fragment_albums_action_enqueue) {
-            enqueueAlbum(info.position);
+            enqueueAlbum(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_albums_action_enqueueasnext) {
+            enqueueAlbum(info.position, true);
             return true;
         } else if (itemId == R.id.fragment_albums_action_play) {
             playAlbum(info.position);
