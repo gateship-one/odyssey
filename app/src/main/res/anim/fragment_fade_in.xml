@@ -4,7 +4,7 @@
   ~  (Hendrik Borghorst & Frederik Luetkes)
   ~
   ~  The AUTHORS.md file contains a detailed contributors list:
-  ~  <https://gitlab.com/gateship-one/malp/blob/master/AUTHORS.md>
+  ~  <https://github.com/gateship-one/odyssey/blob/master/AUTHORS.md>
   ~
   ~  This program is free software: you can redistribute it and/or modify
   ~  it under the terms of the GNU General Public License as published by
@@ -25,5 +25,4 @@
     android:interpolator="@android:anim/decelerate_interpolator"
     android:fromAlpha="0"
     android:toAlpha="1" />
-
 
