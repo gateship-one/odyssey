@@ -246,4 +246,8 @@
     <string name="permission_request_audio_snackbar_explanation">Zugriff auf Audio Dateien erforderlich, um Musik anzuzeigen.</string>
     <string name="permission_request_image_snackbar_explanation">Zugriff auf Bild Dateien erforderlich, um lokale Albencover anzuzeigen.</string>
     <string name="permission_request_notifications_snackbar_explanation">Benachrichtigungen erforderlich für den Mediascanner und den Bulkdownloader.</string>
+    <string name="preference_legacy_theme_title">Altes Design</string>
+    <string name="preference_legacy_theme_message">Verwende die intensiven Farbschemen aus vorherigen Versionen. Diese Farbschemen entsprechen nicht den aktuellen Material Design Richtlinien und sind nur für langzeit Benutzer enthalten. Die neuen Farbschemen wurden mit dem Material Theme Builder erstellt.</string>
+    <string name="preference_theme_item_materialyou_auto">Systembasiert (automatisch dunkel/hell)</string>
+    <string name="preference_theme_item_materialyou">Systembasiert (manuell dunkel/hell)</string>
 </resources>
