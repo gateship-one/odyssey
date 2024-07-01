@@ -1,9 +1,16 @@
 # Changelog Odyssey
 
+## Version 1.3.2 Tag: release-41 (2024-07-01)
+
+* Fix broken legacy themes ([Issue #265](https://github.com/gateship-one/odyssey/issues/265))
+* Make image loading more robust
+
 ## Version: 1.3.1 Tag: release-40 (2024-06-18)
+
 * Make state saving more robust
 
 ## Version: 1.3.0 Tag: release-39 (2024-03-26)
+
 * Migrate to Material You design
 * Monochromatic icon
 

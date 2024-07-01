@@ -1,0 +1,2 @@
+* Fix broken legacy themes ([Issue #265](https://github.com/gateship-one/odyssey/issues/265))
+* Make image loading more robust
