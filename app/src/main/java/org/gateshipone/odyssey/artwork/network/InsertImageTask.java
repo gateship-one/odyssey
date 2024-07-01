@@ -81,6 +81,12 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
             float factor = Math.min((float) MAXIMUM_IMAGE_RESOLUTION / (float) options.outHeight, (float) MAXIMUM_IMAGE_RESOLUTION / (float) options.outWidth);
             options.inJustDecodeBounds = false;
             Bitmap bm = BitmapFactory.decodeByteArray(response.image, 0, response.image.length, options);
+            if (bm == null) {
+                // In rare cases the received byte array can be corrupted and so the image decoding will fail and result in a null bitmap.
+                // In this case we will behave the same way as the response would contain a null byte array.
+                insertImage(response.model, null, response.localArtworkPath);
+                return response.model;
+            }
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             Bitmap.createScaledBitmap(bm, (int) (options.outWidth * factor), (int) (options.outHeight * factor), true)
                     .compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
