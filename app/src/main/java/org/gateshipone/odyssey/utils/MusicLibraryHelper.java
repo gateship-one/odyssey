@@ -192,7 +192,12 @@ public class MusicLibraryHelper {
         String orderBy;
 
         if (orderKey.equals(context.getString(R.string.pref_album_tracks_sort_number_key))) {
-            orderBy = ProjectionTracks.TRACK;
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                orderBy = "CAST(" + ProjectionTracks.TRACK + " AS unsigned)";
+            }
+            else{
+                orderBy = ProjectionTracks.TRACK;
+            }
         } else if (orderKey.equals(context.getString(R.string.pref_album_tracks_sort_name_key))) {
             orderBy = ProjectionTracks.DISPLAY_NAME;
         } else {
