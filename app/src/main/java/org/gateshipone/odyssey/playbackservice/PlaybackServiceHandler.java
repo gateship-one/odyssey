@@ -133,13 +133,13 @@ public class PlaybackServiceHandler extends Handler {
                     mService.get().playDirectoryAndSubDirectories(msgObj.getStringParam(), msgObj.getSecondStringParam());
                     break;
                 case ODYSSEY_ENQUEUEALBUM:
-                    mService.get().enqueueAlbum(msgObj.getLongParam(), msgObj.getStringParam());
+                    mService.get().enqueueAlbum(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getBoolParam());
                     break;
                 case ODYSSEY_PLAYALBUM:
                     mService.get().playAlbum(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getIntParam());
                     break;
                 case ODYSSEY_ENQUEUEARTIST:
-                    mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam());
+                    mService.get().enqueueArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam(),msgObj.getBoolParam());
                     break;
                 case ODYSSEY_PLAYARTIST:
                     mService.get().playArtist(msgObj.getLongParam(), msgObj.getStringParam(), msgObj.getSecondStringParam());

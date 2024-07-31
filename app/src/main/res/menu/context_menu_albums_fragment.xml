@@ -28,9 +28,17 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/fragment_albums_action_enqueueasnext"
+        android:title="@string/context_menu_action_enqueueasnext"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/fragment_albums_action_play"
         android:title="@string/context_menu_action_playalbum"
         app:showAsAction="never" />
+
+
+
 
     <item
         android:id="@+id/fragment_albums_action_showartist"

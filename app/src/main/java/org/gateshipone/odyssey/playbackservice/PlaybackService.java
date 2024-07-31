@@ -968,8 +968,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      *
      * @param albumId  The id of the album
      * @param orderKey String to specify the order of the tracks
+     * @param asNext flag if the tracks should be enqueued as next
      */
-    public void enqueueAlbum(long albumId, String orderKey) {
+    public void enqueueAlbum(long albumId, String orderKey, boolean asNext) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -977,10 +978,45 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForAlbum(albumId, orderKey, getApplicationContext());
 
         // add tracks to current playlist
-        enqueueTracks(tracks);
+        if(asNext){
+            enqueueAsNextTracks(tracks);
+        }else{
+            enqueueTracks(tracks);
+        }
+
+
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
+    }
+
+    private void enqueueAsNextTracks(List<TrackModel> tracklist) {
+        // Saved to check if we played the last song of the list
+        int oldSize = mCurrentList.size();
+
+        // Add the tracks to the actual list
+        if(mCurrentPlayingIndex >= 0){
+            // Enqueue in list structure
+            mCurrentList.addAll(mCurrentPlayingIndex + 1, tracklist);
+            mNextPlayingIndex = mCurrentPlayingIndex + 1;
+            setNextTrackForMP();
+        } else {
+            // If track is the first to be added, set playing index to 0
+            mCurrentList.addAll(0, tracklist);
+            mCurrentPlayingIndex = 0;
+        }
+
+        if (mCurrentPlayingIndex == oldSize - 1) {
+            // Next song for MP has to be set for gapless mediaplayback
+            mNextPlayingIndex = mCurrentPlayingIndex + 1;
+            setNextTrackForMP();
+        }
+
+        // Inform the helper that the state has changed
+        mPlaybackServiceStatusHelper.updateStatus();
+
+        // update trackRandomGenerator
+        updateTrackRandomGenerator();
     }
 
     /**
@@ -994,7 +1030,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void playAlbum(long albumId, String orderKey, int position) {
         clearPlaylist();
 
-        enqueueAlbum(albumId, orderKey);
+        enqueueAlbum(albumId, orderKey, false);
 
         jumpToIndex(position);
     }
@@ -1032,8 +1068,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
      * @param artistId      The id of the artist
      * @param albumOrderKey String to specify the order of the artist albums
      * @param trackOrderKey String to specify the order of the tracks
+     * @param asNext
      */
-    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey) {
+    public void enqueueArtist(long artistId, String albumOrderKey, String trackOrderKey, boolean asNext) {
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.WORKING);
         mBusy = true;
 
@@ -1041,7 +1078,11 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
         List<TrackModel> tracks = MusicLibraryHelper.getTracksForArtist(artistId, albumOrderKey, trackOrderKey, getApplicationContext());
 
         // add tracks to current playlist
-        enqueueTracks(tracks);
+        if(asNext){
+            enqueueAsNextTracks(tracks);
+        } else {
+            enqueueTracks(tracks);
+        }
 
         mPlaybackServiceStatusHelper.broadcastPlaybackServiceState(PLAYBACKSERVICESTATE.IDLE);
         mBusy = false;
@@ -1058,7 +1099,7 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
     public void playArtist(long artistId, String albumOrderKey, String trackOrderKey) {
         clearPlaylist();
 
-        enqueueArtist(artistId, albumOrderKey, trackOrderKey);
+        enqueueArtist(artistId, albumOrderKey, trackOrderKey, false);
 
         jumpToIndex(0);
     }
