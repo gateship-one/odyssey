@@ -24,6 +24,9 @@
 
     <!-- permission request -->
     <string name="permission_request_storage_snackbar_explanation">Autorisation \"Stockage\" nécessaire pour pouvoir charger les fichiers de musique</string>
+    <string name="permission_request_audio_snackbar_explanation">Autorisation \"Lire les médias audio\" nécessaire pour pouvoir charger les fichiers de musique</string>
+    <string name="permission_request_image_snackbar_explanation">Autorisation \"Lire les images des médias\" nécessaire pour pouvoir afficher des images de couverture locales</string>
+    <string name="permission_request_notifications_snackbar_explanation">Autorisation \"Afficher les notifications\" nécessaire pour for Mediascanner and Bulkdownloader.</string>
 
     <!-- nav drawer -->
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
@@ -163,6 +166,9 @@
     <string name="preference_dark_theme_title">Thème sombre</string>
     <string name="preference_dark_theme_message">Apparence sombre de l\'application</string>
 
+    <string name="preference_legacy_theme_title">Thème hérité</string>
+    <string name="preference_legacy_theme_message">Utiliser les thèmes de couleurs intenses utilisés dans les versions précédentes. Ces schémas de couleurs ne suivent pas les directives de conception Material les plus récentes et ne sont réservés qu\'aux utilisateurs de longue date. Les nouveaux thèmes sont générés avec Material Theme Builder.</string>
+
     <string name="preference_theme_item_indigo">Indigo</string>
     <string name="preference_theme_item_orange">Orange</string>
     <string name="preference_theme_item_deep_orange">Orange foncé</string>
@@ -172,6 +178,8 @@
     <string name="preference_theme_item_light_green">Vert clair</string>
     <string name="preference_theme_item_oled_dark">Sombre OLED</string>
     <string name="preference_theme_item_red">Rouge</string>
+    <string name="preference_theme_item_materialyou_auto">Basé sur le système (sombre/clair automatique)</string>
+    <string name="preference_theme_item_materialyou">Basé sur le système (sombre/clair manuel)</string>
 
     <string name="preference_album_sort_order_title">Tri des albums d\'un artiste</string>
     <string name="preference_album_sort_order_message">Trier par</string>
