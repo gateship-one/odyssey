@@ -123,3 +123,8 @@ dependencies {
 
     implementation 'info.debatty:java-string-similarity:2.0.0'
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
