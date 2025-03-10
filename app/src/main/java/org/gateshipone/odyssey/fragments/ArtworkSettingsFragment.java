@@ -202,13 +202,6 @@ public class ArtworkSettingsFragment extends PreferenceFragmentCompat implements
             } catch (RemoteException e) {
 
             }
-        } else if (key.equals(getString(R.string.pref_artwork_use_local_images_key))) {
-            boolean useLocalImages = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
-
-            if (useLocalImages) {
-                // ask for permission to access image files
-                ((OdysseyMainActivity) requireActivity()).requestPermissionAccessImageFiles();
-            }
         }
     }
 

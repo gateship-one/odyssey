@@ -144,9 +144,10 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
             requestCursor.close();
             database.close();
 
-            if (hasFullImagePath) {
-                return artworkFilename;
-            } else {
+            // only try to retrieve the artwork path if the entry wasn't created for a full path
+            // since the support for local images was dropped we won't load the image and instead
+            // throw a not found exception
+            if (!hasFullImagePath) {
                 return FileUtils.getFullArtworkFilePath(mApplicationContext, artworkFilename, DIRECTORY_ALBUM_IMAGES);
             }
         }
@@ -265,10 +266,8 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
      * @param album                Album for the associated image byte[].
      * @param image                byte[] containing the raw image that was downloaded. This can be null in which case
      *                             the database entry will have the not_found flag set if artworkFullImagePath is null as well.
-     * @param artworkFullImagePath Optional path to an album image if local image support is active otherwise null. If this parameter is null
-     *                             the not_found flag is set if image is null as well.
      */
-    public synchronized void insertAlbumImage(final AlbumModel album, final byte[] image, final String artworkFullImagePath) {
+    public synchronized void insertAlbumImage(final AlbumModel album, final byte[] image) {
         final SQLiteDatabase database = getWritableDatabase();
 
         final String albumId = String.valueOf(album.getAlbumId());
@@ -298,11 +297,12 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         values.put(AlbumArtTable.COLUMN_ALBUM_MBID, albumMBId);
         values.put(AlbumArtTable.COLUMN_ALBUM_NAME, albumName);
         values.put(AlbumArtTable.COLUMN_ARTIST_NAME, albumArtistName);
-        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename == null ? artworkFullImagePath : artworkFilename);
-        values.put(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH, artworkFullImagePath == null ? 0 : 1);
+        values.put(AlbumArtTable.COLUMN_IMAGE_FILE_PATH, artworkFilename);
+        // column is unused just set it to zero for consistency
+        values.put(AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH, 0);
 
         // If null was given as byte[] set the not_found flag for this entry.
-        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, (image == null && artworkFullImagePath == null) ? 1 : 0);
+        values.put(AlbumArtTable.COLUMN_IMAGE_NOT_FOUND, (image == null) ? 1 : 0);
 
         database.replace(AlbumArtTable.TABLE_NAME, "", values);
 

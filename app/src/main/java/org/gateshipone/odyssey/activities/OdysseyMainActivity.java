@@ -785,34 +785,6 @@ public class OdysseyMainActivity extends GenericActivity
     }
 
     /**
-     * This method asks for permission to access image files if permission isn't granted yet.
-     * The permission will be determined by the used android version.
-     */
-    public void requestPermissionAccessImageFiles() {
-        if (!PermissionHelper.isImageFilesAccessAllowed(this)) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, PermissionHelper.IMAGE_PERMISSION)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                View layout = findViewById(R.id.drawer_layout);
-                if (layout != null) {
-                    Snackbar sb = Snackbar.make(layout, PermissionHelper.IMAGE_PERMISSION_RATIONALE_TEXT, Snackbar.LENGTH_INDEFINITE);
-                    sb.setAction(R.string.permission_request_snackbar_button, view -> ActivityCompat.requestPermissions(this,
-                            new String[]{PermissionHelper.IMAGE_PERMISSION},
-                            PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE));
-                    sb.show();
-                }
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{PermissionHelper.IMAGE_PERMISSION},
-                        PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE);
-            }
-        }
-    }
-
-    /**
      * This method asks for permission to show notifications.
      * A permission request will only executed if the device is using android 13 or newer.
      */
@@ -855,18 +827,6 @@ public class OdysseyMainActivity extends GenericActivity
                     ((MyMusicFragment) fragment).refresh();
                 } else if (fragment instanceof OdysseyFragment) {
                     ((OdysseyFragment<?>) fragment).refreshContent();
-                }
-            }
-        } else if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_MEDIA_IMAGE) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted, yay!
-                if (BuildConfig.DEBUG) {
-                    Log.v(TAG, "onRequestPermissionsResult: permission granted to access image files");
-                }
-            } else {
-                if (BuildConfig.DEBUG) {
-                    Log.v(TAG, "onRequestPermissionsResult: permission denied to access image files");
                 }
             }
         } else if (requestCode == PermissionHelper.MY_PERMISSIONS_REQUEST_NOTIFICATIONS) {

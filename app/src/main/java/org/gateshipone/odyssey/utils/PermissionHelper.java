@@ -50,24 +50,14 @@ public class PermissionHelper {
     public static final int MY_PERMISSIONS_REQUEST_MEDIA_AUDIO = 0;
 
     /**
-     * Result code for the image permission request.
-     */
-    public static final int MY_PERMISSIONS_REQUEST_MEDIA_IMAGE = 1;
-
-    /**
      * Result code for the notifications permission request.
      */
-    public static final int MY_PERMISSIONS_REQUEST_NOTIFICATIONS = 2;
+    public static final int MY_PERMISSIONS_REQUEST_NOTIFICATIONS = 1;
 
     /**
      * Permission to access audio files. Depends on the android version.
      */
     public static final String AUDIO_PERMISSION = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? Manifest.permission.READ_MEDIA_AUDIO : Manifest.permission.READ_EXTERNAL_STORAGE;
-
-    /**
-     * Permission to access image files. Depends on the android version.
-     */
-    public static final String IMAGE_PERMISSION = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? Manifest.permission.READ_MEDIA_IMAGES : Manifest.permission.READ_EXTERNAL_STORAGE;
 
     /**
      * Permission to show notifications. Empty if android version is below 13.
@@ -79,12 +69,6 @@ public class PermissionHelper {
      */
     @StringRes
     public static final int AUDIO_PERMISSION_RATIONALE_TEXT = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? R.string.permission_request_audio_snackbar_explanation : R.string.permission_request_storage_snackbar_explanation;
-
-    /**
-     * Resource id for the image permission rationale text.
-     */
-    @StringRes
-    public static final int IMAGE_PERMISSION_RATIONALE_TEXT = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ? R.string.permission_request_image_snackbar_explanation : R.string.permission_request_storage_snackbar_explanation;
 
     /**
      * Resource id for the notifications permission rationale text.
@@ -101,21 +85,6 @@ public class PermissionHelper {
     public static boolean isAudioFilesAccessAllowed(final Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    /**
-     * Method to check if odyssey is allowed to access image files.
-     * This is used to show local cover images.
-     *
-     * @param context The application context for the permission check.
-     * @return True if access has been granted, false otherwise.
-     */
-    public static boolean isImageFilesAccessAllowed(final Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED;
         } else {
             return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }

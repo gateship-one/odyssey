@@ -39,6 +39,8 @@ class AlbumArtTable {
 
     static final String COLUMN_IMAGE_NOT_FOUND = "image_not_found";
 
+    // the support for local images had to be dropped due to google policies
+    // the column remains untouched to avoid dropping the whole table
     static final String COLUMN_IMAGE_HAS_FULL_PATH = "image_has_full_path";
 
     private static final String DATABASE_CREATE = "CREATE TABLE if not exists " +
