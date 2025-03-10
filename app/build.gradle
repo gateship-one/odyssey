@@ -22,14 +22,8 @@
 
 apply plugin: 'com.android.application'
 
-def getGitCommitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-
-    return stdout.toString().trim()
+def gitVersionProvider = providers.exec {
+    commandLine 'git', 'rev-parse', '--short', 'HEAD'
 }
 
 android {
@@ -74,7 +68,7 @@ android {
             def gitCommitHash
 
             try {
-                gitCommitHash = getGitCommitHash()
+                gitCommitHash = gitVersionProvider.standardOutput.asText.get().trim()
             } catch (Exception ignored) {
                 gitCommitHash = "unknown"
             }
@@ -90,7 +84,7 @@ android {
             def gitCommitHash
 
             try {
-                gitCommitHash = getGitCommitHash()
+                gitCommitHash = gitVersionProvider.standardOutput.asText.get().trim()
             } catch (Exception ignored) {
                 gitCommitHash = "unknown"
             }
