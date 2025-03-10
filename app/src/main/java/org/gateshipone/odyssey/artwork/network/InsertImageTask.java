@@ -68,7 +68,7 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
         ImageResponse response = params[0];
 
         if (response.image == null) {
-            insertImage(response.model, null, response.localArtworkPath);
+            insertImage(response.model, null);
             return response.model;
         }
 
@@ -84,7 +84,7 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
             if (bm == null) {
                 // In rare cases the received byte array can be corrupted and so the image decoding will fail and result in a null bitmap.
                 // In this case we will behave the same way as the response would contain a null byte array.
-                insertImage(response.model, null, response.localArtworkPath);
+                insertImage(response.model, null);
                 return response.model;
             }
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -92,11 +92,11 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
                     .compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESSION_SETTING, byteStream);
 
             if (byteStream.size() <= MAXIMUM_IMAGE_SIZE) {
-                insertImage(response.model, byteStream.toByteArray(), null);
+                insertImage(response.model, byteStream.toByteArray());
             }
         } else {
             if (response.image.length <= MAXIMUM_IMAGE_SIZE) {
-                insertImage(response.model, response.image, null);
+                insertImage(response.model, response.image);
             }
         }
 
@@ -108,10 +108,10 @@ public class InsertImageTask extends AsyncTask<ImageResponse, Object, ArtworkReq
         mImageSavedCallback.onImageSaved(artworkRequestModel);
     }
 
-    private void insertImage(final ArtworkRequestModel model, final byte[] image, final String localArtworkPath) {
+    private void insertImage(final ArtworkRequestModel model, final byte[] image) {
         switch (model.getType()) {
             case ALBUM:
-                mArtworkDatabaseManager.insertAlbumImage((AlbumModel) model.getGenericModel(), image, localArtworkPath);
+                mArtworkDatabaseManager.insertAlbumImage((AlbumModel) model.getGenericModel(), image);
                 break;
             case ARTIST:
                 mArtworkDatabaseManager.insertArtistImage((ArtistModel) model.getGenericModel(), image);
