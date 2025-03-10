@@ -263,9 +263,6 @@
     <string name="preference_hide_media_on_lockscreen_title">Powiadomienie prywatne</string>
     <string name="preference_hide_media_on_lockscreen_text">Ukryj informację o odtwarzaniu na ekranie blokady (zależy od systemowych ustawień prywatności ekranu blokady).</string>
 
-    <string name="preference_artwork_use_local_images_title">Użyj lokalnych okładek albumu</string>
-    <string name="preference_artwork_use_local_images_text">Zignoruje okładki albumu znalezione w bazie multimediów Androida i użyje lokalnych. Jeśli lokalne okładki nie zostaną znalezione, zostanie użyty wybrany dostawca okładek.</string>
-
     <string name="preference_category_artwork_settings">Ustawienia obrazów</string>
     <string name="preference_category_artwork_database_cleanup">Wyczyść bazę danych</string>
     <string name="preference_category_artwork_other_actions">Inne akcje</string>

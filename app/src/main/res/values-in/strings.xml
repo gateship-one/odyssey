@@ -257,9 +257,6 @@
     <string name="preference_hide_media_on_lockscreen_title">Pemberitahuan pribadi</string>
     <string name="preference_hide_media_on_lockscreen_text">Sembunyikan informasi media di layar kunci (tergantung pada pengaturan privasi layar kunci sistem Anda)</string>
 
-    <string name="preference_artwork_use_local_images_title">Use local album images</string>
-    <string name="preference_artwork_use_local_images_text">Ignore album artworks found in the Android Media Database and use local images instead. If no local image is found the selected album artwork provider will be used.</string>
-
     <string name="preference_category_artwork_settings">Pengaturan Artwork</string>
     <string name="preference_category_artwork_database_cleanup">Pembersihan database</string>
     <string name="preference_category_artwork_other_actions">Aksi lainnya</string>

@@ -25,7 +25,6 @@
     <!-- permission request -->
     <string name="permission_request_storage_snackbar_explanation">Autorisation \"Stockage\" nécessaire pour pouvoir charger les fichiers de musique</string>
     <string name="permission_request_audio_snackbar_explanation">Autorisation \"Lire les médias audio\" nécessaire pour pouvoir charger les fichiers de musique</string>
-    <string name="permission_request_image_snackbar_explanation">Autorisation \"Lire les images des médias\" nécessaire pour pouvoir afficher des images de couverture locales</string>
     <string name="permission_request_notifications_snackbar_explanation">Autorisation \"Afficher les notifications\" nécessaire pour for Mediascanner and Bulkdownloader.</string>
 
     <!-- nav drawer -->
@@ -269,9 +268,6 @@
 
     <string name="preference_hide_media_on_lockscreen_title">Notification privée</string>
     <string name="preference_hide_media_on_lockscreen_text">Masquer les informations du média sur l\'écran de déverrouillage\n(dépend des paramètres de confidentialité de votre écran de déverrouillage système)</string>
-
-    <string name="preference_artwork_use_local_images_title">Illustrations locales d\'album</string>
-    <string name="preference_artwork_use_local_images_text">Ignorer les illustrations d\'album de la base de données Android Media et utiliser les illustrations locales. Si aucune illustration locale n\'est trouvée, le fournisseur d\'illustrations d\'album sélectionné sera utilisé.</string>
 
     <string name="preference_category_artwork_settings">Paramètres des illustrations</string>
     <string name="preference_category_artwork_database_cleanup">Nettoyer la base de données</string>
