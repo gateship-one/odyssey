@@ -103,6 +103,7 @@ android {
     }
     buildFeatures {
         aidl true
+        buildConfig true
     }
     namespace 'org.gateshipone.odyssey'
 }
