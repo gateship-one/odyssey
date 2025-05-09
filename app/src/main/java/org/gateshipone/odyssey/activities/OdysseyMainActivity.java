@@ -255,6 +255,8 @@ public class OdysseyMainActivity extends GenericActivity
 
         // check if battery optimization is active
         checkBatteryOptimization();
+
+        checkIfUseLocalImagesIsActive();
     }
 
     @Override
@@ -1099,5 +1101,36 @@ public class OdysseyMainActivity extends GenericActivity
         SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         sharedPrefEditor.putBoolean(getString(R.string.pref_battery_opt_dialog_key), false);
         sharedPrefEditor.apply();
+    }
+
+    /**
+     * Check if option for local images was active.
+     * This option was removed from the app due to policy changes.
+     * This method creates a dialog to inform the user of the removal and removes the option from the shared preferences.
+     */
+    private void checkIfUseLocalImagesIsActive() {
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        final boolean showLocalCoverSupportedRemovedDialog = sharedPref.getBoolean(getString(R.string.pref_artwork_use_local_images_key), false);
+
+        if (showLocalCoverSupportedRemovedDialog) {
+            final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle(getResources().getString(R.string.dialog_artwork_local_images_removed_title));
+            builder.setMessage(getResources().getString(R.string.dialog_artwork_local_images_removed_message));
+            builder.setNegativeButton(R.string.artwork_local_images_removed_action_ok, (dialog, id) -> {
+                SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                sharedPrefEditor.remove(getString(R.string.pref_artwork_use_local_images_key));
+                sharedPrefEditor.apply();
+
+            });
+            // make sure to disable the dialog in each cancel event
+            builder.setOnCancelListener(dialog -> {
+                SharedPreferences.Editor sharedPrefEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                sharedPrefEditor.remove(getString(R.string.pref_artwork_use_local_images_key));
+                sharedPrefEditor.apply();
+            });
+
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 }

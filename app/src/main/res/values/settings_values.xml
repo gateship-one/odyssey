@@ -118,6 +118,8 @@
     <string name="pref_smart_random_key_int" translatable="false">pref_smart_random_key_int</string>
     <integer name="pref_smart_random_default" translatable="false">50</integer>
 
+    <string name="pref_artwork_use_local_images_key" translatable="false">pref_artwork_use_local_images</string>
+
     <string-array name="preference_style_values" translatable="false">
         <item>@string/pref_indigo_key</item>
         <item>@string/pref_orange_key</item>

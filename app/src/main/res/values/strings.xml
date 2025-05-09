@@ -97,6 +97,13 @@
         \n\nPlease consider to deactivate this option in order to ensure Odyssey works correctly.
     </string>
     <string name="dialog_battery_opt_action_open_settings">Open settings</string>
+    <string name="dialog_artwork_local_images_removed_title">Use local images option is removed</string>
+    <string name="dialog_artwork_local_images_removed_message">
+        Due to some policy changes we had to remove the option to support local images directly.
+        \n\nThe option was disabled and odyssey will attempt to load images from the android media database instead.
+        If you enabled another artwork provider in the settings this will be used as well.
+    </string>
+    <string name="artwork_local_images_removed_action_ok" translatable="false">@android:string/ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
