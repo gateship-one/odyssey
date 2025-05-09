@@ -247,4 +247,10 @@
     <string name="preference_legacy_theme_message">Verwende die intensiven Farbschemen aus vorherigen Versionen. Diese Farbschemen entsprechen nicht den aktuellen Material Design Richtlinien und sind nur für langzeit Benutzer enthalten. Die neuen Farbschemen wurden mit dem Material Theme Builder erstellt.</string>
     <string name="preference_theme_item_materialyou_auto">Systembasiert (automatisch dunkel/hell)</string>
     <string name="preference_theme_item_materialyou">Systembasiert (manuell dunkel/hell)</string>
+    <string name="dialog_artwork_local_images_removed_title">Option für lokale Albenbilder entfernt</string>
+    <string name="dialog_artwork_local_images_removed_message">
+        Aufgrund Regeländerungen von mussten wir die option für lokale Albenbilder entfernen.
+        \n\nDie option wurde deaktiviert und Odyssey wird nun Bilder aus der Mediendatenbank verwenden.
+        Wenn Sie einen weiteren Anbieter für Albenbilder eingestellt haben wird dieser ebenfalls verwendet.
+    </string>
 </resources>
