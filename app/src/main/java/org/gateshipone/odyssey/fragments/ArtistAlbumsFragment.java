@@ -290,8 +290,9 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
      * Call the PBS to enqueue the selected album.
      *
      * @param position the position of the selected album in the adapter
+     * @param asNext
      */
-    protected void enqueueAlbum(int position) {
+    protected void enqueueAlbum(int position, boolean asNext) {
         // identify current album
         AlbumModel clickedAlbum = mRecyclerAdapter.getItem(position);
         long albumId = clickedAlbum.getAlbumId();
@@ -302,7 +303,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         // enqueue album
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueAlbum(albumId, trackOrderKey, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -359,11 +360,15 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         }
 
         final int itemId = item.getItemId();
-
         if (itemId == R.id.fragment_artist_albums_action_enqueue) {
-            enqueueAlbum(info.position);
+            enqueueAlbum(info.position, false);
             return true;
-        } else if (itemId == R.id.fragment_artist_albums_action_play) {
+
+        } else if (itemId == R.id.fragment_artist_albums_action_enqueueasnext) {
+            enqueueAlbum(info.position, true);
+            return true;
+        }
+        else if (itemId == R.id.fragment_artist_albums_action_play) {
             playAlbum(info.position);
             return true;
         }
@@ -433,7 +438,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
         // enqueue artist
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueArtist(mArtist.getArtistID(), albumOrderKey, trackOrderKey, false);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -224,7 +224,10 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
         final int itemId = item.getItemId();
 
         if (itemId == R.id.fragment_artist_action_enqueue) {
-            enqueueArtist(info.position);
+            enqueueArtist(info.position, false);
+            return true;
+        } else if (itemId == R.id.fragment_artist_action_enqueueasnext) {
+            enqueueArtist(info.position, true);
             return true;
         } else if (itemId == R.id.fragment_artist_action_play) {
             playArtist(info.position);
@@ -238,8 +241,9 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
      * Call the PBS to enqueue the selected artist
      *
      * @param position the position of the selected artist in the adapter
+     * @param asNext
      */
-    private void enqueueArtist(int position) {
+    private void enqueueArtist(int position, boolean asNext) {
 
         // identify current artist
         ArtistModel currentArtist = mAdapter.getItem(position);
@@ -259,7 +263,7 @@ public class ArtistsFragment extends OdysseyFragment<ArtistModel> implements Ada
 
         // enqueue artist
         try {
-            ((GenericActivity) requireActivity()).getPlaybackService().enqueueArtist(artistId, albumOrderKey, trackOrderKey);
+            ((GenericActivity) requireActivity()).getPlaybackService().enqueueArtist(artistId, albumOrderKey, trackOrderKey, asNext);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

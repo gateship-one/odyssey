@@ -84,6 +84,13 @@ public class ControlObject {
         mAction = action;
     }
 
+    public ControlObject(PLAYBACK_ACTION action, long longParam, String param, boolean asNext) {
+        mLongParam = longParam;
+        mStringparam = param;
+        mBoolparam = asNext;
+        mAction = action;
+    }
+
     public ControlObject(PLAYBACK_ACTION action, long longParam, String param, int intParam) {
         mLongParam = longParam;
         mStringparam = param;
@@ -126,6 +133,14 @@ public class ControlObject {
         mLongParam = longParam;
         mStringparam = stringParam;
         mSecondStringParam = stringParam2;
+    }
+
+    public ControlObject(PLAYBACK_ACTION action, long longParam, String stringParam, String stringParam2, boolean boolParam) {
+        mAction = action;
+        mLongParam = longParam;
+        mStringparam = stringParam;
+        mSecondStringParam = stringParam2;
+        mBoolparam = boolParam;
     }
 
     public ControlObject(PLAYBACK_ACTION action, String stringParam, int intParam) {
