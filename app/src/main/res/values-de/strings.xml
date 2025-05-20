@@ -249,8 +249,8 @@
     <string name="preference_theme_item_materialyou">Systembasiert (manuell dunkel/hell)</string>
     <string name="dialog_artwork_local_images_removed_title">Option für lokale Albenbilder entfernt</string>
     <string name="dialog_artwork_local_images_removed_message">
-        Aufgrund Regeländerungen von mussten wir die option für lokale Albenbilder entfernen.
-        \n\nDie option wurde deaktiviert und Odyssey wird nun Bilder aus der Mediendatenbank verwenden.
+        Aufgrund von Regeländerungen mussten wir die Option für lokale Albenbilder entfernen.
+        \n\nDie Option wurde deaktiviert und Odyssey wird stattdessen Bilder aus der Mediendatenbank verwenden.
         Wenn Sie einen weiteren Anbieter für Albenbilder eingestellt haben wird dieser ebenfalls verwendet.
     </string>
 </resources>
