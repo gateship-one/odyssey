@@ -127,11 +127,6 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     private boolean mWifiOnly;
 
     /**
-     * Flag if local covers should be used instead of the android media database.
-     */
-    private boolean mUseLocalImages;
-
-    /**
      * Manager for the SQLite database handling
      */
     private final ArtworkDatabaseManager mDBManager;
@@ -175,7 +170,6 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         mArtistProvider = sharedPref.getString(mApplicationContext.getString(R.string.pref_artist_provider_key), mApplicationContext.getString(R.string.pref_artwork_provider_artist_default));
         mAlbumProvider = sharedPref.getString(mApplicationContext.getString(R.string.pref_album_provider_key), mApplicationContext.getString(R.string.pref_artwork_provider_album_default));
         mWifiOnly = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_download_wifi_only_key), mApplicationContext.getResources().getBoolean(R.bool.pref_download_wifi_default));
-        mUseLocalImages = sharedPref.getBoolean(mApplicationContext.getString(R.string.pref_artwork_use_local_images_key), mApplicationContext.getResources().getBoolean(R.bool.pref_artwork_use_local_images_default));
 
         mMinimumImageSizeValue = (int) mApplicationContext.getResources().getDimension(R.dimen.material_list_item_height);
     }
@@ -199,11 +193,10 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
         mArtistProvider = artistProvider;
     }
 
-    public void initialize(String artistProvider, String albumProvider, boolean wifiOnly, boolean useLocalImages) {
+    public void initialize(String artistProvider, String albumProvider, boolean wifiOnly) {
         mArtistProvider = artistProvider;
         mAlbumProvider = albumProvider;
         mWifiOnly = wifiOnly;
-        mUseLocalImages = useLocalImages;
     }
 
     /**
@@ -296,30 +289,27 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
             }
         }
 
-        // Check local artwork database
-        if (!mUseLocalImages) {
-            // check for artworks in the android media framework
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Bitmap bm;
+        // check for artworks in the android media framework
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Bitmap bm;
 
-                final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumId());
-                try {
-                    bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(requestedWidth, requestedHeight), null);
-                    BitmapCache.getInstance().putAlbumBitmap(album, bm);
-                    return bm;
-                } catch (IOException ignored) {
-                    // use our own database instead
-                }
-            } else {
-                // this is still the way to go for devices running an android version below 10
-                @SuppressWarnings("deprecation") String albumURL = album.getAlbumArtURL();
+            final Uri imageUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, album.getAlbumId());
+            try {
+                bm = mApplicationContext.getContentResolver().loadThumbnail(imageUri, new Size(requestedWidth, requestedHeight), null);
+                BitmapCache.getInstance().putAlbumBitmap(album, bm);
+                return bm;
+            } catch (IOException ignored) {
+                // use our own database instead
+            }
+        } else {
+            // this is still the way to go for devices running an android version below 10
+            @SuppressWarnings("deprecation") String albumURL = album.getAlbumArtURL();
 
-                if (albumURL != null && !albumURL.isEmpty()) {
-                    // Local album art found (android database)
-                    Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, requestedWidth, requestedHeight);
-                    BitmapCache.getInstance().putAlbumBitmap(album, bm);
-                    return bm;
-                }
+            if (albumURL != null && !albumURL.isEmpty()) {
+                // Local album art found (android database)
+                Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, requestedWidth, requestedHeight);
+                BitmapCache.getInstance().putAlbumBitmap(album, bm);
+                return bm;
             }
         }
 
@@ -392,31 +382,6 @@ public class ArtworkManager implements ArtProvider.ArtFetchError, InsertImageTas
     void fetchImage(final AlbumModel albumModel,
                     final InsertImageTask.ImageSavedCallback imageSavedCallback,
                     final ArtProvider.ArtFetchError errorCallback) {
-        if (mUseLocalImages) {
-            final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(albumModel.getAlbumId(), mApplicationContext);
-
-            for (final String location : storageLocations) {
-                final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(mApplicationContext, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
-
-                if (!artworkFiles.isEmpty()) {
-                    // use the first valid cover file
-                    final File coverFile = artworkFiles.get(0);
-
-                    final ArtworkRequestModel requestModel = new ArtworkRequestModel(albumModel);
-
-                    ImageResponse response = new ImageResponse();
-                    response.model = requestModel;
-                    response.image = null;
-                    response.url = null;
-                    response.localArtworkPath = coverFile.getAbsolutePath();
-
-                    new InsertImageTask(mApplicationContext, imageSavedCallback).execute(response);
-
-                    return;
-                }
-            }
-        }
-
         if (!NetworkUtils.isDownloadAllowed(mApplicationContext, mWifiOnly)) {
             return;
         }

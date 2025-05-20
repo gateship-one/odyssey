@@ -79,8 +79,6 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
 
     public static final String BUNDLE_KEY_WIFI_ONLY = "org.gateshipone.odyssey.wifi_only";
 
-    public static final String BUNDLE_KEY_USE_LOCAL_IMAGES = "org.gateshipone.odyssey.use_local_images";
-
     private static final int PENDING_INTENT_UPDATE_CURRENT_FLAG =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
 
@@ -97,8 +95,6 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
     private ConnectionStateReceiver mConnectionStateChangeReceiver;
 
     private boolean mWifiOnly;
-
-    private boolean mUseLocalImages;
 
     final private LinkedList<ArtworkRequestModel> mArtworkRequestQueue = new LinkedList<>();
 
@@ -158,7 +154,6 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
                 artistProvider = extras.getString(BUNDLE_KEY_ARTIST_PROVIDER, getString(R.string.pref_artwork_provider_artist_default));
                 albumProvider = extras.getString(BUNDLE_KEY_ALBUM_PROVIDER, getString(R.string.pref_artwork_provider_album_default));
                 mWifiOnly = intent.getBooleanExtra(BUNDLE_KEY_WIFI_ONLY, true);
-                mUseLocalImages = intent.getBooleanExtra(BUNDLE_KEY_USE_LOCAL_IMAGES, false);
             }
 
             if (artistProvider.equals(getString(R.string.pref_artwork_provider_none_key)) && albumProvider.equals(getString(R.string.pref_artwork_provider_none_key))) {
@@ -176,7 +171,7 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             mWakelock.acquire();
 
             mArtworkManager = ArtworkManager.getInstance(getApplicationContext());
-            mArtworkManager.initialize(artistProvider, albumProvider, mWifiOnly, mUseLocalImages);
+            mArtworkManager.initialize(artistProvider, albumProvider, mWifiOnly);
 
             mDatabaseManager = ArtworkDatabaseManager.getInstance(getApplicationContext());
 
@@ -345,30 +340,22 @@ public class BulkDownloadService extends Service implements InsertImageTask.Imag
             case ALBUM: {
                 AlbumModel album = (AlbumModel) requestModel.getGenericModel();
 
-                if (mUseLocalImages) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // TODO check if an image can be open via the android media framework
+                    // would be required for android 10 or later
+
+                    // for now just download images for every album regardless
+                    // if an image is present in the android media framework
+                    try {
+                        mDatabaseManager.getAlbumImage(album);
+                    } catch (ImageNotFoundException e2) {
+                        return true;
+                    }
+                } else if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
                     try {
                         mDatabaseManager.getAlbumImage(album);
                     } catch (ImageNotFoundException e) {
                         return true;
-                    }
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // TODO check if an image can be open via the android media framework
-                        // would be required for android 10 or later
-
-                        // for now just download images for every album regardless
-                        // if an image is present in the android media framework
-                        try {
-                            mDatabaseManager.getAlbumImage(album);
-                        } catch (ImageNotFoundException e2) {
-                            return true;
-                        }
-                    } else if (album.getAlbumArtURL() == null || album.getAlbumArtURL().isEmpty()) {
-                        try {
-                            mDatabaseManager.getAlbumImage(album);
-                        } catch (ImageNotFoundException e) {
-                            return true;
-                        }
                     }
                 }
             }

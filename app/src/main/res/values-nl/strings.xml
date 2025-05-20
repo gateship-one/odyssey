@@ -246,9 +246,6 @@
     <string name="preference_hide_media_on_lockscreen_title">Privé melding</string>
     <string name="preference_hide_media_on_lockscreen_text">Verberg media informatie op het vergrendelingsscherm (Afhankelijk van uw systeem privacy instelling voor het vergrendelingsscherm)</string>
 
-    <string name="preference_artwork_use_local_images_title">Gebruik lokale albumafbeeldingen</string>
-    <string name="preference_artwork_use_local_images_text">Negeer album illustraties uit de Android Media Database en gebruik in plaats daarvan lokale afbeeldingen. Als er geen lokale afbeelding wordt gevonden, wordt die van de album web service gebruikt.</string>
-
     <string name="preference_category_artwork_settings">Illustraties instellingen</string>
     <string name="preference_category_artwork_database_cleanup">Database opschonen</string>
     <string name="preference_category_artwork_other_actions">Overige acties</string>

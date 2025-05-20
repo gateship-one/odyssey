@@ -27,7 +27,6 @@
     <string name="permission_request_snackbar_button" translatable="false">@android:string/ok</string>
     <string name="permission_request_storage_snackbar_explanation">Storage Permission is needed to load music files.</string>
     <string name="permission_request_audio_snackbar_explanation">Read Media Audio Permission is needed to load music files.</string>
-    <string name="permission_request_image_snackbar_explanation">Read Media Images Permission is needed to show local cover images.</string>
     <string name="permission_request_notifications_snackbar_explanation">Show Notifications Permission is required for Mediascanner and Bulkdownloader.</string>
 
     <!-- nav drawer -->
@@ -98,6 +97,13 @@
         \n\nPlease consider to deactivate this option in order to ensure Odyssey works correctly.
     </string>
     <string name="dialog_battery_opt_action_open_settings">Open settings</string>
+    <string name="dialog_artwork_local_images_removed_title">Use local images option is removed</string>
+    <string name="dialog_artwork_local_images_removed_message">
+        Due to some policy changes we had to remove the option to support local images directly.
+        \n\nThe option was disabled and odyssey will attempt to load images from the android media database instead.
+        If you enabled another artwork provider in the settings this will be used as well.
+    </string>
+    <string name="artwork_local_images_removed_action_ok" translatable="false">@android:string/ok</string>
 
     <!-- dialog default names  -->
     <string name="default_playlist_title">New Playlist</string>
@@ -291,9 +297,6 @@
 
     <string name="preference_hide_media_on_lockscreen_title">Private notification</string>
     <string name="preference_hide_media_on_lockscreen_text">Hide media information on the lockscreen (depends on your system lock screen privacy settings).</string>
-
-    <string name="preference_artwork_use_local_images_title">Use local album images</string>
-    <string name="preference_artwork_use_local_images_text">Ignore album artworks found in the Android Media Database and use local images instead. If no local image is found the selected album artwork provider will be used.</string>
 
     <string name="preference_category_artwork_settings">Artwork settings</string>
     <string name="preference_category_artwork_database_cleanup">Database cleanup</string>

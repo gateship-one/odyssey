@@ -219,8 +219,6 @@
     <string name="preference_random_intelligence_dumber">Zufall wählt vollständig zufällig die Lieder aus, es findet keine Betrachtung der Interpreten statt</string>
     <string name="preference_random_intelligence_intelligent">Zufall wählt lieder überwiegend auf Basis der Interpreten aus</string>
     <string name="preference_random_intelligence_more_intelligent">Zufall wählt Lieder vollständig auf Basis der Interpreten aus</string>
-    <string name="preference_artwork_use_local_images_title">Nutze lokale Albenbilder</string>
-    <string name="preference_artwork_use_local_images_text">Ignoriere Albenbilder aus der Android Mediendatenbank und nutze stattdessen lokale Albenbilder. Wenn kein lokales Bild gefunden wird, wird der gewählte Albenbilderanbieter genutzt.</string>
     <string name="contributor_translator_czech">Tschechische Übersetzung</string>
     <string name="contributor_translator_dutch">Niederländische Übersetzung</string>
     <string name="dialog_no_browser_found_title">Kein Browser verfügbar</string>
@@ -244,10 +242,15 @@
         \n\nFalls Sie dieses Feature nutzen wollen, deaktivieren Sie bitte die Energiespareinstellungen für Odyssey.
     </string>
     <string name="permission_request_audio_snackbar_explanation">Zugriff auf Audio Dateien erforderlich, um Musik anzuzeigen.</string>
-    <string name="permission_request_image_snackbar_explanation">Zugriff auf Bild Dateien erforderlich, um lokale Albencover anzuzeigen.</string>
     <string name="permission_request_notifications_snackbar_explanation">Benachrichtigungen erforderlich für den Mediascanner und den Bulkdownloader.</string>
     <string name="preference_legacy_theme_title">Altes Design</string>
     <string name="preference_legacy_theme_message">Verwende die intensiven Farbschemen aus vorherigen Versionen. Diese Farbschemen entsprechen nicht den aktuellen Material Design Richtlinien und sind nur für langzeit Benutzer enthalten. Die neuen Farbschemen wurden mit dem Material Theme Builder erstellt.</string>
     <string name="preference_theme_item_materialyou_auto">Systembasiert (automatisch dunkel/hell)</string>
     <string name="preference_theme_item_materialyou">Systembasiert (manuell dunkel/hell)</string>
+    <string name="dialog_artwork_local_images_removed_title">Option für lokale Albenbilder entfernt</string>
+    <string name="dialog_artwork_local_images_removed_message">
+        Aufgrund Regeländerungen von mussten wir die option für lokale Albenbilder entfernen.
+        \n\nDie option wurde deaktiviert und Odyssey wird nun Bilder aus der Mediendatenbank verwenden.
+        Wenn Sie einen weiteren Anbieter für Albenbilder eingestellt haben wird dieser ebenfalls verwendet.
+    </string>
 </resources>

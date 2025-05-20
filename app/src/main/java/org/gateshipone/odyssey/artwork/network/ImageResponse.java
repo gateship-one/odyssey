@@ -26,5 +26,4 @@ public class ImageResponse {
     public ArtworkRequestModel model;
     public String url;
     public byte[] image;
-    public String localArtworkPath;
 }

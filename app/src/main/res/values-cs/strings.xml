@@ -263,9 +263,6 @@
     <string name="preference_hide_media_on_lockscreen_title">Soukromé oznámení</string>
     <string name="preference_hide_media_on_lockscreen_text">Skrýt informaci o mediu na zamčené obrazovce (záleží na systémovém nastavení soukromí zamčené obrazovky).</string>
 
-    <string name="preference_artwork_use_local_images_title">Použít lokální obrázky alb</string>
-    <string name="preference_artwork_use_local_images_text">Ignorovat obrázky alb nalezené v mediální databázi Androidu a použít lokální. Není-li lokální obrázek alba nalezen, použít zvoleného dodavatele obrázků.</string>
-
     <string name="preference_category_artwork_settings">Nastavení obrázků</string>
     <string name="preference_category_artwork_database_cleanup">Vyčištění databáze</string>
     <string name="preference_category_artwork_other_actions">Další akce</string>
