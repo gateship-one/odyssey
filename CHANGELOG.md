@@ -1,5 +1,10 @@
 # Changelog Odyssey
 
+## Version 1.4.0 Tag: release-42 (2025-05-20)
+
+* Remove local artwork support.
+  * Change was necessary due to changed google policies for accessing media files.
+
 ## Version 1.3.2 Tag: release-41 (2024-07-01)
 
 * Fix broken legacy themes ([Issue #265](https://github.com/gateship-one/odyssey/issues/265))

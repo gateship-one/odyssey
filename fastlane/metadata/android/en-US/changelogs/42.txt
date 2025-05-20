@@ -1,0 +1,2 @@
+* Remove local artwork support.
+  * Change was necessary due to changed google policies for accessing media files.
